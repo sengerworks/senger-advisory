@@ -1,14 +1,18 @@
 # Senger Advisory Brand System v0.1
 
-## Positioning
-Senger Advisory measures and expands organizational capacity so growth does not become friction.
-
-## Color Semantics
-- Bronze: organizational capacity
-- Blue: healthy flow
-- Amber: increasing friction
-- Red: critical constraint
-- Charcoal: authority and grounding
+## Position
+Senger Advisory defines and operationalizes Organizational Capacity for growing companies.
 
 ## Tone
-Clear, restrained, executive, original. Teach before selling.
+Clear, grounded, executive, and intelligent. Teach before selling. Confidence over hype.
+
+## Color semantics
+- Bronze: capacity, maturity, craft, and authority.
+- Blue: healthy flow.
+- Amber: increasing friction.
+- Red: critical constraint.
+- Charcoal: seriousness and clarity.
+- Ivory: warmth and editorial calm.
+
+## Visual language
+Flow, systems, constraints, signal, capacity, and movement. Avoid generic consulting imagery.

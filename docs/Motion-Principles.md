@@ -1,9 +1,10 @@
 # Motion Principles v0.1
 
-Motion must represent organizational behavior, not decoration.
+Motion represents organizational behavior, not decoration.
 
-- Flow indicates healthy execution.
-- Congestion indicates capacity strain.
-- Amber signals friction.
-- Red signals critical constraints.
-- The system should feel alive, not animated for its own sake.
+## Rules
+1. Movement should communicate flow, constraint, signal, or transition.
+2. Healthy flow moves cleanly and smoothly.
+3. Friction appears as delay, congestion, amber, or rerouting.
+4. Motion should be subtle enough to feel premium.
+5. Reduced-motion preferences must be respected.

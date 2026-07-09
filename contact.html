@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact | Senger Advisory</title>
-  <meta name="description" content="Start a conversation about measuring organizational capacity." />
-  <meta property="og:title" content="Contact | Senger Advisory" />
-  <meta property="og:description" content="Start a conversation about measuring organizational capacity." />
+  <title>Connect | Senger Advisory</title>
+  <meta name="description" content="Start a conversation about organizational capacity, execution drag, and where growth may be creating friction." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://sengeradvisory.com" />
+  <meta property="og:site_name" content="Senger Advisory" />
+  <meta property="og:title" content="Connect | Senger Advisory" />
+  <meta property="og:description" content="Start a conversation about organizational capacity, execution drag, and where growth may be creating friction." />
+  <meta property="og:url" content="https://sengeradvisory.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -17,8 +19,9 @@
     <a class="brand" href="index.html">Senger Advisory</a>
     <button class="nav-toggle" aria-label="Open navigation"><span></span><span></span></button>
     <nav class="site-nav">
-      <a href="framework.html">Framework</a>
+      <a href="framework.html">Model</a>
       <a href="diagnostic.html">Diagnostic</a>
+      <a href="signs.html">Signs</a>
       <a href="insights.html">Insights</a>
       <a href="about.html">About</a>
       <a href="contact.html">Connect</a>
@@ -26,27 +29,27 @@
   </header>
   <main>
     <section class="page-hero dark-page-hero">
-      <div class="section-inner">
-        <p class="eyebrow">Connect</p>
-        <h1>Start with the capacity your strategy depends on.</h1>
-        <p class="page-lede">Share what you’re seeing. We’ll begin with a focused conversation around execution drag, complexity, and organizational capacity.</p>
-      </div>
+      <p class="eyebrow">Connect</p>
+      <h1>Start with what you’re seeing.</h1>
+      <p class="page-lede">If your organization has momentum but execution feels heavier than it should, the right first move is diagnosis.</p>
     </section>
-    <section class="section connect-section">
+    <section class="section connect-section contact-page-section">
       <div class="section-inner connect-layout">
-        <div class="connect-copy"><p class="eyebrow">Start Here</p><h2>Ready to see where capacity is slowing your organization?</h2><p>This is not a generic discovery call. The first conversation is designed to surface whether your organization is experiencing a capacity constraint.</p></div>
+        <div class="connect-copy"><p class="eyebrow">Diagnostic Inquiry</p><h2>Share the friction. We’ll look for the capacity signal.</h2><p>Use this form for diagnostic conversations, presentation follow-up, or leadership-team inquiries.</p></div>
         <form class="contact-form" name="diagnostic-inquiry" method="POST" data-netlify="true">
           <input type="hidden" name="form-name" value="diagnostic-inquiry" />
           <label><span>Name</span><input type="text" name="name" required /></label>
           <label><span>Email</span><input type="email" name="email" required /></label>
           <label><span>Organization</span><input type="text" name="organization" /></label>
-          <label><span>What are you seeing?</span><textarea name="message" rows="5" placeholder="Slower decisions, meeting drag, unclear ownership, change fatigue, AI readiness, execution slowdown..."></textarea></label>
+          <label><span>What are you seeing?</span><textarea name="message" rows="6" placeholder="Slower decisions, meeting drag, unclear ownership, change fatigue, AI readiness, execution slowdown..."></textarea></label>
           <button class="button primary" type="submit">Start the Diagnostic Conversation</button>
         </form>
       </div>
     </section>
   </main>
-  <footer class="site-footer"><p>© <span id="year"></span> Senger Advisory. All rights reserved.</p></footer>
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Senger Advisory. All rights reserved.</p>
+  </footer>
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,13 +1,22 @@
 # Product Roadmap v0.1
 
-## Release 1
-Public website, framework page, diagnostic inquiry, foundational docs.
+## Release 0.5 — Public launch candidate
+- Public site structure
+- Organizational Capacity Model page
+- Diagnostic page
+- Signs field guide
+- Contact flow
+- Initial docs
 
-## Release 2
-Interactive Organizational Capacity Diagnostic.
+## Release 0.6 — Launch polish
+- Mobile QA
+- SEO QA
+- Performance QA
+- Analytics
+- Domain cutover
 
-## Release 3
-Executive report generation and benchmark model.
-
-## Release 4
-Organizational Capacity Index and client dashboard.
+## Release 1.0 — Public launch
+- Presentation-ready website
+- Public framework
+- Diagnostic inquiry path
+- Core management model documented
