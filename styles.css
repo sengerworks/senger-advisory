@@ -308,45 +308,188 @@ h3 {
   max-width: 960px;
 }
 
-.capacity-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: 54px;
-}
-
-.capacity-card {
-  min-height: 260px;
-  padding: 26px;
+ .capacity-system {
+  position: relative;
+  min-height: 720px;
+  margin-top: 70px;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: rgba(255,255,255,0.7);
-  box-shadow: 0 14px 44px rgba(28,28,28,0.035);
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at center, rgba(164,107,56,0.10), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,0.88), rgba(250,248,245,0.92));
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
 }
 
-.capacity-card span {
-  display: block;
-  margin-bottom: 78px;
-  color: var(--bronze);
-  font-size: 0.78rem;
+.capacity-system::before,
+.capacity-system::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 1px solid rgba(164,107,56,0.16);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.capacity-system::after {
+  inset: 24%;
+  border-color: rgba(37,99,235,0.10);
+}
+
+.capacity-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 250px;
+  height: 250px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+  border: 1px solid rgba(164,107,56,0.28);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,0.96), rgba(250,248,245,0.84)),
+    var(--ivory);
+  box-shadow: 0 28px 90px rgba(28,28,28,0.08);
+  z-index: 2;
+}
+
+.capacity-core span {
+  color: var(--bronze-dark);
+  font-size: 0.76rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.capacity-card h3 {
-  margin-bottom: 14px;
+.capacity-core strong {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--serif);
+  font-size: 3.2rem;
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
 }
 
-.capacity-card p,
-.diagnostic-section p,
-.founder-proof p,
-.insight-grid span {
-  color: var(--ink-soft);
+.capacity-node {
+  position: absolute;
+  width: 255px;
+  min-height: 170px;
+  padding: 22px;
+  border: 1px solid rgba(233,230,225,0.95);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 48px rgba(28,28,28,0.045);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  z-index: 3;
 }
 
-.capacity-card p {
+.capacity-node:hover {
+  transform: translateY(-4px);
+  border-color: rgba(164,107,56,0.36);
+  box-shadow: 0 26px 70px rgba(28,28,28,0.075);
+}
+
+.capacity-node::before {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(164,107,56,0), rgba(164,107,56,0.34), rgba(164,107,56,0));
+  top: 50%;
+  pointer-events: none;
+}
+
+.node-1 {
+  left: 9%;
+  top: 12%;
+}
+
+.node-1::before {
+  right: -96px;
+  transform: rotate(20deg);
+}
+
+.node-2 {
+  right: 9%;
+  top: 12%;
+}
+
+.node-2::before {
+  left: -96px;
+  transform: rotate(-20deg);
+}
+
+.node-3 {
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.node-3:hover {
+  transform: translateY(calc(-50% - 4px));
+}
+
+.node-3::before {
+  left: -112px;
+}
+
+.node-4 {
+  right: 12%;
+  bottom: 10%;
+}
+
+.node-4::before {
+  left: -96px;
+  transform: rotate(24deg);
+}
+
+.node-5 {
+  left: 12%;
+  bottom: 10%;
+}
+
+.node-5::before {
+  right: -96px;
+  transform: rotate(-24deg);
+}
+
+.node-6 {
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.node-6:hover {
+  transform: translateY(calc(-50% - 4px));
+}
+
+.node-6::before {
+  right: -112px;
+}
+
+.capacity-node span {
+  display: block;
+  margin-bottom: 34px;
+  color: var(--bronze);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.capacity-node h3 {
+  margin-bottom: 10px;
+}
+
+.capacity-node p {
   margin: 0;
-  font-size: 0.98rem;
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  line-height: 1.45;
 }
 
 .diagnosis-shift {
