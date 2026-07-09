@@ -1,24 +1,44 @@
-const year = document.getElementById('year');
+const year = document.getElementById("year");
 if (year) year.textContent = new Date().getFullYear();
 
-const navToggle = document.querySelector('.nav-toggle');
-const nav = document.querySelector('.site-nav');
+const navToggle = document.querySelector(".nav-toggle");
+const nav = document.querySelector(".site-nav");
+
 if (navToggle && nav) {
-  navToggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', String(open));
+  navToggle.addEventListener("click", () => {
+    nav.classList.toggle("open");
+  });
+
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => nav.classList.remove("open"));
   });
 }
 
+document.querySelectorAll(
+  ".belief-shift, .progression div, .progression-note, .section-inner, .diagnosis-copy, .prescription-list, .diagnosis-shift > p"
+).forEach(el => {
+  el.classList.add("reveal");
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("visible");
+    }
+  });
+}, { threshold: 0.14 });
+
+document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
 (() => {
-  'use strict';
+  "use strict";
 
-  const canvas = document.getElementById('flowCanvas');
-  if (!canvas) return;
+  const canvas = document.getElementById("saFlowCanvas");
+  const hero = document.querySelector(".hero-visual");
+  if (!canvas || !hero) return;
 
-  const ctx = canvas.getContext('2d', { alpha: true });
-  const hero = document.querySelector('.hero');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ctx = canvas.getContext("2d", { alpha: true });
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const COLORS = {
     charcoal: [47, 52, 55],
@@ -29,7 +49,7 @@ if (navToggle && nav) {
 
   const state = {
     w: 0, h: 0, dpr: 1, mobile: false,
-    time: 8.5, last: 0,
+    time: 7.6, last: 0,
     hover: 0, hoverTarget: 0,
     paths: [], particles: [], noiseDots: [], zones: [],
     seed: 27491
@@ -78,6 +98,7 @@ if (navToggle && nav) {
     path.samples = [];
     const steps = 110;
     let prev = null, length = 0;
+
     for (let i = 0; i <= steps; i++) {
       const t = i / steps;
       const p = bezier(path.p0, path.p1, path.p2, path.p3, t);
@@ -85,6 +106,7 @@ if (navToggle && nav) {
       path.samples.push({ ...p, t, length });
       prev = p;
     }
+
     path.length = length;
   }
 
@@ -92,29 +114,35 @@ if (navToggle && nav) {
     t = ((t % 1) + 1) % 1;
     const target = t * path.length;
     let lo = 0, hi = path.samples.length - 1;
+
     while (lo < hi) {
       const mid = (lo + hi) >> 1;
       if (path.samples[mid].length < target) lo = mid + 1;
       else hi = mid;
     }
+
     const b = path.samples[lo];
     const a = path.samples[Math.max(0, lo - 1)];
     const span = Math.max(0.0001, b.length - a.length);
     const local = (target - a.length) / span;
+
     return sampleRaw(path, lerp(a.t, b.t, local));
   }
 
   function complexityAt(t) {
-    const cycle = reduceMotion ? 54 : 32;
+    const cycle = reduceMotion ? 54 : 28;
     const p = (t % cycle) / cycle;
-    if (p < 0.18) return 0.22 + easeInOut(p / 0.18) * 0.22;
-    if (p < 0.45) return 0.44 + easeInOut((p - 0.18) / 0.27) * 0.28;
-    if (p < 0.70) return 0.72 + easeInOut((p - 0.45) / 0.25) * 0.26;
-    if (p < 0.88) return 0.98 - easeInOut((p - 0.70) / 0.18) * 0.18;
-    return 0.80 - easeInOut((p - 0.88) / 0.12) * 0.58;
+
+    if (p < 0.18) return 0.12 + easeInOut(p / 0.18) * 0.20;
+    if (p < 0.42) return 0.32 + easeInOut((p - 0.18) / 0.24) * 0.34;
+    if (p < 0.68) return 0.66 + easeInOut((p - 0.42) / 0.26) * 0.30;
+    if (p < 0.84) return 0.96 - easeInOut((p - 0.68) / 0.16) * 0.16;
+    return 0.80 - easeInOut((p - 0.84) / 0.16) * 0.68;
   }
 
-  function makePoint(x, y, phase) { return { x, y, phase }; }
+  function makePoint(x, y, phase) {
+    return { x, y, phase };
+  }
 
   function generate() {
     const rand = mulberry32(state.seed + Math.round(state.w * 2.7) + Math.round(state.h * 4.1));
@@ -131,6 +159,7 @@ if (navToggle && nav) {
     ];
 
     state.paths = [];
+
     for (let i = 0; i < pathCount; i++) {
       const layer = i / Math.max(1, pathCount - 1);
       const depth = rand() < 0.25 ? 0 : rand() < 0.78 ? 1 : 2;
@@ -143,34 +172,42 @@ if (navToggle && nav) {
       const arc = (rand() - 0.5) * state.h * 0.42 * wander;
       const sway = (rand() - 0.5) * state.w * 0.23 * wander;
       const phase = rand() * Math.PI * 2;
-      const p0 = makePoint(x0, clamp(y + (rand() - 0.5) * state.h * 0.16, marginY, state.h - marginY), phase + 0.0);
+
+      const p0 = makePoint(x0, clamp(y + (rand() - 0.5) * state.h * 0.16, marginY, state.h - marginY), phase);
       const p3 = makePoint(x3, clamp(y + (rand() - 0.5) * state.h * 0.16, marginY, state.h - marginY), phase + 2.4);
       const p1 = makePoint(lerp(p0.x, p3.x, 0.26 + rand() * 0.12) + sway, clamp(p0.y + arc, marginY * 0.65, state.h - marginY * 0.65), phase + 0.8);
       const p2 = makePoint(lerp(p0.x, p3.x, 0.62 + rand() * 0.14) - sway * (0.3 + rand() * 0.5), clamp(p3.y - arc * (0.55 + rand() * 0.4), marginY * 0.65, state.h - marginY * 0.65), phase + 1.6);
+
       const path = {
         p0, p1, p2, p3, depth,
         baseAlpha: depth === 0 ? 0.018 + rand() * 0.026 : depth === 1 ? 0.034 + rand() * 0.052 : 0.052 + rand() * 0.048,
         width: depth === 0 ? 0.75 + rand() * 0.7 : depth === 1 ? 1.0 + rand() * 1.25 : 1.15 + rand() * 1.45,
-        emergence: rand(), frictionOffset: rand(), redMoment: rand() > 0.92,
+        emergence: rand(),
+        frictionOffset: rand(),
+        redMoment: rand() > 0.92,
         driftAmount: (depth === 0 ? 1.0 : depth === 1 ? 1.8 : 2.6) * (state.mobile ? 0.7 : 1),
         driftSpeed: 0.045 + rand() * 0.055,
         decisionPulse: rand() > 0.82
       };
+
       buildPathSamples(path);
       state.paths.push(path);
     }
 
-    state.particles = [];
     const classes = [
-      { name: 'information', size: 1.8, speed: 0.027, alpha: 0.62, share: 0.68 },
-      { name: 'decision', size: 3.0, speed: 0.020, alpha: 0.70, share: 0.25 },
-      { name: 'strategy', size: 4.7, speed: 0.013, alpha: 0.78, share: 0.07 }
+      { name: "information", size: 1.8, speed: 0.027, alpha: 0.62, share: 0.68 },
+      { name: "decision", size: 3.0, speed: 0.020, alpha: 0.70, share: 0.25 },
+      { name: "strategy", size: 4.7, speed: 0.013, alpha: 0.78, share: 0.07 }
     ];
+
+    state.particles = [];
+
     for (let i = 0; i < particleCount; i++) {
       const r = rand();
       const klass = r < classes[0].share ? classes[0] : r < classes[0].share + classes[1].share ? classes[1] : classes[2];
       const pathIndex = Math.floor(rand() * state.paths.length);
       const depth = state.paths[pathIndex].depth;
+
       state.particles.push({
         pathIndex,
         t: rand(),
@@ -184,8 +221,15 @@ if (navToggle && nav) {
     }
 
     state.noiseDots = [];
+
     for (let i = 0; i < (state.mobile ? 30 : 64); i++) {
-      state.noiseDots.push({ x: rand() * state.w, y: rand() * state.h, r: rand() * 1.5, phase: rand() * 10, a: 0.010 + rand() * 0.022 });
+      state.noiseDots.push({
+        x: rand() * state.w,
+        y: rand() * state.h,
+        r: rand() * 1.5,
+        phase: rand() * 10,
+        a: 0.010 + rand() * 0.022
+      });
     }
   }
 
@@ -197,8 +241,8 @@ if (navToggle && nav) {
     state.dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(state.w * state.dpr);
     canvas.height = Math.round(state.h * state.dpr);
-    canvas.style.width = state.w + 'px';
-    canvas.style.height = state.h + 'px';
+    canvas.style.width = state.w + "px";
+    canvas.style.height = state.h + "px";
     ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
     generate();
   }
@@ -215,7 +259,7 @@ if (navToggle && nav) {
     });
 
     ctx.save();
-    ctx.lineCap = 'round';
+    ctx.lineCap = "round";
     ctx.lineWidth = path.width;
     ctx.strokeStyle = rgba(COLORS.charcoal, path.baseAlpha * visibility * (0.78 + complexity * 0.58));
     ctx.beginPath();
@@ -225,6 +269,7 @@ if (navToggle && nav) {
 
     const pulse = Math.max(0, Math.sin(state.time * 0.46 + path.frictionOffset * 8.5) - 0.74) / 0.26;
     const friction = pulse * clamp((complexity - 0.55) / 0.45, 0, 1);
+
     if (friction > 0.02) {
       const start = 0.34 + path.frictionOffset * 0.25;
       const a = samplePath(path, start);
@@ -232,6 +277,7 @@ if (navToggle && nav) {
       const m1 = samplePath(path, start + 0.023);
       const m2 = samplePath(path, start + 0.052);
       const useRed = path.redMoment && complexity > 0.82 && friction > 0.58;
+
       ctx.strokeStyle = rgba(useRed ? COLORS.red : COLORS.amber, (useRed ? 0.10 : 0.13) * friction);
       ctx.lineWidth = path.width + (useRed ? 2.5 : 2.1);
       ctx.beginPath();
@@ -239,11 +285,13 @@ if (navToggle && nav) {
       ctx.bezierCurveTo(m1.x, m1.y, m2.x, m2.y, b.x, b.y);
       ctx.stroke();
     }
+
     ctx.restore();
   }
 
   function congestionFor(point, p, complexity) {
     let congestion = 0;
+
     for (const z of state.zones) {
       const dx = point.x - (z.x + Math.sin(state.time * 0.07 + z.phase) * 10);
       const dy = point.y - (z.y + Math.cos(state.time * 0.06 + z.phase) * 8);
@@ -251,13 +299,16 @@ if (navToggle && nav) {
       const zone = clamp(1 - dist / z.r, 0, 1);
       congestion += zone * zone;
     }
+
     const wave = Math.max(0, Math.sin(state.time * 0.72 + p.waitSeed * 13) - 0.70) / 0.30;
-    const classWeight = p.kind === 'strategy' ? 1.28 : p.kind === 'decision' ? 1.04 : 0.78;
+    const classWeight = p.kind === "strategy" ? 1.28 : p.kind === "decision" ? 1.04 : 0.78;
+
     return clamp(congestion * wave * classWeight * clamp((complexity - 0.48) / 0.52, 0, 1), 0, 1);
   }
 
   function drawBloom(x, y, radius, color, alpha, soft = 1) {
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = "lighter";
+
     const glow = ctx.createRadialGradient(x, y, 0, x, y, radius * 7.0 * soft);
     glow.addColorStop(0, rgba(color, alpha * 0.28));
     glow.addColorStop(0.32, rgba(color, alpha * 0.10));
@@ -275,6 +326,8 @@ if (navToggle && nav) {
     ctx.beginPath();
     ctx.arc(x, y, radius * 1.4, 0, Math.PI * 2);
     ctx.fill();
+
+    ctx.globalCompositeOperation = "source-over";
   }
 
   function drawParticle(p, complexity, dt) {
@@ -284,9 +337,11 @@ if (navToggle && nav) {
 
     const prePoint = samplePath(path, p.t);
     const congestion = congestionFor(prePoint, p, complexity);
-    const speedPenalty = p.kind === 'strategy' ? 0.88 : p.kind === 'decision' ? 0.78 : 0.62;
+    const speedPenalty = p.kind === "strategy" ? 0.88 : p.kind === "decision" ? 0.78 : 0.62;
     const speedFactor = 1 - congestion * speedPenalty;
+
     p.t += dt * p.speed * speedFactor * (reduceMotion ? 0.42 : 1) * (0.94 + state.hover * 0.22);
+
     if (p.t > 1) {
       p.t -= 1;
       p.pathIndex = (p.pathIndex + 5 + Math.floor(p.waitSeed * 17)) % state.paths.length;
@@ -296,33 +351,37 @@ if (navToggle && nav) {
     const x = point.x;
     const y = point.y + Math.sin(state.time * 0.75 + p.phase) * complexity * (path.depth + 0.6) * 0.52;
     const amber = congestion > 0.20;
-    const red = amber && p.kind !== 'information' && complexity > 0.86 && Math.sin(state.time * 0.54 + p.phase) > 0.90;
+    const red = amber && p.kind !== "information" && complexity > 0.86 && Math.sin(state.time * 0.54 + p.phase) > 0.90;
     const color = red ? COLORS.red : amber ? COLORS.amber : COLORS.blue;
     const alpha = p.alpha * visible * (0.66 + state.hover * 0.16);
-    const radius = p.size * (1 + congestion * (p.kind === 'strategy' ? 0.55 : 0.34));
+    const radius = p.size * (1 + congestion * (p.kind === "strategy" ? 0.55 : 0.34));
 
     ctx.save();
-    drawBloom(x, y, radius, color, alpha, p.kind === 'strategy' ? 1.18 : 1);
+    drawBloom(x, y, radius, color, alpha, p.kind === "strategy" ? 1.18 : 1);
 
     if (congestion > 0.26) {
-      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalCompositeOperation = "lighter";
       ctx.strokeStyle = rgba(red ? COLORS.red : COLORS.amber, 0.10 * congestion);
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(x, y, radius * 4.4, 0, Math.PI * 2);
       ctx.stroke();
     }
+
     ctx.restore();
   }
 
   function drawDecisionWave(path, complexity) {
     if (!path.decisionPulse || complexity < 0.34) return;
+
     const wavePhase = (state.time * 0.055 + path.frictionOffset) % 1;
     const fade = Math.sin(wavePhase * Math.PI);
     if (fade < 0.05) return;
+
     const p = samplePath(path, wavePhase);
+
     ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = "lighter";
     drawBloom(p.x, p.y, 5.8 + complexity * 2.2, COLORS.blue, 0.075 * fade * complexity, 1.45);
     ctx.restore();
   }
@@ -335,13 +394,14 @@ if (navToggle && nav) {
     state.hover += (state.hoverTarget - state.hover) * Math.min(1, dt * 3.4);
 
     const complexity = clamp(complexityAt(state.time) + state.hover * 0.09, 0, 1);
+
     ctx.clearRect(0, 0, state.w, state.h);
 
     const glowAlpha = 0.030 + Math.sin(state.time * 0.22) * 0.010 + state.hover * 0.018;
     const gradient = ctx.createRadialGradient(state.w * 0.50, state.h * 0.50, 0, state.w * 0.50, state.h * 0.50, Math.max(state.w, state.h) * 0.58);
     gradient.addColorStop(0, `rgba(37, 99, 235, ${glowAlpha})`);
     gradient.addColorStop(0.46, `rgba(37, 99, 235, ${glowAlpha * 0.25})`);
-    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+    gradient.addColorStop(1, "rgba(255,255,255,0)");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, state.w, state.h);
 
@@ -363,24 +423,14 @@ if (navToggle && nav) {
   }
 
   let resizeTimer;
-  window.addEventListener('resize', () => {
+
+  window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(resize, 120);
   }, { passive: true });
 
-  hero.addEventListener('mouseenter', () => state.hoverTarget = 0.28);
-  hero.addEventListener('mouseleave', () => state.hoverTarget = 0);
-
-  document.querySelectorAll('[data-sa-flow-trigger]').forEach(el => {
-    el.addEventListener('mouseenter', () => state.hoverTarget = 1);
-    el.addEventListener('mouseleave', () => state.hoverTarget = 0);
-    el.addEventListener('focus', () => state.hoverTarget = 1);
-    el.addEventListener('blur', () => state.hoverTarget = 0);
-  });
-
-  window.SengerFlowHero = {
-    setEngaged(value) { state.hoverTarget = value ? 1 : 0; }
-  };
+  hero.addEventListener("mouseenter", () => state.hoverTarget = 0.28);
+  hero.addEventListener("mouseleave", () => state.hoverTarget = 0);
 
   resize();
   requestAnimationFrame(render);

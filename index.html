@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Senger Advisory | Organizational Capacity for Growth</title>
-  <meta name="description" content="Senger Advisory helps growing organizations diagnose and expand organizational capacity before complexity turns into friction, value leakage, and slower execution." />
+  <title>Senger Advisory | Organizational Capacity Diagnostic</title>
+  <meta name="description" content="Senger Advisory helps growing organizations measure and expand organizational capacity before complexity becomes friction, value leakage, and slower execution." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -12,72 +12,203 @@
   <header class="site-header">
     <a class="brand" href="/">Senger Advisory</a>
 
-    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false">
+    <button class="nav-toggle" aria-label="Open navigation">
       <span></span>
       <span></span>
     </button>
 
-    <nav class="site-nav" aria-label="Primary navigation">
-      <a href="#problem">Problem</a>
+    <nav class="site-nav">
+      <a href="#framework">Framework</a>
       <a href="#diagnostic">Diagnostic</a>
-      <a href="#capacity">Capacity</a>
       <a href="#insights">Insights</a>
-      <a href="#contact">Contact</a>
+      <a href="#about">About</a>
+      <a href="#connect">Connect</a>
     </nav>
   </header>
 
   <main>
-    <section class="hero" aria-label="Senger Advisory hero">
-      <canvas id="flowCanvas" aria-hidden="true"></canvas>
-      <div class="hero-overlay" aria-hidden="true"></div>
+    <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow">Organizational Capacity Diagnostic</p>
-        <h1>Growth doesn’t break strategy. <span>It exposes capacity.</span></h1>
-        <p class="hero-lede">Senger Advisory helps leadership teams see where complexity is slowing execution, leaking value, and outpacing the organization’s ability to absorb growth.</p>
+
+        <h1>
+          Growth doesn’t break strategy.
+          <span>It exposes organizational capacity.</span>
+        </h1>
+
+        <p class="hero-lede">
+          Most organizations don’t struggle because they lack good ideas.
+          They struggle because complexity grows faster than their ability to execute.
+        </p>
+
         <div class="hero-actions">
-          <a class="button primary" href="#diagnostic" data-sa-flow-trigger>Measure Capacity</a>
-          <a class="button secondary" href="#problem" data-sa-flow-trigger>See the Pattern</a>
+          <a class="button primary" href="#diagnostic">Measure Organizational Capacity</a>
+          <a class="button secondary" href="#pattern">See the Pattern</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <canvas id="saFlowCanvas"></canvas>
+      </div>
+    </section>
+
+    <section class="belief-shift">
+      <p>
+        Every growing organization becomes more complex.
+        <span>The question is whether its capacity grows with it.</span>
+      </p>
+    </section>
+
+    <section id="pattern" class="progression-section">
+      <div class="progression">
+        <div>Growth</div>
+        <div>Complexity</div>
+        <div>Friction</div>
+        <div>Value Leakage</div>
+        <div>Slower Execution</div>
+      </div>
+
+      <p class="progression-note">
+        Most leaders don’t notice the pattern until execution has already slowed.
+      </p>
+    </section>
+
+    <section id="framework" class="section framework-section">
+      <div class="section-inner">
+        <p class="eyebrow">The Framework</p>
+        <h2>Every organization has capacity. Almost none measure it.</h2>
+
+        <div class="capacity-grid">
+          <div class="capacity-card">
+            <span>01</span>
+            <h3>Leadership</h3>
+            <p>The ability to create clarity, reduce drag, and hold the system together under growth.</p>
+          </div>
+
+          <div class="capacity-card">
+            <span>02</span>
+            <h3>Decision Velocity</h3>
+            <p>How quickly the organization can turn ambiguity into committed action.</p>
+          </div>
+
+          <div class="capacity-card">
+            <span>03</span>
+            <h3>Operating Rhythm</h3>
+            <p>The cadence that converts strategy into movement without creating meeting debt.</p>
+          </div>
+
+          <div class="capacity-card">
+            <span>04</span>
+            <h3>Alignment</h3>
+            <p>The degree to which teams move in the same direction without constant translation.</p>
+          </div>
+
+          <div class="capacity-card">
+            <span>05</span>
+            <h3>Technology</h3>
+            <p>The systems that either accelerate execution or quietly reinforce complexity.</p>
+          </div>
+
+          <div class="capacity-card">
+            <span>06</span>
+            <h3>Culture</h3>
+            <p>The behaviors the organization rewards, tolerates, repeats, and scales.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="problem" class="section">
-      <div class="section-inner">
-        <p class="eyebrow">The Growth Paradox</p>
-        <h2>Organizations rarely stall because the strategy is wrong.</h2>
-        <p>They stall because growth creates complexity faster than the organization’s operating capacity evolves. More meetings. Slower decisions. More handoffs. Less clean movement from intent to outcome.</p>
+    <section class="diagnosis-shift">
+      <div class="diagnosis-copy">
+        <h2>Everyone has a prescription.</h2>
+        <h2>Very few have a diagnosis.</h2>
+      </div>
+
+      <div class="prescription-list">
+        <span>Reorganization</span>
+        <span>AI</span>
+        <span>Training</span>
+        <span>Coaching</span>
+        <span>Technology</span>
+        <span>Transformation</span>
+      </div>
+
+      <p>
+        None of them matter if you don’t know where capacity is constrained.
+      </p>
+    </section>
+
+    <section id="diagnostic" class="section diagnostic-section">
+      <div class="section-inner split">
+        <div>
+          <p class="eyebrow">The Diagnostic</p>
+          <h2>Measure the capacity your strategy depends on.</h2>
+        </div>
+
+        <div>
+          <p>
+            Senger Advisory created the Organizational Capacity Diagnostic to identify where execution slows before growth stalls.
+          </p>
+
+          <p>
+            It reveals the constraints underneath slow decisions, overloaded leaders, unclear ownership, meeting drag, change fatigue, and value leakage.
+          </p>
+
+          <a class="button primary" href="#connect">Start the Diagnostic Conversation</a>
+        </div>
       </div>
     </section>
 
-    <section id="diagnostic" class="section muted">
-      <div class="section-inner">
-        <p class="eyebrow">The Wedge</p>
-        <h2>Everyone has a prescription. Few have a diagnosis.</h2>
-        <p>The Organizational Capacity Diagnostic identifies where the system is constrained before leaders invest in another initiative, restructure, technology rollout, or leadership program.</p>
+    <section id="about" class="section about-section">
+      <div class="section-inner founder-proof">
+        <p class="eyebrow">Why Senger Advisory</p>
+
+        <h2>
+          Twenty-five years building organizations.
+          <br />
+          Seven thousand hours coaching leaders.
+          <br />
+          One conclusion.
+        </h2>
+
+        <p>
+          Organizations don’t outgrow strategy. They outgrow their capacity to execute it.
+        </p>
       </div>
     </section>
 
-    <section id="capacity" class="section">
-      <div class="section-inner">
-        <p class="eyebrow">How Capacity Expands</p>
-        <h2>Once the constraint is visible, the work becomes focused.</h2>
-        <p>Senger Advisory helps organizations expand capacity through clearer decision rights, stronger execution rhythms, leadership alignment, operating model refinement, and AI-ready management systems.</p>
-      </div>
-    </section>
-
-    <section id="insights" class="section muted">
+    <section id="insights" class="section insights-section">
       <div class="section-inner">
         <p class="eyebrow">Insights</p>
         <h2>Ideas for leaders scaling beyond their current operating system.</h2>
-        <p>Coming soon: practical writing on organizational capacity, execution drag, AI readiness, leadership leverage, and the hidden costs of unmanaged complexity.</p>
+
+        <div class="insight-grid">
+          <article>
+            <p>01</p>
+            <h3>The Growth Paradox</h3>
+            <span>Why growth creates the very complexity that slows execution.</span>
+          </article>
+
+          <article>
+            <p>02</p>
+            <h3>Execution Drag</h3>
+            <span>How organizations leak value long before results show the damage.</span>
+          </article>
+
+          <article>
+            <p>03</p>
+            <h3>AI Readiness</h3>
+            <span>Why automation fails when the management system underneath it is unclear.</span>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section id="contact" class="section final-cta">
+    <section id="connect" class="section final-cta">
       <div class="section-inner">
         <p class="eyebrow">Start Here</p>
-        <h2>Measure the capacity your strategy depends on.</h2>
-        <a class="button primary" href="mailto:jonathan@sengeradvisory.com">Start a Conversation</a>
+        <h2>Ready to see where capacity is slowing your organization?</h2>
+        <a class="button primary" href="mailto:jonathan@sengeradvisory.com">Measure Organizational Capacity</a>
       </div>
     </section>
   </main>
