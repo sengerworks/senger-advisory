@@ -15,7 +15,7 @@ if (navToggle && nav) {
 }
 
 document.querySelectorAll(
-  ".belief-shift, .progression-chapter, .progression-note, .truth-section .section-inner, .section-inner, .diagnosis-copy, .prescription-list, .diagnosis-shift > p"
+  ".belief-shift, .progression-chapter, .truth-section .section-inner, .section-inner, .diagnosis-copy, .prescription-list, .diagnosis-shift > p"
 ).forEach(el => {
   el.classList.add("reveal");
 });

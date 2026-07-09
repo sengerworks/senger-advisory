@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact | Senger Advisory</title>
+  <meta name="description" content="Start a conversation about measuring organizational capacity." />
+  <meta property="og:title" content="Contact | Senger Advisory" />
+  <meta property="og:description" content="Start a conversation about measuring organizational capacity." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sengeradvisory.com" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">Senger Advisory</a>
+    <button class="nav-toggle" aria-label="Open navigation"><span></span><span></span></button>
+    <nav class="site-nav">
+      <a href="framework.html">Framework</a>
+      <a href="diagnostic.html">Diagnostic</a>
+      <a href="insights.html">Insights</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Connect</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-hero dark-page-hero">
+      <div class="section-inner">
+        <p class="eyebrow">Connect</p>
+        <h1>Start with the capacity your strategy depends on.</h1>
+        <p class="page-lede">Share what you’re seeing. We’ll begin with a focused conversation around execution drag, complexity, and organizational capacity.</p>
+      </div>
+    </section>
+    <section class="section connect-section">
+      <div class="section-inner connect-layout">
+        <div class="connect-copy"><p class="eyebrow">Start Here</p><h2>Ready to see where capacity is slowing your organization?</h2><p>This is not a generic discovery call. The first conversation is designed to surface whether your organization is experiencing a capacity constraint.</p></div>
+        <form class="contact-form" name="diagnostic-inquiry" method="POST" data-netlify="true">
+          <input type="hidden" name="form-name" value="diagnostic-inquiry" />
+          <label><span>Name</span><input type="text" name="name" required /></label>
+          <label><span>Email</span><input type="email" name="email" required /></label>
+          <label><span>Organization</span><input type="text" name="organization" /></label>
+          <label><span>What are you seeing?</span><textarea name="message" rows="5" placeholder="Slower decisions, meeting drag, unclear ownership, change fatigue, AI readiness, execution slowdown..."></textarea></label>
+          <button class="button primary" type="submit">Start the Diagnostic Conversation</button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><p>© <span id="year"></span> Senger Advisory. All rights reserved.</p></footer>
+  <script src="script.js"></script>
+</body>
+</html>
