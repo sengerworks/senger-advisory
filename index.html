@@ -242,13 +242,43 @@
       </div>
     </section>
 
-    <section id="connect" class="section final-cta">
-      <div class="section-inner">
-        <p class="eyebrow">Start Here</p>
-        <h2>Ready to see where capacity is slowing your organization?</h2>
-        <a class="button primary" href="mailto:jonathan@sengeradvisory.com">Measure Organizational Capacity</a>
-      </div>
-    </section>
+   <section id="connect" class="section connect-section">
+  <div class="section-inner connect-layout">
+    <div class="connect-copy">
+      <p class="eyebrow">Start Here</p>
+      <h2>Ready to see where capacity is slowing your organization?</h2>
+      <p>
+        Share a little about what you’re seeing. If there’s a fit, we’ll start with a focused conversation around organizational capacity, execution drag, and where complexity may be creating friction.
+      </p>
+    </div>
+
+    <form class="contact-form" name="diagnostic-inquiry" method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value="diagnostic-inquiry" />
+
+      <label>
+        <span>Name</span>
+        <input type="text" name="name" required />
+      </label>
+
+      <label>
+        <span>Email</span>
+        <input type="email" name="email" required />
+      </label>
+
+      <label>
+        <span>Organization</span>
+        <input type="text" name="organization" />
+      </label>
+
+      <label>
+        <span>What are you seeing?</span>
+        <textarea name="message" rows="5" placeholder="Slower decisions, meeting drag, unclear ownership, change fatigue, AI readiness, execution slowdown..."></textarea>
+      </label>
+
+      <button class="button primary" type="submit">Start the Diagnostic Conversation</button>
+    </form>
+  </div>
+</section>
   </main>
 
   <footer class="site-footer">
