@@ -551,6 +551,109 @@ h3 {
   margin-top: 10px;
 }
 
+.diagnostic-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(44px, 7vw, 96px);
+  align-items: center;
+}
+
+.diagnostic-copy p:not(.eyebrow) {
+  max-width: 620px;
+  margin: 30px 0 0;
+  color: var(--ink-soft);
+  font-size: clamp(1.08rem, 1.45vw, 1.28rem);
+}
+
+.diagnostic-copy .button {
+  margin-top: 34px;
+}
+
+.diagnostic-panel {
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(37,99,235,0.08), transparent 28%),
+    linear-gradient(180deg, #fff, rgba(250,248,245,0.92));
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 26px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-header span {
+  color: var(--bronze-dark);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.panel-header strong {
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+}
+
+.signal-list {
+  display: grid;
+}
+
+.signal-list div {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 18px;
+  padding: 24px 26px;
+  border-bottom: 1px solid var(--line);
+}
+
+.signal-list span {
+  color: var(--bronze);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+
+.signal-list p {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.05rem, 1.4vw, 1.22rem);
+  letter-spacing: -0.025em;
+}
+
+.diagnostic-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+}
+
+.diagnostic-steps div {
+  padding: 22px;
+  background: rgba(255,255,255,0.76);
+}
+
+.diagnostic-steps span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--bronze-dark);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.diagnostic-steps p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
 .about-section {
   background:
     radial-gradient(circle at 20% 20%, rgba(164,107,56,0.08), transparent 28%),
@@ -666,6 +769,14 @@ h3 {
   .hero-visual {
     min-height: 480px;
   }
+
+  .diagnostic-layout {
+  grid-template-columns: 1fr;
+}
+
+.diagnostic-steps {
+  grid-template-columns: 1fr;
+}
 
   .capacity-grid,
   .insight-grid {
