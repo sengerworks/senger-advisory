@@ -19,6 +19,12 @@ pressure determine effective capacity; routing responds to those conditions. Use
 the renderer. The engine pauses outside the viewport, rebuilds at responsive breakpoints,
 caps pixel density, and renders a static state when reduced motion is preferred.
 
+The Capacity Lens applies a feathered capacity increase around the pointer. It follows the
+cursor on desktop, drifts autonomously on touch devices, and can be repositioned by dragging.
+Its influence changes model behavior—not only appearance—by increasing effective capacity,
+accelerating work, reducing visible pressure, and helping queues clear. The lens is disabled
+when reduced motion is preferred.
+
 ## Deploy
 Push to GitHub. Netlify deploys automatically from the connected repository.
 

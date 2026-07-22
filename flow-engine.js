@@ -50,6 +50,19 @@
       this.lastFrame = 0;
       this.frame = 0;
       this.visible = true;
+      this.coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+      this.lens = {
+        x: 0,
+        y: 0,
+        targetX: 0,
+        targetY: 0,
+        radius: 0,
+        strength: 0,
+        targetStrength: 0,
+        dragging: false,
+        pointerId: null,
+        lastInteraction: -Infinity
+      };
 
       this.resizeObserver = new ResizeObserver(() => this.resize());
       this.resizeObserver.observe(this.host);
@@ -71,7 +84,55 @@
         }
       };
       this.motionQuery.addEventListener?.("change", this.onMotionChange);
+      this.bindLensInteraction();
       this.resize();
+    }
+
+    bindLensInteraction() {
+      this.onPointerEnter = event => {
+        if (this.reducedMotion || event.pointerType === "touch") return;
+        this.lens.targetStrength = 1;
+        this.moveLensTarget(event);
+      };
+      this.onPointerMove = event => {
+        if (this.reducedMotion) return;
+        if (event.pointerType === "touch" && !this.lens.dragging) return;
+        this.lens.targetStrength = 1;
+        this.lens.lastInteraction = this.time;
+        this.moveLensTarget(event);
+      };
+      this.onPointerLeave = event => {
+        if (event.pointerType !== "touch" && !this.coarsePointer) this.lens.targetStrength = 0;
+      };
+      this.onPointerDown = event => {
+        if (this.reducedMotion || event.pointerType !== "touch") return;
+        this.lens.dragging = true;
+        this.lens.pointerId = event.pointerId;
+        this.lens.targetStrength = 1;
+        this.lens.lastInteraction = this.time;
+        this.moveLensTarget(event);
+        this.host.setPointerCapture?.(event.pointerId);
+      };
+      this.onPointerUp = event => {
+        if (event.pointerId !== this.lens.pointerId) return;
+        this.lens.dragging = false;
+        this.lens.pointerId = null;
+        this.lens.lastInteraction = this.time;
+        this.host.releasePointerCapture?.(event.pointerId);
+      };
+
+      this.host.addEventListener("pointerenter", this.onPointerEnter, { passive: true });
+      this.host.addEventListener("pointermove", this.onPointerMove, { passive: true });
+      this.host.addEventListener("pointerleave", this.onPointerLeave, { passive: true });
+      this.host.addEventListener("pointerdown", this.onPointerDown, { passive: true });
+      this.host.addEventListener("pointerup", this.onPointerUp, { passive: true });
+      this.host.addEventListener("pointercancel", this.onPointerUp, { passive: true });
+    }
+
+    moveLensTarget(event) {
+      const rect = this.host.getBoundingClientRect();
+      this.lens.targetX = clamp(event.clientX - rect.left, 0, this.width);
+      this.lens.targetY = clamp(event.clientY - rect.top, 0, this.height);
     }
 
     resize() {
@@ -83,6 +144,16 @@
       this.width = width;
       this.height = height;
       this.mobile = width < 680;
+      this.lens.radius = clamp(Math.min(width, height) * (this.mobile ? 0.32 : 0.27), 105, 190);
+      if (!this.lens.x && !this.lens.y) {
+        this.lens.x = this.lens.targetX = width * 0.46;
+        this.lens.y = this.lens.targetY = height * 0.48;
+      } else {
+        this.lens.x = clamp(this.lens.x, 0, width);
+        this.lens.y = clamp(this.lens.y, 0, height);
+        this.lens.targetX = clamp(this.lens.targetX, 0, width);
+        this.lens.targetY = clamp(this.lens.targetY, 0, height);
+      }
       this.dpr = Math.min(window.devicePixelRatio || 1, 2);
       this.canvas.width = Math.round(width * this.dpr);
       this.canvas.height = Math.round(height * this.dpr);
@@ -124,6 +195,8 @@
         utilization: 0,
         averageWait: 0,
         throughput: 0,
+        lensInfluence: 0,
+        visualPressure: 0,
         queue: [],
         outgoing: []
       }));
@@ -219,6 +292,33 @@
       return lerp(1, 0.28, (cycle - 0.78) / 0.22);
     }
 
+    updateLens(delta) {
+      if (this.reducedMotion) {
+        this.lens.strength = 0;
+        return;
+      }
+
+      if ((this.mobile || this.coarsePointer) && !this.lens.dragging && this.time - this.lens.lastInteraction > 3.2) {
+        this.lens.targetX = this.width * (0.50 + Math.sin(this.time * 0.19) * 0.29);
+        this.lens.targetY = this.height * (0.50 + Math.cos(this.time * 0.16 + 0.8) * 0.27);
+        this.lens.targetStrength = 0.82;
+      }
+
+      const positionEase = 1 - Math.exp(-delta * (this.lens.dragging ? 11 : 5.2));
+      const strengthEase = 1 - Math.exp(-delta * 4.5);
+      this.lens.x = lerp(this.lens.x, this.lens.targetX, positionEase);
+      this.lens.y = lerp(this.lens.y, this.lens.targetY, positionEase);
+      this.lens.strength = lerp(this.lens.strength, this.lens.targetStrength, strengthEase);
+    }
+
+    lensInfluenceAt(point) {
+      if (this.lens.strength < 0.01 || this.reducedMotion) return 0;
+      const distance = Math.hypot(point.x - this.lens.x, point.y - this.lens.y);
+      const normalized = clamp(1 - distance / this.lens.radius, 0, 1);
+      const feathered = normalized * normalized * (3 - 2 * normalized);
+      return feathered * this.lens.strength;
+    }
+
     updateCapacity(delta) {
       this.demand = this.demandAt(this.time);
 
@@ -242,11 +342,14 @@
       }
 
       for (const node of this.nodes) {
+        node.lensInfluence = this.lensInfluenceAt(this.nodePosition(node));
         const targetPressure = clamp(node.localPressure + node.downstreamPressure * 0.72, 0, 1);
         node.pressure += (targetPressure - node.pressure) * Math.min(1, delta * 3.2);
         const demandPenalty = this.demand * node.complexitySensitivity;
         const pressurePenalty = node.pressure * 0.24 * (0.35 + this.demand * 0.65);
-        node.effectiveCapacity = clamp(node.baseCapacity - demandPenalty - pressurePenalty, 0.18, 0.96);
+        const constrainedCapacity = clamp(node.baseCapacity - demandPenalty - pressurePenalty, 0.18, 0.96);
+        node.effectiveCapacity = lerp(constrainedCapacity, 0.97, node.lensInfluence * 0.94);
+        node.visualPressure = node.pressure * (1 - node.lensInfluence * 0.92);
         node.utilization = clamp(this.demand / Math.max(0.2, node.effectiveCapacity), 0, 1.5);
         node.throughput *= Math.exp(-delta * 0.9);
       }
@@ -254,6 +357,7 @@
 
     update(delta) {
       this.time += delta;
+      this.updateLens(delta);
       this.updateCapacity(delta);
 
       for (const particle of this.particles) {
@@ -301,7 +405,9 @@
         const source = this.nodes[edge.from];
         const destination = this.nodes[edge.to];
         const routeCapacity = Math.min(source.effectiveCapacity, destination.effectiveCapacity);
-        const confidence = clamp(0.48 + routeCapacity * 0.72 - destination.pressure * 0.28, 0.34, 1.12);
+        const point = this.edgePoint(edge, particle.progress);
+        const lensBoost = this.lensInfluenceAt(point);
+        const confidence = clamp(0.48 + routeCapacity * 0.72 - destination.visualPressure * 0.28 + lensBoost * 0.62, 0.34, 1.58);
         particle.progress += delta * particle.speed * confidence;
         if (particle.progress >= 1) {
           particle.nodeId = destination.id;
@@ -320,7 +426,7 @@
       const middle = this.edgePoint(edge, 0.5);
       const source = this.nodes[edge.from];
       const destination = this.nodes[edge.to];
-      const pressure = clamp(Math.max(destination.pressure, source.downstreamPressure * 0.8), 0, 1);
+      const pressure = clamp(Math.max(destination.visualPressure, source.downstreamPressure * 0.8 * (1 - source.lensInfluence * 0.9)), 0, 1);
       const context = this.context;
       context.beginPath();
       context.moveTo(start.x, start.y);
@@ -333,7 +439,7 @@
 
     drawNode(node) {
       const point = this.nodePosition(node);
-      const pressure = node.pressure;
+      const pressure = node.visualPressure;
       const radius = 2.2 + pressure * 2.2;
       const context = this.context;
 
@@ -364,10 +470,12 @@
       const radius = particle.size * pulse;
       const context = this.context;
       const destination = this.nodes[edge.to];
-      const particleColor = destination.pressure > 0.68 ? COLORS.red : destination.pressure > 0.32 ? COLORS.amber : COLORS.blue;
+      const lensInfluence = this.lensInfluenceAt(point);
+      const particlePressure = destination.visualPressure * (1 - lensInfluence * 0.9);
+      const particleColor = particlePressure > 0.68 ? COLORS.red : particlePressure > 0.32 ? COLORS.amber : COLORS.blue;
       const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, radius * 5.5);
       glow.addColorStop(0, rgba([255, 255, 255], 0.92));
-      glow.addColorStop(0.18, rgba(particleColor, 0.72));
+      glow.addColorStop(0.18, rgba(particleColor, 0.72 + lensInfluence * 0.18));
       glow.addColorStop(1, rgba(particleColor, 0));
       context.fillStyle = glow;
       context.beginPath();
@@ -382,12 +490,32 @@
       for (let index = 0; index < count; index++) {
         const distance = 7 + index * 4.2;
         const angle = node.phase + Math.PI + index * 0.18;
-        const queueColor = node.pressure > 0.68 ? COLORS.red : COLORS.amber;
+        const queueColor = node.visualPressure > 0.68 ? COLORS.red : node.lensInfluence > 0.28 ? COLORS.blue : COLORS.amber;
         this.context.fillStyle = rgba(queueColor, 0.28 - index * 0.025);
         this.context.beginPath();
         this.context.arc(origin.x + Math.cos(angle) * distance, origin.y + Math.sin(angle) * distance, 1.15, 0, TAU);
         this.context.fill();
       }
+    }
+
+    drawLens() {
+      if (this.lens.strength < 0.015 || this.reducedMotion) return;
+      const context = this.context;
+      const radius = this.lens.radius;
+      const gradient = context.createRadialGradient(this.lens.x, this.lens.y, radius * 0.05, this.lens.x, this.lens.y, radius);
+      gradient.addColorStop(0, rgba(COLORS.blue, 0.064 * this.lens.strength));
+      gradient.addColorStop(0.48, rgba(COLORS.blue, 0.032 * this.lens.strength));
+      gradient.addColorStop(1, rgba(COLORS.blue, 0));
+      context.fillStyle = gradient;
+      context.beginPath();
+      context.arc(this.lens.x, this.lens.y, radius, 0, TAU);
+      context.fill();
+
+      context.strokeStyle = rgba(COLORS.blue, 0.085 * this.lens.strength);
+      context.lineWidth = 0.8;
+      context.beginPath();
+      context.arc(this.lens.x, this.lens.y, radius * 0.82, 0, TAU);
+      context.stroke();
     }
 
     draw() {
@@ -402,6 +530,7 @@
       context.fillRect(0, 0, this.width, this.height);
 
       this.edges.forEach(edge => this.drawEdge(edge));
+      this.drawLens();
       this.nodes.forEach(node => this.drawNode(node));
       this.nodes.forEach(node => this.drawQueue(node));
       this.particles.forEach(particle => this.drawParticle(particle));
@@ -421,8 +550,10 @@
     getSnapshot() {
       const nodeMetrics = this.nodes.map(node => ({
         id: node.id,
+        baselineCapacity: Number(node.baseCapacity.toFixed(3)),
         capacity: Number(node.effectiveCapacity.toFixed(3)),
         pressure: Number(node.pressure.toFixed(3)),
+        lensInfluence: Number(node.lensInfluence.toFixed(3)),
         queueDepth: node.queue.length,
         averageWait: Number(node.averageWait.toFixed(3)),
         throughput: Number(node.throughput.toFixed(3))
@@ -432,6 +563,13 @@
         queuedWork: this.particles.filter(particle => particle.queued).length,
         workInMotion: this.particles.filter(particle => !particle.queued && !particle.dormantUntil).length,
         dormantWork: this.particles.filter(particle => particle.dormantUntil).length,
+        lens: {
+          active: this.lens.strength > 0.05,
+          x: Math.round(this.lens.x),
+          y: Math.round(this.lens.y),
+          radius: Math.round(this.lens.radius),
+          strength: Number(this.lens.strength.toFixed(3))
+        },
         nodes: nodeMetrics
       };
     }
@@ -463,6 +601,12 @@
       this.resizeObserver.disconnect();
       this.visibilityObserver.disconnect();
       this.motionQuery.removeEventListener?.("change", this.onMotionChange);
+      this.host.removeEventListener("pointerenter", this.onPointerEnter);
+      this.host.removeEventListener("pointermove", this.onPointerMove);
+      this.host.removeEventListener("pointerleave", this.onPointerLeave);
+      this.host.removeEventListener("pointerdown", this.onPointerDown);
+      this.host.removeEventListener("pointerup", this.onPointerUp);
+      this.host.removeEventListener("pointercancel", this.onPointerUp);
     }
   }
 
