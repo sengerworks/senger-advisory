@@ -9,15 +9,17 @@
   <meta property="og:site_name" content="Senger Advisory" />
   <meta property="og:title" content="Connect | Senger Advisory" />
   <meta property="og:description" content="Start a conversation about organizational capacity, execution drag, and where growth may be creating friction." />
-  <meta property="og:url" content="https://sengeradvisory.com/" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:url" content="https://sengeradvisory.com/contact.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://sengeradvisory.com/contact.html" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <header class="site-header">
     <a class="brand" href="index.html">Senger Advisory</a>
-    <button class="nav-toggle" aria-label="Open navigation"><span></span><span></span></button>
+    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
     <nav class="site-nav">
       <a href="framework.html">Model</a>
       <a href="diagnostic.html">Diagnostic</a>
@@ -27,7 +29,7 @@
       <a href="contact.html">Connect</a>
     </nav>
   </header>
-  <main>
+  <main id="main-content">
     <section class="page-hero dark-page-hero">
       <p class="eyebrow">Connect</p>
       <h1>Start with what you’re seeing.</h1>
@@ -38,9 +40,9 @@
         <div class="connect-copy"><p class="eyebrow">Diagnostic Inquiry</p><h2>Share the friction. We’ll look for the capacity signal.</h2><p>Use this form for diagnostic conversations, presentation follow-up, or leadership-team inquiries.</p></div>
         <form class="contact-form" name="diagnostic-inquiry" method="POST" netlify action="/success.html">
           <input type="hidden" name="form-name" value="diagnostic-inquiry" />
-          <label><span>Name</span><input type="text" name="name" required /></label>
-          <label><span>Email</span><input type="email" name="email" required /></label>
-          <label><span>Organization</span><input type="text" name="organization" /></label>
+          <label><span>Name</span><input type="text" name="name" autocomplete="name" required /></label>
+          <label><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+          <label><span>Organization</span><input type="text" name="organization" autocomplete="organization" /></label>
           <label><span>What are you seeing?</span><textarea name="message" rows="6" placeholder="Slower decisions, meeting drag, unclear ownership, change fatigue, AI readiness, execution slowdown..."></textarea></label>
           <button class="button primary" type="submit">Start the Diagnostic Conversation</button>
         </form>
@@ -48,7 +50,7 @@
     </section>
   </main>
   <footer class="site-footer">
-    <p>© <span id="year"></span> Senger Advisory. All rights reserved.</p>
+    <p>© <span id="year"></span> Senger Advisory. All rights reserved. <a href="privacy.html">Privacy</a></p>
   </footer>
   <script src="script.js"></script>
 </body>

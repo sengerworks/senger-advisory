@@ -45,6 +45,30 @@ a {
   text-decoration: none;
 }
 
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 750;
+  transform: translateY(-160%);
+  transition: transform 160ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+:where(a, button, input, textarea):focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.72);
+  outline-offset: 3px;
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -1058,6 +1082,13 @@ h3 {
   max-width: var(--max);
   margin: 0 auto;
   font-size: 0.86rem;
+}
+
+.site-footer a {
+  margin-left: 10px;
+  color: rgba(255,255,255,0.78);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .reveal {

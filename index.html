@@ -11,12 +11,14 @@
   <meta property="og:title" content="Senger Advisory | Organizational Capacity Diagnostic" />
   <meta property="og:description" content="Senger Advisory helps growing organizations measure and expand organizational capacity before complexity becomes friction, value leakage, and slower execution." />
   <meta property="og:url" content="https://sengeradvisory.com/" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://sengeradvisory.com/" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <header class="site-header">
     <a class="brand" href="index.html">Senger Advisory</a>
 
@@ -35,7 +37,7 @@
     </nav>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="hero">
       <div class="hero-visual" aria-hidden="true">
         <canvas class="flow-engine-canvas" data-flow-engine></canvas>
@@ -285,22 +287,22 @@
       </p>
     </div>
 
-    <form class="contact-form" name="diagnostic-inquiry" method="POST" data-netlify="true">
+    <form class="contact-form" name="diagnostic-inquiry" method="POST" data-netlify="true" action="/success.html">
       <input type="hidden" name="form-name" value="diagnostic-inquiry" />
 
       <label>
         <span>Name</span>
-        <input type="text" name="name" required />
+        <input type="text" name="name" autocomplete="name" required />
       </label>
 
       <label>
         <span>Email</span>
-        <input type="email" name="email" required />
+        <input type="email" name="email" autocomplete="email" required />
       </label>
 
       <label>
         <span>Organization</span>
-        <input type="text" name="organization" />
+        <input type="text" name="organization" autocomplete="organization" />
       </label>
 
       <label>
@@ -315,7 +317,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>© <span id="year"></span> Senger Advisory. All rights reserved.</p>
+    <p>© <span id="year"></span> Senger Advisory. All rights reserved. <a href="privacy.html">Privacy</a></p>
   </footer>
 
   <script src="flow-engine.js"></script>
