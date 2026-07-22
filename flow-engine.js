@@ -5,7 +5,8 @@
   const COLORS = {
     ink: [47, 52, 55],
     blue: [37, 99, 235],
-    amber: [245, 158, 11]
+    amber: [245, 158, 11],
+    red: [220, 38, 38]
   };
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -45,6 +46,7 @@
       this.height = 0;
       this.dpr = 1;
       this.time = 0;
+      this.demand = 0;
       this.lastFrame = 0;
       this.frame = 0;
       this.visible = true;
@@ -111,8 +113,17 @@
         phase: random() * TAU,
         driftX: 2 + random() * 3,
         driftY: 2 + random() * 3,
-        serviceRate: index % 5 === 2 ? 1.35 : 2.2 + random() * 2.4,
+        baseCapacity: index % 5 === 2 ? 0.46 + random() * 0.08 : 0.68 + random() * 0.25,
+        complexitySensitivity: 0.10 + random() * 0.16,
+        baseServiceRate: index % 5 === 2 ? 0.72 : 1.7 + random() * 1.5,
         serviceCredit: random(),
+        effectiveCapacity: 1,
+        pressure: 0,
+        localPressure: 0,
+        downstreamPressure: 0,
+        utilization: 0,
+        averageWait: 0,
+        throughput: 0,
         queue: [],
         outgoing: []
       }));
@@ -140,10 +151,14 @@
           nodeId: source.id,
           edgeId: -1,
           progress: 0,
-          speed: 0.105 + random() * 0.075,
+          speed: 0.15 + random() * 0.09,
           size: 1.35 + random() * 1.8,
           priority: random() > 0.84 ? 1 : 0,
           phase: random() * TAU,
+          createdAt: 0,
+          enteredQueueAt: 0,
+          waitTime: 0,
+          dormantUntil: 0,
           queued: true
         };
         source.queue.push(particle);
@@ -187,7 +202,7 @@
       for (const edgeId of node.outgoing) {
         const edge = this.edges[edgeId];
         const destination = this.nodes[edge.to];
-        const score = destination.queue.length * 1.8 + Math.sin(particle.phase + edgeId * 2.7) * 0.4;
+        const score = destination.pressure * 5.4 + destination.queue.length * 0.32 + Math.sin(particle.phase + edgeId * 2.7) * 0.4;
         if (score < bestScore) {
           best = edge;
           bestScore = score;
@@ -196,24 +211,85 @@
       return best;
     }
 
-    update(delta) {
-      this.time += delta;
+    demandAt(time) {
+      const cycle = (time % 34) / 34;
+      if (cycle < 0.18) return lerp(0.28, 0.48, cycle / 0.18);
+      if (cycle < 0.52) return lerp(0.48, 0.94, (cycle - 0.18) / 0.34);
+      if (cycle < 0.78) return lerp(0.94, 1, (cycle - 0.52) / 0.26);
+      return lerp(1, 0.28, (cycle - 0.78) / 0.22);
+    }
+
+    updateCapacity(delta) {
+      this.demand = this.demandAt(this.time);
 
       for (const node of this.nodes) {
-        node.serviceCredit += delta * node.serviceRate;
+        if (!node.queue.length) node.averageWait *= Math.exp(-delta * 0.22);
+        const queueLoad = clamp(node.queue.length / (this.mobile ? 6 : 8), 0, 1);
+        const waitLoad = clamp(node.averageWait / 4.5, 0, 1);
+        node.localPressure = clamp(queueLoad * 0.68 + waitLoad * 0.32, 0, 1);
+        node.downstreamPressure *= Math.exp(-delta * 2.2);
+      }
+
+      // Two reverse passes let a constrained node affect more than its immediate predecessor.
+      for (let pass = 0; pass < 2; pass++) {
+        for (let index = this.edges.length - 1; index >= 0; index--) {
+          const edge = this.edges[index];
+          const source = this.nodes[edge.from];
+          const destination = this.nodes[edge.to];
+          const propagated = Math.max(destination.localPressure, destination.downstreamPressure) * 0.58;
+          source.downstreamPressure = Math.max(source.downstreamPressure, propagated);
+        }
+      }
+
+      for (const node of this.nodes) {
+        const targetPressure = clamp(node.localPressure + node.downstreamPressure * 0.72, 0, 1);
+        node.pressure += (targetPressure - node.pressure) * Math.min(1, delta * 3.2);
+        const demandPenalty = this.demand * node.complexitySensitivity;
+        const pressurePenalty = node.pressure * 0.24 * (0.35 + this.demand * 0.65);
+        node.effectiveCapacity = clamp(node.baseCapacity - demandPenalty - pressurePenalty, 0.18, 0.96);
+        node.utilization = clamp(this.demand / Math.max(0.2, node.effectiveCapacity), 0, 1.5);
+        node.throughput *= Math.exp(-delta * 0.9);
+      }
+    }
+
+    update(delta) {
+      this.time += delta;
+      this.updateCapacity(delta);
+
+      for (const particle of this.particles) {
+        if (!particle.dormantUntil || particle.dormantUntil > this.time) continue;
+        const source = this.pickSource();
+        particle.nodeId = source.id;
+        particle.queued = true;
+        particle.dormantUntil = 0;
+        particle.enteredQueueAt = this.time;
+        source.queue.push(particle);
+      }
+
+      for (const node of this.nodes) {
+        const demandDrag = 1.12 - this.demand * 0.35;
+        const recoveryBoost = 1 + (1 - this.demand) * 4;
+        const serviceRate = node.baseServiceRate * (0.30 + node.effectiveCapacity * 0.85) * demandDrag * recoveryBoost;
+        node.serviceCredit += delta * serviceRate;
         while (node.serviceCredit >= 1 && node.queue.length) {
           node.queue.sort((a, b) => b.priority - a.priority || a.id - b.id);
           const particle = node.queue.shift();
           const edge = this.chooseEdge(node, particle);
           node.serviceCredit -= 1;
+          const wait = Math.max(0, this.time - particle.enteredQueueAt);
+          particle.waitTime += wait;
+          node.averageWait = lerp(node.averageWait, wait, 0.18);
+          node.throughput += 0.42;
           if (edge) {
             particle.edgeId = edge.id;
             particle.progress = 0;
             particle.queued = false;
           } else {
-            particle.nodeId = this.pickSource().id;
-            particle.queued = true;
-            this.nodes[particle.nodeId].queue.push(particle);
+            particle.nodeId = -1;
+            particle.queued = false;
+            particle.createdAt = this.time;
+            particle.waitTime = 0;
+            particle.dormantUntil = this.time + lerp(6.5, 0.45, this.demand);
           }
         }
         node.serviceCredit = Math.min(node.serviceCredit, 2);
@@ -222,15 +298,17 @@
       for (const particle of this.particles) {
         if (particle.queued || particle.edgeId < 0) continue;
         const edge = this.edges[particle.edgeId];
-        const endQueue = this.nodes[edge.to].queue.length;
-        const backPressure = clamp(1 - endQueue * 0.035, 0.58, 1);
-        particle.progress += delta * particle.speed * backPressure;
+        const source = this.nodes[edge.from];
+        const destination = this.nodes[edge.to];
+        const routeCapacity = Math.min(source.effectiveCapacity, destination.effectiveCapacity);
+        const confidence = clamp(0.48 + routeCapacity * 0.72 - destination.pressure * 0.28, 0.34, 1.12);
+        particle.progress += delta * particle.speed * confidence;
         if (particle.progress >= 1) {
-          const destination = this.nodes[edge.to];
           particle.nodeId = destination.id;
           particle.edgeId = -1;
           particle.progress = 0;
           particle.queued = true;
+          particle.enteredQueueAt = this.time;
           destination.queue.push(particle);
         }
       }
@@ -240,34 +318,38 @@
       const start = this.nodePosition(this.nodes[edge.from]);
       const end = this.nodePosition(this.nodes[edge.to]);
       const middle = this.edgePoint(edge, 0.5);
-      const destinationQueue = this.nodes[edge.to].queue.length;
-      const pressure = clamp(destinationQueue / 9, 0, 1);
+      const source = this.nodes[edge.from];
+      const destination = this.nodes[edge.to];
+      const pressure = clamp(Math.max(destination.pressure, source.downstreamPressure * 0.8), 0, 1);
       const context = this.context;
       context.beginPath();
       context.moveTo(start.x, start.y);
       context.quadraticCurveTo(middle.x * 2 - (start.x + end.x) * 0.5, middle.y * 2 - (start.y + end.y) * 0.5, end.x, end.y);
-      context.strokeStyle = rgba(COLORS.ink, 0.075 + pressure * 0.035);
+      const edgeColor = pressure > 0.68 ? COLORS.red : pressure > 0.28 ? COLORS.amber : COLORS.ink;
+      context.strokeStyle = rgba(edgeColor, 0.065 + pressure * 0.105);
       context.lineWidth = 0.8 + pressure * 0.65;
       context.stroke();
     }
 
     drawNode(node) {
       const point = this.nodePosition(node);
-      const queuePressure = clamp(node.queue.length / 8, 0, 1);
-      const radius = 2.2 + queuePressure * 1.8;
+      const pressure = node.pressure;
+      const radius = 2.2 + pressure * 2.2;
       const context = this.context;
 
-      if (queuePressure > 0.12) {
-        const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, 22 + queuePressure * 14);
-        glow.addColorStop(0, rgba(COLORS.amber, 0.10 * queuePressure));
-        glow.addColorStop(1, rgba(COLORS.amber, 0));
+      if (pressure > 0.12) {
+        const healthColor = pressure > 0.68 ? COLORS.red : COLORS.amber;
+        const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, 22 + pressure * 18);
+        glow.addColorStop(0, rgba(healthColor, 0.12 * pressure));
+        glow.addColorStop(1, rgba(healthColor, 0));
         context.fillStyle = glow;
         context.beginPath();
-        context.arc(point.x, point.y, 22 + queuePressure * 14, 0, TAU);
+        context.arc(point.x, point.y, 22 + pressure * 18, 0, TAU);
         context.fill();
       }
 
-      context.fillStyle = rgba(queuePressure > 0.42 ? COLORS.amber : COLORS.ink, 0.28 + queuePressure * 0.28);
+      const nodeColor = pressure > 0.68 ? COLORS.red : pressure > 0.26 ? COLORS.amber : COLORS.ink;
+      context.fillStyle = rgba(nodeColor, 0.28 + pressure * 0.36);
       context.beginPath();
       context.arc(point.x, point.y, radius, 0, TAU);
       context.fill();
@@ -281,10 +363,12 @@
       const pulse = this.reducedMotion ? 1 : 0.86 + Math.sin(this.time * 1.4 + particle.phase) * 0.14;
       const radius = particle.size * pulse;
       const context = this.context;
+      const destination = this.nodes[edge.to];
+      const particleColor = destination.pressure > 0.68 ? COLORS.red : destination.pressure > 0.32 ? COLORS.amber : COLORS.blue;
       const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, radius * 5.5);
       glow.addColorStop(0, rgba([255, 255, 255], 0.92));
-      glow.addColorStop(0.18, rgba(COLORS.blue, 0.72));
-      glow.addColorStop(1, rgba(COLORS.blue, 0));
+      glow.addColorStop(0.18, rgba(particleColor, 0.72));
+      glow.addColorStop(1, rgba(particleColor, 0));
       context.fillStyle = glow;
       context.beginPath();
       context.arc(point.x, point.y, radius * 5.5, 0, TAU);
@@ -298,7 +382,8 @@
       for (let index = 0; index < count; index++) {
         const distance = 7 + index * 4.2;
         const angle = node.phase + Math.PI + index * 0.18;
-        this.context.fillStyle = rgba(COLORS.amber, 0.25 - index * 0.025);
+        const queueColor = node.pressure > 0.68 ? COLORS.red : COLORS.amber;
+        this.context.fillStyle = rgba(queueColor, 0.28 - index * 0.025);
         this.context.beginPath();
         this.context.arc(origin.x + Math.cos(angle) * distance, origin.y + Math.sin(angle) * distance, 1.15, 0, TAU);
         this.context.fill();
@@ -324,12 +409,31 @@
 
     drawStatic() {
       this.time = 0;
+      this.updateCapacity(1 / 60);
       this.context.clearRect(0, 0, this.width, this.height);
       this.edges.forEach(edge => this.drawEdge(edge));
       this.nodes.forEach(node => this.drawNode(node));
       this.particles.slice(0, this.mobile ? 18 : 30).forEach((particle, index) => {
         this.drawParticle(particle, ((index * 0.173) % 0.82) + 0.08);
       });
+    }
+
+    getSnapshot() {
+      const nodeMetrics = this.nodes.map(node => ({
+        id: node.id,
+        capacity: Number(node.effectiveCapacity.toFixed(3)),
+        pressure: Number(node.pressure.toFixed(3)),
+        queueDepth: node.queue.length,
+        averageWait: Number(node.averageWait.toFixed(3)),
+        throughput: Number(node.throughput.toFixed(3))
+      }));
+      return {
+        demand: Number(this.demand.toFixed(3)),
+        queuedWork: this.particles.filter(particle => particle.queued).length,
+        workInMotion: this.particles.filter(particle => !particle.queued && !particle.dormantUntil).length,
+        dormantWork: this.particles.filter(particle => particle.dormantUntil).length,
+        nodes: nodeMetrics
+      };
     }
 
     start() {

@@ -11,10 +11,13 @@ Open `index.html` in a browser.
 matching canvas is initialized automatically. The constructor is also available as
 `window.SengerFlowEngine` for product experiences that need custom particle counts or seeds.
 
-The engine models work as routed particles moving through a directed network. Nodes have
-independent service rates and priority-aware queues; route selection responds to downstream
-queue depth. It pauses outside the viewport, rebuilds at responsive breakpoints, caps pixel
-density, and renders a static state when reduced motion is preferred.
+The engine models work as routed particles moving through a directed network. Nodes have a
+hidden capacity model, independent service rates, priority-aware queues, and observable
+throughput and wait time. Demand, utilization, local pressure, and propagated downstream
+pressure determine effective capacity; routing responds to those conditions. Use
+`getSnapshot()` to read the current model state without coupling other product experiences to
+the renderer. The engine pauses outside the viewport, rebuilds at responsive breakpoints,
+caps pixel density, and renders a static state when reduced motion is preferred.
 
 ## Deploy
 Push to GitHub. Netlify deploys automatically from the connected repository.

@@ -8,3 +8,5 @@ Motion represents organizational behavior, not decoration.
 3. Friction appears as delay, congestion, amber, or rerouting.
 4. Motion should be subtle enough to feel premium.
 5. Reduced-motion preferences must be respected.
+6. Color must be produced by system state: blue for available capacity, amber for sustained friction, and red only for critical constraint.
+7. Constraints propagate upstream so the visualization shows system effects, not isolated failures.
