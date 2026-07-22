@@ -90,7 +90,7 @@ a {
 
 .site-nav {
   display: flex;
-  gap: 30px;
+  gap: clamp(14px, 2.1vw, 30px);
   color: var(--ink-soft);
   font-size: 0.9rem;
 }
@@ -99,7 +99,8 @@ a {
   transition: color 180ms ease;
 }
 
-.site-nav a:hover {
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
   color: var(--ink);
 }
 
@@ -1663,7 +1664,8 @@ h3 {
   transition: transform 220ms ease;
 }
 
-.site-nav a:hover::after {
+.site-nav a:hover::after,
+.site-nav a[aria-current="page"]::after {
   transform: scaleX(1);
   transform-origin: left;
 }
