@@ -37,17 +37,22 @@
 
   <main>
     <section class="hero">
+      <div class="hero-visual" aria-hidden="true">
+        <canvas class="flow-engine-canvas" data-flow-engine></canvas>
+      </div>
+
       <div class="hero-copy">
         <p class="eyebrow">Organizational Capacity Diagnostic</p>
 
-        <h1>
-          Growth doesn’t break strategy.
-          <span>It exposes organizational capacity.</span>
-        </h1>
+        <h1 class="sr-only">Capacity changes how work moves. Organizational Capacity determines whether growth becomes momentum or friction.</h1>
 
-        <p class="hero-lede">
-          Most organizations don’t struggle because they lack good ideas.
-          They struggle because complexity grows faster than their ability to execute.
+        <p class="hero-narrative-title" aria-hidden="true">
+          <span data-hero-title-primary>Growth should</span>
+          <span data-hero-title-secondary>accelerate execution.</span>
+        </p>
+
+        <p class="hero-lede" data-hero-lede>
+          More people, ideas, and investment should create momentum.
         </p>
 
         <div class="hero-actions">
@@ -56,9 +61,9 @@
         </div>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
-        <canvas class="flow-engine-canvas" data-flow-engine></canvas>
-      </div>
+      <p class="capacity-lens-prompt" data-lens-prompt aria-hidden="true">
+        Move through the system to reveal higher capacity.
+      </p>
     </section>
 
     <section class="belief-shift">

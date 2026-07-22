@@ -25,6 +25,11 @@ Its influence changes model behavior—not only appearance—by increasing effec
 accelerating work, reducing visible pressure, and helping queues clear. The lens is disabled
 when reduced motion is preferred.
 
+The homepage narrative reads live demand and pressure from the engine, progressing from
+growth through complexity and friction. Discovering the Capacity Lens resolves the narrative
+to the core thesis. Reduced-motion visitors receive that complete thesis immediately, without
+timed copy or an interaction prompt.
+
 ## Deploy
 Push to GitHub. Netlify deploys automatically from the connected repository.
 

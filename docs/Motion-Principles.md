@@ -11,3 +11,4 @@ Motion represents organizational behavior, not decoration.
 6. Color must be produced by system state: blue for available capacity, amber for sustained friction, and red only for critical constraint.
 7. Constraints propagate upstream so the visualization shows system effects, not isolated failures.
 8. The Capacity Lens changes the underlying capacity state; its visual treatment is evidence of that change, not a decorative overlay.
+9. Narrative transitions follow measured demand and pressure, while minimum timing preserves comprehension and prevents copy from reacting noisily.
