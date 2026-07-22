@@ -30,6 +30,14 @@ growth through complexity and friction. Discovering the Capacity Lens resolves t
 to the core thesis. Reduced-motion visitors receive that complete thesis immediately, without
 timed copy or an interaction prompt.
 
+## Assessment MVP
+
+`assessment.html` and `assessment.js` provide a browser-only assessment across the six
+capacity domains. Eighteen responses produce domain scores, a constraint-adjusted directional
+Organizational Capacity Index, and a primary constraint signal. No assessment response is
+submitted or persisted. The calculation and evidence limitations are documented in
+`docs/Assessment-Scoring.md`.
+
 ## Deploy
 Push to GitHub. Netlify deploys automatically from the connected repository.
 

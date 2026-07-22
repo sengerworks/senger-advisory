@@ -64,3 +64,8 @@
   from = "/privacy"
   to = "/privacy.html"
   status = 301
+
+[[redirects]]
+  from = "/assessment"
+  to = "/assessment.html"
+  status = 301

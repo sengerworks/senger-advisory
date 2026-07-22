@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Organizational Capacity Assessment | Senger Advisory</title>
+  <meta name="description" content="Assess six domains of organizational capacity and identify where complexity may be constraining execution." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Senger Advisory" />
+  <meta property="og:title" content="Organizational Capacity Assessment | Senger Advisory" />
+  <meta property="og:description" content="Assess six domains of organizational capacity and identify where complexity may be constraining execution." />
+  <meta property="og:url" content="https://sengeradvisory.com/assessment.html" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://sengeradvisory.com/assessment.html" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header">
+    <a class="brand" href="index.html">Senger Advisory</a>
+    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
+    <nav class="site-nav">
+      <a href="framework.html">Model</a>
+      <a href="diagnostic.html">Diagnostic</a>
+      <a href="signs.html">Signs</a>
+      <a href="insights.html">Insights</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Connect</a>
+    </nav>
+  </header>
+
+  <main id="main-content" class="assessment-page">
+    <section class="assessment-intro">
+      <div>
+        <p class="eyebrow">Capacity Assessment · MVP</p>
+        <h1>Measure the capacity your strategy depends on.</h1>
+        <p class="page-lede">Evaluate eighteen observable behaviors across six domains. Your responses stay in this browser and are not submitted or stored.</p>
+      </div>
+      <aside class="assessment-expectation" aria-label="Assessment details">
+        <span>18 questions</span>
+        <span>6 domains</span>
+        <span>About 5 minutes</span>
+      </aside>
+    </section>
+
+    <section class="assessment-shell" data-assessment-app>
+      <noscript><p class="assessment-notice">JavaScript is required to calculate your assessment results.</p></noscript>
+
+      <div class="assessment-progress" aria-label="Assessment progress">
+        <div class="assessment-progress-copy">
+          <span data-progress-label>Domain 1 of 6</span>
+          <strong data-progress-name>Leadership</strong>
+        </div>
+        <div class="assessment-progress-track" aria-hidden="true"><span data-progress-bar></span></div>
+      </div>
+
+      <form class="assessment-form" data-assessment-form novalidate>
+        <div class="assessment-context" data-assessment-context>
+          <div>
+            <p class="eyebrow">Context · Optional</p>
+            <p>Context does not change the score, but it improves interpretation and prepares this assessment for future reporting.</p>
+          </div>
+          <label>Organization size
+            <select name="organization-size">
+              <option value="">Select</option>
+              <option>Fewer than 25 people</option>
+              <option>25–49 people</option>
+              <option>50–149 people</option>
+              <option>150–399 people</option>
+              <option>400 or more people</option>
+            </select>
+          </label>
+          <label>Your perspective
+            <select name="respondent-role">
+              <option value="">Select</option>
+              <option>CEO or founder</option>
+              <option>Executive leader</option>
+              <option>Functional leader</option>
+              <option>People or operations leader</option>
+              <option>Advisor or board member</option>
+            </select>
+          </label>
+          <label>Current growth pressure
+            <select name="growth-pressure">
+              <option value="">Select</option>
+              <option>Stable</option>
+              <option>Increasing</option>
+              <option>High</option>
+              <option>Transformational change</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset data-question-panel>
+          <legend data-domain-title>Leadership</legend>
+          <p class="assessment-domain-description" data-domain-description></p>
+          <div data-questions></div>
+        </fieldset>
+
+        <p class="assessment-error" data-assessment-error role="alert" hidden>Please answer every question in this domain before continuing.</p>
+
+        <div class="assessment-controls">
+          <button class="button secondary" type="button" data-previous disabled>Previous</button>
+          <button class="button primary" type="button" data-next>Next domain</button>
+        </div>
+      </form>
+
+      <section class="assessment-results" data-assessment-results hidden aria-live="polite">
+        <div class="results-header">
+          <div>
+            <p class="eyebrow">Your Capacity Profile</p>
+            <h2 data-results-heading>Organizational Capacity Index</h2>
+          </div>
+          <div class="capacity-index" aria-label="Overall Organizational Capacity Index">
+            <strong data-overall-score>0</strong><span>/100</span>
+          </div>
+        </div>
+
+        <div class="results-summary">
+          <p class="results-band" data-results-band></p>
+          <p data-results-summary></p>
+          <p class="results-context" data-context-summary hidden></p>
+        </div>
+
+        <div class="domain-results" data-domain-results></div>
+
+        <div class="constraint-summary">
+          <p class="eyebrow">Primary Constraint Signal</p>
+          <h3 data-constraint-name></h3>
+          <p data-constraint-interpretation></p>
+        </div>
+
+        <p class="assessment-method-note">This MVP is a directional management tool, not a validated benchmark or psychometric instrument. The index combines the six-domain average with a weakest-domain adjustment so strength elsewhere does not hide a material constraint. Scores should be interpreted alongside organizational context and evidence.</p>
+
+        <div class="assessment-controls results-controls">
+          <button class="button secondary" type="button" data-retake>Retake assessment</button>
+          <button class="button secondary" type="button" data-print>Print results</button>
+          <a class="button primary" href="contact.html">Discuss the results</a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Senger Advisory. All rights reserved. <a href="privacy.html">Privacy</a></p>
+  </footer>
+  <script src="script.js"></script>
+  <script src="assessment.js"></script>
+</body>
+</html>
