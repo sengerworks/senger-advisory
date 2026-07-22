@@ -20,7 +20,7 @@
   <header class="site-header">
     <a class="brand" href="index.html">Senger Advisory</a>
 
-    <button class="nav-toggle" aria-label="Open navigation">
+    <button class="nav-toggle" aria-label="Open navigation" aria-expanded="false">
       <span></span>
       <span></span>
     </button>
@@ -57,7 +57,7 @@
       </div>
 
       <div class="hero-visual" aria-hidden="true">
-        <canvas id="saFlowCanvas"></canvas>
+        <canvas class="flow-engine-canvas" data-flow-engine></canvas>
       </div>
     </section>
 
@@ -313,6 +313,7 @@
     <p>© <span id="year"></span> Senger Advisory. All rights reserved.</p>
   </footer>
 
+  <script src="flow-engine.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -212,7 +212,7 @@ h3 {
     linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.64) 82%, #fff 100%);
 }
 
-#saFlowCanvas {
+.flow-engine-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
