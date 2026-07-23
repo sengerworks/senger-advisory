@@ -35,7 +35,9 @@ timed copy or an interaction prompt.
 `assessment.html` and `assessment.js` provide a browser-only assessment across the six
 capacity domains. Eighteen responses produce domain scores, a constraint-adjusted directional
 Organizational Capacity Index, and a primary constraint signal. No assessment response is
-submitted or persisted. The calculation and evidence limitations are documented in
+submitted or persisted. Results also generate a print/PDF-ready Executive Capacity Report
+with a system interpretation, capacity strength, three priority hypotheses, leadership
+questions, and an evidence-oriented next step. The calculation and evidence limitations are documented in
 `docs/Assessment-Scoring.md`.
 
 ## Deploy

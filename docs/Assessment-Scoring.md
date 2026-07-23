@@ -30,6 +30,21 @@ The weakest-domain adjustment reflects the model’s premise that a material con
 
 These bands are product hypotheses. They are not external benchmarks.
 
+## Executive report
+
+The browser-generated report uses the same in-memory scores as the assessment results; it
+does not recalculate or transmit responses. It presents:
+
+- the lowest-scoring domain as the primary constraint signal;
+- the highest-scoring domain as a capacity strength;
+- the spread between those domains as a directional view of profile balance;
+- the three lowest domains as an ordered sequence of investigation hypotheses; and
+- leadership questions associated with the primary constraint.
+
+Priority order is not a prescription or proof of causality. Leaders should test each signal
+against operating evidence before selecting an intervention. The browser print dialog allows
+the report to be printed or saved as a PDF without adding a third-party reporting service.
+
 ## Evidence roadmap
 
 Before describing the assessment as validated, collect response distributions, internal consistency, test-retest behavior, domain correlations, outcome relationships, and qualitative case evidence. Thresholds and item wording should be revised when evidence warrants it.
