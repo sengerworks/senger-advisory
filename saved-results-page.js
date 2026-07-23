@@ -12,6 +12,7 @@ import {
   rotatePrivateResult,
   updatePrivateResult
 } from "./private-results-api.js";
+import { comparisonForProfile, formatScoreDelta } from "./comparison-engine.js";
 
 const app = document.querySelector("[data-private-results]");
 const elements = {
@@ -26,6 +27,18 @@ const elements = {
   context: app.querySelector("[data-profile-context]"),
   domains: app.querySelector("[data-private-domains]"),
   constraint: app.querySelector("[data-private-constraint]"),
+  comparison: app.querySelector("[data-private-comparison]"),
+  comparisonWindow: app.querySelector("[data-comparison-window]"),
+  comparisonBaseline: app.querySelector("[data-comparison-baseline]"),
+  comparisonCurrent: app.querySelector("[data-comparison-current]"),
+  comparisonDelta: app.querySelector("[data-comparison-delta]"),
+  comparisonMethod: app.querySelector("[data-comparison-method]"),
+  comparisonDomains: app.querySelector("[data-comparison-domains]"),
+  comparisonConstraint: app.querySelector("[data-comparison-constraint]"),
+  comparisonChanges: app.querySelector("[data-comparison-changes]"),
+  comparisonChangeList: app.querySelector("[data-comparison-change-list]"),
+  followUp: app.querySelector("[data-start-follow-up]"),
+  assessmentCount: app.querySelector("[data-assessment-count]"),
   expires: app.querySelector("[data-private-expires]"),
   storage: app.querySelector("[data-private-storage]"),
   copy: app.querySelector("[data-copy-link]"),
@@ -47,11 +60,91 @@ const domainNames = {
   technology: "Technology",
   culture: "Culture"
 };
+const changeNames = {
+  leadership: "Leadership",
+  "decision-rights": "Decision rights",
+  "operating-cadence": "Operating cadence",
+  structure: "Structure",
+  process: "Process",
+  technology: "Technology",
+  talent: "Talent",
+  culture: "Culture",
+  strategy: "Strategy",
+  "external-event": "External event",
+  other: "Other"
+};
 
 let state = null;
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
 function formatDate(value) {
   return new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(new Date(value));
+}
+
+function formatElapsed(days) {
+  if (days < 1) return "Completed on the same day";
+  if (days === 1) return "1 day between observations";
+  return `${days} days between observations`;
+}
+
+function constraintNames(ids) {
+  return ids.map(id => domainNames[id]).join(" + ");
+}
+
+function renderComparison(profile) {
+  const comparison = comparisonForProfile(profile);
+  elements.assessmentCount.textContent = profile.assessmentInstances.length === 1
+    ? "1 observation currently saved."
+    : `${profile.assessmentInstances.length} observations currently saved.`;
+  elements.comparison.hidden = comparison.policy === "unavailable";
+  if (comparison.policy === "unavailable") return;
+
+  elements.comparisonWindow.textContent = `${formatDate(comparison.baseline.completedAt)} → ${formatDate(comparison.current.completedAt)} · ${formatElapsed(comparison.elapsedDays)}`;
+  elements.comparisonBaseline.textContent = comparison.baseline.overallIndex;
+  elements.comparisonCurrent.textContent = comparison.current.overallIndex;
+  elements.comparisonMethod.textContent = comparison.policy === "numeric-delta"
+    ? "Assessment and scoring versions match. Raw point changes are shown without an improvement threshold."
+    : comparison.reason;
+  elements.comparisonDelta.parentElement.hidden = comparison.policy !== "numeric-delta";
+  elements.comparisonDelta.textContent = comparison.policy === "numeric-delta" ? formatScoreDelta(comparison.overallDelta) : "";
+  elements.comparisonDomains.innerHTML = Object.keys(domainNames).map(id => {
+    const baseline = comparison.baseline.domainScores[id];
+    const current = comparison.current.domainScores[id];
+    const delta = comparison.policy === "numeric-delta" ? `<strong>${formatScoreDelta(comparison.domainDeltas[id])}</strong>` : "";
+    return `<article>
+      <h3>${domainNames[id]}</h3>
+      <p><span>${baseline}</span><i aria-hidden="true">→</i><span>${current}</span>${delta}</p>
+    </article>`;
+  }).join("");
+  const baselineConstraint = constraintNames(comparison.baseline.primaryConstraintIds);
+  const currentConstraint = constraintNames(comparison.current.primaryConstraintIds);
+  elements.comparisonConstraint.textContent = comparison.constraintChanged
+    ? `Shifted from ${baselineConstraint} to ${currentConstraint}.`
+    : `Remained ${currentConstraint}.`;
+  const changes = profile.changeRecords.filter(record => {
+    const started = Date.parse(record.startedAt);
+    return started >= Date.parse(comparison.baseline.completedAt) && started <= Date.parse(comparison.current.completedAt) + 86400000;
+  });
+  elements.comparisonChanges.hidden = changes.length === 0;
+  elements.comparisonChangeList.innerHTML = changes.map(record => {
+    const targets = record.targetDomainIds.length
+      ? ` · ${record.targetDomainIds.map(id => domainNames[id]).join(", ")}`
+      : "";
+    return `<article>
+      <h3>${changeNames[record.category]}</h3>
+      <p>${formatDate(record.startedAt)} · ${record.magnitude} · ${record.status}${targets}</p>
+      ${record.note ? `<blockquote>${escapeHtml(record.note)}</blockquote>` : ""}
+    </article>`;
+  }).join("");
 }
 
 function showError(message) {
@@ -81,6 +174,8 @@ function renderProfile(profile, envelope) {
     <div class="domain-score-track" aria-label="${domainNames[id]}: ${score} out of 100"><span style="width:${score}%"></span></div>
   </article>`).join("");
   elements.constraint.textContent = assessment.primaryConstraintIds.map(id => domainNames[id]).join(" + ");
+  elements.followUp.href = new URL(`assessment.html${location.hash}`, location.href).toString();
+  renderComparison(profile);
   elements.expires.textContent = formatDate(envelope.expiresAt);
   if (privateResultsEnvironment.localDevelopment) elements.storage.textContent = "Local development mock · ciphertext only";
 }

@@ -28,5 +28,6 @@
 - Longitudinal evidence architecture and governance contract
 - Client-encrypted private saved results
 - Baseline and follow-up comparison
-- Outcome snapshots and material-change records
+- Private material-change records
+- Outcome snapshots
 - Explicit longitudinal research consent and evidence review tools

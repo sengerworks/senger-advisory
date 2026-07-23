@@ -36,7 +36,7 @@
       <div>
         <p class="eyebrow">Capacity Assessment · MVP</p>
         <h1>Measure the capacity your strategy depends on.</h1>
-        <p class="page-lede">Evaluate eighteen observable behaviors across six domains. Your responses stay in this browser and are not submitted or stored.</p>
+        <p class="page-lede">Evaluate eighteen observable behaviors across six domains. Individual responses stay in this browser and are never submitted or stored.</p>
       </div>
       <aside class="assessment-expectation" aria-label="Assessment details">
         <span>18 questions</span>
@@ -57,6 +57,69 @@
       </div>
 
       <form class="assessment-form" data-assessment-form novalidate>
+        <section class="follow-up-context" data-follow-up-context hidden aria-labelledby="follow-up-context-title">
+          <div>
+            <p class="eyebrow">Private Follow-up</p>
+            <h2 id="follow-up-context-title">Add another observation to your encrypted profile.</h2>
+            <p data-follow-up-baseline></p>
+          </div>
+          <div class="follow-up-change">
+            <p><strong>Material change since the previous assessment</strong> · Optional and private</p>
+            <p>Record context that may help you interpret movement later. This information remains inside the encrypted profile and does not establish causality. Do not include confidential or personal information.</p>
+            <div class="follow-up-change-fields">
+              <label>Change category
+                <select data-change-category>
+                  <option value="">No change to record</option>
+                  <option value="leadership">Leadership</option>
+                  <option value="decision-rights">Decision rights</option>
+                  <option value="operating-cadence">Operating cadence</option>
+                  <option value="structure">Structure</option>
+                  <option value="process">Process</option>
+                  <option value="technology">Technology</option>
+                  <option value="talent">Talent</option>
+                  <option value="culture">Culture</option>
+                  <option value="strategy">Strategy</option>
+                  <option value="external-event">External event</option>
+                  <option value="other">Other</option>
+                </select>
+              </label>
+              <label>When it began
+                <input type="date" data-change-start />
+              </label>
+              <label>Magnitude
+                <select data-change-magnitude>
+                  <option value="limited">Limited</option>
+                  <option value="material" selected>Material</option>
+                  <option value="enterprise-wide">Enterprise-wide</option>
+                </select>
+              </label>
+              <label>Status
+                <select data-change-status>
+                  <option value="planned">Planned</option>
+                  <option value="active">Active</option>
+                  <option value="completed" selected>Completed</option>
+                  <option value="discontinued">Discontinued</option>
+                </select>
+              </label>
+            </div>
+            <fieldset>
+              <legend>Affected capacity domains · Optional</legend>
+              <div class="follow-up-domain-options">
+                <label><input type="checkbox" value="leadership" data-change-target />Leadership</label>
+                <label><input type="checkbox" value="decisions" data-change-target />Decision Velocity</label>
+                <label><input type="checkbox" value="rhythm" data-change-target />Operating Rhythm</label>
+                <label><input type="checkbox" value="alignment" data-change-target />Alignment</label>
+                <label><input type="checkbox" value="technology" data-change-target />Technology</label>
+                <label><input type="checkbox" value="culture" data-change-target />Culture</label>
+              </div>
+            </fieldset>
+            <label>Brief private note · Optional
+              <textarea rows="3" maxlength="500" data-change-note placeholder="Describe the material change without naming people or including confidential details."></textarea>
+            </label>
+          </div>
+          <p class="assessment-error" data-follow-up-error role="alert" hidden></p>
+        </section>
+
         <div class="assessment-context" data-assessment-context>
           <div>
             <p class="eyebrow">Context · Optional</p>
@@ -191,19 +254,21 @@
         <section class="private-save-panel" aria-labelledby="private-save-title">
           <div class="report-section-heading">
             <p class="eyebrow">Private Saved Results</p>
-            <h3 id="private-save-title">Keep this profile without creating an account.</h3>
-            <p>Your report is encrypted in this browser before storage. Senger Advisory receives only ciphertext and cannot recover your profile or recovery link.</p>
+            <h3 id="private-save-title" data-private-save-title>Keep this profile without creating an account.</h3>
+            <p data-private-save-description>Your report is encrypted in this browser before storage. Senger Advisory receives only ciphertext and cannot recover your profile or recovery link.</p>
           </div>
-          <ul>
-            <li>The complete recovery link is required to reopen the profile.</li>
-            <li>The encrypted profile expires 12 months after it is saved or renewed.</li>
-            <li>Saving is separate from anonymous evidence sharing.</li>
-            <li>Individual assessment answers are never included.</li>
-          </ul>
-          <label class="private-save-acknowledgement">
-            <input type="checkbox" data-private-save-ack />
-            <span>I understand that anyone with the recovery link can open this profile, and Senger Advisory cannot restore a lost link.</span>
-          </label>
+          <div data-new-profile-save>
+            <ul>
+              <li>The complete recovery link is required to reopen the profile.</li>
+              <li>The encrypted profile expires 12 months after it is saved or renewed.</li>
+              <li>Saving is separate from anonymous evidence sharing.</li>
+              <li>Individual assessment answers are never included.</li>
+            </ul>
+            <label class="private-save-acknowledgement">
+              <input type="checkbox" data-private-save-ack />
+              <span>I understand that anyone with the recovery link can open this profile, and Senger Advisory cannot restore a lost link.</span>
+            </label>
+          </div>
           <div class="private-save-actions">
             <button class="button primary" type="button" data-private-save disabled>Create private recovery link</button>
             <p data-private-save-status role="status" aria-live="polite"></p>

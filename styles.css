@@ -25,6 +25,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -1641,6 +1645,71 @@ h3 {
   color: #fff;
 }
 
+.follow-up-context {
+  margin-bottom: 34px;
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid rgba(55,103,181,.24);
+  border-radius: var(--radius);
+  background: rgba(55,103,181,.04);
+}
+
+.follow-up-context h2 {
+  max-width: 760px;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+
+.follow-up-context > div:first-child > p:last-child { color: var(--ink-soft); }
+
+.follow-up-change {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(55,103,181,.18);
+}
+
+.follow-up-change > p { color: var(--ink-soft); }
+.follow-up-change > p:first-child { margin-bottom: 4px; color: var(--ink); }
+.follow-up-change-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
+.follow-up-change label,
+.follow-up-change legend {
+  color: var(--ink-soft);
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.follow-up-change select,
+.follow-up-change input[type="date"],
+.follow-up-change textarea {
+  width: 100%;
+  margin-top: 7px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.follow-up-change fieldset { margin: 18px 0; padding: 0; border: 0; }
+.follow-up-domain-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; }
+
+.follow-up-domain-options label {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.follow-up-domain-options input { accent-color: var(--blue); }
+
 .private-save-panel .eyebrow { color: #d7a365; }
 
 .private-save-panel .report-section-heading > p:last-child {
@@ -1988,6 +2057,7 @@ h3 {
 }
 
 @media (max-width: 760px) {
+  .follow-up-change-fields { grid-template-columns: 1fr; }
   .assessment-intro {
     grid-template-columns: 1fr;
     align-items: start;

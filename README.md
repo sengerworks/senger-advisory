@@ -35,7 +35,7 @@ timed copy or an interaction prompt.
 `assessment.html` and `assessment.js` provide a browser-only assessment across the six
 capacity domains. Eighteen responses produce domain scores, a constraint-adjusted directional
 Organizational Capacity Index, and a primary constraint signal. No assessment response is
-submitted or persisted. Results also generate a print/PDF-ready Executive Capacity Report
+submitted or persisted individually. Results also generate a print/PDF-ready Executive Capacity Report
 with a system interpretation, capacity strength, three priority hypotheses, leadership
 questions, and an evidence-oriented next step. The calculation and evidence limitations are documented in
 `docs/Assessment-Scoring.md`.
@@ -58,13 +58,21 @@ Assessment participants can create a private recovery link from their completed 
 authentication and encryption material with HKDF-SHA-256, and encrypts saved profiles with
 AES-256-GCM. `netlify/functions/saved-results.mjs` stores only validated encrypted envelopes
 in the site-scoped `capacity-saved-results` Netlify Blobs store. The private page supports
-recovery, renewal, link rotation, printing, and immediate deletion without an account.
+recovery, renewal, link rotation, printing, immediate deletion, and encrypted longitudinal
+follow-ups without an account. Same-version observations receive neutral baseline-to-current
+overall and domain deltas; version changes suppress numeric deltas. Participants can also
+record optional material-change context inside the encrypted profile.
 
 On localhost, `private-results-api.js` uses browser storage as a ciphertext-only mock so the
 complete experience can be reviewed without Netlify Dev. The private page remains excluded
 from navigation and search indexing. Machine-readable contracts live in `schemas/`;
 deterministic, lifecycle, validation, and function tests live in `test/`. Deployment and
 operating details are documented in `docs/Private-Saved-Results.md`.
+
+`comparison-engine.js` owns the version-aware comparison policy independently of the private
+profile renderer. A follow-up starts from the private recovery page, carries its recovery
+secret only in the URL fragment, and conditionally replaces the ciphertext after appending
+the new aggregate observation.
 
 `crypto-prototype.html` remains available as a development-only cryptographic test surface.
 

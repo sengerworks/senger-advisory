@@ -1,5 +1,15 @@
-import { encryptSavedProfile } from "./saved-results-crypto.js";
-import { createPrivateResult, privateResultsEnvironment } from "./private-results-api.js";
+import {
+  decryptSavedProfile,
+  encryptSavedProfile,
+  recoveryCredentialsFromUrl,
+  recoverySecretFromUrl
+} from "./saved-results-crypto.js";
+import {
+  createPrivateResult,
+  privateResultsEnvironment,
+  readPrivateResult,
+  updatePrivateResult
+} from "./private-results-api.js";
 
 (() => {
   "use strict";
@@ -162,6 +172,19 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
     evidenceHoneypot: app.querySelector("[data-evidence-honeypot]"),
     evidenceFeedback: app.querySelector("[data-evidence-feedback]"),
     evidenceStatus: app.querySelector("[data-evidence-status]"),
+    followUpContext: app.querySelector("[data-follow-up-context]"),
+    followUpBaseline: app.querySelector("[data-follow-up-baseline]"),
+    followUpError: app.querySelector("[data-follow-up-error]"),
+    followUpChange: app.querySelector(".follow-up-change"),
+    changeCategory: app.querySelector("[data-change-category]"),
+    changeStart: app.querySelector("[data-change-start]"),
+    changeMagnitude: app.querySelector("[data-change-magnitude]"),
+    changeStatus: app.querySelector("[data-change-status]"),
+    changeTargets: [...app.querySelectorAll("[data-change-target]")],
+    changeNote: app.querySelector("[data-change-note]"),
+    newProfileSave: app.querySelector("[data-new-profile-save]"),
+    privateSaveTitle: app.querySelector("[data-private-save-title]"),
+    privateSaveDescription: app.querySelector("[data-private-save-description]"),
     privateSaveAck: app.querySelector("[data-private-save-ack]"),
     privateSave: app.querySelector("[data-private-save]"),
     privateSaveStatus: app.querySelector("[data-private-save-status]"),
@@ -177,6 +200,9 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
   const responses = {};
   let lastResult = null;
   let completionPromise = null;
+  let followUpState = null;
+  let followUpSaved = false;
+  let followUpInitializationFailed = false;
 
   function createSessionId() {
     if (crypto.randomUUID) return crypto.randomUUID();
@@ -286,10 +312,26 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
     };
   }
 
-  function savedProfile() {
-    const now = new Date();
-    const expiresAt = new Date(now.getTime() + 365 * 86400000);
+  function assessmentInstance(now) {
     const lowest = Math.min(...lastResult.scores.map(domain => domain.score));
+    return {
+      assessmentInstanceId: crypto.randomUUID(),
+      completedAt: now.toISOString(),
+      assessmentVersion,
+      scoringVersion,
+      reportVersion: "1.0.0",
+      contextVersion: "1.0.0",
+      context: contextPayload(),
+      domainScores: Object.fromEntries(lastResult.scores.map(domain => [domain.id, domain.score])),
+      overallIndex: lastResult.overall,
+      interpretationBand: lastResult.band,
+      primaryConstraintIds: lastResult.scores.filter(domain => domain.score === lowest).map(domain => domain.id),
+      accuracyRating: null
+    };
+  }
+
+  function savedProfile(now = new Date()) {
+    const expiresAt = new Date(now.getTime() + 365 * 86400000);
     return {
       schemaVersion: "1.0.0",
       profileId: crypto.randomUUID(),
@@ -297,23 +339,91 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
       updatedAt: now.toISOString(),
       expiresAt: expiresAt.toISOString(),
       displayLabel: `Capacity Profile · ${new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" }).format(now)}`,
-      assessmentInstances: [{
-        assessmentInstanceId: crypto.randomUUID(),
-        completedAt: now.toISOString(),
-        assessmentVersion,
-        scoringVersion,
-        reportVersion: "1.0.0",
-        contextVersion: "1.0.0",
-        context: contextPayload(),
-        domainScores: Object.fromEntries(lastResult.scores.map(domain => [domain.id, domain.score])),
-        overallIndex: lastResult.overall,
-        interpretationBand: lastResult.band,
-        primaryConstraintIds: lastResult.scores.filter(domain => domain.score === lowest).map(domain => domain.id),
-        accuracyRating: null
-      }],
+      assessmentInstances: [assessmentInstance(now)],
       outcomeSnapshots: [],
       changeRecords: []
     };
+  }
+
+  function changeRecord() {
+    if (!elements.changeCategory.value) return null;
+    const started = new Date(`${elements.changeStart.value}T12:00:00`);
+    if (!elements.changeStart.value || !Number.isFinite(started.getTime())) {
+      throw new Error("Add the date the material change began, or select “No change to record.”");
+    }
+    return {
+      changeRecordId: crypto.randomUUID(),
+      startedAt: started.toISOString(),
+      endedAt: elements.changeStatus.value === "completed" ? new Date().toISOString() : null,
+      category: elements.changeCategory.value,
+      targetDomainIds: elements.changeTargets.filter(input => input.checked).map(input => input.value),
+      magnitude: elements.changeMagnitude.value,
+      status: elements.changeStatus.value,
+      note: elements.changeNote.value.trim()
+    };
+  }
+
+  function followUpProfile(now = new Date()) {
+    const change = changeRecord();
+    const expiresAt = new Date(now.getTime() + 365 * 86400000);
+    return {
+      ...followUpState.profile,
+      updatedAt: now.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+      assessmentInstances: [...followUpState.profile.assessmentInstances, assessmentInstance(now)],
+      changeRecords: change
+        ? [...followUpState.profile.changeRecords, change]
+        : followUpState.profile.changeRecords
+    };
+  }
+
+  function savedResultsUrl() {
+    const url = new URL("saved-results.html", location.href);
+    url.hash = location.hash;
+    return url.toString();
+  }
+
+  async function initializeFollowUp() {
+    if (!location.hash.startsWith("#recovery=v1.")) return;
+    try {
+      const credentials = await recoveryCredentialsFromUrl(location.href);
+      const stored = await readPrivateResult(credentials);
+      const restored = await decryptSavedProfile(stored.envelope, location.href);
+      if (restored.profile.assessmentInstances.length >= 24) {
+        throw new Error("This private profile has reached its 24-observation limit.");
+      }
+      followUpState = {
+        credentials,
+        profile: restored.profile,
+        envelope: stored.envelope,
+        etag: stored.etag
+      };
+      const latest = restored.profile.assessmentInstances.at(-1);
+      elements.followUpContext.hidden = false;
+      elements.followUpBaseline.textContent = `Your most recent saved observation was completed ${new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(new Date(latest.completedAt))}. The same recovery link will reopen the updated profile.`;
+      elements.changeStart.value = new Date().toISOString().slice(0, 10);
+      Object.entries(latest.context).forEach(([key, value]) => {
+        const names = { organizationSize: "organization-size", respondentRole: "respondent-role", growthPressure: "growth-pressure" };
+        elements.context.querySelector(`[name="${names[key]}"]`).value = value;
+      });
+      elements.newProfileSave.hidden = true;
+      elements.privateSaveTitle.textContent = "Add this observation to your encrypted profile.";
+      elements.privateSaveDescription.textContent = "This result and any material-change context will be encrypted in your browser and appended to the private profile opened by this recovery link.";
+      elements.privateSave.textContent = "Save follow-up observation";
+      elements.privateSave.disabled = false;
+      elements.privateOpen.href = savedResultsUrl();
+      elements.privateOpen.textContent = "Open updated comparison";
+    } catch (error) {
+      followUpInitializationFailed = true;
+      app.querySelector(".assessment-progress").hidden = true;
+      elements.followUpContext.hidden = false;
+      elements.followUpError.hidden = false;
+      elements.followUpError.textContent = error.message || "This private profile could not be opened for a follow-up.";
+      elements.followUpChange.hidden = true;
+      elements.context.hidden = true;
+      elements.panel.hidden = true;
+      elements.form.querySelector(".assessment-controls").hidden = true;
+    }
   }
 
   async function postEvidence(payload, showStatus = false) {
@@ -446,10 +556,11 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
     elements.evidenceResultConsent.checked = elements.evidenceConsent.checked;
     elements.evidenceStatus.textContent = "";
     elements.privateSaveAck.checked = false;
-    elements.privateSave.disabled = true;
+    elements.privateSave.disabled = !followUpState;
     elements.privateSaveResult.hidden = true;
     elements.privateSaveLink.value = "";
     elements.privateSaveStatus.textContent = "";
+    followUpSaved = false;
     elements.results.hidden = true;
     elements.form.hidden = false;
     app.querySelector(".assessment-progress").hidden = false;
@@ -462,23 +573,54 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
   });
 
   elements.privateSaveAck.addEventListener("change", () => {
-    elements.privateSave.disabled = !elements.privateSaveAck.checked;
+    if (!followUpState) elements.privateSave.disabled = !elements.privateSaveAck.checked;
   });
 
   elements.privateSave.addEventListener("click", async () => {
-    if (!lastResult || !elements.privateSaveAck.checked) return;
+    if (!lastResult || (!followUpState && !elements.privateSaveAck.checked) || followUpSaved) return;
     elements.privateSave.disabled = true;
-    elements.privateSaveStatus.textContent = "Encrypting and saving your private profile…";
+    elements.privateSaveStatus.textContent = followUpState
+      ? "Encrypting and adding this observation…"
+      : "Encrypting and saving your private profile…";
     try {
-      const recoveryBase = new URL("saved-results.html", location.href).toString();
-      const encrypted = await encryptSavedProfile(savedProfile(), { baseUrl: recoveryBase });
-      await createPrivateResult(encrypted);
-      elements.privateSaveLink.value = encrypted.recoveryUrl;
-      elements.privateOpen.href = encrypted.recoveryUrl;
+      let recoveryUrl;
+      if (followUpState) {
+        const now = new Date();
+        const profile = followUpProfile(now);
+        const encrypted = await encryptSavedProfile(profile, {
+          secret: recoverySecretFromUrl(location.href),
+          baseUrl: savedResultsUrl(),
+          createdAt: followUpState.envelope.createdAt,
+          now,
+          expiresAt: profile.expiresAt
+        });
+        const saved = await updatePrivateResult({
+          ...followUpState.credentials,
+          envelope: encrypted.envelope,
+          expectedEtag: followUpState.etag
+        });
+        followUpState = {
+          ...followUpState,
+          profile,
+          envelope: encrypted.envelope,
+          etag: saved.etag
+        };
+        followUpSaved = true;
+        recoveryUrl = savedResultsUrl();
+      } else {
+        const recoveryBase = new URL("saved-results.html", location.href).toString();
+        const encrypted = await encryptSavedProfile(savedProfile(), { baseUrl: recoveryBase });
+        await createPrivateResult(encrypted);
+        recoveryUrl = encrypted.recoveryUrl;
+      }
+      elements.privateSaveLink.value = recoveryUrl;
+      elements.privateOpen.href = recoveryUrl;
       elements.privateSaveResult.hidden = false;
-      elements.privateSaveStatus.textContent = privateResultsEnvironment.localDevelopment
-        ? "Encrypted profile saved to this browser’s local development store."
-        : "Encrypted profile saved. Copy the recovery link before leaving this page.";
+      elements.privateSaveStatus.textContent = followUpState
+        ? "Follow-up saved. Open the updated profile to compare observations."
+        : privateResultsEnvironment.localDevelopment
+          ? "Encrypted profile saved to this browser’s local development store."
+          : "Encrypted profile saved. Copy the recovery link before leaving this page.";
     } catch (error) {
       elements.privateSave.disabled = false;
       elements.privateSaveStatus.textContent = error.message || "We couldn’t save this encrypted profile.";
@@ -538,5 +680,7 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
     }
   });
   elements.panel.setAttribute("tabindex", "-1");
-  renderDomain();
+  initializeFollowUp().finally(() => {
+    if (!followUpInitializationFailed) renderDomain();
+  });
 })();
