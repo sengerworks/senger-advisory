@@ -203,6 +203,8 @@ and private recovery-link experience retain their current minimal dependency sur
 ### Slice 2 — Development identity connection
 
 - Create Clerk development and Neon development projects.
+- Neon development project, least-privilege runtime role, migrations, and real tenant
+  isolation test are complete. Clerk development configuration remains.
 - Configure `org:facilitator` and `org:participant` with the specified system permissions.
 - Add an isolated bundled workspace application.
 - Add a Netlify auth-check function using `authorizedParties`.

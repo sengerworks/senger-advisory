@@ -1,7 +1,9 @@
 # Workspace Database Foundation
 
 `migrations/001_workspace_foundation.sql` defines the first transactional boundary for
-production organizational workspaces. It has not been applied to a hosted database.
+production organizational workspaces. It is applied only to the Neon `development` branch.
+`migrations/002_workspace_runtime_grants.sql` grants the fixed non-owner
+`capacity_workspace_app` role only the operations required by the initial runtime.
 
 ## Logical separation
 
@@ -45,3 +47,5 @@ Before a development connection is activated:
 The migration deliberately does not create provider-specific users or embed database
 credentials. Runtime grants belong in a later deployment migration after the exact Neon role
 names and connection model are configured.
+
+The development connection procedure is documented in `docs/Neon-Development-Setup.md`.

@@ -7,9 +7,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "db:migrate": "node --env-file=.env scripts/apply-workspace-migrations.mjs",
+    "test:workspace-db": "node --env-file=.env --test test/workspace-neon.integration.test.mjs"
   },
   "dependencies": {
-    "@netlify/blobs": "^10.7.9"
+    "@neondatabase/serverless": "^1.1.0",
+    "@netlify/blobs": "^10.7.9",
+    "ws": "^8.21.1"
   }
 }

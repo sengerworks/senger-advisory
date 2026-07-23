@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE SCHEMA IF NOT EXISTS app_identity;
@@ -168,5 +166,3 @@ CREATE POLICY aggregate_tenant_policy ON app_shared.organizational_aggregates
 CREATE POLICY audit_tenant_policy ON app_operations.audit_events
   USING (workspace_id = app_identity.current_workspace_id())
   WITH CHECK (workspace_id = app_identity.current_workspace_id());
-
-COMMIT;
