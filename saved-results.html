@@ -9,7 +9,7 @@
   <meta name="description" content="Open a private, client-encrypted Organizational Capacity profile." />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css?v=longitudinal-v1" />
-  <link rel="stylesheet" href="private-results.css?v=research-v1" />
+  <link rel="stylesheet" href="private-results.css?v=action-cycle-v1" />
 </head>
 <body class="private-results-page">
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -60,6 +60,62 @@
         <p class="eyebrow">Primary Constraint Signal</p>
         <h2 id="private-constraint-title" data-private-constraint></h2>
         <p>This is a directional hypothesis from the assessment—not a benchmark, diagnosis, or proof of causality.</p>
+      </section>
+
+      <section class="private-action-cycle" aria-labelledby="private-action-cycle-title">
+        <div class="private-action-cycle-heading">
+          <div>
+            <p class="eyebrow">Constraint Action Cycle</p>
+            <h2 id="private-action-cycle-title">Turn the signal into a testable commitment.</h2>
+          </div>
+          <p>Choose one constraint, state what you will do, and decide what operating evidence you will review. This records a hypothesis—it does not claim the action caused a later result.</p>
+        </div>
+        <div class="action-cycle-list" data-action-list></div>
+        <p class="action-cycle-empty" data-action-empty>No action cycle is active yet. Start with the constraint that most limits execution now.</p>
+        <form class="action-cycle-form" data-action-form novalidate>
+          <div class="action-cycle-form-heading">
+            <h3>Define the next action cycle</h3>
+            <p>Keep the commitment narrow enough to review on a specific date.</p>
+          </div>
+          <div class="action-cycle-fields">
+            <label>Constraint to address
+              <select name="constraintDomainId" data-action-constraint required></select>
+            </label>
+            <label>Starting status
+              <select name="status" required>
+                <option value="planned">Planned</option>
+                <option value="active">Active</option>
+              </select>
+            </label>
+            <label class="action-cycle-wide">Action hypothesis
+              <textarea name="hypothesis" maxlength="500" rows="3" required placeholder="If we change… then we expect… because…"></textarea>
+            </label>
+            <label class="action-cycle-wide">Commitment
+              <textarea name="commitment" maxlength="500" rows="3" required placeholder="What will be done, by whom, and within what boundary?"></textarea>
+            </label>
+            <label>Operating evidence to watch
+              <select name="evidenceMeasureId" required>
+                <option value="">Select evidence</option>
+                <option value="decisionPace">Decision pace</option>
+                <option value="leadershipEscalationLoad">Leadership escalation load</option>
+                <option value="crossFunctionalCoordinationLoad">Cross-functional coordination load</option>
+                <option value="executionReliability">Execution reliability</option>
+                <option value="changeAbsorption">Change absorption</option>
+                <option value="other">Another operating indicator</option>
+              </select>
+            </label>
+            <label>Review date
+              <input type="date" name="reviewDate" required />
+            </label>
+            <label class="action-cycle-wide">What will you look for?
+              <textarea name="evidenceDescription" maxlength="300" rows="2" required placeholder="Describe the observable pattern or measure that would inform the review."></textarea>
+            </label>
+          </div>
+          <div class="action-cycle-submit">
+            <button class="button primary" type="submit">Save encrypted action cycle</button>
+            <p data-action-status role="status" aria-live="polite"></p>
+          </div>
+        </form>
       </section>
 
       <section class="private-comparison" data-private-comparison hidden aria-labelledby="private-comparison-title">
@@ -173,7 +229,7 @@
             </article>
             <article>
               <h3>Never included</h3>
-              <p>Your recovery link or key, private profile ID, individual answers, private notes, name, email, or organization name.</p>
+              <p>Your recovery link or key, private profile ID, individual answers, action hypotheses or commitments, private notes, name, email, or organization name.</p>
             </article>
           </div>
           <label class="research-consent">
@@ -240,6 +296,6 @@
     </article>
   </main>
 
-  <script type="module" src="saved-results-page.js?v=research-v1-1"></script>
+  <script type="module" src="saved-results-page.js?v=action-cycle-v1"></script>
 </body>
 </html>

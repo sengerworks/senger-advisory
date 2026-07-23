@@ -58,7 +58,7 @@ async function deterministicBundle() {
 test("machine-readable contracts and compatibility registry parse", async () => {
   const files = ["saved-profile.schema.json", "encrypted-envelope.schema.json", "version-compatibility.json"];
   const parsed = await Promise.all(files.map(async file => JSON.parse(await readFile(new URL(`../schemas/${file}`, import.meta.url), "utf8"))));
-  assert.equal(parsed[0].properties.schemaVersion.const, "1.1.0");
+  assert.equal(parsed[0].properties.schemaVersion.const, "1.2.0");
   assert.equal(parsed[1].properties.cipher.const, "AES-256-GCM");
   assert.equal(parsed[2].versions[0].comparisonPolicy, "same-version-only");
   assert.equal(parsed[2].versions[0].outcomeMeasureVersion, "1.0.0");
@@ -77,6 +77,26 @@ test("validates the minimized profile and rejects individual answers or extra fi
       grantedAt: now.toISOString(),
       lastContributedAt: null
     }
+  }), true);
+  assert.equal(validateSavedProfile({
+    ...profile,
+    schemaVersion: "1.2.0",
+    researchParticipation: null,
+    actionCycles: [{
+      actionCycleId: "423e4567-e89b-42d3-a456-426614174000",
+      actionCycleVersion: "1.0.0",
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+      constraintDomainId: "technology",
+      hypothesis: "If workflow ownership is explicit, handoff delay should fall.",
+      commitment: "Assign one owner to the intake workflow.",
+      evidenceMeasureId: "executionReliability",
+      evidenceDescription: "Review the share of commitments delivered on the agreed date.",
+      reviewDate: "2026-08-22",
+      status: "active",
+      closedAt: null,
+      reviewNote: ""
+    }]
   }), true);
   assert.equal(validateSavedProfile({ ...profile, individualAnswers: [1, 2, 3] }), false);
   assert.equal(validateSavedProfile({ ...profile, assessmentInstances: [{ ...profile.assessmentInstances[0], responses: [1, 2, 3] }] }), false);

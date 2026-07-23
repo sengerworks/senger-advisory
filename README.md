@@ -79,6 +79,12 @@ version-aware comparison policy. Private profiles can retain up to 24 encrypted 
 snapshots with a 30- or 90-day observation window and an evidence-source classification.
 Outcomes remain separate—there is no composite outcome score, benchmark, or causal claim.
 
+`action-cycle-engine.js` turns a current constraint hypothesis into a private operating loop:
+a bounded action hypothesis, concrete commitment, evidence to watch, review date, status, and
+review note. The private profile supports planning, activation, review, completion, stopping,
+and reopening. Action-cycle contents remain encrypted and are excluded from the longitudinal
+research projection; observations provide context and never establish causation.
+
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent
 withdrawal capability, then projects only versioned aggregate assessments, outcome

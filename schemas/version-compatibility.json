@@ -1,6 +1,6 @@
 {
   "registryVersion": "1.0.0",
-  "updatedAt": "2026-07-23T00:00:00.000Z",
+  "updatedAt": "2026-07-23T12:00:00.000Z",
   "versions": [
     {
       "assessmentVersion": "1.0.0",
@@ -8,6 +8,7 @@
       "reportVersion": "1.0.0",
       "contextVersion": "1.0.0",
       "outcomeMeasureVersion": "1.0.0",
+      "actionCycleVersion": "1.0.0",
       "outcomeReleasedAt": "2026-07-23T00:00:00.000Z",
       "consentLanguageVersion": "1.0.0",
       "releasedAt": "2026-07-22T00:00:00.000Z",

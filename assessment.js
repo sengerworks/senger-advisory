@@ -3,7 +3,7 @@ import {
   encryptSavedProfile,
   recoveryCredentialsFromUrl,
   recoverySecretFromUrl
-} from "./saved-results-crypto.js?v=research-v1";
+} from "./saved-results-crypto.js?v=action-cycle-v1";
 import {
   createPrivateResult,
   privateResultsEnvironment,
@@ -333,7 +333,7 @@ import {
   function savedProfile(now = new Date()) {
     const expiresAt = new Date(now.getTime() + 365 * 86400000);
     return {
-      schemaVersion: "1.1.0",
+      schemaVersion: "1.2.0",
       profileId: crypto.randomUUID(),
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
@@ -342,7 +342,8 @@ import {
       assessmentInstances: [assessmentInstance(now)],
       outcomeSnapshots: [],
       changeRecords: [],
-      researchParticipation: null
+      researchParticipation: null,
+      actionCycles: []
     };
   }
 
@@ -369,8 +370,11 @@ import {
     const expiresAt = new Date(now.getTime() + 365 * 86400000);
     return {
       ...followUpState.profile,
+      schemaVersion: "1.2.0",
       updatedAt: now.toISOString(),
       expiresAt: expiresAt.toISOString(),
+      researchParticipation: followUpState.profile.researchParticipation || null,
+      actionCycles: followUpState.profile.actionCycles || [],
       assessmentInstances: [...followUpState.profile.assessmentInstances, assessmentInstance(now)],
       changeRecords: change
         ? [...followUpState.profile.changeRecords, change]

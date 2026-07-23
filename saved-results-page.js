@@ -4,7 +4,7 @@ import {
   recoveryCredentialsFromUrl,
   recoverySecretFromUrl,
   rotateRecoveryLink
-} from "./saved-results-crypto.js?v=research-v1";
+} from "./saved-results-crypto.js?v=action-cycle-v1";
 import {
   deletePrivateResult,
   privateResultsEnvironment,
@@ -18,6 +18,11 @@ import {
   outcomeComparisonForProfile,
   outcomeMeasures
 } from "./outcome-engine.js";
+import {
+  actionCycleState,
+  createActionCycle,
+  updateActionCycle
+} from "./action-cycle-engine.js";
 import {
   contributeLongitudinalEvidence,
   createResearchParticipation,
@@ -60,6 +65,11 @@ const elements = {
   outcomeForm: app.querySelector("[data-outcome-form]"),
   outcomeMeasures: app.querySelector("[data-outcome-measures]"),
   outcomeStatus: app.querySelector("[data-outcome-status]"),
+  actionList: app.querySelector("[data-action-list]"),
+  actionEmpty: app.querySelector("[data-action-empty]"),
+  actionForm: app.querySelector("[data-action-form]"),
+  actionConstraint: app.querySelector("[data-action-constraint]"),
+  actionStatus: app.querySelector("[data-action-status]"),
   researchInvitation: app.querySelector("[data-research-invitation]"),
   researchConsent: app.querySelector("[data-research-consent]"),
   researchGrant: app.querySelector("[data-research-grant]"),
@@ -195,6 +205,53 @@ function formatMovement(value) {
   return String(value);
 }
 
+const evidenceNames = {
+  decisionPace: "Decision pace",
+  leadershipEscalationLoad: "Leadership escalation load",
+  crossFunctionalCoordinationLoad: "Cross-functional coordination load",
+  executionReliability: "Execution reliability",
+  changeAbsorption: "Change absorption",
+  other: "Another operating indicator"
+};
+
+function renderActionCycles(profile) {
+  const cycles = profile.actionCycles || [];
+  elements.actionEmpty.hidden = cycles.length > 0;
+  elements.actionForm.hidden = cycles.length >= 50;
+  elements.actionList.innerHTML = [...cycles].reverse().map(cycle => {
+    const stateLabel = actionCycleState(cycle);
+    const statusOptions = [
+      ["planned", "Planned"],
+      ["active", "Active"],
+      ["completed", "Completed"],
+      ["stopped", "Stopped"]
+    ].map(([value, label]) => `<option value="${value}"${cycle.status === value ? " selected" : ""}>${label}</option>`).join("");
+    return `<article class="action-cycle-card" data-action-cycle="${cycle.actionCycleId}">
+      <div class="action-cycle-card-heading">
+        <div>
+          <span class="action-state" data-state="${stateLabel}">${stateLabel}</span>
+          <h3>${domainNames[cycle.constraintDomainId]}</h3>
+        </div>
+        <p>Review ${formatDate(`${cycle.reviewDate}T12:00:00`)}</p>
+      </div>
+      <dl>
+        <div><dt>Hypothesis</dt><dd>${escapeHtml(cycle.hypothesis)}</dd></div>
+        <div><dt>Commitment</dt><dd>${escapeHtml(cycle.commitment)}</dd></div>
+        <div><dt>Evidence to watch</dt><dd><strong>${evidenceNames[cycle.evidenceMeasureId]}</strong> · ${escapeHtml(cycle.evidenceDescription)}</dd></div>
+      </dl>
+      <form class="action-review-form" data-action-review="${cycle.actionCycleId}">
+        <label>Status
+          <select name="status">${statusOptions}</select>
+        </label>
+        <label>Review note
+          <textarea name="reviewNote" maxlength="500" rows="3" placeholder="What are you observing? What should happen next?">${escapeHtml(cycle.reviewNote)}</textarea>
+        </label>
+        <button class="button secondary" type="submit">Save review</button>
+      </form>
+    </article>`;
+  }).join("");
+}
+
 function renderOutcomes(profile) {
   const snapshots = profile.outcomeSnapshots;
   const latest = snapshots.at(-1);
@@ -270,7 +327,9 @@ function setBusy(busy) {
     elements.outcomeForm.querySelector('button[type="submit"]'),
     elements.researchGrant,
     elements.researchContribute,
-    elements.researchRequestWithdraw
+    elements.researchRequestWithdraw,
+    elements.actionForm.querySelector('button[type="submit"]'),
+    ...elements.actionList.querySelectorAll('button[type="submit"]')
   ].forEach(button => { button.disabled = busy; });
   if (!busy && !state?.profile.researchParticipation) {
     elements.researchGrant.disabled = !elements.researchConsent.checked;
@@ -292,8 +351,17 @@ function renderProfile(profile, envelope) {
     <div class="domain-score-track" aria-label="${domainNames[id]}: ${score} out of 100"><span style="width:${score}%"></span></div>
   </article>`).join("");
   elements.constraint.textContent = assessment.primaryConstraintIds.map(id => domainNames[id]).join(" + ");
+  if (!elements.actionConstraint.dataset.initialized) {
+    elements.actionConstraint.value = assessment.primaryConstraintIds[0];
+    elements.actionConstraint.dataset.initialized = "true";
+  }
+  const reviewDateInput = elements.actionForm.elements.reviewDate;
+  const today = new Date();
+  const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  reviewDateInput.min = localToday;
   elements.followUp.href = new URL(`assessment.html${location.hash}`, location.href).toString();
   renderComparison(profile);
+  renderActionCycles(profile);
   renderOutcomes(profile);
   renderResearch(profile);
   elements.expires.textContent = formatDate(envelope.expiresAt);
@@ -302,7 +370,14 @@ function renderProfile(profile, envelope) {
 
 async function persistPrivateProfile(profile, now = new Date()) {
   const expiresAt = new Date(now.getTime() + 365 * 86400000);
-  const nextProfile = { ...profile, updatedAt: now.toISOString(), expiresAt: expiresAt.toISOString() };
+  const nextProfile = {
+    ...profile,
+    schemaVersion: "1.2.0",
+    researchParticipation: profile.researchParticipation || null,
+    actionCycles: profile.actionCycles || [],
+    updatedAt: now.toISOString(),
+    expiresAt: expiresAt.toISOString()
+  };
   const encrypted = await encryptSavedProfile(nextProfile, {
     secret: recoverySecretFromUrl(location.href),
     baseUrl: location.href,
@@ -331,6 +406,10 @@ elements.outcomeMeasures.innerHTML = outcomeMeasures.map((measure, index) => `<f
   </label>
 </fieldset>`).join("");
 
+elements.actionConstraint.innerHTML = Object.entries(domainNames)
+  .map(([value, label]) => `<option value="${value}">${label}</option>`)
+  .join("");
+
 async function openProfile() {
   try {
     const credentials = await recoveryCredentialsFromUrl(location.href);
@@ -357,6 +436,48 @@ elements.copy.addEventListener("click", async () => {
 });
 
 elements.print.addEventListener("click", () => window.print());
+
+elements.actionForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!state || (state.profile.actionCycles || []).length >= 50) return;
+  elements.actionStatus.textContent = "Encrypting action cycle…";
+  setBusy(true);
+  try {
+    const cycle = createActionCycle(Object.fromEntries(new FormData(elements.actionForm)));
+    const profile = await persistPrivateProfile({
+      ...state.profile,
+      actionCycles: [...(state.profile.actionCycles || []), cycle]
+    });
+    elements.actionForm.reset();
+    elements.actionConstraint.value = profile.assessmentInstances.at(-1).primaryConstraintIds[0];
+    elements.actionStatus.textContent = "Action cycle saved inside this encrypted profile.";
+  } catch (error) {
+    elements.actionStatus.textContent = error.message || "We couldn’t save this action cycle.";
+  } finally {
+    setBusy(false);
+  }
+});
+
+elements.actionList.addEventListener("submit", async event => {
+  const form = event.target.closest("[data-action-review]");
+  if (!form || !state) return;
+  event.preventDefault();
+  elements.actionStatus.textContent = "Encrypting action review…";
+  setBusy(true);
+  try {
+    const id = form.dataset.actionReview;
+    const values = Object.fromEntries(new FormData(form));
+    const actionCycles = (state.profile.actionCycles || []).map(cycle =>
+      cycle.actionCycleId === id ? updateActionCycle(cycle, values) : cycle
+    );
+    await persistPrivateProfile({ ...state.profile, actionCycles });
+    elements.actionStatus.textContent = "Action review saved. Observations remain context, not proof of causation.";
+  } catch (error) {
+    elements.actionStatus.textContent = error.message || "We couldn’t save this review.";
+  } finally {
+    setBusy(false);
+  }
+});
 
 elements.outcomeForm.addEventListener("submit", async event => {
   event.preventDefault();
@@ -411,7 +532,7 @@ async function contributeCurrentResearch() {
     const contributedAt = result.receivedAt || new Date().toISOString();
     await persistPrivateProfile({
       ...state.profile,
-      schemaVersion: "1.1.0",
+      schemaVersion: "1.2.0",
       researchParticipation: { ...participation, lastContributedAt: contributedAt }
     });
     elements.researchStatus.textContent = "Current minimized evidence contributed. Your private profile contents remain encrypted.";
@@ -432,7 +553,7 @@ elements.researchGrant.addEventListener("click", async () => {
     try {
       await persistPrivateProfile({
         ...state.profile,
-        schemaVersion: "1.1.0",
+        schemaVersion: "1.2.0",
         researchParticipation: participation
       });
     } catch (error) {
@@ -469,7 +590,7 @@ elements.researchConfirmWithdraw.addEventListener("click", async () => {
     await withdrawLongitudinalConsent(participation);
     await persistPrivateProfile({
       ...state.profile,
-      schemaVersion: "1.1.0",
+      schemaVersion: "1.2.0",
       researchParticipation: null
     });
     elements.researchStatus.textContent = "Longitudinal participation withdrawn and event-level research records deleted.";

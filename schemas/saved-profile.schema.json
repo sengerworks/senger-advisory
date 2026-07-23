@@ -4,9 +4,9 @@
   "title": "Private Saved Capacity Profile",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords", "researchParticipation"],
+  "required": ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords", "researchParticipation", "actionCycles"],
   "properties": {
-    "schemaVersion": { "const": "1.1.0" },
+    "schemaVersion": { "const": "1.2.0" },
     "profileId": { "$ref": "#/$defs/uuid" },
     "createdAt": { "$ref": "#/$defs/timestamp" },
     "updatedAt": { "$ref": "#/$defs/timestamp" },
@@ -30,6 +30,11 @@
     },
     "researchParticipation": {
       "anyOf": [{ "$ref": "#/$defs/researchParticipation" }, { "type": "null" }]
+    },
+    "actionCycles": {
+      "type": "array",
+      "maxItems": 50,
+      "items": { "$ref": "#/$defs/actionCycle" }
     }
   },
   "$defs": {
@@ -117,6 +122,26 @@
         "magnitude": { "enum": ["limited", "material", "enterprise-wide"] },
         "status": { "enum": ["planned", "active", "completed", "discontinued"] },
         "note": { "type": "string", "maxLength": 500 }
+      }
+    },
+    "actionCycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actionCycleId", "actionCycleVersion", "createdAt", "updatedAt", "constraintDomainId", "hypothesis", "commitment", "evidenceMeasureId", "evidenceDescription", "reviewDate", "status", "closedAt", "reviewNote"],
+      "properties": {
+        "actionCycleId": { "$ref": "#/$defs/uuid" },
+        "actionCycleVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "createdAt": { "$ref": "#/$defs/timestamp" },
+        "updatedAt": { "$ref": "#/$defs/timestamp" },
+        "constraintDomainId": { "enum": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"] },
+        "hypothesis": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "commitment": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "evidenceMeasureId": { "enum": ["decisionPace", "leadershipEscalationLoad", "crossFunctionalCoordinationLoad", "executionReliability", "changeAbsorption", "other"] },
+        "evidenceDescription": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "reviewDate": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "status": { "enum": ["planned", "active", "completed", "stopped"] },
+        "closedAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+        "reviewNote": { "type": "string", "maxLength": 500 }
       }
     },
     "researchParticipation": {

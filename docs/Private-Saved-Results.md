@@ -109,6 +109,27 @@ Outcome snapshots are private product data by default. They are not assessment e
 performance benchmarks, validated outcome measures, or proof that a capacity change or
 recorded intervention caused an operating result.
 
+## Constraint Action Cycles
+
+The private profile can retain up to 50 encrypted Constraint Action Cycles. A cycle connects
+one current capacity constraint to:
+
+- an explicit “if/then/because” action hypothesis;
+- a bounded operating commitment;
+- one operating-outcome category or another named indicator;
+- a description of the evidence the leader intends to watch;
+- a review date and planned or active starting status; and
+- a later review note with planned, active, completed, or stopped status.
+
+The interface identifies reviews that are due or overdue but does not judge whether an action
+worked. Completing a cycle records context, not causal evidence. Reopening a completed or
+stopped cycle clears its closed timestamp while preserving its history and latest review note.
+
+Action-cycle fields remain inside the client-encrypted profile. They are not included in the
+longitudinal research projection, even when research participation is active. Profile schema
+1.2.0 adds `actionCycles[]`; existing 1.0.0 and 1.1.0 profiles remain readable and migrate on
+the next action-cycle, follow-up, or research-profile update.
+
 ## Optional longitudinal evidence
 
 Private saving never implies research participation. The private profile presents a separate,
@@ -119,8 +140,8 @@ private saved result.
 
 Contributions are manual. `longitudinal-evidence-client.js` projects the current profile into
 versioned aggregate assessments, outcome snapshots, and change categories. It removes private
-profile and record IDs, individual answers, accuracy feedback, private change notes, recovery
-credentials, and identity fields before transmission.
+profile and record IDs, individual answers, accuracy feedback, action-cycle contents, private
+change notes, recovery credentials, and identity fields before transmission.
 
 The `/api/longitudinal-evidence` function uses two separate site-scoped stores:
 
@@ -144,6 +165,11 @@ account or remote writes.
 Add two outcome snapshots with different response patterns and confirm the profile shows five
 separate movements, preserves the selected observation windows and evidence sources, and does
 not display a composite outcome score.
+
+Create an action cycle using the current constraint, save it, change its status and review
+note, reload the recovery link, and confirm the encrypted cycle persists. Check due and
+overdue labels by selecting an appropriate review date, and confirm the action contents do not
+appear in a manually contributed longitudinal research projection.
 
 Production and Netlify Dev use `/api/private-results` and the Netlify Blobs store.
 

@@ -95,6 +95,7 @@
 .private-context { font-size: .8rem; }
 
 .private-domain-section,
+.private-action-cycle,
 .private-comparison,
 .private-follow-up,
 .private-outcomes,
@@ -106,6 +107,7 @@
 }
 
 .private-domain-section h2,
+.private-action-cycle h2,
 .private-comparison h2,
 .private-follow-up h2,
 .private-outcomes h2,
@@ -132,7 +134,104 @@
 .private-constraint .eyebrow { color: #d7a365; }
 .private-constraint > p:last-child { max-width: 720px; margin-bottom: 0; color: rgba(255,255,255,.66); }
 
+.private-action-cycle-heading > p {
+  align-self: end;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .82rem;
+}
+
+.action-cycle-empty {
+  margin: 30px 0 0;
+  padding: 20px;
+  border-left: 3px solid var(--blue);
+  background: rgba(55,103,181,.04);
+  color: var(--ink-soft);
+}
+
+.action-cycle-list { display: grid; gap: 14px; margin-top: 30px; }
+
+.action-cycle-card,
+.action-cycle-form {
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.action-cycle-card-heading,
+.action-cycle-form-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.action-cycle-card h3,
+.action-cycle-form h3 {
+  margin: 7px 0 0;
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 500;
+}
+
+.action-cycle-card-heading p,
+.action-cycle-form-heading p { margin: 0; color: var(--ink-soft); font-size: .76rem; }
+
+.action-state {
+  display: inline-block;
+  color: var(--blue);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.action-state[data-state="overdue"] { color: #a16207; }
+.action-state[data-state="closed"] { color: var(--ink-soft); }
+.action-cycle-card dl { margin: 5px 0 0; }
+.action-cycle-card dl > div { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.action-cycle-card dt { color: var(--ink-soft); font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.action-cycle-card dd { margin: 0; font-size: .86rem; }
+
+.action-review-form {
+  display: grid;
+  grid-template-columns: 180px 1fr auto;
+  gap: 12px;
+  align-items: end;
+  margin-top: 20px;
+}
+
+.action-cycle-form { margin-top: 20px; background: var(--ivory); }
+.action-cycle-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+.action-cycle-wide { grid-column: 1 / -1; }
+.action-cycle-form label,
+.action-review-form label { color: var(--ink-soft); font-size: .75rem; font-weight: 700; }
+
+.action-cycle-form select,
+.action-cycle-form input,
+.action-cycle-form textarea,
+.action-review-form select,
+.action-review-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 7px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.action-cycle-form textarea,
+.action-review-form textarea { resize: vertical; }
+.action-cycle-submit { display: flex; gap: 16px; align-items: center; margin-top: 20px; }
+[data-action-status] { margin: 0; color: var(--ink-soft); font-size: .78rem; }
+
 .private-comparison-heading,
+.private-action-cycle-heading,
 .private-follow-up,
 .private-outcomes-heading,
 .private-research-heading,
@@ -474,6 +573,7 @@
 
 @media (max-width: 760px) {
   .private-profile-masthead,
+  .private-action-cycle-heading,
   .private-comparison-heading,
   .private-follow-up,
   .private-outcomes-heading,
@@ -502,6 +602,13 @@
   .outcome-comparison > div:first-child,
   .outcome-form-heading { align-items: stretch; flex-direction: column; }
   .research-boundaries { grid-template-columns: 1fr; }
+  .action-cycle-fields,
+  .action-review-form { grid-template-columns: 1fr; }
+  .action-cycle-wide { grid-column: auto; }
+  .action-cycle-card-heading,
+  .action-cycle-form-heading,
+  .action-cycle-submit { align-items: stretch; flex-direction: column; }
+  .action-cycle-card dl > div { grid-template-columns: 1fr; gap: 5px; }
   .research-active dl > div { display: grid; gap: 4px; }
   .research-active dd { text-align: left; }
 }

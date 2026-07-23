@@ -1,5 +1,4 @@
-const PROFILE_SCHEMA_VERSION = "1.1.0";
-const LEGACY_PROFILE_SCHEMA_VERSION = "1.0.0";
+const PROFILE_SCHEMA_VERSION = "1.2.0";
 const ENVELOPE_VERSION = "1.0.0";
 const CIPHER = "AES-256-GCM";
 const RECOVERY_PREFIX = "v1.";
@@ -92,11 +91,30 @@ function validateChangeRecord(record) {
   return typeof record.note === "string" && record.note.length <= 500;
 }
 
+function validateActionCycle(cycle) {
+  const keys = ["actionCycleId", "actionCycleVersion", "createdAt", "updatedAt", "constraintDomainId", "hypothesis", "commitment", "evidenceMeasureId", "evidenceDescription", "reviewDate", "status", "closedAt", "reviewNote"];
+  const evidenceMeasures = ["decisionPace", "leadershipEscalationLoad", "crossFunctionalCoordinationLoad", "executionReliability", "changeAbsorption", "other"];
+  if (!hasExactKeys(cycle, keys) || !isUuid(cycle.actionCycleId) || !/^\d+\.\d+\.\d+$/.test(cycle.actionCycleVersion)) return false;
+  if (![cycle.createdAt, cycle.updatedAt].every(isTimestamp) || Date.parse(cycle.createdAt) > Date.parse(cycle.updatedAt)) return false;
+  if (!DOMAINS.includes(cycle.constraintDomainId) || !evidenceMeasures.includes(cycle.evidenceMeasureId)) return false;
+  if (typeof cycle.hypothesis !== "string" || cycle.hypothesis.length < 1 || cycle.hypothesis.length > 500) return false;
+  if (typeof cycle.commitment !== "string" || cycle.commitment.length < 1 || cycle.commitment.length > 500) return false;
+  if (typeof cycle.evidenceDescription !== "string" || cycle.evidenceDescription.length < 1 || cycle.evidenceDescription.length > 300) return false;
+  const reviewDate = new Date(`${cycle.reviewDate}T12:00:00Z`);
+  if (typeof cycle.reviewNote !== "string" || cycle.reviewNote.length > 500 || !/^\d{4}-\d{2}-\d{2}$/.test(cycle.reviewDate) || !Number.isFinite(reviewDate.getTime()) || reviewDate.toISOString().slice(0, 10) !== cycle.reviewDate) return false;
+  if (!["planned", "active", "completed", "stopped"].includes(cycle.status)) return false;
+  if (cycle.closedAt !== null && !isTimestamp(cycle.closedAt)) return false;
+  return ["completed", "stopped"].includes(cycle.status) === (cycle.closedAt !== null);
+}
+
 export function validateSavedProfile(profile) {
-  const legacyKeys = ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords"];
-  const currentKeys = [...legacyKeys, "researchParticipation"];
-  const legacy = profile?.schemaVersion === LEGACY_PROFILE_SCHEMA_VERSION;
-  if (!hasExactKeys(profile, legacy ? legacyKeys : currentKeys) || ![PROFILE_SCHEMA_VERSION, LEGACY_PROFILE_SCHEMA_VERSION].includes(profile.schemaVersion) || !isUuid(profile.profileId)) return false;
+  const baseKeys = ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords"];
+  const versionKeys = {
+    "1.0.0": baseKeys,
+    "1.1.0": [...baseKeys, "researchParticipation"],
+    "1.2.0": [...baseKeys, "researchParticipation", "actionCycles"]
+  };
+  if (!versionKeys[profile?.schemaVersion] || !hasExactKeys(profile, versionKeys[profile.schemaVersion]) || !isUuid(profile.profileId)) return false;
   if (![profile.createdAt, profile.updatedAt, profile.expiresAt].every(isTimestamp)) return false;
   if (Date.parse(profile.createdAt) > Date.parse(profile.updatedAt) || Date.parse(profile.updatedAt) >= Date.parse(profile.expiresAt)) return false;
   if (typeof profile.displayLabel !== "string" || profile.displayLabel.length > 80) return false;
@@ -104,7 +122,7 @@ export function validateSavedProfile(profile) {
   if (!profile.assessmentInstances.every(validateAssessmentInstance)) return false;
   if (!Array.isArray(profile.outcomeSnapshots) || profile.outcomeSnapshots.length > 24 || !profile.outcomeSnapshots.every(validateOutcomeSnapshot)) return false;
   if (!Array.isArray(profile.changeRecords) || profile.changeRecords.length > 100 || !profile.changeRecords.every(validateChangeRecord)) return false;
-  if (!legacy && profile.researchParticipation !== null) {
+  if (profile.schemaVersion !== "1.0.0" && profile.researchParticipation !== null) {
     const participation = profile.researchParticipation;
     const keys = ["subjectId", "withdrawalCapability", "consentVersion", "grantedAt", "lastContributedAt"];
     if (!hasExactKeys(participation, keys) || !isUuid(participation.subjectId)) return false;
@@ -112,6 +130,7 @@ export function validateSavedProfile(profile) {
     if (!/^\d+\.\d+\.\d+$/.test(participation.consentVersion) || !isTimestamp(participation.grantedAt)) return false;
     if (participation.lastContributedAt !== null && !isTimestamp(participation.lastContributedAt)) return false;
   }
+  if (profile.schemaVersion === PROFILE_SCHEMA_VERSION && (!Array.isArray(profile.actionCycles) || profile.actionCycles.length > 50 || !profile.actionCycles.every(validateActionCycle))) return false;
   return true;
 }
 

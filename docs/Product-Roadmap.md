@@ -31,3 +31,4 @@
 - Private material-change records
 - Private behaviorally anchored outcome snapshots
 - Explicit longitudinal research consent and evidence review tools
+- Private Constraint Action Cycle: hypothesis, commitment, evidence, review, and status
