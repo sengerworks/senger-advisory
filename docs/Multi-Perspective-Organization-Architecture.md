@@ -294,6 +294,8 @@ browser-storage record, invitation, consent receipt, or evidence event.
 
 - Use Clerk Organizations, Neon Postgres, and Netlify Functions under the decisions and
   limitations in `Identity-Tenancy-Decision.md`.
+- Apply the local four-schema migration and forced row-level-security policies to a disposable
+  Neon development branch, then verify them with two-workspace database integration tests.
 - Implement workspaces, memberships, invitations, revocation, and audit events.
 - Complete a focused security and privacy review.
 

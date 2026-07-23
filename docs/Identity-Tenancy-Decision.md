@@ -193,10 +193,12 @@ and private recovery-link experience retain their current minimal dependency sur
 
 ### Slice 1 — Local tenancy foundation
 
-- Add the canonical role/action authorization engine and tests.
-- Define the relational schema and migrations with separate logical schemas.
-- Add two-workspace fixtures and cross-tenant authorization tests.
-- Add environment-variable contracts without real secrets.
+- Add the canonical role/action authorization engine and tests. **Implemented.**
+- Define the relational schema and migrations with separate logical schemas. **Implemented
+  locally; not applied to a provider.**
+- Add two-workspace fixtures and cross-tenant authorization tests. **Implemented at the
+  application boundary; real Postgres policy tests remain required in Slice 2.**
+- Add environment-variable contracts without real secrets. **Implemented.**
 
 ### Slice 2 — Development identity connection
 

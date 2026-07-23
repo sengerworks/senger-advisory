@@ -113,6 +113,13 @@ and Netlify Functions as the only application-data gateway. `workspace-authoriza
 `schemas/workspace-authorization.json` define the fail-closed product permission model before
 any provider credentials or real participant data are introduced.
 
+The first local database migration is in `db/migrations/001_workspace_foundation.sql`. It
+separates identity mappings, private submissions, shared aggregates, and content-free
+operations into logical schemas; forces row-level security on each tenant table; and uses
+composite workspace foreign keys. `workspace-tenant-boundary.js` binds a server-authorized
+workspace to transaction-local database context. The migration remains unapplied until a
+disposable Neon development branch and least-privilege runtime role are available.
+
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent
 withdrawal capability, then projects only versioned aggregate assessments, outcome
