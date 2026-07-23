@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sengeradvisory.com/schemas/organization-submission.schema.json",
+  "title": "Minimized Organizational Assessment Submission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["submissionId", "completedAt", "assessmentVersion", "scoringVersion", "domainScores", "overallIndex", "interpretationBand", "primaryConstraintIds"],
+  "properties": {
+    "submissionId": { "$ref": "#/$defs/uuid" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "assessmentVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "scoringVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "domainScores": { "$ref": "#/$defs/domainScores" },
+    "overallIndex": { "$ref": "#/$defs/score" },
+    "interpretationBand": { "enum": ["Constrained", "Strained", "Developing", "Enabling"] },
+    "primaryConstraintIds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/domain" }
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "domain": { "enum": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"] },
+    "domainScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"],
+      "properties": {
+        "leadership": { "$ref": "#/$defs/score" },
+        "decisions": { "$ref": "#/$defs/score" },
+        "rhythm": { "$ref": "#/$defs/score" },
+        "alignment": { "$ref": "#/$defs/score" },
+        "technology": { "$ref": "#/$defs/score" },
+        "culture": { "$ref": "#/$defs/score" }
+      }
+    }
+  }
+}

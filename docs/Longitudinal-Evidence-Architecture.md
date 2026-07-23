@@ -310,9 +310,10 @@ appearance of validation through correlated self-report wording.
 
 ### Multiple respondents
 
-Out of scope for the MVP. One private profile represents one continuing perspective, not an
-organizational benchmark. Team aggregation requires respondent thresholds, anonymity rules,
-and a separate research design.
+One private profile still represents one continuing perspective, not an organizational
+benchmark. Multi-perspective product aggregation is governed separately by
+`Multi-Perspective-Organization-Architecture.md`, with a five-submission minimum, no
+individual visibility, no subgroup views, and no research use by default.
 
 ## Version registry
 

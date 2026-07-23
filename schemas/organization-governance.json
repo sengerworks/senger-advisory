@@ -1,0 +1,24 @@
+{
+  "governanceVersion": "1.0.0",
+  "status": "architecture-contract",
+  "minimumOrganizationCohort": 5,
+  "subgroupViewsEnabled": false,
+  "individualResponsesVisibleToWorkspaceRoles": false,
+  "individualScoresVisibleToWorkspaceRoles": false,
+  "completionStatusVisibleToWorkspaceRoles": ["owner", "facilitator"],
+  "aggregateViewsVisibleToWorkspaceRoles": ["owner", "facilitator", "participant"],
+  "workspaceRoles": ["owner", "facilitator", "participant"],
+  "perspectivePatterns": {
+    "closely-aligned": { "populationStandardDeviationBelow": 8 },
+    "varied": { "populationStandardDeviationAtLeast": 8, "populationStandardDeviationBelow": 16 },
+    "widely-varied": { "populationStandardDeviationAtLeast": 16 }
+  },
+  "prohibitedAggregateFields": ["respondentName", "respondentEmail", "individualAnswers", "individualScores", "submissionId", "freeText"],
+  "retention": {
+    "pendingInvitationDays": 30,
+    "submittedResponseDaysAfterWorkspaceClosure": 90,
+    "workspaceDaysAfterLastActivity": 365
+  },
+  "researchUseByDefault": false,
+  "externalBenchmarkUseByDefault": false
+}

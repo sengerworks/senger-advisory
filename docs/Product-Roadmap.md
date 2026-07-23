@@ -33,3 +33,11 @@
 - Explicit longitudinal research consent and evidence review tools
 - Private Constraint Action Cycle: hypothesis, commitment, evidence, review, and status
 - Prospect demo readiness: Current Focus, product-loop journey, recovery-safe navigation, and isolated illustrative profile
+
+## Phase 3 — Multi-perspective organizational platform
+- Organizational workspace architecture and governance contract
+- Privacy-thresholded multi-perspective aggregation engine
+- Illustrative organizational-view prototype
+- Managed identity, tenancy, invitations, and audit foundation
+- Private collection rounds and organizational reports
+- Shared organizational action cycles and reassessment

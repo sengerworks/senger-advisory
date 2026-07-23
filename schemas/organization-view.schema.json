@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sengeradvisory.com/schemas/organization-view.schema.json",
+  "title": "Privacy-Thresholded Organizational Capacity View",
+  "oneOf": [
+    { "$ref": "#/$defs/suppressed" },
+    { "$ref": "#/$defs/incompatible" },
+    { "$ref": "#/$defs/aggregate" }
+  ],
+  "$defs": {
+    "domain": { "enum": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"] },
+    "domainAggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mean", "perspectivePattern"],
+      "properties": {
+        "mean": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "perspectivePattern": { "enum": ["closely-aligned", "varied", "widely-varied"] }
+      }
+    },
+    "suppressed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "aggregationVersion", "participantCount", "minimumRequired", "remaining", "reason"],
+      "properties": {
+        "policy": { "const": "suppressed" },
+        "aggregationVersion": { "const": "1.0.0" },
+        "participantCount": { "type": "integer", "minimum": 0, "maximum": 499 },
+        "minimumRequired": { "type": "integer", "minimum": 5 },
+        "remaining": { "type": "integer", "minimum": 1 },
+        "reason": { "type": "string" }
+      }
+    },
+    "incompatible": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "aggregationVersion", "participantCount", "reason"],
+      "properties": {
+        "policy": { "const": "incompatible-versions" },
+        "aggregationVersion": { "const": "1.0.0" },
+        "participantCount": { "type": "integer", "minimum": 5 },
+        "reason": { "type": "string" }
+      }
+    },
+    "aggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "aggregationVersion", "participantCount", "assessmentVersion", "scoringVersion", "domainScores", "overallIndex", "primaryConstraintIds", "constraintPolicy", "interpretation"],
+      "properties": {
+        "policy": { "const": "aggregate" },
+        "aggregationVersion": { "const": "1.0.0" },
+        "participantCount": { "type": "integer", "minimum": 5 },
+        "assessmentVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "scoringVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "domainScores": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"],
+          "properties": {
+            "leadership": { "$ref": "#/$defs/domainAggregate" },
+            "decisions": { "$ref": "#/$defs/domainAggregate" },
+            "rhythm": { "$ref": "#/$defs/domainAggregate" },
+            "alignment": { "$ref": "#/$defs/domainAggregate" },
+            "technology": { "$ref": "#/$defs/domainAggregate" },
+            "culture": { "$ref": "#/$defs/domainAggregate" }
+          }
+        },
+        "overallIndex": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "primaryConstraintIds": { "type": "array", "minItems": 1, "maxItems": 6, "uniqueItems": true, "items": { "$ref": "#/$defs/domain" } },
+        "constraintPolicy": { "const": "lowest-aggregate-domain-mean" },
+        "interpretation": { "type": "string" }
+      }
+    }
+  }
+}

@@ -91,6 +91,16 @@ Diagnose → Prioritize → Act → Observe → Reassess progression from the en
 `demo-profile.js` entirely in memory. Demo mode exposes no save, research, recovery, or
 mutation controls and creates no local or remote record.
 
+## Multi-Perspective Organization Architecture
+
+`organization-aggregation-engine.js` provides the first privacy-thresholded team aggregation
+contract. It suppresses every score below five valid submissions, blocks mixed-version
+aggregation, and exposes only rounded means and categorical perspective patterns—never
+individual values or distributions. Production identity and workspace storage are
+intentionally deferred until the tenancy, consent, retention, and authorization requirements
+in `docs/Multi-Perspective-Organization-Architecture.md` are approved. Machine-readable
+submission, view, and governance contracts live in `schemas/`.
+
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent
 withdrawal capability, then projects only versioned aggregate assessments, outcome
