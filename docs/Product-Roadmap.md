@@ -29,5 +29,5 @@
 - Client-encrypted private saved results
 - Baseline and follow-up comparison
 - Private material-change records
-- Outcome snapshots
+- Private behaviorally anchored outcome snapshots
 - Explicit longitudinal research consent and evidence review tools

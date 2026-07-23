@@ -74,6 +74,11 @@ profile renderer. A follow-up starts from the private recovery page, carries its
 secret only in the URL fragment, and conditionally replaces the ciphertext after appending
 the new aggregate observation.
 
+`outcome-engine.js` defines five behaviorally anchored operating observations and their
+version-aware comparison policy. Private profiles can retain up to 24 encrypted outcome
+snapshots with a 30- or 90-day observation window and an evidence-source classification.
+Outcomes remain separate—there is no composite outcome score, benchmark, or causal claim.
+
 `crypto-prototype.html` remains available as a development-only cryptographic test surface.
 
 ## Deploy

@@ -13,7 +13,9 @@ Milestone B implements private encrypted persistence through the assessment,
 `saved-results.html`, the `/api/private-results` Netlify Function, and the site-scoped
 `capacity-saved-results` Netlify Blobs store. Milestone C implements private follow-up
 assessments, same-version comparisons, version-aware delta suppression, and encrypted
-material-change context. Outcome snapshots and research linkage remain future milestones.
+material-change context. Milestone D implements five behaviorally anchored, client-encrypted
+outcome observations with version-aware ordinal comparison and no composite outcome score.
+Research linkage remains a future milestone.
 
 ## Objective
 

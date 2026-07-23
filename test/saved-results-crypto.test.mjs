@@ -61,6 +61,7 @@ test("machine-readable contracts and compatibility registry parse", async () => 
   assert.equal(parsed[0].properties.schemaVersion.const, "1.0.0");
   assert.equal(parsed[1].properties.cipher.const, "AES-256-GCM");
   assert.equal(parsed[2].versions[0].comparisonPolicy, "same-version-only");
+  assert.equal(parsed[2].versions[0].outcomeMeasureVersion, "1.0.0");
 });
 
 test("validates the minimized profile and rejects individual answers or extra fields", () => {

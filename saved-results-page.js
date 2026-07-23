@@ -13,6 +13,11 @@ import {
   updatePrivateResult
 } from "./private-results-api.js";
 import { comparisonForProfile, formatScoreDelta } from "./comparison-engine.js";
+import {
+  createOutcomeSnapshot,
+  outcomeComparisonForProfile,
+  outcomeMeasures
+} from "./outcome-engine.js";
 
 const app = document.querySelector("[data-private-results]");
 const elements = {
@@ -39,6 +44,16 @@ const elements = {
   comparisonChangeList: app.querySelector("[data-comparison-change-list]"),
   followUp: app.querySelector("[data-start-follow-up]"),
   assessmentCount: app.querySelector("[data-assessment-count]"),
+  outcomeSummary: app.querySelector("[data-outcome-summary]"),
+  outcomeSummaryTitle: app.querySelector("[data-outcome-summary-title]"),
+  outcomeSummaryMeta: app.querySelector("[data-outcome-summary-meta]"),
+  outcomeLatest: app.querySelector("[data-outcome-latest]"),
+  outcomeComparison: app.querySelector("[data-outcome-comparison]"),
+  outcomeComparisonMeta: app.querySelector("[data-outcome-comparison-meta]"),
+  outcomeComparisonList: app.querySelector("[data-outcome-comparison-list]"),
+  outcomeForm: app.querySelector("[data-outcome-form]"),
+  outcomeMeasures: app.querySelector("[data-outcome-measures]"),
+  outcomeStatus: app.querySelector("[data-outcome-status]"),
   expires: app.querySelector("[data-private-expires]"),
   storage: app.querySelector("[data-private-storage]"),
   copy: app.querySelector("[data-copy-link]"),
@@ -147,6 +162,57 @@ function renderComparison(profile) {
   }).join("");
 }
 
+function formatOutcomeSource(value) {
+  return {
+    "self-report": "Leadership observation",
+    "operating-measure": "Operating measures",
+    mixed: "Observation and operating measures"
+  }[value];
+}
+
+function formatMovement(value) {
+  if (value > 0) return `+${value}`;
+  return String(value);
+}
+
+function renderOutcomes(profile) {
+  const snapshots = profile.outcomeSnapshots;
+  const latest = snapshots.at(-1);
+  elements.outcomeSummary.hidden = !latest;
+  elements.outcomeForm.hidden = snapshots.length >= 24;
+  if (!latest) {
+    elements.outcomeComparison.hidden = true;
+    return;
+  }
+
+  elements.outcomeSummaryTitle.textContent = snapshots.length === 1
+    ? "Outcome baseline"
+    : "Latest outcome snapshot";
+  elements.outcomeSummaryMeta.textContent = `${formatDate(latest.observedAt)} · Prior ${latest.observationWindow === "30-days" ? "30" : "90"} days · ${formatOutcomeSource(latest.evidenceSource)} · ${snapshots.length} saved`;
+  elements.outcomeLatest.innerHTML = outcomeMeasures.map(measure => `<article>
+    <div><h4>${measure.name}</h4><strong>${latest[measure.id]}/5</strong></div>
+    <p>${measure.anchors[latest[measure.id] - 1]}</p>
+  </article>`).join("");
+
+  const comparison = outcomeComparisonForProfile(profile);
+  elements.outcomeComparison.hidden = comparison.policy === "unavailable";
+  if (comparison.policy === "unavailable") return;
+  elements.outcomeComparisonMeta.textContent = `${formatDate(comparison.baseline.observedAt)} → ${formatDate(comparison.current.observedAt)} · ${formatElapsed(comparison.elapsedDays)}`;
+  elements.outcomeComparisonList.innerHTML = outcomeMeasures.map(measure => {
+    const movement = comparison.policy === "ordinal-movement"
+      ? `<strong>${formatMovement(comparison.movements[measure.id])}</strong>`
+      : "";
+    return `<article>
+      <h4>${measure.name}</h4>
+      <p><span>${comparison.baseline[measure.id]}</span><i aria-hidden="true">→</i><span>${comparison.current[measure.id]}</span>${movement}</p>
+    </article>`;
+  }).join("");
+  const methodNote = comparison.policy === "ordinal-movement"
+    ? "Outcome measure versions match. Raw ordinal movement is shown."
+    : comparison.reason;
+  elements.outcomeComparisonMeta.textContent += ` · ${methodNote}`;
+}
+
 function showError(message) {
   elements.loading.hidden = true;
   elements.profile.hidden = true;
@@ -156,7 +222,7 @@ function showError(message) {
 }
 
 function setBusy(busy) {
-  [elements.copy, elements.print, elements.renew, elements.rotate, elements.requestDelete].forEach(button => { button.disabled = busy; });
+  [elements.copy, elements.print, elements.renew, elements.rotate, elements.requestDelete, elements.outcomeForm.querySelector('button[type="submit"]')].forEach(button => { button.disabled = busy; });
 }
 
 function renderProfile(profile, envelope) {
@@ -176,9 +242,21 @@ function renderProfile(profile, envelope) {
   elements.constraint.textContent = assessment.primaryConstraintIds.map(id => domainNames[id]).join(" + ");
   elements.followUp.href = new URL(`assessment.html${location.hash}`, location.href).toString();
   renderComparison(profile);
+  renderOutcomes(profile);
   elements.expires.textContent = formatDate(envelope.expiresAt);
   if (privateResultsEnvironment.localDevelopment) elements.storage.textContent = "Local development mock · ciphertext only";
 }
+
+elements.outcomeMeasures.innerHTML = outcomeMeasures.map((measure, index) => `<fieldset>
+  <legend><span>${String(index + 1).padStart(2, "0")}</span>${measure.name}</legend>
+  <p>${measure.prompt}</p>
+  <label>${measure.name} observed pattern
+    <select name="${measure.id}" required>
+      <option value="">Select the closest observation</option>
+      ${measure.anchors.map((anchor, anchorIndex) => `<option value="${anchorIndex + 1}">${anchorIndex + 1} · ${anchor}</option>`).join("")}
+    </select>
+  </label>
+</fieldset>`).join("");
 
 async function openProfile() {
   try {
@@ -206,6 +284,45 @@ elements.copy.addEventListener("click", async () => {
 });
 
 elements.print.addEventListener("click", () => window.print());
+
+elements.outcomeForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!state || state.profile.outcomeSnapshots.length >= 24) return;
+  elements.outcomeStatus.textContent = "Encrypting outcome snapshot…";
+  setBusy(true);
+  try {
+    const values = Object.fromEntries(new FormData(elements.outcomeForm));
+    const snapshot = createOutcomeSnapshot(values);
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 365 * 86400000);
+    const profile = {
+      ...state.profile,
+      updatedAt: now.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+      outcomeSnapshots: [...state.profile.outcomeSnapshots, snapshot]
+    };
+    const encrypted = await encryptSavedProfile(profile, {
+      secret: recoverySecretFromUrl(location.href),
+      baseUrl: location.href,
+      createdAt: state.envelope.createdAt,
+      now,
+      expiresAt
+    });
+    const saved = await updatePrivateResult({
+      ...state.credentials,
+      envelope: encrypted.envelope,
+      expectedEtag: state.etag
+    });
+    state = { credentials: state.credentials, envelope: encrypted.envelope, etag: saved.etag, profile };
+    elements.outcomeForm.reset();
+    renderProfile(profile, encrypted.envelope);
+    elements.outcomeStatus.textContent = `Encrypted outcome snapshot saved. ${profile.outcomeSnapshots.length} observation${profile.outcomeSnapshots.length === 1 ? "" : "s"} now available.`;
+  } catch (error) {
+    elements.outcomeStatus.textContent = error.message || "We couldn’t save this outcome snapshot.";
+  } finally {
+    setBusy(false);
+  }
+});
 
 elements.renew.addEventListener("click", async () => {
   if (!state) return;

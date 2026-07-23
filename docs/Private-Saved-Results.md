@@ -82,6 +82,33 @@ magnitude, status, affected domains, and a short note remain inside the encrypte
 The comparison displays this context as temporal evidence, never as proof that the recorded
 change caused score movement.
 
+## Private outcome snapshots
+
+The private profile can store up to 24 encrypted outcome snapshots. Each snapshot records a
+30- or 90-day observation window, the source used for the judgment, and five behaviorally
+anchored ordinal observations:
+
+- decision pace;
+- leadership escalation load;
+- cross-functional coordination load;
+- execution reliability; and
+- change absorption.
+
+All five scales are oriented so a higher response represents the more execution-supportive
+observed pattern. The field names describing “load” do not imply that a higher numeric value
+means more load; their anchors explicitly describe less avoidable escalation or coordination
+at higher values.
+
+`outcome-engine.js` owns outcome measure version `1.0.0`, snapshot construction, behavioral
+anchors, and comparison rules. When versions match, the product displays first-to-latest
+movement in raw ordinal response steps. It does not average the observations into a composite
+score. When versions differ, movement is suppressed and the observations remain available
+side by side.
+
+Outcome snapshots are private product data by default. They are not assessment evidence,
+performance benchmarks, validated outcome measures, or proof that a capacity change or
+recorded intervention caused an operating result.
+
 ## Local review
 
 Start any static server from the repository root and open `assessment.html` on `localhost` or
@@ -89,6 +116,10 @@ Start any static server from the repository root and open `assessment.html` on `
 ciphertext-only mock. Complete the assessment, create the private link, open the profile,
 start a follow-up, and exercise comparison, renewal, rotation, and deletion without a Netlify
 account or remote writes.
+
+Add two outcome snapshots with different response patterns and confirm the profile shows five
+separate movements, preserves the selected observation windows and evidence sources, and does
+not display a composite outcome score.
 
 Production and Netlify Dev use `/api/private-results` and the Netlify Blobs store.
 

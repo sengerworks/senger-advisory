@@ -9,7 +9,7 @@
   <meta name="description" content="Open a private, client-encrypted Organizational Capacity profile." />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css?v=longitudinal-v1" />
-  <link rel="stylesheet" href="private-results.css?v=longitudinal-v1" />
+  <link rel="stylesheet" href="private-results.css?v=outcomes-v1" />
 </head>
 <body class="private-results-page">
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -101,6 +101,60 @@
         </div>
       </section>
 
+      <section class="private-outcomes" aria-labelledby="private-outcomes-title">
+        <div class="private-outcomes-heading">
+          <div>
+            <p class="eyebrow">Operating Outcomes</p>
+            <h2 id="private-outcomes-title">Observe execution—not only capacity.</h2>
+          </div>
+          <p>Outcome snapshots are private, encrypted observations. They remain separate from the Capacity Index and do not prove that a change caused an outcome.</p>
+        </div>
+
+        <div class="outcome-summary" data-outcome-summary hidden>
+          <div>
+            <h3 data-outcome-summary-title>Latest outcome snapshot</h3>
+            <p data-outcome-summary-meta></p>
+          </div>
+          <div data-outcome-latest></div>
+        </div>
+
+        <div class="outcome-comparison" data-outcome-comparison hidden>
+          <div>
+            <h3>Baseline to latest operating observations</h3>
+            <p data-outcome-comparison-meta></p>
+          </div>
+          <div data-outcome-comparison-list></div>
+          <p>Movement is shown in ordinal response steps, not as a composite outcome score, performance benchmark, or causal effect.</p>
+        </div>
+
+        <form class="outcome-form" data-outcome-form novalidate>
+          <div class="outcome-form-heading">
+            <h3>Add an outcome snapshot</h3>
+            <p>Use a consistent observation window and perspective when possible. Every field is required.</p>
+          </div>
+          <div class="outcome-form-context">
+            <label>Observation window
+              <select name="observationWindow" required>
+                <option value="30-days">Prior 30 days</option>
+                <option value="90-days">Prior 90 days</option>
+              </select>
+            </label>
+            <label>Evidence used
+              <select name="evidenceSource" required>
+                <option value="self-report">Leadership observation</option>
+                <option value="operating-measure">Operating measures</option>
+                <option value="mixed">Observation and operating measures</option>
+              </select>
+            </label>
+          </div>
+          <div class="outcome-measures" data-outcome-measures></div>
+          <div class="outcome-submit">
+            <button class="button primary" type="submit">Save encrypted outcome snapshot</button>
+            <p data-outcome-status role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </section>
+
       <section class="private-trust" aria-labelledby="private-trust-title">
         <div>
           <p class="eyebrow">Recovery and Retention</p>
@@ -138,6 +192,6 @@
     </article>
   </main>
 
-  <script type="module" src="saved-results-page.js?v=longitudinal-v1"></script>
+  <script type="module" src="saved-results-page.js?v=outcomes-v1-1"></script>
 </body>
 </html>
