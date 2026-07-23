@@ -1,6 +1,9 @@
 {
   "governanceVersion": "1.0.0",
   "status": "architecture-contract",
+  "identityProvider": "clerk-organizations",
+  "transactionalStore": "neon-postgres",
+  "applicationDataGateway": "netlify-functions",
   "minimumOrganizationCohort": 5,
   "subgroupViewsEnabled": false,
   "individualResponsesVisibleToWorkspaceRoles": false,

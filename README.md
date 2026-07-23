@@ -107,6 +107,12 @@ full score suppression below threshold, and then renders the aggregate domains, 
 perspective patterns, and shared constraint hypothesis. It performs no fetch or browser
 storage operation and is linked from the assessment and individual illustrative profile.
 
+The production workspace stack is selected in `docs/Identity-Tenancy-Decision.md`: Clerk
+Organizations for identity and invitations, Neon Postgres for transactional workspace data,
+and Netlify Functions as the only application-data gateway. `workspace-authorization.js` and
+`schemas/workspace-authorization.json` define the fail-closed product permission model before
+any provider credentials or real participant data are introduced.
+
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent
 withdrawal capability, then projects only versioned aggregate assessments, outcome

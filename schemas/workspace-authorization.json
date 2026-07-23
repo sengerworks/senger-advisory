@@ -1,0 +1,42 @@
+{
+  "authorizationVersion": "1.0.0",
+  "identityProvider": "clerk-organizations",
+  "roles": {
+    "owner": {
+      "providerRole": "org:admin",
+      "clerkSystemPermissions": ["org:sys_memberships:manage", "org:sys_memberships:read", "org:sys_profile:delete"]
+    },
+    "facilitator": {
+      "providerRole": "org:facilitator",
+      "clerkSystemPermissions": ["org:sys_memberships:manage", "org:sys_memberships:read"]
+    },
+    "participant": {
+      "providerRole": "org:participant",
+      "clerkSystemPermissions": []
+    }
+  },
+  "actions": {
+    "workspace:read": ["owner", "facilitator", "participant"],
+    "workspace:update": ["owner"],
+    "workspace:delete": ["owner"],
+    "invitation:list": ["owner", "facilitator"],
+    "invitation:create": ["owner", "facilitator"],
+    "invitation:revoke": ["owner", "facilitator"],
+    "completion:read": ["owner", "facilitator"],
+    "round:read": ["owner", "facilitator", "participant"],
+    "round:create": ["owner", "facilitator"],
+    "round:close": ["owner", "facilitator"],
+    "submission:create": ["owner", "facilitator", "participant"],
+    "submission:read-own": ["owner", "facilitator", "participant"],
+    "submission:replace-own": ["owner", "facilitator", "participant"],
+    "submission:delete-own": ["owner", "facilitator", "participant"],
+    "aggregate:read": ["owner", "facilitator", "participant"],
+    "audit:read": ["owner"]
+  },
+  "conditions": {
+    "submissionMutation": "collection round must be open and the authenticated user must own the submission slot",
+    "aggregateRead": "the privacy threshold must be met and the aggregate must match the collection-round versions",
+    "participantDirectory": "participants receive no Clerk member-read permission and no application member-list endpoint"
+  },
+  "failClosed": true
+}

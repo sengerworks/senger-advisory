@@ -292,7 +292,8 @@ browser-storage record, invitation, consent receipt, or evidence event.
 
 ### Milestone C — Identity and tenancy foundation
 
-- Select managed identity and transactional storage.
+- Use Clerk Organizations, Neon Postgres, and Netlify Functions under the decisions and
+  limitations in `Identity-Tenancy-Decision.md`.
 - Implement workspaces, memberships, invitations, revocation, and audit events.
 - Complete a focused security and privacy review.
 
