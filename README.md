@@ -46,6 +46,11 @@ before storing them in the site-scoped `assessment-evidence` Netlify Blobs store
 question responses and identity fields are not accepted. The data contract and operating
 guidance are documented in `docs/Assessment-Evidence.md`.
 
+The next product phase is governed by `docs/Longitudinal-Evidence-Architecture.md`. It keeps
+private saved results client-encrypted, separates recovery credentials from research
+identifiers, and defines consent, comparison, outcome, retention, deletion, security, and
+version-compatibility rules before longitudinal features are implemented.
+
 ## Deploy
 Push to GitHub. Netlify deploys automatically from the connected repository.
 

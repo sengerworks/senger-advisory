@@ -20,3 +20,13 @@
 - Public framework
 - Diagnostic inquiry path
 - Core management model documented
+
+## Phase 2 — Assessment evidence platform
+- Browser-based Organizational Capacity Assessment
+- Executive Capacity Report
+- Privacy-first cross-sectional evidence infrastructure
+- Longitudinal evidence architecture and governance contract
+- Client-encrypted private saved results
+- Baseline and follow-up comparison
+- Outcome snapshots and material-change records
+- Explicit longitudinal research consent and evidence review tools
