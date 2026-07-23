@@ -82,6 +82,25 @@ magnitude, status, affected domains, and a short note remain inside the encrypte
 The comparison displays this context as temporal evidence, never as proof that the recorded
 change caused score movement.
 
+Recovery-aware navigation preserves the URL fragment when moving from a private profile to a
+follow-up assessment. The assessment header then provides a direct return to the saved
+profile, so the participant does not need to retrieve the recovery link again. The fragment
+continues to remain client-side and is not included in HTTP requests.
+
+## Executive focus and illustrative demo
+
+The saved profile derives a Current Focus from the latest assessment, current action cycle,
+latest outcome observation, and review date. A five-stage journey makes the product loop
+explicit: Diagnose, Prioritize, Act, Observe, and Reassess. These are presentation-layer
+derivations; they do not add a score, benchmark, or causal interpretation.
+
+`saved-results.html?demo=1` renders a fictional profile in memory for prospect demonstration.
+The example uses the production profile schema and comparison engines but performs no
+private-results request, browser-storage write, evidence contribution, or research consent
+operation. The interface labels the data illustrative and removes action, outcome, research,
+recovery, and deletion controls. Demo content must never be described as a client case or
+research finding.
+
 ## Private outcome snapshots
 
 The private profile can store up to 24 encrypted outcome snapshots. Each snapshot records a

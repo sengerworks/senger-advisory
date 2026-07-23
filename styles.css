@@ -112,6 +112,14 @@ a {
   display: none;
 }
 
+.assessment-profile-link {
+  margin-left: auto;
+  margin-right: clamp(16px, 2.5vw, 32px);
+  color: var(--blue);
+  font-size: .8rem;
+  font-weight: 750;
+}
+
 .hero {
   position: relative;
   display: flex;
@@ -1137,6 +1145,13 @@ h3 {
   color: var(--ink-soft);
   font-size: 0.86rem;
   font-weight: 700;
+}
+
+.assessment-expectation a {
+  margin-top: 6px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+  color: var(--blue);
 }
 
 .assessment-shell {

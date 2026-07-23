@@ -85,6 +85,12 @@ review note. The private profile supports planning, activation, review, completi
 and reopening. Action-cycle contents remain encrypted and are excluded from the longitudinal
 research projection; observations provide context and never establish causation.
 
+`profile-journey-engine.js` derives an executive Current Focus and the five-stage
+Diagnose → Prioritize → Act → Observe → Reassess progression from the encrypted profile.
+`saved-results.html?demo=1` renders a clearly labeled fictional profile from
+`demo-profile.js` entirely in memory. Demo mode exposes no save, research, recovery, or
+mutation controls and creates no local or remote record.
+
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent
 withdrawal capability, then projects only versioned aggregate assessments, outcome

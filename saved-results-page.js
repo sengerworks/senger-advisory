@@ -29,6 +29,8 @@ import {
   grantLongitudinalConsent,
   withdrawLongitudinalConsent
 } from "./longitudinal-evidence-client.js";
+import { profileJourney } from "./profile-journey-engine.js";
+import { createIllustrativeProfile } from "./demo-profile.js";
 
 const app = document.querySelector("[data-private-results]");
 const elements = {
@@ -41,6 +43,19 @@ const elements = {
   index: app.querySelector("[data-profile-index]"),
   band: app.querySelector("[data-profile-band]"),
   context: app.querySelector("[data-profile-context]"),
+  storageCopy: app.querySelector("[data-profile-storage-copy]"),
+  demoBanner: app.querySelector("[data-demo-banner]"),
+  profileEyebrow: app.querySelector("[data-profile-eyebrow]"),
+  assessmentLink: document.querySelector("[data-assessment-link]"),
+  focusConstraint: app.querySelector("[data-focus-constraint]"),
+  focusAction: app.querySelector("[data-focus-action]"),
+  focusActionMeta: app.querySelector("[data-focus-action-meta]"),
+  focusEvidence: app.querySelector("[data-focus-evidence]"),
+  focusEvidenceMeta: app.querySelector("[data-focus-evidence-meta]"),
+  focusReview: app.querySelector("[data-focus-review]"),
+  focusReviewMeta: app.querySelector("[data-focus-review-meta]"),
+  focusNext: app.querySelector("[data-focus-next]"),
+  journey: app.querySelector("[data-profile-journey]"),
   domains: app.querySelector("[data-private-domains]"),
   constraint: app.querySelector("[data-private-constraint]"),
   comparison: app.querySelector("[data-private-comparison]"),
@@ -214,6 +229,36 @@ const evidenceNames = {
   other: "Another operating indicator"
 };
 
+function renderJourney(profile) {
+  const journey = profileJourney(profile);
+  const focus = journey.currentFocus;
+  elements.focusConstraint.textContent = constraintNames(focus.constraintDomainIds);
+  elements.focusAction.textContent = focus.action
+    ? focus.action.commitment
+    : "No action cycle defined";
+  elements.focusActionMeta.textContent = focus.action
+    ? `${focus.actionState.replace("-", " ")} · ${domainNames[focus.action.constraintDomainId]}`
+    : "Translate the constraint into a bounded commitment.";
+  elements.focusEvidence.textContent = focus.action
+    ? evidenceNames[focus.action.evidenceMeasureId]
+    : "Not selected";
+  elements.focusEvidenceMeta.textContent = focus.action
+    ? focus.action.evidenceDescription
+    : "Choose the operating evidence that will inform review.";
+  elements.focusReview.textContent = focus.action
+    ? formatDate(`${focus.action.reviewDate}T12:00:00`)
+    : "Not scheduled";
+  elements.focusReviewMeta.textContent = focus.latestOutcome
+    ? `Latest operating observation: ${formatDate(focus.latestOutcome.observedAt)}`
+    : "No operating observation recorded yet.";
+  elements.focusNext.textContent = `Next: ${focus.nextStep}.`;
+  elements.journey.innerHTML = journey.steps.map((step, index) => `<li data-state="${step.state}">
+    <span>${String(index + 1).padStart(2, "0")}</span>
+    <strong>${step.label}</strong>
+    <small>${step.detail}</small>
+  </li>`).join("");
+}
+
 function renderActionCycles(profile) {
   const cycles = profile.actionCycles || [];
   elements.actionEmpty.hidden = cycles.length > 0;
@@ -361,6 +406,7 @@ function renderProfile(profile, envelope) {
   reviewDateInput.min = localToday;
   elements.followUp.href = new URL(`assessment.html${location.hash}`, location.href).toString();
   renderComparison(profile);
+  renderJourney(profile);
   renderActionCycles(profile);
   renderOutcomes(profile);
   renderResearch(profile);
@@ -411,11 +457,28 @@ elements.actionConstraint.innerHTML = Object.entries(domainNames)
   .join("");
 
 async function openProfile() {
+  if (new URLSearchParams(location.search).get("demo") === "1") {
+    const now = new Date();
+    const profile = createIllustrativeProfile(now);
+    const envelope = { expiresAt: profile.expiresAt };
+    state = { demo: true, profile, envelope, credentials: null, etag: null };
+    document.body.classList.add("is-demo-profile");
+    elements.demoBanner.hidden = false;
+    elements.profileEyebrow.textContent = "Illustrative Capacity Profile";
+    elements.storageCopy.textContent = "This fictional profile is generated in memory for demonstration. Nothing on this page is stored or contributed as evidence.";
+    elements.assessmentLink.textContent = "Take the Assessment";
+    renderProfile(profile, envelope);
+    elements.loading.hidden = true;
+    elements.profile.hidden = false;
+    elements.profile.focus();
+    return;
+  }
   try {
     const credentials = await recoveryCredentialsFromUrl(location.href);
     const stored = await readPrivateResult(credentials);
     const restored = await decryptSavedProfile(stored.envelope, location.href);
     state = { credentials, envelope: stored.envelope, etag: stored.etag, profile: restored.profile };
+    elements.assessmentLink.href = new URL(`assessment.html${location.hash}`, location.href).toString();
     renderProfile(state.profile, state.envelope);
     elements.loading.hidden = true;
     elements.error.hidden = true;

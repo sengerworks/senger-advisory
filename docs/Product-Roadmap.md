@@ -32,3 +32,4 @@
 - Private behaviorally anchored outcome snapshots
 - Explicit longitudinal research consent and evidence review tools
 - Private Constraint Action Cycle: hypothesis, commitment, evidence, review, and status
+- Prospect demo readiness: Current Focus, product-loop journey, recovery-safe navigation, and isolated illustrative profile

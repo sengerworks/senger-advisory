@@ -8,14 +8,14 @@
   <title>Private Capacity Profile | Senger Advisory</title>
   <meta name="description" content="Open a private, client-encrypted Organizational Capacity profile." />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="styles.css?v=score-bars-v1" />
-  <link rel="stylesheet" href="private-results.css?v=action-cycle-v1" />
+  <link rel="stylesheet" href="styles.css?v=demo-readiness-v1" />
+  <link rel="stylesheet" href="private-results.css?v=demo-readiness-v1" />
 </head>
 <body class="private-results-page">
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <header class="site-header">
     <a class="brand" href="index.html">Senger Advisory</a>
-    <a class="private-header-link" href="assessment.html">Return to Assessment</a>
+    <a class="private-header-link" data-assessment-link href="assessment.html">Return to Assessment</a>
   </header>
 
   <main id="main-content" class="private-results-main" data-private-results>
@@ -33,9 +33,16 @@
     </section>
 
     <article class="private-profile" data-profile hidden tabindex="-1">
+      <aside class="demo-profile-banner" data-demo-banner hidden>
+        <div>
+          <strong>Illustrative profile</strong>
+          <p>This fictional example demonstrates the complete product loop. It is not a benchmark, client result, or research record, and nothing on this page is saved.</p>
+        </div>
+        <a class="button primary" href="assessment.html">Create your own profile</a>
+      </aside>
       <header class="private-profile-masthead">
         <div>
-          <p class="eyebrow">Private Capacity Profile</p>
+          <p class="eyebrow" data-profile-eyebrow>Private Capacity Profile</p>
           <h1 data-profile-label>Organizational Capacity</h1>
           <p data-profile-date></p>
         </div>
@@ -44,9 +51,42 @@
 
       <div class="private-summary">
         <span class="results-band" data-profile-band></span>
-        <p>This profile was decrypted in your browser. Senger Advisory stores only its encrypted envelope.</p>
+        <p data-profile-storage-copy>This profile was decrypted in your browser. Senger Advisory stores only its encrypted envelope.</p>
         <p class="private-context" data-profile-context hidden></p>
       </div>
+
+      <section class="private-current-focus" aria-labelledby="current-focus-title">
+        <div class="current-focus-heading">
+          <div>
+            <p class="eyebrow">Current Focus</p>
+            <h2 id="current-focus-title">The work that matters now.</h2>
+          </div>
+          <p data-focus-next></p>
+        </div>
+        <div class="current-focus-grid">
+          <article>
+            <span>Constraint</span>
+            <strong data-focus-constraint></strong>
+            <p>Current directional signal</p>
+          </article>
+          <article>
+            <span>Action</span>
+            <strong data-focus-action></strong>
+            <p data-focus-action-meta></p>
+          </article>
+          <article>
+            <span>Evidence</span>
+            <strong data-focus-evidence></strong>
+            <p data-focus-evidence-meta></p>
+          </article>
+          <article>
+            <span>Review</span>
+            <strong data-focus-review></strong>
+            <p data-focus-review-meta></p>
+          </article>
+        </div>
+        <ol class="profile-journey" data-profile-journey aria-label="Capacity improvement cycle"></ol>
+      </section>
 
       <section class="private-domain-section" aria-labelledby="domain-profile-title">
         <div>
@@ -72,7 +112,7 @@
         </div>
         <div class="action-cycle-list" data-action-list></div>
         <p class="action-cycle-empty" data-action-empty>No action cycle is active yet. Start with the constraint that most limits execution now.</p>
-        <form class="action-cycle-form" data-action-form novalidate>
+        <form class="action-cycle-form" data-action-form data-demo-hidden novalidate>
           <div class="action-cycle-form-heading">
             <h3>Define the next action cycle</h3>
             <p>Keep the commitment narrow enough to review on a specific date.</p>
@@ -145,7 +185,7 @@
         <p class="comparison-caution">This comparison describes observed score movement. It does not establish improvement, significance, or that any recorded change caused the movement.</p>
       </section>
 
-      <section class="private-follow-up" aria-labelledby="private-follow-up-title">
+      <section class="private-follow-up" data-demo-hidden aria-labelledby="private-follow-up-title">
         <div>
           <p class="eyebrow">Continue the Profile</p>
           <h2 id="private-follow-up-title">Observe capacity again.</h2>
@@ -183,7 +223,7 @@
           <p>Movement is shown in ordinal response steps, not as a composite outcome score, performance benchmark, or causal effect.</p>
         </div>
 
-        <form class="outcome-form" data-outcome-form novalidate>
+        <form class="outcome-form" data-outcome-form data-demo-hidden novalidate>
           <div class="outcome-form-heading">
             <h3>Add an outcome snapshot</h3>
             <p>Use a consistent observation window and perspective when possible. Every field is required.</p>
@@ -211,7 +251,7 @@
         </form>
       </section>
 
-      <section class="private-research" aria-labelledby="private-research-title">
+      <section class="private-research" data-demo-hidden aria-labelledby="private-research-title">
         <div class="private-research-heading">
           <div>
             <p class="eyebrow">Optional Longitudinal Evidence</p>
@@ -259,7 +299,7 @@
         <p data-research-status role="status" aria-live="polite"></p>
       </section>
 
-      <section class="private-trust" aria-labelledby="private-trust-title">
+      <section class="private-trust" data-demo-hidden aria-labelledby="private-trust-title">
         <div>
           <p class="eyebrow">Recovery and Retention</p>
           <h2 id="private-trust-title">This link is the key.</h2>
@@ -274,7 +314,7 @@
         </div>
       </section>
 
-      <section class="private-actions" aria-labelledby="private-actions-title">
+      <section class="private-actions" data-demo-hidden aria-labelledby="private-actions-title">
         <div>
           <p class="eyebrow">Profile Controls</p>
           <h2 id="private-actions-title">Protect or remove access.</h2>
@@ -296,6 +336,6 @@
     </article>
   </main>
 
-  <script type="module" src="saved-results-page.js?v=score-bars-v1"></script>
+  <script type="module" src="saved-results-page.js?v=demo-readiness-v1"></script>
 </body>
 </html>

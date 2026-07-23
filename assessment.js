@@ -142,6 +142,7 @@ import {
 
   const elements = {
     form: app.querySelector("[data-assessment-form]"),
+    returnProfile: document.querySelector("[data-return-profile]"),
     context: app.querySelector("[data-assessment-context]"),
     panel: app.querySelector("[data-question-panel]"),
     questions: app.querySelector("[data-questions]"),
@@ -390,6 +391,8 @@ import {
 
   async function initializeFollowUp() {
     if (!location.hash.startsWith("#recovery=v1.")) return;
+    elements.returnProfile.href = savedResultsUrl();
+    elements.returnProfile.hidden = false;
     try {
       const credentials = await recoveryCredentialsFromUrl(location.href);
       const stored = await readPrivateResult(credentials);
