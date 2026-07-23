@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { withNeonWorkspaceTransaction } from "../netlify/lib/neon-workspace-database.mjs";
+import {
+  resolveNeonWorkspaceId,
+  withNeonWorkspaceTransaction
+} from "../netlify/lib/neon-workspace-database.mjs";
 
 const connectionString = process.env.NEON_DATABASE_URL;
 const integrationTest = connectionString ? test : test.skip;
@@ -10,6 +13,7 @@ integrationTest("real Postgres RLS isolates two workspaces", async () => {
   const alphaWorkspaceId = randomUUID();
   const bravoWorkspaceId = randomUUID();
   const marker = randomUUID();
+  const clerkOrganizationId = `org_${marker.replaceAll("-", "")}`;
 
   const roleCheck = await withNeonWorkspaceTransaction(alphaWorkspaceId, async ({ query }) => {
     return query(`
@@ -26,7 +30,7 @@ integrationTest("real Postgres RLS isolates two workspaces", async () => {
       `INSERT INTO app_identity.workspaces
         (id, clerk_organization_id, display_label, created_by_clerk_user_id)
        VALUES ($1, $2, $3, $4)`,
-      [alphaWorkspaceId, `org_alpha_${marker}`, "Integration Alpha", `user_${marker}`]
+      [alphaWorkspaceId, clerkOrganizationId, "Integration Alpha", `user_${marker}`]
     );
   }, connectionString);
 
@@ -40,6 +44,15 @@ integrationTest("real Postgres RLS isolates two workspaces", async () => {
   }, connectionString);
 
   try {
+    assert.equal(
+      await resolveNeonWorkspaceId(clerkOrganizationId, connectionString),
+      alphaWorkspaceId
+    );
+    assert.equal(
+      await resolveNeonWorkspaceId(`org_${randomUUID().replaceAll("-", "")}`, connectionString),
+      null
+    );
+
     const alphaRows = await withNeonWorkspaceTransaction(alphaWorkspaceId, async ({ query }) => {
       return query("SELECT id, display_label FROM app_identity.workspaces ORDER BY display_label");
     }, connectionString);

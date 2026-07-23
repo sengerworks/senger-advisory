@@ -9,9 +9,11 @@
   "scripts": {
     "test": "node --test",
     "db:migrate": "node --env-file=.env scripts/apply-workspace-migrations.mjs",
+    "db:link-development-workspace": "node --env-file=.env scripts/link-development-workspace.mjs",
     "test:workspace-db": "node --env-file=.env --test test/workspace-neon.integration.test.mjs"
   },
   "dependencies": {
+    "@clerk/backend": "^3.12.0",
     "@neondatabase/serverless": "^1.1.0",
     "@netlify/blobs": "^10.7.9",
     "ws": "^8.21.1"

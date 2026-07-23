@@ -117,8 +117,16 @@ The first local database migration is in `db/migrations/001_workspace_foundation
 separates identity mappings, private submissions, shared aggregates, and content-free
 operations into logical schemas; forces row-level security on each tenant table; and uses
 composite workspace foreign keys. `workspace-tenant-boundary.js` binds a server-authorized
-workspace to transaction-local database context. The migration remains unapplied until a
-disposable Neon development branch and least-privilege runtime role are available.
+workspace to transaction-local database context. The migrations are applied to the Neon
+development branch and verified through its least-privilege runtime role; the production
+branch remains untouched.
+
+The development identity boundary is documented in `docs/Clerk-Development-Setup.md`.
+`netlify/lib/clerk-workspace-auth.mjs` verifies Clerk session and Organization context before
+resolving an internal workspace, and `/api/workspace/session` exposes only a minimized
+authentication-readiness response. The development Clerk Organization is mapped to the Neon
+development workspace; no production identity instance or production database branch is
+connected.
 
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent

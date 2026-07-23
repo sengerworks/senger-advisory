@@ -38,3 +38,18 @@ export function withNeonWorkspaceTransaction(workspaceId, operation, connectionS
     operation
   );
 }
+
+export async function resolveNeonWorkspaceId(clerkOrganizationId, connectionString) {
+  if (typeof clerkOrganizationId !== "string" || !/^org_[A-Za-z0-9]+$/.test(clerkOrganizationId)) {
+    throw new TypeError("A valid Clerk organization ID is required.");
+  }
+
+  const database = createNeonWorkspaceDatabase(connectionString);
+  return database.transaction(async ({ query }) => {
+    const result = await query(
+      "SELECT app_identity.resolve_workspace($1) AS workspace_id",
+      [clerkOrganizationId]
+    );
+    return result.rows[0]?.workspace_id || null;
+  });
+}

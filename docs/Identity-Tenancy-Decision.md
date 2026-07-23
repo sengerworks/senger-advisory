@@ -205,6 +205,8 @@ and private recovery-link experience retain their current minimal dependency sur
 - Create Clerk development and Neon development projects.
 - Neon development project, least-privilege runtime role, migrations, and real tenant
   isolation test are complete. Clerk development configuration remains.
+- Clerk development Organizations, canonical roles, session authorization boundary, and
+  provider-to-workspace mapping are complete. The browser sign-in flow remains.
 - Configure `org:facilitator` and `org:participant` with the specified system permissions.
 - Add an isolated bundled workspace application.
 - Add a Netlify auth-check function using `authorizedParties`.
