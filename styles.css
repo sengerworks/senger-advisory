@@ -1633,6 +1633,148 @@ h3 {
   background: var(--ivory);
 }
 
+.private-save-panel {
+  margin-top: 54px;
+  padding: clamp(28px, 5vw, 46px);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #fff;
+}
+
+.private-save-panel .eyebrow { color: #d7a365; }
+
+.private-save-panel .report-section-heading > p:last-child {
+  color: rgba(255,255,255,.67);
+}
+
+.private-save-panel ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 28px;
+  margin: 28px 0;
+  padding: 0;
+  list-style: none;
+  color: rgba(255,255,255,.72);
+  font-size: .8rem;
+}
+
+.private-save-panel li {
+  position: relative;
+  padding-left: 17px;
+}
+
+.private-save-panel li::before {
+  content: "";
+  position: absolute;
+  top: .58em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bronze);
+}
+
+.private-save-acknowledgement {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  max-width: 760px;
+  cursor: pointer;
+  color: rgba(255,255,255,.82);
+  font-size: .78rem;
+}
+
+.private-save-acknowledgement input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: var(--blue);
+}
+
+.private-save-acknowledgement input:focus-visible {
+  outline: 3px solid rgba(255,255,255,.6);
+  outline-offset: 2px;
+}
+
+.private-save-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.private-save-actions .button:disabled {
+  cursor: not-allowed;
+  opacity: .38;
+}
+
+.private-save-actions p {
+  margin: 0;
+  color: rgba(255,255,255,.68);
+  font-size: .76rem;
+}
+
+.private-save-result {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255,255,255,.14);
+}
+
+.private-save-result[hidden] { display: none; }
+
+.private-save-result > label {
+  flex: 1;
+  min-width: 0;
+  font-size: .76rem;
+  font-weight: 750;
+}
+
+.private-save-result > label > span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255,255,255,.58);
+  font-size: .68rem;
+  font-weight: 500;
+}
+
+.private-save-result label > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin-top: 9px;
+}
+
+.private-save-result input,
+.private-save-result label button {
+  min-height: 44px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font: inherit;
+}
+
+.private-save-result input {
+  min-width: 0;
+  padding: 0 12px;
+  border-radius: 9px 0 0 9px;
+}
+
+.private-save-result label button {
+  padding: 0 15px;
+  border-left: 0;
+  border-radius: 0 9px 9px 0;
+  cursor: pointer;
+  font-weight: 750;
+}
+
+.private-save-result > .button {
+  border-color: rgba(255,255,255,.28);
+  color: #fff;
+}
+
 .assessment-evidence form {
   margin-top: 28px;
 }
@@ -1909,6 +2051,18 @@ h3 {
     flex-direction: column;
   }
 
+  .private-save-panel ul {
+    grid-template-columns: 1fr;
+  }
+
+  .private-save-actions,
+  .private-save-result {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .private-save-result > label { width: 100%; }
+
   .capacity-index {
     margin-top: 10px;
   }
@@ -1929,6 +2083,7 @@ h3 {
   .site-footer,
   .assessment-intro,
   .assessment-evidence,
+  .private-save-panel,
   .results-controls,
   .skip-link {
     display: none !important;

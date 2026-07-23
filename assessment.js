@@ -1,3 +1,6 @@
+import { encryptSavedProfile } from "./saved-results-crypto.js";
+import { createPrivateResult, privateResultsEnvironment } from "./private-results-api.js";
+
 (() => {
   "use strict";
 
@@ -159,6 +162,13 @@
     evidenceHoneypot: app.querySelector("[data-evidence-honeypot]"),
     evidenceFeedback: app.querySelector("[data-evidence-feedback]"),
     evidenceStatus: app.querySelector("[data-evidence-status]"),
+    privateSaveAck: app.querySelector("[data-private-save-ack]"),
+    privateSave: app.querySelector("[data-private-save]"),
+    privateSaveStatus: app.querySelector("[data-private-save-status]"),
+    privateSaveResult: app.querySelector("[data-private-save-result]"),
+    privateSaveLink: app.querySelector("[data-private-save-link]"),
+    privateCopy: app.querySelector("[data-private-copy]"),
+    privateOpen: app.querySelector("[data-private-open]"),
     retake: app.querySelector("[data-retake]"),
     print: app.querySelector("[data-print]")
   };
@@ -273,6 +283,36 @@
       organizationSize: elements.context.querySelector('[name="organization-size"]').value,
       respondentRole: elements.context.querySelector('[name="respondent-role"]').value,
       growthPressure: elements.context.querySelector('[name="growth-pressure"]').value
+    };
+  }
+
+  function savedProfile() {
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 365 * 86400000);
+    const lowest = Math.min(...lastResult.scores.map(domain => domain.score));
+    return {
+      schemaVersion: "1.0.0",
+      profileId: crypto.randomUUID(),
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+      displayLabel: `Capacity Profile · ${new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" }).format(now)}`,
+      assessmentInstances: [{
+        assessmentInstanceId: crypto.randomUUID(),
+        completedAt: now.toISOString(),
+        assessmentVersion,
+        scoringVersion,
+        reportVersion: "1.0.0",
+        contextVersion: "1.0.0",
+        context: contextPayload(),
+        domainScores: Object.fromEntries(lastResult.scores.map(domain => [domain.id, domain.score])),
+        overallIndex: lastResult.overall,
+        interpretationBand: lastResult.band,
+        primaryConstraintIds: lastResult.scores.filter(domain => domain.score === lowest).map(domain => domain.id),
+        accuracyRating: null
+      }],
+      outcomeSnapshots: [],
+      changeRecords: []
     };
   }
 
@@ -405,6 +445,11 @@
     elements.evidenceFeedback.querySelector('button[type="submit"]').disabled = false;
     elements.evidenceResultConsent.checked = elements.evidenceConsent.checked;
     elements.evidenceStatus.textContent = "";
+    elements.privateSaveAck.checked = false;
+    elements.privateSave.disabled = true;
+    elements.privateSaveResult.hidden = true;
+    elements.privateSaveLink.value = "";
+    elements.privateSaveStatus.textContent = "";
     elements.results.hidden = true;
     elements.form.hidden = false;
     app.querySelector(".assessment-progress").hidden = false;
@@ -414,6 +459,40 @@
 
   elements.evidenceConsent.addEventListener("change", () => {
     elements.evidenceResultConsent.checked = elements.evidenceConsent.checked;
+  });
+
+  elements.privateSaveAck.addEventListener("change", () => {
+    elements.privateSave.disabled = !elements.privateSaveAck.checked;
+  });
+
+  elements.privateSave.addEventListener("click", async () => {
+    if (!lastResult || !elements.privateSaveAck.checked) return;
+    elements.privateSave.disabled = true;
+    elements.privateSaveStatus.textContent = "Encrypting and saving your private profile…";
+    try {
+      const recoveryBase = new URL("saved-results.html", location.href).toString();
+      const encrypted = await encryptSavedProfile(savedProfile(), { baseUrl: recoveryBase });
+      await createPrivateResult(encrypted);
+      elements.privateSaveLink.value = encrypted.recoveryUrl;
+      elements.privateOpen.href = encrypted.recoveryUrl;
+      elements.privateSaveResult.hidden = false;
+      elements.privateSaveStatus.textContent = privateResultsEnvironment.localDevelopment
+        ? "Encrypted profile saved to this browser’s local development store."
+        : "Encrypted profile saved. Copy the recovery link before leaving this page.";
+    } catch (error) {
+      elements.privateSave.disabled = false;
+      elements.privateSaveStatus.textContent = error.message || "We couldn’t save this encrypted profile.";
+    }
+  });
+
+  elements.privateCopy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(elements.privateSaveLink.value);
+      elements.privateSaveStatus.textContent = "Recovery link copied. Protect it like a password.";
+    } catch {
+      elements.privateSaveLink.select();
+      elements.privateSaveStatus.textContent = "Copy was unavailable. The recovery link has been selected for manual copying.";
+    }
   });
 
   elements.evidenceResultConsent.addEventListener("change", () => {

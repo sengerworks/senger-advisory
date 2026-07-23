@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Private Capacity Profile | Senger Advisory</title>
+  <meta name="description" content="Open a private, client-encrypted Organizational Capacity profile." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="private-results.css" />
+</head>
+<body class="private-results-page">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header">
+    <a class="brand" href="index.html">Senger Advisory</a>
+    <a class="private-header-link" href="assessment.html">Return to Assessment</a>
+  </header>
+
+  <main id="main-content" class="private-results-main" data-private-results>
+    <section class="private-loading" data-loading aria-live="polite">
+      <p class="eyebrow">Private Capacity Profile</p>
+      <h1>Opening your encrypted result…</h1>
+      <p>The recovery key remains in this browser while the encrypted envelope is retrieved.</p>
+    </section>
+
+    <section class="private-error" data-error hidden tabindex="-1">
+      <p class="eyebrow">Private Capacity Profile</p>
+      <h1>We couldn’t open this result.</h1>
+      <p data-error-message>The recovery link may be missing, expired, deleted, or invalid.</p>
+      <a class="button primary" href="assessment.html">Take the assessment</a>
+    </section>
+
+    <article class="private-profile" data-profile hidden tabindex="-1">
+      <header class="private-profile-masthead">
+        <div>
+          <p class="eyebrow">Private Capacity Profile</p>
+          <h1 data-profile-label>Organizational Capacity</h1>
+          <p data-profile-date></p>
+        </div>
+        <div class="private-index"><strong data-profile-index>0</strong><span>/100</span></div>
+      </header>
+
+      <div class="private-summary">
+        <span class="results-band" data-profile-band></span>
+        <p>This profile was decrypted in your browser. Senger Advisory stores only its encrypted envelope.</p>
+        <p class="private-context" data-profile-context hidden></p>
+      </div>
+
+      <section class="private-domain-section" aria-labelledby="domain-profile-title">
+        <div>
+          <p class="eyebrow">Capacity Profile</p>
+          <h2 id="domain-profile-title">Six domains of execution.</h2>
+        </div>
+        <div class="domain-results" data-private-domains></div>
+      </section>
+
+      <section class="private-constraint" aria-labelledby="private-constraint-title">
+        <p class="eyebrow">Primary Constraint Signal</p>
+        <h2 id="private-constraint-title" data-private-constraint></h2>
+        <p>This is a directional hypothesis from the assessment—not a benchmark, diagnosis, or proof of causality.</p>
+      </section>
+
+      <section class="private-trust" aria-labelledby="private-trust-title">
+        <div>
+          <p class="eyebrow">Recovery and Retention</p>
+          <h2 id="private-trust-title">This link is the key.</h2>
+        </div>
+        <div>
+          <p>Anyone with the complete recovery link can open this profile. Senger Advisory cannot recover the link or decrypt the profile for you.</p>
+          <dl>
+            <div><dt>Encrypted with</dt><dd>AES-256-GCM</dd></div>
+            <div><dt>Expires</dt><dd data-private-expires></dd></div>
+            <div><dt>Storage</dt><dd data-private-storage>Netlify · ciphertext only</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="private-actions" aria-labelledby="private-actions-title">
+        <div>
+          <p class="eyebrow">Profile Controls</p>
+          <h2 id="private-actions-title">Protect or remove access.</h2>
+        </div>
+        <div class="private-action-buttons">
+          <button class="button primary" type="button" data-copy-link>Copy recovery link</button>
+          <button class="button secondary" type="button" data-print-profile>Print profile</button>
+          <button class="button secondary" type="button" data-renew-profile>Renew for 12 months</button>
+          <button class="button secondary" type="button" data-rotate-profile>Rotate recovery link</button>
+          <button class="button secondary danger-button" type="button" data-request-delete>Delete saved profile</button>
+        </div>
+        <p data-private-status role="status" aria-live="polite"></p>
+        <div class="private-delete-confirmation" data-delete-confirmation hidden>
+          <p><strong>Delete this encrypted profile permanently?</strong> The recovery link will stop working and this action cannot be undone.</p>
+          <button class="button secondary danger-button" type="button" data-confirm-delete>Yes, delete it</button>
+          <button class="button secondary" type="button" data-cancel-delete>Cancel</button>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script type="module" src="saved-results-page.js"></script>
+</body>
+</html>

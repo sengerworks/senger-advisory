@@ -188,6 +188,35 @@
           <p>Compare this profile with decision delays, escalation patterns, meeting load, rework, cross-functional dependencies, and leadership attention. The purpose is not to improve a score. It is to identify the constraint that most limits sustainable execution.</p>
         </section>
 
+        <section class="private-save-panel" aria-labelledby="private-save-title">
+          <div class="report-section-heading">
+            <p class="eyebrow">Private Saved Results</p>
+            <h3 id="private-save-title">Keep this profile without creating an account.</h3>
+            <p>Your report is encrypted in this browser before storage. Senger Advisory receives only ciphertext and cannot recover your profile or recovery link.</p>
+          </div>
+          <ul>
+            <li>The complete recovery link is required to reopen the profile.</li>
+            <li>The encrypted profile expires 12 months after it is saved or renewed.</li>
+            <li>Saving is separate from anonymous evidence sharing.</li>
+            <li>Individual assessment answers are never included.</li>
+          </ul>
+          <label class="private-save-acknowledgement">
+            <input type="checkbox" data-private-save-ack />
+            <span>I understand that anyone with the recovery link can open this profile, and Senger Advisory cannot restore a lost link.</span>
+          </label>
+          <div class="private-save-actions">
+            <button class="button primary" type="button" data-private-save disabled>Create private recovery link</button>
+            <p data-private-save-status role="status" aria-live="polite"></p>
+          </div>
+          <div class="private-save-result" data-private-save-result hidden>
+            <label>Private recovery link
+              <span>Copy and store this link somewhere safe.</span>
+              <div><input type="text" readonly autocomplete="off" spellcheck="false" data-private-save-link /><button type="button" data-private-copy>Copy</button></div>
+            </label>
+            <a class="button secondary" data-private-open href="saved-results.html">Open saved profile</a>
+          </div>
+        </section>
+
         <section class="assessment-evidence" aria-labelledby="evidence-title">
           <div class="report-section-heading">
             <p class="eyebrow">Improve the Evidence</p>
@@ -234,6 +263,6 @@
     <p>© <span id="year"></span> Senger Advisory. All rights reserved. <a href="privacy.html">Privacy</a></p>
   </footer>
   <script src="script.js"></script>
-  <script src="assessment.js"></script>
+  <script type="module" src="assessment.js"></script>
 </body>
 </html>

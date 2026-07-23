@@ -9,7 +9,10 @@ expand the data collected or the purposes for which it is used.
 
 Milestone A is implemented as a local-only cryptographic prototype in
 `crypto-prototype.html`, `saved-results-crypto.js`, `schemas/`, and the automated test suite.
-It validates the design but does not persist saved results to Netlify.
+Milestone B implements private encrypted persistence through the assessment,
+`saved-results.html`, the `/api/private-results` Netlify Function, and the site-scoped
+`capacity-saved-results` Netlify Blobs store. Longitudinal comparison, outcome snapshots, and
+research linkage remain future milestones.
 
 ## Objective
 

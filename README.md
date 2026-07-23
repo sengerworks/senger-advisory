@@ -49,19 +49,24 @@ guidance are documented in `docs/Assessment-Evidence.md`.
 The next product phase is governed by `docs/Longitudinal-Evidence-Architecture.md`. It keeps
 private saved results client-encrypted, separates recovery credentials from research
 identifiers, and defines consent, comparison, outcome, retention, deletion, security, and
-version-compatibility rules before longitudinal features are implemented.
+version-compatibility rules for longitudinal features.
 
-## Private Saved Results Cryptographic Prototype
+## Private Saved Results
 
-`crypto-prototype.html` exercises the private saved-results trust model without a server-side
-store. `saved-results-crypto.js` generates 256-bit recovery secrets, derives independent
+Assessment participants can create a private recovery link from their completed report.
+`saved-results-crypto.js` generates a 256-bit recovery secret, derives independent
 authentication and encryption material with HKDF-SHA-256, and encrypts saved profiles with
-AES-256-GCM. The prototype stores ciphertext in local browser storage so create, reload,
-restore, rotate, corruption, and deletion behavior can be reviewed safely. Machine-readable
-contracts live in `schemas/`; deterministic and lifecycle tests live in `test/`.
+AES-256-GCM. `netlify/functions/saved-results.mjs` stores only validated encrypted envelopes
+in the site-scoped `capacity-saved-results` Netlify Blobs store. The private page supports
+recovery, renewal, link rotation, printing, and immediate deletion without an account.
 
-The prototype is deliberately excluded from site navigation and search indexing. It is not a
-production saved-results feature.
+On localhost, `private-results-api.js` uses browser storage as a ciphertext-only mock so the
+complete experience can be reviewed without Netlify Dev. The private page remains excluded
+from navigation and search indexing. Machine-readable contracts live in `schemas/`;
+deterministic, lifecycle, validation, and function tests live in `test/`. Deployment and
+operating details are documented in `docs/Private-Saved-Results.md`.
+
+`crypto-prototype.html` remains available as a development-only cryptographic test surface.
 
 ## Deploy
 Push to GitHub. Netlify deploys automatically from the connected repository.
