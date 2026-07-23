@@ -37,7 +37,7 @@
 ## Phase 3 — Multi-perspective organizational platform
 - Organizational workspace architecture and governance contract
 - Privacy-thresholded multi-perspective aggregation engine
-- Illustrative organizational-view prototype
+- Illustrative organizational-view prototype with threshold simulation
 - Managed identity, tenancy, invitations, and audit foundation
 - Private collection rounds and organizational reports
 - Shared organizational action cycles and reassessment

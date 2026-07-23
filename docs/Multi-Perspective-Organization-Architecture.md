@@ -4,8 +4,9 @@
 
 Architecture and governance contract for the first organizational workspace. This document
 precedes production identity, invitation, response-storage, and workspace APIs. The initial
-aggregation engine and machine-readable contracts are implemented locally so privacy and
-interpretation rules can be tested before platform-readable organizational data is collected.
+aggregation engine, machine-readable contracts, and fictional no-storage prototype are
+implemented so privacy and interpretation rules can be tested before platform-readable
+organizational data is collected.
 
 This feature is a product capability, not research participation, a validated organizational
 benchmark, or an employee-surveillance system.
@@ -282,6 +283,12 @@ secret rotation, and automated cross-tenant tests.
 - Show threshold behavior from zero through five submissions.
 - Visualize aggregate domain means and categorical perspective patterns.
 - Generate shared constraint hypotheses without individual drilldown.
+
+Implemented in `organization-view.html`, `organization-view.js`,
+`organization-view-demo-data.js`, and `organization-view.css`. The demonstration begins with
+one fictional completed assessment, allows the visitor to move through five, and calls the
+production aggregation engine after every change. It creates no account, network request,
+browser-storage record, invitation, consent receipt, or evidence event.
 
 ### Milestone C — Identity and tenancy foundation
 

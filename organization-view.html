@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Illustrative Organizational View | Senger Advisory</title>
+  <meta name="description" content="Explore an illustrative, privacy-thresholded multi-perspective Organizational Capacity view." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css?v=organization-view-v1" />
+  <link rel="stylesheet" href="organization-view.css?v=organization-view-v1" />
+</head>
+<body class="organization-view-page">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header">
+    <a class="brand" href="index.html">Senger Advisory</a>
+    <a class="organization-header-link" href="assessment.html">Take the Assessment</a>
+  </header>
+
+  <main id="main-content">
+    <section class="organization-hero">
+      <div>
+        <p class="eyebrow">Organizational View · Illustrative</p>
+        <h1>See the organization through more than one perspective.</h1>
+        <p class="page-lede">Explore how a leadership team’s private assessments become a shared capacity pattern—without exposing any individual’s answers or scores.</p>
+      </div>
+      <aside>
+        <strong>Fictional demonstration</strong>
+        <p>No accounts are created. No responses are stored. This example is not a client result, benchmark, or research finding.</p>
+      </aside>
+    </section>
+
+    <section class="organization-boundaries" aria-labelledby="boundaries-title">
+      <div>
+        <p class="eyebrow">Visibility Boundary</p>
+        <h2 id="boundaries-title">Participation is visible. Perspective remains private.</h2>
+      </div>
+      <div>
+        <article>
+          <span>Workspace leaders can see</span>
+          <p>Who was invited, whether each invitation is complete, and the shared organizational view after the threshold is met.</p>
+        </article>
+        <article>
+          <span>Workspace leaders cannot see</span>
+          <p>Individual answers, individual scores, private reports, recovery links, or respondent-level comparisons.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="organization-simulator" data-organization-view aria-labelledby="simulator-title">
+      <div class="organization-simulator-heading">
+        <div>
+          <p class="eyebrow">Collection Round</p>
+          <h2 id="simulator-title">Watch the privacy threshold work.</h2>
+        </div>
+        <p>Move from one to five fictional completed assessments. Organizational scores remain fully suppressed until five valid perspectives are available.</p>
+      </div>
+
+      <div class="participant-progress">
+        <div class="participant-progress-heading">
+          <div><strong data-participant-count>1 of 5</strong><span>fictional assessments complete</span></div>
+          <span data-threshold-label>Results protected</span>
+        </div>
+        <ol data-participant-list aria-label="Fictional participant completion"></ol>
+        <label for="participant-slider">Completed assessments
+          <input id="participant-slider" data-participant-slider type="range" min="1" max="5" step="1" value="1" />
+        </label>
+        <div class="participant-controls">
+          <button class="button secondary" data-previous-participant type="button" disabled>Previous perspective</button>
+          <button class="button primary" data-next-participant type="button">Add next perspective</button>
+        </div>
+      </div>
+
+      <div class="threshold-panel" data-threshold-panel aria-live="polite">
+        <div class="threshold-mark" aria-hidden="true"><span data-threshold-number>4</span><small>more</small></div>
+        <div>
+          <p class="eyebrow">Privacy Threshold</p>
+          <h3 data-threshold-title>Organizational results remain hidden.</h3>
+          <p data-threshold-copy>The workspace can show completion progress, but no score, constraint, or response pattern is available.</p>
+        </div>
+      </div>
+
+      <section class="organization-results" data-organization-results hidden aria-labelledby="organization-results-title">
+        <header>
+          <div>
+            <p class="eyebrow">Shared Organizational View</p>
+            <h2 id="organization-results-title">The pattern the team can investigate together.</h2>
+          </div>
+          <div class="organization-index"><strong data-organization-index>0</strong><span>/100</span></div>
+        </header>
+        <p class="organization-method">This is the rounded mean of five fictional aggregate profiles—not a benchmark, consensus score, or measure of individual performance.</p>
+        <div class="organization-domain-results" data-organization-domains></div>
+
+        <div class="organization-constraint">
+          <div>
+            <p class="eyebrow">Shared Constraint Hypothesis</p>
+            <h3 data-organization-constraint></h3>
+          </div>
+          <div>
+            <p data-constraint-hypothesis></p>
+            <h4>Questions for the leadership team</h4>
+            <ul data-constraint-questions></ul>
+          </div>
+        </div>
+
+        <div class="perspective-legend">
+          <article><span data-pattern="closely-aligned"></span><strong>Closely aligned</strong><p>Perspectives cluster relatively near one another.</p></article>
+          <article><span data-pattern="varied"></span><strong>Varied</strong><p>Leaders are observing meaningfully different conditions.</p></article>
+          <article><span data-pattern="widely-varied"></span><strong>Widely varied</strong><p>The spread itself warrants investigation before action.</p></article>
+        </div>
+        <p class="organization-caution">Perspective variation does not identify who is correct, prove organizational conflict, or establish statistical significance. It tells the team where shared inquiry may matter most.</p>
+      </section>
+    </section>
+
+    <section class="organization-next">
+      <div>
+        <p class="eyebrow">From View to Action</p>
+        <h2>The report is the beginning of the conversation.</h2>
+      </div>
+      <div>
+        <p>A production workspace would connect this shared constraint hypothesis to an organizational action cycle, operating evidence, and later reassessment—while keeping individual private profiles independent.</p>
+        <a class="button primary" href="saved-results.html?demo=1">View the individual product loop</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="organization-view.js?v=organization-view-v1"></script>
+</body>
+</html>

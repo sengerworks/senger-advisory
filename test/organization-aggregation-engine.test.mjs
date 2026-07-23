@@ -6,6 +6,7 @@ import {
   MINIMUM_ORGANIZATION_COHORT,
   validateOrganizationSubmission
 } from "../organization-aggregation-engine.js";
+import { illustrativeOrganizationSubmissions } from "../organization-view-demo-data.js";
 
 test("organizational submission, view, and governance contracts parse", async () => {
   const names = ["organization-submission.schema.json", "organization-view.schema.json", "organization-governance.json"];
@@ -14,6 +15,15 @@ test("organizational submission, view, and governance contracts parse", async ()
   assert.equal(contracts[1].oneOf.length, 3);
   assert.equal(contracts[2].minimumOrganizationCohort, 5);
   assert.equal(contracts[2].subgroupViewsEnabled, false);
+});
+
+test("illustrative organizational cohort remains valid and crosses the threshold only at five", () => {
+  assert.equal(illustrativeOrganizationSubmissions.every(validateOrganizationSubmission), true);
+  assert.equal(aggregateOrganization(illustrativeOrganizationSubmissions.slice(0, 4)).policy, "suppressed");
+  const result = aggregateOrganization(illustrativeOrganizationSubmissions);
+  assert.equal(result.policy, "aggregate");
+  assert.equal(result.primaryConstraintIds[0], "decisions");
+  assert.equal(result.domainScores.decisions.perspectivePattern, "widely-varied");
 });
 
 function submission(index, decisions, leadership = 60) {

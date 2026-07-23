@@ -101,6 +101,12 @@ intentionally deferred until the tenancy, consent, retention, and authorization 
 in `docs/Multi-Perspective-Organization-Architecture.md` are approved. Machine-readable
 submission, view, and governance contracts live in `schemas/`.
 
+`organization-view.html` is the corresponding fictional, no-storage product prototype. It
+lets a visitor advance a collection round from one through five perspectives, demonstrates
+full score suppression below threshold, and then renders the aggregate domains, categorical
+perspective patterns, and shared constraint hypothesis. It performs no fetch or browser
+storage operation and is linked from the assessment and individual illustrative profile.
+
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent
 withdrawal capability, then projects only versioned aggregate assessments, outcome
