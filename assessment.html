@@ -91,6 +91,14 @@
               <option>Transformational change</option>
             </select>
           </label>
+          <div class="evidence-consent">
+            <label>
+              <input type="checkbox" data-evidence-consent />
+              <span><strong>Contribute anonymous evidence</strong>Share assessment progress, aggregate domain scores, and the optional context above to help evaluate and improve this model.</span>
+            </label>
+            <p>Individual answers, contact information, and identity are not collected. Participation is optional and does not affect your results. <a href="privacy.html#assessment-evidence">Privacy details</a></p>
+            <label class="evidence-honeypot" aria-hidden="true">Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off" data-evidence-honeypot /></label>
+          </div>
         </div>
 
         <fieldset data-question-panel>
@@ -178,6 +186,37 @@
             <h3 id="next-step-title">Test the signal against evidence.</h3>
           </div>
           <p>Compare this profile with decision delays, escalation patterns, meeting load, rework, cross-functional dependencies, and leadership attention. The purpose is not to improve a score. It is to identify the constraint that most limits sustainable execution.</p>
+        </section>
+
+        <section class="assessment-evidence" aria-labelledby="evidence-title">
+          <div class="report-section-heading">
+            <p class="eyebrow">Improve the Evidence</p>
+            <h3 id="evidence-title">Did this profile reflect your organization?</h3>
+            <p>Your optional feedback helps test the assessment’s accuracy and calibrate future versions.</p>
+          </div>
+          <form data-evidence-feedback novalidate>
+            <fieldset>
+              <legend>How accurately does this result reflect your organization?</legend>
+              <div class="evidence-rating">
+                <label><input type="radio" name="accuracy" value="1" /><span><strong>1</strong>Not accurate</span></label>
+                <label><input type="radio" name="accuracy" value="2" /><span><strong>2</strong>Slightly accurate</span></label>
+                <label><input type="radio" name="accuracy" value="3" /><span><strong>3</strong>Directionally accurate</span></label>
+                <label><input type="radio" name="accuracy" value="4" /><span><strong>4</strong>Very accurate</span></label>
+                <label><input type="radio" name="accuracy" value="5" /><span><strong>5</strong>Highly accurate</span></label>
+              </div>
+            </fieldset>
+            <label class="evidence-feedback-label">What felt accurate or incomplete? <span>Optional</span>
+              <textarea name="feedback" maxlength="1000" rows="4" placeholder="Share context that would help improve the model."></textarea>
+            </label>
+            <label class="evidence-result-consent">
+              <input type="checkbox" data-evidence-result-consent />
+              <span>I agree to share anonymous assessment evidence. This includes aggregate scores, optional organizational context, this rating, and my written feedback—but not my individual answers or identity.</span>
+            </label>
+            <div class="evidence-submit-row">
+              <button class="button secondary" type="submit">Share anonymous feedback</button>
+              <p data-evidence-status role="status" aria-live="polite"></p>
+            </div>
+          </form>
         </section>
 
         <p class="assessment-method-note">This MVP is a directional management tool, not a validated benchmark or psychometric instrument. The index combines the six-domain average with a weakest-domain adjustment so strength elsewhere does not hide a material constraint. Scores should be interpreted alongside organizational context and evidence.</p>

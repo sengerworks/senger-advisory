@@ -40,6 +40,12 @@ with a system interpretation, capacity strength, three priority hypotheses, lead
 questions, and an evidence-oriented next step. The calculation and evidence limitations are documented in
 `docs/Assessment-Scoring.md`.
 
+Assessment evidence is opt-in. `netlify/functions/assessment-evidence.mjs` validates versioned
+lifecycle events, aggregate scores, optional context, accuracy ratings, and written feedback
+before storing them in the site-scoped `assessment-evidence` Netlify Blobs store. Individual
+question responses and identity fields are not accepted. The data contract and operating
+guidance are documented in `docs/Assessment-Evidence.md`.
+
 ## Deploy
 Push to GitHub. Netlify deploys automatically from the connected repository.
 

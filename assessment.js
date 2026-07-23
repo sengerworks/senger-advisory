@@ -4,6 +4,10 @@
   const app = document.querySelector("[data-assessment-app]");
   if (!app) return;
 
+  const assessmentVersion = "1.0.0";
+  const scoringVersion = "0.1.0";
+  const evidenceEndpoint = "/.netlify/functions/assessment-evidence";
+
   const domains = [
     {
       id: "leadership",
@@ -150,12 +154,34 @@
     strengthInterpretation: app.querySelector("[data-strength-interpretation]"),
     priorityResults: app.querySelector("[data-priority-results]"),
     leadershipQuestions: app.querySelector("[data-leadership-questions]"),
+    evidenceConsent: app.querySelector("[data-evidence-consent]"),
+    evidenceResultConsent: app.querySelector("[data-evidence-result-consent]"),
+    evidenceHoneypot: app.querySelector("[data-evidence-honeypot]"),
+    evidenceFeedback: app.querySelector("[data-evidence-feedback]"),
+    evidenceStatus: app.querySelector("[data-evidence-status]"),
     retake: app.querySelector("[data-retake]"),
     print: app.querySelector("[data-print]")
   };
 
   let currentDomain = 0;
   const responses = {};
+  let lastResult = null;
+  let completionPromise = null;
+
+  function createSessionId() {
+    if (crypto.randomUUID) return crypto.randomUUID();
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = [...bytes].map(byte => byte.toString(16).padStart(2, "0"));
+    return `${hex.slice(0, 4).join("")}-${hex.slice(4, 6).join("")}-${hex.slice(6, 8).join("")}-${hex.slice(8, 10).join("")}-${hex.slice(10).join("")}`;
+  }
+
+  function newEvidenceState() {
+    return { sessionId: createSessionId(), startedAt: Date.now(), started: false, completed: false, completionShared: false };
+  }
+
+  let evidenceState = newEvidenceState();
 
   const escapeHtml = value => value.replace(/[&<>"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
 
@@ -224,6 +250,75 @@
     return { scores, overall };
   }
 
+  function hasEvidenceConsent() {
+    return elements.results.hidden ? elements.evidenceConsent.checked : elements.evidenceResultConsent.checked;
+  }
+
+  function evidenceBase(event) {
+    return {
+      event,
+      sessionId: evidenceState.sessionId,
+      assessmentVersion,
+      scoringVersion,
+      website: elements.evidenceHoneypot.value
+    };
+  }
+
+  function durationSeconds() {
+    return Math.min(86400, Math.max(0, Math.round((Date.now() - evidenceState.startedAt) / 1000)));
+  }
+
+  function contextPayload() {
+    return {
+      organizationSize: elements.context.querySelector('[name="organization-size"]').value,
+      respondentRole: elements.context.querySelector('[name="respondent-role"]').value,
+      growthPressure: elements.context.querySelector('[name="growth-pressure"]').value
+    };
+  }
+
+  async function postEvidence(payload, showStatus = false) {
+    try {
+      const response = await fetch(evidenceEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        credentials: "same-origin",
+        keepalive: true
+      });
+      if (!response.ok) throw new Error("Evidence request failed");
+      return true;
+    } catch {
+      if (showStatus) elements.evidenceStatus.textContent = "We couldn’t share this evidence right now. Your assessment results are unaffected.";
+      return false;
+    }
+  }
+
+  function sendLifecycleBeacon(event, details = {}) {
+    if (!hasEvidenceConsent()) return false;
+    const body = new Blob([JSON.stringify({ ...evidenceBase(event), ...details })], { type: "application/json" });
+    return navigator.sendBeacon(evidenceEndpoint, body);
+  }
+
+  function shareCompletion(showStatus = false) {
+    if (evidenceState.completionShared) return Promise.resolve(true);
+    if (completionPromise) return completionPromise;
+    if (!lastResult || !hasEvidenceConsent()) return Promise.resolve(false);
+    const scores = Object.fromEntries(lastResult.scores.map(domain => [domain.id, domain.score]));
+    completionPromise = postEvidence({
+      ...evidenceBase("completion"),
+      scores,
+      overall: lastResult.overall,
+      band: lastResult.band,
+      context: contextPayload(),
+      durationSeconds: durationSeconds()
+    }, showStatus).then(shared => {
+      evidenceState.completionShared = shared;
+      if (shared && showStatus) elements.evidenceStatus.textContent = "Anonymous result shared. Feedback remains optional.";
+      return shared;
+    }).finally(() => { completionPromise = null; });
+    return completionPromise;
+  }
+
   function showResults() {
     const { scores, overall } = scoreAssessment();
     const [band, summary] = bandFor(overall);
@@ -231,6 +326,8 @@
     const strongest = [...scores].sort((a, b) => b.score - a.score)[0];
     const priorities = [...scores].sort((a, b) => a.score - b.score).slice(0, 3);
     const spread = strongest.score - constraint.score;
+    lastResult = { scores, overall, band };
+    evidenceState.completed = true;
 
     elements.form.hidden = true;
     app.querySelector(".assessment-progress").hidden = true;
@@ -271,6 +368,8 @@
         <div class="domain-score-track" aria-label="${domain.name}: ${domain.score} out of 100"><span style="width:${domain.score}%"></span></div>
       </article>`;
     }).join("");
+    elements.evidenceResultConsent.checked = elements.evidenceConsent.checked;
+    if (hasEvidenceConsent()) shareCompletion(true);
     elements.results.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   }
 
@@ -278,6 +377,10 @@
     if (!captureDomain()) {
       elements.error.hidden = false;
       return;
+    }
+    if (currentDomain === 0 && hasEvidenceConsent() && !evidenceState.started) {
+      evidenceState.started = true;
+      postEvidence(evidenceBase("start"));
     }
     if (currentDomain === domains.length - 1) showResults();
     else {
@@ -295,6 +398,13 @@
   elements.retake.addEventListener("click", () => {
     Object.keys(responses).forEach(key => delete responses[key]);
     currentDomain = 0;
+    lastResult = null;
+    completionPromise = null;
+    evidenceState = newEvidenceState();
+    elements.evidenceFeedback.reset();
+    elements.evidenceFeedback.querySelector('button[type="submit"]').disabled = false;
+    elements.evidenceResultConsent.checked = elements.evidenceConsent.checked;
+    elements.evidenceStatus.textContent = "";
     elements.results.hidden = true;
     elements.form.hidden = false;
     app.querySelector(".assessment-progress").hidden = false;
@@ -302,7 +412,52 @@
     app.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  elements.print.addEventListener("click", () => window.print());
+  elements.evidenceConsent.addEventListener("change", () => {
+    elements.evidenceResultConsent.checked = elements.evidenceConsent.checked;
+  });
+
+  elements.evidenceResultConsent.addEventListener("change", () => {
+    elements.evidenceConsent.checked = elements.evidenceResultConsent.checked;
+    if (elements.evidenceResultConsent.checked) shareCompletion(true);
+  });
+
+  elements.evidenceFeedback.addEventListener("submit", async event => {
+    event.preventDefault();
+    const accuracy = elements.evidenceFeedback.querySelector('input[name="accuracy"]:checked');
+    if (!accuracy) {
+      elements.evidenceStatus.textContent = "Select an accuracy rating before sharing feedback.";
+      return;
+    }
+    if (!elements.evidenceResultConsent.checked) {
+      elements.evidenceStatus.textContent = "Confirm anonymous evidence sharing before submitting.";
+      elements.evidenceResultConsent.focus();
+      return;
+    }
+    elements.evidenceStatus.textContent = "Sharing anonymous evidence…";
+    const completionShared = await shareCompletion(true);
+    if (!completionShared) return;
+    const feedback = elements.evidenceFeedback.querySelector('textarea[name="feedback"]').value;
+    const shared = await postEvidence({
+      ...evidenceBase("feedback"),
+      accuracy: Number(accuracy.value),
+      feedback
+    }, true);
+    if (shared) {
+      elements.evidenceStatus.textContent = "Thank you. Your anonymous feedback was shared.";
+      elements.evidenceFeedback.querySelector('button[type="submit"]').disabled = true;
+    }
+  });
+
+  elements.print.addEventListener("click", () => {
+    if (hasEvidenceConsent()) postEvidence({ ...evidenceBase("report_action"), durationSeconds: durationSeconds() });
+    window.print();
+  });
+
+  window.addEventListener("pagehide", () => {
+    if (evidenceState.started && !evidenceState.completed && hasEvidenceConsent()) {
+      sendLifecycleBeacon("abandonment", { lastDomain: currentDomain + 1, durationSeconds: durationSeconds() });
+    }
+  });
   elements.panel.setAttribute("tabindex", "-1");
   renderDomain();
 })();
