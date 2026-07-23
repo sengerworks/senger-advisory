@@ -348,7 +348,7 @@ function renderProfile(profile, envelope) {
   elements.context.textContent = context.length ? `Context: ${context.join(" · ")}` : "";
   elements.domains.innerHTML = Object.entries(assessment.domainScores).map(([id, score]) => `<article class="domain-result">
     <div><h3>${domainNames[id]}</h3><span>${score}/100</span></div>
-    <div class="domain-score-track" aria-label="${domainNames[id]}: ${score} out of 100"><span style="width:${score}%"></span></div>
+    <progress class="domain-score-track" max="100" value="${score}" aria-label="${domainNames[id]}: ${score} out of 100">${score}%</progress>
   </article>`).join("");
   elements.constraint.textContent = assessment.primaryConstraintIds.map(id => domainNames[id]).join(" + ");
   if (!elements.actionConstraint.dataset.initialized) {

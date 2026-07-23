@@ -520,7 +520,7 @@ import {
       const [domainBand] = bandFor(domain.score);
       return `<article class="domain-result">
         <div><h3>${domain.name}</h3><span>${domainBand} · ${domain.score}/100</span></div>
-        <div class="domain-score-track" aria-label="${domain.name}: ${domain.score} out of 100"><span style="width:${domain.score}%"></span></div>
+        <progress class="domain-score-track" max="100" value="${domain.score}" aria-label="${domain.name}: ${domain.score} out of 100">${domain.score}%</progress>
       </article>`;
     }).join("");
     elements.evidenceResultConsent.checked = elements.evidenceConsent.checked;
