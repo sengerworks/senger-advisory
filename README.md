@@ -51,6 +51,18 @@ private saved results client-encrypted, separates recovery credentials from rese
 identifiers, and defines consent, comparison, outcome, retention, deletion, security, and
 version-compatibility rules before longitudinal features are implemented.
 
+## Private Saved Results Cryptographic Prototype
+
+`crypto-prototype.html` exercises the private saved-results trust model without a server-side
+store. `saved-results-crypto.js` generates 256-bit recovery secrets, derives independent
+authentication and encryption material with HKDF-SHA-256, and encrypts saved profiles with
+AES-256-GCM. The prototype stores ciphertext in local browser storage so create, reload,
+restore, rotate, corruption, and deletion behavior can be reviewed safely. Machine-readable
+contracts live in `schemas/`; deterministic and lifecycle tests live in `test/`.
+
+The prototype is deliberately excluded from site navigation and search indexing. It is not a
+production saved-results feature.
+
 ## Deploy
 Push to GitHub. Netlify deploys automatically from the connected repository.
 

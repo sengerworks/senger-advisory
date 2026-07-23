@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sengeradvisory.com/schemas/encrypted-envelope.schema.json",
+  "title": "Encrypted Saved Results Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["envelopeVersion", "cipher", "iv", "ciphertext", "createdAt", "updatedAt", "expiresAt"],
+  "properties": {
+    "envelopeVersion": { "const": "1.0.0" },
+    "cipher": { "const": "AES-256-GCM" },
+    "iv": { "type": "string", "pattern": "^[A-Za-z0-9_-]{16}$" },
+    "ciphertext": { "type": "string", "minLength": 32, "maxLength": 131072, "pattern": "^[A-Za-z0-9_-]+$" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" }
+  }
+}

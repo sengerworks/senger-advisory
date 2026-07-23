@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Private Saved Results Prototype | Senger Advisory</title>
+  <meta name="description" content="Local cryptographic prototype for private saved Organizational Capacity results." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="prototype/crypto-prototype.css" />
+</head>
+<body class="crypto-prototype-page">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="prototype-header">
+    <a class="brand" href="index.html">Senger Advisory</a>
+    <span>Development prototype · Local browser only</span>
+  </header>
+
+  <main id="main-content">
+    <section class="prototype-hero">
+      <p class="eyebrow">Milestone A · Trust Prototype</p>
+      <h1>Private results the platform cannot read.</h1>
+      <p class="page-lede">This page encrypts a sample Capacity Profile in your browser, stores only ciphertext in local browser storage, and restores it using a secret kept in the URL fragment.</p>
+    </section>
+
+    <section class="prototype-shell" data-crypto-prototype>
+      <div class="prototype-principles">
+        <article><span>01</span><h2>Separate keys</h2><p>One recovery secret derives independent authentication and encryption material.</p></article>
+        <article><span>02</span><h2>Client encryption</h2><p>AES-256-GCM encrypts and authenticates the profile before anything is stored.</p></article>
+        <article><span>03</span><h2>Fragment recovery</h2><p>The recovery secret follows <code>#</code>, so it is not included in HTTP requests.</p></article>
+      </div>
+
+      <div class="prototype-workbench">
+        <section class="prototype-controls" aria-labelledby="prototype-controls-title">
+          <p class="eyebrow">Prototype Controls</p>
+          <h2 id="prototype-controls-title">Test the trust model.</h2>
+          <p>Create a sample encrypted profile, reload or copy its recovery link, restore it, rotate the link, simulate corruption, or delete the local record.</p>
+          <div class="prototype-actions">
+            <button class="button primary" type="button" data-create>Create encrypted profile</button>
+            <button class="button secondary" type="button" data-restore>Restore from this link</button>
+            <button class="button secondary" type="button" data-rotate disabled>Rotate recovery link</button>
+            <button class="button secondary" type="button" data-corrupt disabled>Simulate corruption</button>
+            <button class="button secondary danger-button" type="button" data-delete disabled>Delete local record</button>
+          </div>
+
+          <label class="prototype-link-label">Recovery link
+            <span>The link is the only recovery mechanism in this prototype.</span>
+            <div><input type="text" readonly autocomplete="off" spellcheck="false" data-recovery-link /><button type="button" data-copy>Copy</button></div>
+          </label>
+          <p class="prototype-status" data-status role="status" aria-live="polite">No encrypted profile exists yet.</p>
+        </section>
+
+        <section class="prototype-inspection" aria-labelledby="prototype-inspection-title">
+          <div>
+            <p class="eyebrow">Ciphertext Inspection</p>
+            <h2 id="prototype-inspection-title">What storage can see</h2>
+          </div>
+          <dl>
+            <div><dt>Envelope</dt><dd data-envelope-version>—</dd></div>
+            <div><dt>Cipher</dt><dd data-cipher>—</dd></div>
+            <div><dt>Access ID</dt><dd data-access-id>—</dd></div>
+            <div><dt>Ciphertext</dt><dd data-ciphertext-size>—</dd></div>
+            <div><dt>Expires</dt><dd data-expires>—</dd></div>
+          </dl>
+          <details>
+            <summary>View stored encrypted envelope</summary>
+            <pre data-envelope-output>No envelope</pre>
+          </details>
+          <details>
+            <summary>View restored private profile</summary>
+            <pre data-profile-output>Restore a valid profile to view plaintext.</pre>
+          </details>
+        </section>
+      </div>
+
+      <aside class="prototype-warning">
+        <strong>Prototype boundary</strong>
+        <p>This page uses local browser storage as a mock data store. It sends no saved-result content to Netlify. Clearing browser storage or losing the recovery link makes the sample unavailable.</p>
+      </aside>
+    </section>
+  </main>
+
+  <script type="module" src="prototype/crypto-prototype.js"></script>
+</body>
+</html>

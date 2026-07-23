@@ -7,6 +7,10 @@ document defines product, data, privacy, and security boundaries. It does not cl
 research, or psychometric validation and should be reviewed before implementation changes
 expand the data collected or the purposes for which it is used.
 
+Milestone A is implemented as a local-only cryptographic prototype in
+`crypto-prototype.html`, `saved-results-crypto.js`, `schemas/`, and the automated test suite.
+It validates the design but does not persist saved results to Netlify.
+
 ## Objective
 
 Create a trustworthy chain from organizational conditions to capacity patterns to changes

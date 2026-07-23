@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sengeradvisory.com/schemas/saved-profile.schema.json",
+  "title": "Private Saved Capacity Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "profileId": { "$ref": "#/$defs/uuid" },
+    "createdAt": { "$ref": "#/$defs/timestamp" },
+    "updatedAt": { "$ref": "#/$defs/timestamp" },
+    "expiresAt": { "$ref": "#/$defs/timestamp" },
+    "displayLabel": { "type": "string", "maxLength": 80 },
+    "assessmentInstances": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 24,
+      "items": { "$ref": "#/$defs/assessmentInstance" }
+    },
+    "outcomeSnapshots": {
+      "type": "array",
+      "maxItems": 24,
+      "items": { "$ref": "#/$defs/outcomeSnapshot" }
+    },
+    "changeRecords": {
+      "type": "array",
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/changeRecord" }
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "domainScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"],
+      "properties": {
+        "leadership": { "$ref": "#/$defs/score" },
+        "decisions": { "$ref": "#/$defs/score" },
+        "rhythm": { "$ref": "#/$defs/score" },
+        "alignment": { "$ref": "#/$defs/score" },
+        "technology": { "$ref": "#/$defs/score" },
+        "culture": { "$ref": "#/$defs/score" }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["organizationSize", "respondentRole", "growthPressure"],
+      "properties": {
+        "organizationSize": { "enum": ["", "Fewer than 25 people", "25–49 people", "50–149 people", "150–399 people", "400 or more people"] },
+        "respondentRole": { "enum": ["", "CEO or founder", "Executive leader", "Functional leader", "People or operations leader", "Advisor or board member"] },
+        "growthPressure": { "enum": ["", "Stable", "Increasing", "High", "Transformational change"] }
+      }
+    },
+    "assessmentInstance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assessmentInstanceId", "completedAt", "assessmentVersion", "scoringVersion", "reportVersion", "contextVersion", "context", "domainScores", "overallIndex", "interpretationBand", "primaryConstraintIds", "accuracyRating"],
+      "properties": {
+        "assessmentInstanceId": { "$ref": "#/$defs/uuid" },
+        "completedAt": { "$ref": "#/$defs/timestamp" },
+        "assessmentVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "scoringVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "reportVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "contextVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "context": { "$ref": "#/$defs/context" },
+        "domainScores": { "$ref": "#/$defs/domainScores" },
+        "overallIndex": { "$ref": "#/$defs/score" },
+        "interpretationBand": { "enum": ["Constrained", "Strained", "Developing", "Enabling"] },
+        "primaryConstraintIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": { "enum": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"] }
+        },
+        "accuracyRating": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 }
+      }
+    },
+    "outcomeSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcomeSnapshotId", "observedAt", "outcomeMeasureVersion", "observationWindow", "decisionPace", "leadershipEscalationLoad", "crossFunctionalCoordinationLoad", "executionReliability", "changeAbsorption", "evidenceSource"],
+      "properties": {
+        "outcomeSnapshotId": { "$ref": "#/$defs/uuid" },
+        "observedAt": { "$ref": "#/$defs/timestamp" },
+        "outcomeMeasureVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "observationWindow": { "enum": ["30-days", "90-days"] },
+        "decisionPace": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "leadershipEscalationLoad": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "crossFunctionalCoordinationLoad": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "executionReliability": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "changeAbsorption": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "evidenceSource": { "enum": ["self-report", "operating-measure", "mixed"] }
+      }
+    },
+    "changeRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changeRecordId", "startedAt", "endedAt", "category", "targetDomainIds", "magnitude", "status", "note"],
+      "properties": {
+        "changeRecordId": { "$ref": "#/$defs/uuid" },
+        "startedAt": { "$ref": "#/$defs/timestamp" },
+        "endedAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+        "category": { "enum": ["leadership", "decision-rights", "operating-cadence", "structure", "process", "technology", "talent", "culture", "strategy", "external-event", "other"] },
+        "targetDomainIds": { "type": "array", "maxItems": 6, "uniqueItems": true, "items": { "enum": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"] } },
+        "magnitude": { "enum": ["limited", "material", "enterprise-wide"] },
+        "status": { "enum": ["planned", "active", "completed", "discontinued"] },
+        "note": { "type": "string", "maxLength": 500 }
+      }
+    }
+  }
+}

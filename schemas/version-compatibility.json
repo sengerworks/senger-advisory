@@ -1,0 +1,17 @@
+{
+  "registryVersion": "1.0.0",
+  "updatedAt": "2026-07-22T00:00:00.000Z",
+  "versions": [
+    {
+      "assessmentVersion": "1.0.0",
+      "scoringVersion": "0.1.0",
+      "reportVersion": "1.0.0",
+      "contextVersion": "1.0.0",
+      "outcomeMeasureVersion": null,
+      "releasedAt": "2026-07-22T00:00:00.000Z",
+      "compatiblePredecessors": [],
+      "comparisonPolicy": "same-version-only",
+      "notes": "Initial six-domain, eighteen-item assessment and constraint-adjusted scoring hypothesis."
+    }
+  ]
+}
