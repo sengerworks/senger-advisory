@@ -9,6 +9,7 @@
       "contextVersion": "1.0.0",
       "outcomeMeasureVersion": "1.0.0",
       "outcomeReleasedAt": "2026-07-23T00:00:00.000Z",
+      "consentLanguageVersion": "1.0.0",
       "releasedAt": "2026-07-22T00:00:00.000Z",
       "compatiblePredecessors": [],
       "comparisonPolicy": "same-version-only",

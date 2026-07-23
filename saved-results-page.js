@@ -4,7 +4,7 @@ import {
   recoveryCredentialsFromUrl,
   recoverySecretFromUrl,
   rotateRecoveryLink
-} from "./saved-results-crypto.js";
+} from "./saved-results-crypto.js?v=research-v1";
 import {
   deletePrivateResult,
   privateResultsEnvironment,
@@ -18,6 +18,12 @@ import {
   outcomeComparisonForProfile,
   outcomeMeasures
 } from "./outcome-engine.js";
+import {
+  contributeLongitudinalEvidence,
+  createResearchParticipation,
+  grantLongitudinalConsent,
+  withdrawLongitudinalConsent
+} from "./longitudinal-evidence-client.js";
 
 const app = document.querySelector("[data-private-results]");
 const elements = {
@@ -54,6 +60,19 @@ const elements = {
   outcomeForm: app.querySelector("[data-outcome-form]"),
   outcomeMeasures: app.querySelector("[data-outcome-measures]"),
   outcomeStatus: app.querySelector("[data-outcome-status]"),
+  researchInvitation: app.querySelector("[data-research-invitation]"),
+  researchConsent: app.querySelector("[data-research-consent]"),
+  researchGrant: app.querySelector("[data-research-grant]"),
+  researchActive: app.querySelector("[data-research-active]"),
+  researchVersion: app.querySelector("[data-research-version]"),
+  researchGranted: app.querySelector("[data-research-granted]"),
+  researchLast: app.querySelector("[data-research-last]"),
+  researchContribute: app.querySelector("[data-research-contribute]"),
+  researchRequestWithdraw: app.querySelector("[data-research-request-withdraw]"),
+  researchWithdrawConfirmation: app.querySelector("[data-research-withdraw-confirmation]"),
+  researchConfirmWithdraw: app.querySelector("[data-research-confirm-withdraw]"),
+  researchCancelWithdraw: app.querySelector("[data-research-cancel-withdraw]"),
+  researchStatus: app.querySelector("[data-research-status]"),
   expires: app.querySelector("[data-private-expires]"),
   storage: app.querySelector("[data-private-storage]"),
   copy: app.querySelector("[data-copy-link]"),
@@ -64,6 +83,7 @@ const elements = {
   confirmDelete: app.querySelector("[data-confirm-delete]"),
   cancelDelete: app.querySelector("[data-cancel-delete]"),
   deleteConfirmation: app.querySelector("[data-delete-confirmation]"),
+  profileDeleteCopy: app.querySelector("[data-profile-delete-copy]"),
   status: app.querySelector("[data-private-status]")
 };
 
@@ -213,6 +233,25 @@ function renderOutcomes(profile) {
   elements.outcomeComparisonMeta.textContent += ` · ${methodNote}`;
 }
 
+function renderResearch(profile) {
+  const participation = profile.researchParticipation || null;
+  elements.researchInvitation.hidden = Boolean(participation);
+  elements.researchActive.hidden = !participation;
+  elements.researchWithdrawConfirmation.hidden = true;
+  if (!participation) {
+    elements.researchConsent.checked = false;
+    elements.researchGrant.disabled = true;
+    elements.profileDeleteCopy.innerHTML = "<strong>Delete this encrypted profile permanently?</strong> The recovery link will stop working and this action cannot be undone.";
+    return;
+  }
+  elements.profileDeleteCopy.innerHTML = "<strong>Delete this encrypted profile permanently?</strong> Active longitudinal participation and its event-level research records will be withdrawn first. The recovery link will stop working and this action cannot be undone.";
+  elements.researchVersion.textContent = participation.consentVersion;
+  elements.researchGranted.textContent = formatDate(participation.grantedAt);
+  elements.researchLast.textContent = participation.lastContributedAt
+    ? formatDate(participation.lastContributedAt)
+    : "Not yet contributed";
+}
+
 function showError(message) {
   elements.loading.hidden = true;
   elements.profile.hidden = true;
@@ -222,7 +261,20 @@ function showError(message) {
 }
 
 function setBusy(busy) {
-  [elements.copy, elements.print, elements.renew, elements.rotate, elements.requestDelete, elements.outcomeForm.querySelector('button[type="submit"]')].forEach(button => { button.disabled = busy; });
+  [
+    elements.copy,
+    elements.print,
+    elements.renew,
+    elements.rotate,
+    elements.requestDelete,
+    elements.outcomeForm.querySelector('button[type="submit"]'),
+    elements.researchGrant,
+    elements.researchContribute,
+    elements.researchRequestWithdraw
+  ].forEach(button => { button.disabled = busy; });
+  if (!busy && !state?.profile.researchParticipation) {
+    elements.researchGrant.disabled = !elements.researchConsent.checked;
+  }
 }
 
 function renderProfile(profile, envelope) {
@@ -243,8 +295,29 @@ function renderProfile(profile, envelope) {
   elements.followUp.href = new URL(`assessment.html${location.hash}`, location.href).toString();
   renderComparison(profile);
   renderOutcomes(profile);
+  renderResearch(profile);
   elements.expires.textContent = formatDate(envelope.expiresAt);
   if (privateResultsEnvironment.localDevelopment) elements.storage.textContent = "Local development mock · ciphertext only";
+}
+
+async function persistPrivateProfile(profile, now = new Date()) {
+  const expiresAt = new Date(now.getTime() + 365 * 86400000);
+  const nextProfile = { ...profile, updatedAt: now.toISOString(), expiresAt: expiresAt.toISOString() };
+  const encrypted = await encryptSavedProfile(nextProfile, {
+    secret: recoverySecretFromUrl(location.href),
+    baseUrl: location.href,
+    createdAt: state.envelope.createdAt,
+    now,
+    expiresAt
+  });
+  const saved = await updatePrivateResult({
+    ...state.credentials,
+    envelope: encrypted.envelope,
+    expectedEtag: state.etag
+  });
+  state = { credentials: state.credentials, envelope: encrypted.envelope, etag: saved.etag, profile: nextProfile };
+  renderProfile(nextProfile, encrypted.envelope);
+  return nextProfile;
 }
 
 elements.outcomeMeasures.innerHTML = outcomeMeasures.map((measure, index) => `<fieldset>
@@ -324,6 +397,89 @@ elements.outcomeForm.addEventListener("submit", async event => {
   }
 });
 
+elements.researchConsent.addEventListener("change", () => {
+  elements.researchGrant.disabled = !elements.researchConsent.checked;
+});
+
+async function contributeCurrentResearch() {
+  const participation = state?.profile.researchParticipation;
+  if (!participation) return;
+  elements.researchStatus.textContent = "Contributing minimized longitudinal evidence…";
+  setBusy(true);
+  try {
+    const result = await contributeLongitudinalEvidence(participation, state.profile);
+    const contributedAt = result.receivedAt || new Date().toISOString();
+    await persistPrivateProfile({
+      ...state.profile,
+      schemaVersion: "1.1.0",
+      researchParticipation: { ...participation, lastContributedAt: contributedAt }
+    });
+    elements.researchStatus.textContent = "Current minimized evidence contributed. Your private profile contents remain encrypted.";
+  } catch (error) {
+    elements.researchStatus.textContent = error.message;
+  } finally {
+    setBusy(false);
+  }
+}
+
+elements.researchGrant.addEventListener("click", async () => {
+  if (!state || !elements.researchConsent.checked || state.profile.researchParticipation) return;
+  const participation = createResearchParticipation();
+  elements.researchStatus.textContent = "Recording longitudinal consent…";
+  setBusy(true);
+  try {
+    await grantLongitudinalConsent(participation);
+    try {
+      await persistPrivateProfile({
+        ...state.profile,
+        schemaVersion: "1.1.0",
+        researchParticipation: participation
+      });
+    } catch (error) {
+      await withdrawLongitudinalConsent(participation);
+      throw error;
+    }
+    elements.researchStatus.textContent = "Consent recorded. Contributing the current minimized evidence…";
+    setBusy(false);
+    await contributeCurrentResearch();
+  } catch (error) {
+    elements.researchStatus.textContent = error.message;
+    setBusy(false);
+  }
+});
+
+elements.researchContribute.addEventListener("click", contributeCurrentResearch);
+
+elements.researchRequestWithdraw.addEventListener("click", () => {
+  elements.researchWithdrawConfirmation.hidden = false;
+  elements.researchConfirmWithdraw.focus();
+});
+
+elements.researchCancelWithdraw.addEventListener("click", () => {
+  elements.researchWithdrawConfirmation.hidden = true;
+  elements.researchRequestWithdraw.focus();
+});
+
+elements.researchConfirmWithdraw.addEventListener("click", async () => {
+  const participation = state?.profile.researchParticipation;
+  if (!participation) return;
+  elements.researchStatus.textContent = "Withdrawing and deleting event-level research records…";
+  setBusy(true);
+  try {
+    await withdrawLongitudinalConsent(participation);
+    await persistPrivateProfile({
+      ...state.profile,
+      schemaVersion: "1.1.0",
+      researchParticipation: null
+    });
+    elements.researchStatus.textContent = "Longitudinal participation withdrawn and event-level research records deleted.";
+  } catch (error) {
+    elements.researchStatus.textContent = error.message;
+  } finally {
+    setBusy(false);
+  }
+});
+
 elements.renew.addEventListener("click", async () => {
   if (!state) return;
   setBusy(true);
@@ -387,8 +543,13 @@ elements.cancelDelete.addEventListener("click", () => {
 elements.confirmDelete.addEventListener("click", async () => {
   if (!state) return;
   elements.confirmDelete.disabled = true;
-  elements.status.textContent = "Deleting encrypted profile…";
+  elements.status.textContent = state.profile.researchParticipation
+    ? "Withdrawing longitudinal participation before deleting the encrypted profile…"
+    : "Deleting encrypted profile…";
   try {
+    if (state.profile.researchParticipation) {
+      await withdrawLongitudinalConsent(state.profile.researchParticipation);
+    }
     await deletePrivateResult(state.credentials);
     history.replaceState(null, "", `${location.pathname}${location.search}`);
     state = null;

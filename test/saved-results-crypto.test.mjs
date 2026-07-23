@@ -58,7 +58,7 @@ async function deterministicBundle() {
 test("machine-readable contracts and compatibility registry parse", async () => {
   const files = ["saved-profile.schema.json", "encrypted-envelope.schema.json", "version-compatibility.json"];
   const parsed = await Promise.all(files.map(async file => JSON.parse(await readFile(new URL(`../schemas/${file}`, import.meta.url), "utf8"))));
-  assert.equal(parsed[0].properties.schemaVersion.const, "1.0.0");
+  assert.equal(parsed[0].properties.schemaVersion.const, "1.1.0");
   assert.equal(parsed[1].properties.cipher.const, "AES-256-GCM");
   assert.equal(parsed[2].versions[0].comparisonPolicy, "same-version-only");
   assert.equal(parsed[2].versions[0].outcomeMeasureVersion, "1.0.0");
@@ -67,6 +67,17 @@ test("machine-readable contracts and compatibility registry parse", async () => 
 test("validates the minimized profile and rejects individual answers or extra fields", () => {
   const profile = sampleProfile();
   assert.equal(validateSavedProfile(profile), true);
+  assert.equal(validateSavedProfile({
+    ...profile,
+    schemaVersion: "1.1.0",
+    researchParticipation: {
+      subjectId: "323e4567-e89b-42d3-a456-426614174000",
+      withdrawalCapability: "sVSm-KOJ0lU_UQmHI8PkkRHoQzJczlMzCkqE1uMm08k",
+      consentVersion: "1.0.0",
+      grantedAt: now.toISOString(),
+      lastContributedAt: null
+    }
+  }), true);
   assert.equal(validateSavedProfile({ ...profile, individualAnswers: [1, 2, 3] }), false);
   assert.equal(validateSavedProfile({ ...profile, assessmentInstances: [{ ...profile.assessmentInstances[0], responses: [1, 2, 3] }] }), false);
   assert.equal(validateSavedProfile({ ...profile, outcomeSnapshots: [{ arbitrary: "data" }] }), false);

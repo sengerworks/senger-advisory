@@ -15,7 +15,10 @@ Milestone B implements private encrypted persistence through the assessment,
 assessments, same-version comparisons, version-aware delta suppression, and encrypted
 material-change context. Milestone D implements five behaviorally anchored, client-encrypted
 outcome observations with version-aware ordinal comparison and no composite outcome score.
-Research linkage remains a future milestone.
+Milestone E implements explicit pseudonymous longitudinal consent, minimized manual
+contributions, independent research credentials, withdrawal, and subject-level event
+deletion. Cohort export remains disabled until minimum-cohort and suppression policy is
+approved.
 
 ## Objective
 

@@ -79,6 +79,14 @@ version-aware comparison policy. Private profiles can retain up to 24 encrypted 
 snapshots with a 30- or 90-day observation window and an evidence-source classification.
 Outcomes remain separate—there is no composite outcome score, benchmark, or causal claim.
 
+Optional longitudinal evidence uses a third, deliberately separate boundary.
+`longitudinal-evidence-client.js` creates a random research subject ID and independent
+withdrawal capability, then projects only versioned aggregate assessments, outcome
+observations, and change categories. `netlify/functions/longitudinal-evidence.mjs` stores
+consent receipts and research events in separate Netlify Blobs stores and deletes all
+subject-level events on withdrawal. Contributions are manual, never implied by saving a
+private profile.
+
 `crypto-prototype.html` remains available as a development-only cryptographic test surface.
 
 ## Deploy

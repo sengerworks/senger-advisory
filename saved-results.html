@@ -9,7 +9,7 @@
   <meta name="description" content="Open a private, client-encrypted Organizational Capacity profile." />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css?v=longitudinal-v1" />
-  <link rel="stylesheet" href="private-results.css?v=outcomes-v1" />
+  <link rel="stylesheet" href="private-results.css?v=research-v1" />
 </head>
 <body class="private-results-page">
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -155,6 +155,54 @@
         </form>
       </section>
 
+      <section class="private-research" aria-labelledby="private-research-title">
+        <div class="private-research-heading">
+          <div>
+            <p class="eyebrow">Optional Longitudinal Evidence</p>
+            <h2 id="private-research-title">Help test the model over time.</h2>
+          </div>
+          <p>This is separate from private saved results and anonymous assessment evidence.</p>
+        </div>
+
+        <div data-research-invitation>
+          <p>If you explicitly participate, Senger Advisory can read a minimized research copy of your aggregate assessments, outcome snapshots, and change categories across time.</p>
+          <div class="research-boundaries">
+            <article>
+              <h3>Included</h3>
+              <p>Versioned aggregate scores, categorical context, outcome observations, change categories, and timestamps.</p>
+            </article>
+            <article>
+              <h3>Never included</h3>
+              <p>Your recovery link or key, private profile ID, individual answers, private notes, name, email, or organization name.</p>
+            </article>
+          </div>
+          <label class="research-consent">
+            <input type="checkbox" data-research-consent />
+            <span>I voluntarily agree to contribute this minimized, pseudonymous longitudinal evidence for model evaluation and understand that I can withdraw and delete event-level records from this profile.</span>
+          </label>
+          <button class="button primary" type="button" data-research-grant disabled>Agree and contribute current evidence</button>
+        </div>
+
+        <div class="research-active" data-research-active hidden>
+          <p><strong>Longitudinal participation is active.</strong> New private observations are not shared automatically. Use the button below when you choose to update the research copy.</p>
+          <dl>
+            <div><dt>Consent version</dt><dd data-research-version></dd></div>
+            <div><dt>Granted</dt><dd data-research-granted></dd></div>
+            <div><dt>Last contributed</dt><dd data-research-last></dd></div>
+          </dl>
+          <div>
+            <button class="button primary" type="button" data-research-contribute>Contribute current evidence</button>
+            <button class="button secondary danger-button" type="button" data-research-request-withdraw>Withdraw and delete research records</button>
+          </div>
+          <div class="private-delete-confirmation" data-research-withdraw-confirmation hidden>
+            <p><strong>Withdraw longitudinal participation?</strong> Future contributions will stop and event-level research records for this research identity will be deleted. De-identified aggregate summaries already created cannot be reversed.</p>
+            <button class="button secondary danger-button" type="button" data-research-confirm-withdraw>Yes, withdraw and delete</button>
+            <button class="button secondary" type="button" data-research-cancel-withdraw>Cancel</button>
+          </div>
+        </div>
+        <p data-research-status role="status" aria-live="polite"></p>
+      </section>
+
       <section class="private-trust" aria-labelledby="private-trust-title">
         <div>
           <p class="eyebrow">Recovery and Retention</p>
@@ -184,7 +232,7 @@
         </div>
         <p data-private-status role="status" aria-live="polite"></p>
         <div class="private-delete-confirmation" data-delete-confirmation hidden>
-          <p><strong>Delete this encrypted profile permanently?</strong> The recovery link will stop working and this action cannot be undone.</p>
+          <p data-profile-delete-copy><strong>Delete this encrypted profile permanently?</strong> The recovery link will stop working and this action cannot be undone.</p>
           <button class="button secondary danger-button" type="button" data-confirm-delete>Yes, delete it</button>
           <button class="button secondary" type="button" data-cancel-delete>Cancel</button>
         </div>
@@ -192,6 +240,6 @@
     </article>
   </main>
 
-  <script type="module" src="saved-results-page.js?v=outcomes-v1-1"></script>
+  <script type="module" src="saved-results-page.js?v=research-v1-1"></script>
 </body>
 </html>

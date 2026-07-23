@@ -98,6 +98,7 @@
 .private-comparison,
 .private-follow-up,
 .private-outcomes,
+.private-research,
 .private-trust,
 .private-actions {
   padding: 48px 0;
@@ -108,6 +109,7 @@
 .private-comparison h2,
 .private-follow-up h2,
 .private-outcomes h2,
+.private-research h2,
 .private-trust h2,
 .private-actions h2,
 .private-constraint h2 {
@@ -133,6 +135,7 @@
 .private-comparison-heading,
 .private-follow-up,
 .private-outcomes-heading,
+.private-research-heading,
 .private-trust,
 .private-actions {
   display: grid;
@@ -359,6 +362,65 @@
 
 [data-outcome-status] { margin: 0; color: var(--ink-soft); font-size: .78rem; }
 
+.private-research-heading > p {
+  align-self: end;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .8rem;
+}
+
+[data-research-invitation] > p,
+.research-active > p { max-width: 780px; color: var(--ink-soft); }
+
+.research-boundaries {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.research-boundaries article {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--ivory);
+}
+
+.research-boundaries h3 { margin: 0; font-size: .9rem; }
+.research-boundaries p { margin: 7px 0 0; color: var(--ink-soft); font-size: .78rem; }
+
+.research-consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  max-width: 850px;
+  margin: 22px 0;
+  font-size: .84rem;
+}
+
+.research-consent input { width: 18px; height: 18px; accent-color: var(--blue); }
+
+.research-active dl {
+  max-width: 620px;
+  margin: 22px 0;
+}
+
+.research-active dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: .8rem;
+}
+
+.research-active dt { color: var(--ink-soft); }
+.research-active dd { margin: 0; font-weight: 750; text-align: right; }
+.research-active > div:not(.private-delete-confirmation) { display: flex; flex-wrap: wrap; gap: 9px; }
+.research-active .private-delete-confirmation { margin-top: 16px; }
+[data-research-status] { min-height: 24px; margin: 14px 0 0; color: var(--ink-soft); font-size: .78rem; }
+
 .private-trust > div:last-child > p { margin-top: 0; color: var(--ink-soft); }
 
 .private-trust dl {
@@ -415,6 +477,7 @@
   .private-comparison-heading,
   .private-follow-up,
   .private-outcomes-heading,
+  .private-research-heading,
   .private-trust,
   .private-actions {
     display: grid;
@@ -438,6 +501,9 @@
   .outcome-summary > div:first-child,
   .outcome-comparison > div:first-child,
   .outcome-form-heading { align-items: stretch; flex-direction: column; }
+  .research-boundaries { grid-template-columns: 1fr; }
+  .research-active dl > div { display: grid; gap: 4px; }
+  .research-active dd { text-align: left; }
 }
 
 @media print {

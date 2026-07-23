@@ -1,4 +1,5 @@
-const PROFILE_SCHEMA_VERSION = "1.0.0";
+const PROFILE_SCHEMA_VERSION = "1.1.0";
+const LEGACY_PROFILE_SCHEMA_VERSION = "1.0.0";
 const ENVELOPE_VERSION = "1.0.0";
 const CIPHER = "AES-256-GCM";
 const RECOVERY_PREFIX = "v1.";
@@ -92,8 +93,10 @@ function validateChangeRecord(record) {
 }
 
 export function validateSavedProfile(profile) {
-  const keys = ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords"];
-  if (!hasExactKeys(profile, keys) || profile.schemaVersion !== PROFILE_SCHEMA_VERSION || !isUuid(profile.profileId)) return false;
+  const legacyKeys = ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords"];
+  const currentKeys = [...legacyKeys, "researchParticipation"];
+  const legacy = profile?.schemaVersion === LEGACY_PROFILE_SCHEMA_VERSION;
+  if (!hasExactKeys(profile, legacy ? legacyKeys : currentKeys) || ![PROFILE_SCHEMA_VERSION, LEGACY_PROFILE_SCHEMA_VERSION].includes(profile.schemaVersion) || !isUuid(profile.profileId)) return false;
   if (![profile.createdAt, profile.updatedAt, profile.expiresAt].every(isTimestamp)) return false;
   if (Date.parse(profile.createdAt) > Date.parse(profile.updatedAt) || Date.parse(profile.updatedAt) >= Date.parse(profile.expiresAt)) return false;
   if (typeof profile.displayLabel !== "string" || profile.displayLabel.length > 80) return false;
@@ -101,6 +104,14 @@ export function validateSavedProfile(profile) {
   if (!profile.assessmentInstances.every(validateAssessmentInstance)) return false;
   if (!Array.isArray(profile.outcomeSnapshots) || profile.outcomeSnapshots.length > 24 || !profile.outcomeSnapshots.every(validateOutcomeSnapshot)) return false;
   if (!Array.isArray(profile.changeRecords) || profile.changeRecords.length > 100 || !profile.changeRecords.every(validateChangeRecord)) return false;
+  if (!legacy && profile.researchParticipation !== null) {
+    const participation = profile.researchParticipation;
+    const keys = ["subjectId", "withdrawalCapability", "consentVersion", "grantedAt", "lastContributedAt"];
+    if (!hasExactKeys(participation, keys) || !isUuid(participation.subjectId)) return false;
+    if (typeof participation.withdrawalCapability !== "string" || !/^[A-Za-z0-9_-]{43}$/.test(participation.withdrawalCapability)) return false;
+    if (!/^\d+\.\d+\.\d+$/.test(participation.consentVersion) || !isTimestamp(participation.grantedAt)) return false;
+    if (participation.lastContributedAt !== null && !isTimestamp(participation.lastContributedAt)) return false;
+  }
   return true;
 }
 
@@ -178,7 +189,7 @@ export async function recoveryCredentialsFromUrl(value) {
 }
 
 export async function encryptSavedProfile(profile, options = {}) {
-  if (!validateSavedProfile(profile)) throw new Error("Saved profile does not match schema version 1.0.0.");
+  if (!validateSavedProfile(profile)) throw new Error("Saved profile does not match a supported schema version.");
   const secret = options.secret || createRecoverySecret();
   const material = await deriveMaterial(secret);
   const now = normalizeDate(options.now || new Date());

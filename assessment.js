@@ -3,7 +3,7 @@ import {
   encryptSavedProfile,
   recoveryCredentialsFromUrl,
   recoverySecretFromUrl
-} from "./saved-results-crypto.js";
+} from "./saved-results-crypto.js?v=research-v1";
 import {
   createPrivateResult,
   privateResultsEnvironment,
@@ -333,7 +333,7 @@ import {
   function savedProfile(now = new Date()) {
     const expiresAt = new Date(now.getTime() + 365 * 86400000);
     return {
-      schemaVersion: "1.0.0",
+      schemaVersion: "1.1.0",
       profileId: crypto.randomUUID(),
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
@@ -341,7 +341,8 @@ import {
       displayLabel: `Capacity Profile · ${new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" }).format(now)}`,
       assessmentInstances: [assessmentInstance(now)],
       outcomeSnapshots: [],
-      changeRecords: []
+      changeRecords: [],
+      researchParticipation: null
     };
   }
 

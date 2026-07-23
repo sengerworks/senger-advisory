@@ -109,6 +109,30 @@ Outcome snapshots are private product data by default. They are not assessment e
 performance benchmarks, validated outcome measures, or proof that a capacity change or
 recorded intervention caused an operating result.
 
+## Optional longitudinal evidence
+
+Private saving never implies research participation. The private profile presents a separate,
+versioned Level 3 consent that describes both the fields included and the private fields that
+are excluded. Participation creates a random research subject ID and an independent 256-bit
+withdrawal capability inside the encrypted profile. Neither value can retrieve or decrypt the
+private saved result.
+
+Contributions are manual. `longitudinal-evidence-client.js` projects the current profile into
+versioned aggregate assessments, outcome snapshots, and change categories. It removes private
+profile and record IDs, individual answers, accuracy feedback, private change notes, recovery
+credentials, and identity fields before transmission.
+
+The `/api/longitudinal-evidence` function uses two separate site-scoped stores:
+
+- `capacity-longitudinal-evidence` for immutable, subject-prefixed minimized events; and
+- `capacity-consent-receipts` for grants, active status, and minimized withdrawal receipts.
+
+Withdrawal validates the independent capability, deletes every event under the research
+subject prefix, marks the receipt inactive, and removes participation credentials from the
+encrypted private profile. Inactive receipts expire after 90 days. External cohort exports
+are not implemented; reporting remains blocked until a minimum-cohort and suppression policy
+is approved.
+
 ## Local review
 
 Start any static server from the repository root and open `assessment.html` on `localhost` or

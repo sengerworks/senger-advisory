@@ -4,9 +4,9 @@
   "title": "Private Saved Capacity Profile",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords"],
+  "required": ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords", "researchParticipation"],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "const": "1.1.0" },
     "profileId": { "$ref": "#/$defs/uuid" },
     "createdAt": { "$ref": "#/$defs/timestamp" },
     "updatedAt": { "$ref": "#/$defs/timestamp" },
@@ -27,6 +27,9 @@
       "type": "array",
       "maxItems": 100,
       "items": { "$ref": "#/$defs/changeRecord" }
+    },
+    "researchParticipation": {
+      "anyOf": [{ "$ref": "#/$defs/researchParticipation" }, { "type": "null" }]
     }
   },
   "$defs": {
@@ -114,6 +117,18 @@
         "magnitude": { "enum": ["limited", "material", "enterprise-wide"] },
         "status": { "enum": ["planned", "active", "completed", "discontinued"] },
         "note": { "type": "string", "maxLength": 500 }
+      }
+    },
+    "researchParticipation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subjectId", "withdrawalCapability", "consentVersion", "grantedAt", "lastContributedAt"],
+      "properties": {
+        "subjectId": { "$ref": "#/$defs/uuid" },
+        "withdrawalCapability": { "type": "string", "pattern": "^[A-Za-z0-9_-]{43}$" },
+        "consentVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "grantedAt": { "$ref": "#/$defs/timestamp" },
+        "lastContributedAt": { "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] }
       }
     }
   }
