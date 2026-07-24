@@ -62,6 +62,22 @@ integrationTest("real Postgres RLS isolates two workspaces", async () => {
       [{ id: alphaWorkspaceId, display_label: "Integration Alpha" }]
     );
 
+    const round = await withNeonWorkspaceTransaction(alphaWorkspaceId, async ({ query }) => {
+      return query(
+        `INSERT INTO app_identity.collection_rounds
+          (workspace_id, display_label, assessment_version, scoring_version, notice_version,
+           minimum_participants, opens_at, closes_at)
+         VALUES ($1, $2, '1.0.0', '0.1.0', '1.0.0', 5, now(), now() + interval '14 days')
+         RETURNING display_label, status, minimum_participants`,
+        [alphaWorkspaceId, "Integration Capacity Baseline"]
+      );
+    }, connectionString);
+    assert.deepEqual(round.rows[0], {
+      display_label: "Integration Capacity Baseline",
+      status: "draft",
+      minimum_participants: 5
+    });
+
     const crossTenantMutation = await withNeonWorkspaceTransaction(
       alphaWorkspaceId,
       async ({ query }) => query(

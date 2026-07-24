@@ -12,6 +12,9 @@ const ADMINISTRATIVE = new Set([
   "invitation:revoke",
   "completion:read",
   "round:create",
+  "round:update",
+  "round:delete",
+  "round:open",
   "round:close"
 ]);
 const ALL_MEMBERS = new Set(["workspace:read", "round:read"]);

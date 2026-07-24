@@ -20,7 +20,17 @@ test("workspace browser uses server configuration and minimized session endpoint
   const script = await source("workspace/workspace.js");
   assert.match(script, /fetch\("\/api\/workspace\/config"/);
   assert.match(script, /fetch\("\/api\/workspace\/session"/);
+  assert.match(script, /workspaceRequest\("\/api\/workspace\/rounds"/);
+  assert.match(script, /workspaceRequest\("\/api\/workspace\/invitations"/);
   assert.doesNotMatch(script, /CLERK_SECRET_KEY|NEON_DATABASE_URL|workspaceId|organizationId|userId/);
+});
+
+test("owner collection setup presents dates and the fixed privacy threshold", async () => {
+  const html = await source("workspace/index.html");
+  assert.match(html, /Create a collection round/);
+  assert.match(html, /Participation opens/);
+  assert.match(html, /Participation closes/);
+  assert.match(html, /valid submissions required before shared results appear/);
 });
 
 test("workspace authentication always returns to the workspace route", async () => {

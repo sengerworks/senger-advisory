@@ -6,7 +6,9 @@ test("limits workspace administration to owner and invitation operations to admi
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "workspace:delete" }), true);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "workspace:delete" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "invitation:create" }), true);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "round:open" }), true);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "invitation:list" }), false);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "round:update" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "completion:read" }), false);
 });
 

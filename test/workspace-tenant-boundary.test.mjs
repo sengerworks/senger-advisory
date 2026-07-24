@@ -90,6 +90,16 @@ test("migration enables and forces RLS for every tenant table", async () => {
   assert.equal((sql.match(/CREATE POLICY /g) || []).length, tenantTables.length);
 });
 
+test("collection setup migration adds a bounded round label", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/004_collection_round_setup.sql", import.meta.url),
+    "utf8"
+  );
+  assert.match(migration, /ADD COLUMN display_label text/);
+  assert.match(migration, /ALTER COLUMN display_label SET NOT NULL/);
+  assert.match(migration, /char_length\(display_label\) BETWEEN 3 AND 120/);
+});
+
 test("tenant-owned relationships use composite workspace foreign keys", async () => {
   const sql = await readFile(migrationUrl, "utf8");
 

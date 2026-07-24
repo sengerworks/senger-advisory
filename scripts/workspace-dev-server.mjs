@@ -2,6 +2,8 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
+import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
+import workspaceRounds from "../netlify/functions/workspace-rounds.mjs";
 import workspaceSession from "../netlify/functions/workspace-session.mjs";
 
 const port = 8888;
@@ -34,6 +36,12 @@ async function sendFetchResponse(nodeResponse, fetchResponse) {
   nodeResponse.end(Buffer.from(await fetchResponse.arrayBuffer()));
 }
 
+async function requestBody(nodeRequest) {
+  const chunks = [];
+  for await (const chunk of nodeRequest) chunks.push(chunk);
+  return Buffer.concat(chunks);
+}
+
 const server = createServer(async (nodeRequest, nodeResponse) => {
   const url = new URL(nodeRequest.url || "/", origin);
 
@@ -43,12 +51,25 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     return;
   }
 
-  if (url.pathname === "/api/workspace/config" || url.pathname === "/api/workspace/session") {
+  if ([
+    "/api/workspace/config",
+    "/api/workspace/invitations",
+    "/api/workspace/session",
+    "/api/workspace/rounds"
+  ].includes(url.pathname)) {
+    const method = nodeRequest.method || "GET";
     const request = new Request(url, {
-      method: nodeRequest.method,
-      headers: nodeRequest.headers
+      method,
+      headers: nodeRequest.headers,
+      body: ["GET", "HEAD"].includes(method) ? undefined : await requestBody(nodeRequest)
     });
-    const handler = url.pathname.endsWith("/config") ? workspaceConfig : workspaceSession;
+    const handler = url.pathname.endsWith("/config")
+      ? workspaceConfig
+      : url.pathname.endsWith("/invitations")
+        ? workspaceInvitations
+      : url.pathname.endsWith("/rounds")
+        ? workspaceRounds
+        : workspaceSession;
     await sendFetchResponse(nodeResponse, await handler(request));
     return;
   }

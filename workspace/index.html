@@ -94,6 +94,103 @@
           </button>
         </div>
 
+        <section class="collection-panel" aria-labelledby="collection-setup-title" data-collection-panel hidden>
+          <div class="collection-heading">
+            <div>
+              <p class="card-kicker">Owner setup</p>
+              <h3 id="collection-setup-title">Create a collection round</h3>
+              <p>
+                Define the period in which invited participants can contribute their private
+                perspective. Invitations remain unavailable until the draft is reviewed.
+              </p>
+            </div>
+            <div class="threshold-card" aria-label="Privacy threshold">
+              <strong data-threshold-value>5</strong>
+              <span>valid submissions required before shared results appear</span>
+            </div>
+          </div>
+
+          <form class="collection-form" data-collection-form>
+            <label class="field field-wide">
+              <span>Collection name</span>
+              <input
+                name="label"
+                type="text"
+                minlength="3"
+                maxlength="120"
+                autocomplete="off"
+                placeholder="Leadership Capacity Baseline"
+                required
+              />
+            </label>
+            <label class="field">
+              <span>Participation opens</span>
+              <input name="opensAt" type="date" required />
+            </label>
+            <label class="field">
+              <span>Participation closes</span>
+              <input name="closesAt" type="date" required />
+            </label>
+            <div class="form-actions field-wide">
+              <p class="form-message" role="status" aria-live="polite" data-collection-message></p>
+              <div class="form-buttons">
+                <button class="secondary-button" type="button" data-cancel-edit hidden>
+                  Cancel
+                </button>
+                <button class="primary-button" type="submit" data-create-round>
+                  Create draft round
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="rounds-section" data-rounds-section hidden>
+            <div>
+              <p class="card-kicker">Collection rounds</p>
+              <h3>Drafts and active collections</h3>
+            </div>
+            <div class="round-list" data-round-list></div>
+          </div>
+
+          <section class="invitation-panel" aria-labelledby="invitation-title" data-invitation-panel hidden>
+            <div class="invitation-heading">
+              <div>
+                <p class="card-kicker">Participant access</p>
+                <h3 id="invitation-title">Invite private perspectives</h3>
+                <p data-invitation-round></p>
+              </div>
+              <div class="participation-counts" aria-label="Invitation participation status">
+                <span><strong data-invited-count>0</strong> invited</span>
+                <span><strong data-accepted-count>0</strong> accepted</span>
+                <span><strong data-pending-count>0</strong> pending</span>
+              </div>
+            </div>
+
+            <form class="invitation-form" data-invitation-form>
+              <label class="field">
+                <span>Participant email</span>
+                <input
+                  name="emailAddress"
+                  type="email"
+                  maxlength="254"
+                  autocomplete="email"
+                  placeholder="participant@example.com"
+                  required
+                />
+              </label>
+              <button class="primary-button" type="submit" data-send-invitation>
+                Send invitation
+              </button>
+            </form>
+            <p class="form-message" role="status" aria-live="polite" data-invitation-message></p>
+            <p class="privacy-reminder">
+              Invitation status is separate from assessment completion. No workspace role can
+              connect a participant’s identity to an individual response.
+            </p>
+            <div class="invitation-list" data-invitation-list></div>
+          </section>
+        </section>
+
         <div class="workspace-principles">
           <article>
             <span>01</span>
