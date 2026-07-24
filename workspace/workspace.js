@@ -106,8 +106,10 @@ async function render() {
     if (!signInMounted) {
       clerk.mountSignIn(elements.signInMount, {
         routing: "hash",
-        afterSignInUrl: "/workspace/",
-        afterSignUpUrl: "/workspace/",
+        forceRedirectUrl: "/workspace/",
+        fallbackRedirectUrl: "/workspace/",
+        signUpForceRedirectUrl: "/workspace/",
+        signUpFallbackRedirectUrl: "/workspace/",
         appearance: {
           variables: {
             colorPrimary: "#1c1c1c",

@@ -54,9 +54,7 @@ not return provider IDs, internal workspace IDs, user IDs, member lists, or priv
 ## Remaining development steps
 
 - Keep the isolated `/workspace/` browser application and Clerk UI bundle version pinned.
-- Configure explicit Netlify authorized-party origins.
-- Verify the same Owner session in a deploy preview before enabling any live collection.
-- Add Clerk and Neon runtime secrets only to the appropriate Netlify development/deploy
-  contexts before testing a deployed function.
+- Follow `Netlify-Deploy-Preview-Setup.md` to configure explicit preview-only variables and
+  verify the same Owner session in a Deploy Preview.
 - Keep the production Clerk instance inactive until the full pilot flow and security review
   pass.

@@ -132,6 +132,8 @@ connected.
 first release supports email sign-in, invitation return paths, active Organization handling,
 server-verified role-aware landing states, mobile layout, reduced motion, and a local
 development server. It does not yet collect assessments or expose organization operations.
+The preview-only hosted authentication gate is documented in
+`docs/Netlify-Deploy-Preview-Setup.md`.
 
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent
