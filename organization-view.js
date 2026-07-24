@@ -1,5 +1,9 @@
 import { aggregateOrganization } from "./organization-aggregation-engine.js";
-import { illustrativeOrganizationSubmissions } from "./organization-view-demo-data.js";
+import { compareOrganizationRounds } from "./organization-comparison-engine.js";
+import {
+  illustrativeFollowUpSubmissions,
+  illustrativeOrganizationSubmissions
+} from "./organization-view-demo-data.js";
 
 const app = document.querySelector("[data-organization-view]");
 const elements = {
@@ -31,7 +35,16 @@ const elements = {
   reviewDate: app.querySelector("[data-demo-review-date]"),
   reviewForm: app.querySelector("[data-demo-review-form]"),
   reviewResult: app.querySelector("[data-demo-review-result]"),
-  actionStatus: app.querySelector("[data-demo-action-status]")
+  actionStatus: app.querySelector("[data-demo-action-status]"),
+  reassessment: app.querySelector("[data-demo-reassessment]"),
+  followUpCount: app.querySelector("[data-follow-up-count]"),
+  followUpMessage: app.querySelector("[data-follow-up-message]"),
+  addFollowUp: app.querySelector("[data-add-follow-up]"),
+  comparison: app.querySelector("[data-demo-comparison]"),
+  baselineIndex: app.querySelector("[data-demo-baseline-index]"),
+  followUpIndex: app.querySelector("[data-demo-follow-up-index]"),
+  comparisonMessage: app.querySelector("[data-demo-comparison-message]"),
+  comparisonDomains: app.querySelector("[data-demo-comparison-domains]")
 };
 
 const domainNames = {
@@ -176,4 +189,48 @@ elements.reviewForm.addEventListener("submit", event => {
     `Latest review: ${values.reviewNote} This observation is context, not proof of causality.`;
   elements.reviewResult.hidden = false;
   elements.reviewForm.hidden = true;
+  elements.reassessment.hidden = false;
+  elements.reassessment.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+let followUpCount = 0;
+
+elements.addFollowUp.addEventListener("click", () => {
+  followUpCount = Math.min(5, followUpCount + 1);
+  elements.followUpCount.textContent = `${followUpCount} of 5`;
+  const followUp = aggregateOrganization(
+    illustrativeFollowUpSubmissions.slice(0, followUpCount)
+  );
+  if (followUp.policy !== "aggregate") {
+    elements.followUpMessage.textContent =
+      `${followUp.remaining} more fictional ${followUp.remaining === 1 ? "perspective is" : "perspectives are"} required. No follow-up scores are shown.`;
+    elements.addFollowUp.textContent = followUpCount === 4
+      ? "Add fifth follow-up perspective"
+      : "Add next follow-up perspective";
+    return;
+  }
+  const baseline = aggregateOrganization(illustrativeOrganizationSubmissions);
+  const comparison = compareOrganizationRounds(baseline, followUp);
+  elements.followUpMessage.textContent =
+    "The follow-up privacy threshold is met. A version-compatible comparison is available.";
+  elements.addFollowUp.textContent = "Follow-up threshold reached";
+  elements.addFollowUp.disabled = true;
+  elements.baselineIndex.textContent = String(comparison.baselineOverallIndex);
+  elements.followUpIndex.textContent = String(comparison.followUpOverallIndex);
+  elements.comparisonMessage.textContent =
+    `${comparison.overallDelta > 0 ? "+" : ""}${comparison.overallDelta} overall. ${comparison.interpretation}`;
+  elements.comparisonDomains.replaceChildren();
+  for (const [domain, value] of Object.entries(comparison.domainDeltas)) {
+    const card = document.createElement("article");
+    const label = document.createElement("strong");
+    const scores = document.createElement("span");
+    const delta = document.createElement("em");
+    label.textContent = domainNames[domain];
+    scores.textContent = `${value.baseline} → ${value.followUp}`;
+    delta.textContent = `${value.delta > 0 ? "+" : ""}${value.delta}`;
+    card.append(label, scores, delta);
+    elements.comparisonDomains.append(card);
+  }
+  elements.comparison.hidden = false;
+  elements.comparison.scrollIntoView({ behavior: "smooth", block: "center" });
 });

@@ -2,6 +2,8 @@ import { authorizeWorkspaceAction } from "../../workspace-authorization.js";
 import { authenticateWorkspaceRequest } from "../lib/clerk-workspace-auth.mjs";
 import {
   createWorkspaceRound,
+  createFollowUpRound,
+  closeWorkspaceRound,
   deleteWorkspaceRound,
   listWorkspaceRounds,
   openWorkspaceRound,
@@ -44,6 +46,8 @@ export function createWorkspaceRoundsHandler({
   authenticate = authenticateWorkspaceRequest,
   listRounds = listWorkspaceRounds,
   createRound = createWorkspaceRound,
+  createFollowUp = createFollowUpRound,
+  closeRound = closeWorkspaceRound,
   updateRound = updateWorkspaceRound,
   openRound = openWorkspaceRound,
   deleteRound = deleteWorkspaceRound,
@@ -71,11 +75,34 @@ export function createWorkspaceRoundsHandler({
       }
 
       if (request.method === "POST") {
-        if (!authorizeWorkspaceAction({ role, action: "round:create" })) {
+        const value = await jsonBody(request);
+        const isFollowUp = value && Object.hasOwn(value, "priorRoundId");
+        const action = isFollowUp ? "round:follow-up" : "round:create";
+        if (!authorizeWorkspaceAction({ role, action })) {
           return json(403, { error: "Only workspace administrators can create a round." });
         }
-        const draft = validateRoundDraft(await jsonBody(request), now());
-        const round = await createRound({ workspaceId, actorUserId: userId, draft });
+        const draftValue = isFollowUp
+          ? {
+              label: value.label,
+              opensAt: value.opensAt,
+              closesAt: value.closesAt
+            }
+          : value;
+        if (
+          isFollowUp
+          && Object.keys(value).sort().join(",") !== "closesAt,label,opensAt,priorRoundId"
+        ) {
+          throw new RoundInputError("Enter the complete follow-up collection details.");
+        }
+        const draft = validateRoundDraft(draftValue, now());
+        const round = isFollowUp
+          ? await createFollowUp({
+              workspaceId,
+              actorUserId: userId,
+              priorRoundId: value.priorRoundId,
+              draft
+            })
+          : await createRound({ workspaceId, actorUserId: userId, draft });
         return json(201, { round });
       }
 
@@ -112,6 +139,21 @@ export function createWorkspaceRoundsHandler({
         }
         return json(200, {
           round: await openRound({
+            workspaceId,
+            actorUserId: userId,
+            roundId: value.roundId
+          })
+        });
+      }
+      if (value.action === "close") {
+        if (!authorizeWorkspaceAction({ role, action: "round:close" })) {
+          return json(403, { error: "Only workspace administrators can close a round." });
+        }
+        if (Object.keys(value).sort().join(",") !== "action,roundId") {
+          throw new RoundInputError("Choose one collection round to close.");
+        }
+        return json(200, {
+          round: await closeRound({
             workspaceId,
             actorUserId: userId,
             roundId: value.roundId

@@ -261,6 +261,14 @@
                     aria-live="polite"
                     data-action-cycle-message
                   ></p>
+                  <button
+                    class="secondary-button action-cycle-close-round"
+                    type="button"
+                    data-close-round
+                    hidden
+                  >
+                    Close collection and prepare reassessment
+                  </button>
                   <form class="workspace-action-form" data-action-cycle-form>
                     <label>
                       <span>Constraint to address</span>
@@ -329,6 +337,21 @@
                       </button>
                     </div>
                   </form>
+                </section>
+                <section class="workspace-comparison" data-workspace-comparison hidden>
+                  <div class="comparison-heading">
+                    <div>
+                      <p class="card-kicker">Organizational Reassessment</p>
+                      <h5>What changed between collection rounds.</h5>
+                    </div>
+                    <div class="comparison-index">
+                      <span data-comparison-baseline-index>—</span>
+                      <i aria-hidden="true">→</i>
+                      <span data-comparison-follow-up-index>—</span>
+                    </div>
+                  </div>
+                  <p data-comparison-message></p>
+                  <div class="comparison-domains" data-comparison-domains></div>
                 </section>
               </div>
             </section>

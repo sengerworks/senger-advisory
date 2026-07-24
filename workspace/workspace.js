@@ -54,6 +54,12 @@ const elements = {
   actionConstraint: document.querySelector("[data-action-constraint]"),
   actionCycleMessage: document.querySelector("[data-action-cycle-message]"),
   saveActionCycle: document.querySelector("[data-save-action-cycle]"),
+  closeRound: document.querySelector("[data-close-round]"),
+  workspaceComparison: document.querySelector("[data-workspace-comparison]"),
+  comparisonBaselineIndex: document.querySelector("[data-comparison-baseline-index]"),
+  comparisonFollowUpIndex: document.querySelector("[data-comparison-follow-up-index]"),
+  comparisonMessage: document.querySelector("[data-comparison-message]"),
+  comparisonDomains: document.querySelector("[data-comparison-domains]"),
   participantPanel: document.querySelector("[data-participant-panel]"),
   participantRound: document.querySelector("[data-participant-round]"),
   participantDates: document.querySelector("[data-participant-dates]"),
@@ -68,6 +74,7 @@ let signInMounted = false;
 let currentRole = null;
 let collectionRounds = [];
 let editingRoundId = null;
+let followUpRoundId = null;
 let selectedRoundId = null;
 let currentParticipation = null;
 let currentNonrespondents = [];
@@ -289,6 +296,11 @@ function renderRounds(rounds) {
       );
     } else if (round.status === "open") {
       actions.append(actionButton("Manage invitations", "invitations", round.id));
+    } else if (
+      round.status === "closed"
+      && !rounds.some(value => value.priorRoundId === round.id)
+    ) {
+      actions.append(actionButton("Create follow-up", "follow-up", round.id));
     }
     side.append(status, actions);
     copy.append(title, dates);
@@ -308,12 +320,31 @@ async function loadCollectionRounds() {
 
 function resetRoundForm() {
   editingRoundId = null;
+  followUpRoundId = null;
   elements.collectionForm.reset();
   elements.createRound.textContent = "Create draft round";
   elements.cancelEdit.hidden = true;
   const today = localDateValue();
   elements.collectionForm.elements.opensAt.min = today;
   elements.collectionForm.elements.closesAt.min = today;
+}
+
+function prepareFollowUp(round) {
+  resetRoundForm();
+  followUpRoundId = round.id;
+  const opensAt = new Date();
+  opensAt.setDate(opensAt.getDate() + 1);
+  const closesAt = new Date(opensAt);
+  closesAt.setDate(closesAt.getDate() + 30);
+  elements.collectionForm.elements.label.value = `${round.label} Follow-up`;
+  elements.collectionForm.elements.opensAt.value = localDateValue(opensAt);
+  elements.collectionForm.elements.closesAt.value = localDateValue(closesAt);
+  elements.createRound.textContent = "Create linked follow-up draft";
+  elements.cancelEdit.hidden = false;
+  setCollectionMessage(
+    "This follow-up will preserve the baseline assessment and scoring versions."
+  );
+  elements.collectionForm.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function editRound(round) {
@@ -561,6 +592,12 @@ function renderActionCycles(actionCycles) {
   elements.actionCycleForm.hidden = actionCycles.some(
     cycle => ["planned", "active"].includes(cycle.status)
   );
+  const currentRound = collectionRounds.find(round => round.id === selectedRoundId);
+  elements.closeRound.hidden = !(
+    currentRound?.status === "open"
+    && actionCycles.some(cycle => ["completed", "stopped"].includes(cycle.status))
+    && !actionCycles.some(cycle => ["planned", "active"].includes(cycle.status))
+  );
 }
 
 async function loadActionCycles(roundId) {
@@ -568,6 +605,48 @@ async function loadActionCycles(roundId) {
     `/api/workspace/action-cycles?roundId=${encodeURIComponent(roundId)}`
   );
   renderActionCycles(data.actionCycles);
+}
+
+function renderComparison(data) {
+  const comparison = data.comparison;
+  elements.workspaceComparison.hidden = false;
+  elements.comparisonDomains.replaceChildren();
+  if (comparison.policy === "unavailable") {
+    elements.comparisonBaselineIndex.textContent = "—";
+    elements.comparisonFollowUpIndex.textContent = "—";
+    elements.comparisonMessage.textContent =
+      "Both linked collection rounds must meet the privacy threshold before change is shown.";
+    return;
+  }
+  elements.comparisonBaselineIndex.textContent = String(comparison.baselineOverallIndex);
+  elements.comparisonFollowUpIndex.textContent = String(comparison.followUpOverallIndex);
+  if (comparison.policy === "side-by-side-only") {
+    elements.comparisonMessage.textContent = comparison.reason;
+    return;
+  }
+  const overallDirection = comparison.overallDelta > 0 ? "+" : "";
+  elements.comparisonMessage.textContent =
+    `${data.baselineRound.label} to ${data.followUpRound.label}: ` +
+    `${overallDirection}${comparison.overallDelta} overall. ` +
+    comparison.interpretation;
+  for (const [domain, value] of Object.entries(comparison.domainDeltas)) {
+    const card = document.createElement("article");
+    const label = document.createElement("strong");
+    const scores = document.createElement("span");
+    const delta = document.createElement("em");
+    label.textContent = domainLabels[domain] || domain;
+    scores.textContent = `${value.baseline} → ${value.followUp}`;
+    delta.textContent = `${value.delta > 0 ? "+" : ""}${value.delta}`;
+    card.append(label, scores, delta);
+    elements.comparisonDomains.append(card);
+  }
+}
+
+async function loadComparison(roundId) {
+  const data = await workspaceRequest(
+    `/api/workspace/comparison?roundId=${encodeURIComponent(roundId)}`
+  );
+  renderComparison(data);
 }
 
 async function loadInvitations(roundId) {
@@ -584,6 +663,8 @@ async function loadInvitations(roundId) {
   renderWorkspaceResults(results);
   if (results.result.policy === "aggregate") await loadActionCycles(roundId);
   else renderActionCycles([]);
+  if (round.priorRoundId) await loadComparison(roundId);
+  else elements.workspaceComparison.hidden = true;
 }
 
 async function prepareOwnerCollection() {
@@ -602,9 +683,16 @@ async function prepareOwnerCollection() {
       elements.primaryAction.textContent = "Manage participant invitations";
       await loadInvitations(selectedRoundId || openRound.id);
     } else {
-      elements.focusTitle.textContent = "Review the current collection draft.";
-      elements.focusDescription.textContent = "Confirm the name and dates, then open the round to enable participant invitations.";
-      elements.primaryAction.textContent = "Review collection setup";
+      const draftRound = rounds.find(round => round.status === "draft");
+      elements.focusTitle.textContent = draftRound
+        ? "Review the current collection draft."
+        : "Prepare the next Organizational Capacity observation.";
+      elements.focusDescription.textContent = draftRound
+        ? "Confirm the name and dates, then open the round to enable participant invitations."
+        : "A linked follow-up preserves the baseline method and enables a privacy-protected comparison.";
+      elements.primaryAction.textContent = draftRound
+        ? "Review collection setup"
+        : "Create a follow-up collection";
       elements.invitationPanel.hidden = true;
     }
   }
@@ -795,7 +883,9 @@ elements.collectionForm.addEventListener("submit", async event => {
       method: editingRoundId ? "PATCH" : "POST",
       body: editingRoundId
         ? { action: "update", roundId: editingRoundId, ...draft }
-        : draft
+        : followUpRoundId
+          ? { priorRoundId: followUpRoundId, ...draft }
+          : draft
     });
     const message = editingRoundId ? "Draft changes saved." : "Draft created. Review it before opening invitations.";
     resetRoundForm();
@@ -823,6 +913,10 @@ elements.roundList.addEventListener("click", async event => {
   if (button.dataset.action === "invitations") {
     await loadInvitations(round.id).catch(error => setCollectionMessage(error.message, "error"));
     elements.invitationPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  if (button.dataset.action === "follow-up") {
+    prepareFollowUp(round);
     return;
   }
   if (button.dataset.action === "open") {
@@ -982,6 +1076,31 @@ elements.actionCycleList.addEventListener("submit", async event => {
     elements.actionCycleMessage.textContent = error.message;
     elements.actionCycleMessage.dataset.tone = "error";
     submit.disabled = false;
+  }
+});
+elements.closeRound.addEventListener("click", async () => {
+  if (!selectedRoundId || currentRole !== "org:admin") return;
+  if (!window.confirm(
+    "Close this collection? Participation will end and the round will become the baseline for a linked follow-up."
+  )) return;
+  elements.closeRound.disabled = true;
+  elements.actionCycleMessage.textContent = "Closing the threshold-qualified collection…";
+  try {
+    await workspaceRequest("/api/workspace/rounds", {
+      method: "PATCH",
+      body: { action: "close", roundId: selectedRoundId }
+    });
+    selectedRoundId = null;
+    setCollectionMessage(
+      "Collection closed. Create the linked follow-up when the organization is ready to reassess.",
+      "success"
+    );
+    await prepareOwnerCollection();
+  } catch (error) {
+    elements.actionCycleMessage.textContent = error.message;
+    elements.actionCycleMessage.dataset.tone = "error";
+  } finally {
+    elements.closeRound.disabled = false;
   }
 });
 elements.participantAcknowledgement.addEventListener("change", event => {

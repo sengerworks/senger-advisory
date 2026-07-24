@@ -105,7 +105,7 @@ test("lists only minimized rounds and creates a draft for an administrator", asy
   assert.equal(createInput.draft.label, "Capacity Baseline");
 });
 
-test("updates, opens, and deletes only through explicit administrative actions", async () => {
+test("updates, opens, closes, and deletes only through explicit administrative actions", async () => {
   const round = {
     id: "22222222-2222-4222-8222-222222222222",
     label: "Capacity Baseline",
@@ -126,6 +126,10 @@ test("updates, opens, and deletes only through explicit administrative actions",
       calls.push(["open", value]);
       return { ...round, status: "open" };
     },
+    closeRound: async value => {
+      calls.push(["close", value]);
+      return { ...round, status: "closed" };
+    },
     deleteRound: async value => {
       calls.push(["delete", value]);
       return { id: value.roundId };
@@ -144,10 +148,40 @@ test("updates, opens, and deletes only through explicit administrative actions",
     action: "open",
     roundId: round.id
   }))).status, 200);
+  assert.equal((await handler(request("PATCH", {
+    action: "close",
+    roundId: round.id
+  }))).status, 200);
   assert.equal((await handler(request("DELETE", {
     roundId: round.id
   }))).status, 200);
-  assert.deepEqual(calls.map(([action]) => action), ["update", "open", "delete"]);
+  assert.deepEqual(calls.map(([action]) => action), ["update", "open", "close", "delete"]);
+});
+
+test("creates a version-linked follow-up from one closed collection", async () => {
+  let followUpInput;
+  const handler = createWorkspaceRoundsHandler({
+    authenticate: authentication(),
+    createFollowUp: async value => {
+      followUpInput = value;
+      return {
+        id: "44444444-4444-4444-8444-444444444444",
+        priorRoundId: value.priorRoundId,
+        label: value.draft.label,
+        status: "draft"
+      };
+    },
+    now: () => now
+  });
+  const response = await handler(request("POST", {
+    priorRoundId: "22222222-2222-4222-8222-222222222222",
+    label: "Capacity Follow-up",
+    opensAt: "2026-08-02T00:00:00.000Z",
+    closesAt: "2026-08-16T00:00:00.000Z"
+  }));
+  assert.equal(response.status, 201);
+  assert.equal(followUpInput.workspaceId, workspaceId);
+  assert.equal(followUpInput.draft.label, "Capacity Follow-up");
 });
 
 test("prevents participants, foreign origins, malformed bodies, and unsupported methods", async () => {

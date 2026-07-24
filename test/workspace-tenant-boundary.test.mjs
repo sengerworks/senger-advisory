@@ -126,6 +126,19 @@ test("only one organizational action cycle can remain open per round", async () 
   assert.match(migration, /WHERE status IN \('planned', 'active'\)/);
 });
 
+test("linked reassessment rounds preserve tenant ownership and one follow-up chain", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/007_linked_reassessment_rounds.sql", import.meta.url),
+    "utf8"
+  );
+  assert.match(migration, /ADD COLUMN prior_round_id uuid/);
+  assert.match(
+    migration,
+    /FOREIGN KEY \(workspace_id, prior_round_id\)\s+REFERENCES app_identity\.collection_rounds\(workspace_id, id\)/
+  );
+  assert.match(migration, /CREATE UNIQUE INDEX collection_rounds_one_follow_up_idx/);
+});
+
 test("tenant-owned relationships use composite workspace foreign keys", async () => {
   const sql = await readFile(migrationUrl, "utf8");
 

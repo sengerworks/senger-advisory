@@ -745,6 +745,7 @@ h2 {
 .workspace-action-list { display: grid; gap: 12px; margin-top: 22px; }
 .action-cycle-empty { margin: 20px 0 0; color: var(--ink-soft); font-size: .8rem; }
 .action-cycle-message { margin-top: 14px; }
+.action-cycle-close-round { margin-top: 16px; }
 
 .workspace-action-card {
   padding: 22px;
@@ -811,6 +812,43 @@ h2 {
   border-radius: 14px;
   background: var(--ivory);
 }
+
+.workspace-comparison {
+  margin-top: 40px;
+  padding-top: 34px;
+  border-top: 1px solid var(--line);
+}
+
+.comparison-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.comparison-heading h5 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.45rem, 2.5vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -.035em;
+}
+
+.comparison-index { display: flex; align-items: center; gap: 12px; }
+.comparison-index span { font-family: var(--serif); font-size: 2.2rem; }
+.comparison-index i { color: var(--ink-soft); font-style: normal; }
+.workspace-comparison > p { color: var(--ink-soft); font-size: .78rem; }
+
+.comparison-domains {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+.comparison-domains article { display: grid; gap: 5px; padding: 15px; border: 1px solid var(--line); border-radius: 11px; }
+.comparison-domains strong { font-size: .76rem; }
+.comparison-domains span { color: var(--ink-soft); font-size: .72rem; }
+.comparison-domains em { color: var(--bronze-dark); font-style: normal; font-weight: 800; }
 
 .workspace-action-form label { display: grid; gap: 7px; }
 .workspace-action-form label > span { font-size: .72rem; font-weight: 800; }
@@ -975,6 +1013,8 @@ h2 {
   .action-cycle-submit { align-items: stretch; flex-direction: column; }
   .workspace-action-card dl > div { grid-template-columns: 1fr; gap: 4px; }
   .workspace-action-review { grid-template-columns: 1fr; align-items: stretch; }
+  .comparison-heading { align-items: start; flex-direction: column; }
+  .comparison-domains { grid-template-columns: 1fr; }
   .invitation-form { grid-template-columns: 1fr; }
   .invitation-card { align-items: start; grid-template-columns: 1fr; }
   .invitation-card-actions { justify-content: flex-start; }

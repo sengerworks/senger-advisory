@@ -16,6 +16,7 @@ const ADMINISTRATIVE = new Set([
   "round:delete",
   "round:open",
   "round:close",
+  "round:follow-up",
   "action-cycle:read",
   "action-cycle:create",
   "action-cycle:update"

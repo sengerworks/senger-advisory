@@ -68,6 +68,10 @@ test("owner collection setup presents dates and the fixed privacy threshold", as
   assert.match(script, /Review observation/);
   assert.match(script, /method:\s*"PATCH"/);
   assert.match(script, /review overdue/);
+  assert.match(script, /Create linked follow-up draft/);
+  assert.match(script, /action:\s*"close"/);
+  assert.match(script, /\/api\/workspace\/comparison\?roundId=/);
+  assert.match(html, /What changed between collection rounds/);
 });
 
 test("workspace authentication always returns to the workspace route", async () => {

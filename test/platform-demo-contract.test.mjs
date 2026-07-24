@@ -17,10 +17,14 @@ test("public demo walks from private perspectives to a shared action cycle", asy
   assert.match(html, /Demo entries stay in this browser and are not stored/);
   assert.match(html, /Discuss your organization/);
   assert.match(html, /Save fictional review/);
+  assert.match(html, /Linked Reassessment/);
+  assert.match(html, /What changed between observations/);
   assert.match(script, /aggregateOrganization/);
   assert.match(script, /result\.policy === "aggregate"/);
   assert.match(script, /elements\.actionCard\.hidden = false/);
   assert.match(script, /Latest review:/);
+  assert.match(script, /compareOrganizationRounds/);
+  assert.match(script, /No follow-up scores are shown/);
   assert.doesNotMatch(script, /fetch\(|localStorage|sessionStorage/);
 });
 

@@ -22,6 +22,7 @@ function publicRound(row) {
     minimumParticipants: row.minimum_participants,
     opensAt: isoOrNull(row.opens_at),
     closesAt: isoOrNull(row.closes_at),
+    priorRoundId: row.prior_round_id || null,
     createdAt: new Date(row.created_at).toISOString()
   });
 }
@@ -65,7 +66,8 @@ export function validateRoundDraft(value, now = Date.now()) {
 export async function listWorkspaceRounds(workspaceId, connectionString) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const result = await query(
-      `SELECT id, display_label, status, minimum_participants, opens_at, closes_at, created_at
+      `SELECT id, display_label, status, minimum_participants, opens_at, closes_at,
+              prior_round_id, created_at
        FROM app_identity.collection_rounds
        ORDER BY created_at DESC
        LIMIT $1`,
@@ -85,7 +87,8 @@ export async function createWorkspaceRound(
         (workspace_id, display_label, status, assessment_version, scoring_version,
          notice_version, minimum_participants, opens_at, closes_at)
        VALUES ($1, $2, 'draft', $3, $4, $5, $6, $7, $8)
-       RETURNING id, display_label, status, minimum_participants, opens_at, closes_at, created_at`,
+       RETURNING id, display_label, status, minimum_participants, opens_at, closes_at,
+                 prior_round_id, created_at`,
       [
         workspaceId,
         draft.label,
@@ -126,7 +129,8 @@ export async function updateWorkspaceRound(
       `UPDATE app_identity.collection_rounds
        SET display_label = $3, opens_at = $4, closes_at = $5, updated_at = now()
        WHERE workspace_id = $1 AND id = $2 AND status = 'draft'
-       RETURNING id, display_label, status, minimum_participants, opens_at, closes_at, created_at`,
+       RETURNING id, display_label, status, minimum_participants, opens_at, closes_at,
+                 prior_round_id, created_at`,
       [workspaceId, roundId, draft.label, draft.opensAt, draft.closesAt]
     );
     if (updated.rowCount !== 1) {
@@ -161,7 +165,8 @@ export async function openWorkspaceRound(
            WHERE existing.workspace_id = $1
              AND existing.status = 'open'
          )
-       RETURNING id, display_label, status, minimum_participants, opens_at, closes_at, created_at`,
+       RETURNING id, display_label, status, minimum_participants, opens_at, closes_at,
+                 prior_round_id, created_at`,
       [workspaceId, roundId]
     );
     if (opened.rowCount !== 1) {
@@ -211,11 +216,112 @@ export async function deleteWorkspaceRound(
   }, connectionString);
 }
 
+export async function closeWorkspaceRound(
+  { workspaceId, actorUserId, roundId },
+  connectionString
+) {
+  requireWorkspaceId(roundId);
+  return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
+    const closed = await query(
+      `UPDATE app_identity.collection_rounds round
+       SET status = 'closed', updated_at = now()
+       WHERE round.workspace_id = $1
+         AND round.id = $2
+         AND round.status = 'open'
+         AND EXISTS (
+           SELECT 1
+           FROM app_shared.organizational_aggregates aggregate
+           WHERE aggregate.workspace_id = round.workspace_id
+             AND aggregate.round_id = round.id
+             AND aggregate.result_policy = 'aggregate'
+             AND aggregate.participant_count >= aggregate.minimum_required
+         )
+         AND EXISTS (
+           SELECT 1
+           FROM app_shared.action_cycles cycle
+           WHERE cycle.workspace_id = round.workspace_id
+             AND cycle.round_id = round.id
+             AND cycle.status IN ('completed', 'stopped')
+         )
+         AND NOT EXISTS (
+           SELECT 1
+           FROM app_shared.action_cycles cycle
+           WHERE cycle.workspace_id = round.workspace_id
+             AND cycle.round_id = round.id
+             AND cycle.status IN ('planned', 'active')
+         )
+       RETURNING id, display_label, status, minimum_participants, opens_at, closes_at,
+                 prior_round_id, created_at`,
+      [workspaceId, roundId]
+    );
+    if (closed.rowCount !== 1) {
+      throw new RoundStateError(
+        "Close the current action cycle after the privacy threshold is met before ending this collection."
+      );
+    }
+    await query(
+      `INSERT INTO app_operations.audit_events
+        (workspace_id, actor_clerk_user_id, action, target_type, target_id, metadata)
+       VALUES ($1, $2, 'round.closed', 'collection_round', $3, '{}'::jsonb)`,
+      [workspaceId, actorUserId, roundId]
+    );
+    return publicRound(closed.rows[0]);
+  }, connectionString);
+}
+
+export async function createFollowUpRound(
+  { workspaceId, actorUserId, priorRoundId, draft },
+  connectionString
+) {
+  requireWorkspaceId(priorRoundId);
+  return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
+    const inserted = await query(
+      `INSERT INTO app_identity.collection_rounds
+        (workspace_id, display_label, status, assessment_version, scoring_version,
+         notice_version, minimum_participants, opens_at, closes_at, prior_round_id)
+       SELECT $1, $3, 'draft', prior.assessment_version, prior.scoring_version,
+              prior.notice_version, prior.minimum_participants, $4, $5, prior.id
+       FROM app_identity.collection_rounds prior
+       WHERE prior.workspace_id = $1
+         AND prior.id = $2
+         AND prior.status = 'closed'
+         AND NOT EXISTS (
+           SELECT 1
+           FROM app_identity.collection_rounds existing
+           WHERE existing.workspace_id = $1
+             AND existing.prior_round_id = prior.id
+         )
+       RETURNING id, display_label, status, minimum_participants, opens_at, closes_at,
+                 prior_round_id, created_at`,
+      [workspaceId, priorRoundId, draft.label, draft.opensAt, draft.closesAt]
+    );
+    if (inserted.rowCount !== 1) {
+      throw new RoundStateError(
+        "A follow-up can be created once from a closed, threshold-qualified collection."
+      );
+    }
+    const round = publicRound(inserted.rows[0]);
+    await query(
+      `INSERT INTO app_operations.audit_events
+        (workspace_id, actor_clerk_user_id, action, target_type, target_id, metadata)
+       VALUES ($1, $2, 'round.follow_up_created', 'collection_round', $3, $4::jsonb)`,
+      [
+        workspaceId,
+        actorUserId,
+        round.id,
+        JSON.stringify({ priorRoundId })
+      ]
+    );
+    return round;
+  }, connectionString);
+}
+
 export async function getWorkspaceRound(workspaceId, roundId, connectionString) {
   requireWorkspaceId(roundId);
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const result = await query(
-      `SELECT id, display_label, status, minimum_participants, opens_at, closes_at, created_at
+      `SELECT id, display_label, status, minimum_participants, opens_at, closes_at,
+              prior_round_id, created_at
        FROM app_identity.collection_rounds
        WHERE workspace_id = $1 AND id = $2`,
       [workspaceId, roundId]

@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
+import workspaceComparison from "../netlify/functions/workspace-comparison.mjs";
 import workspaceActionCycles from "../netlify/functions/workspace-action-cycles.mjs";
 import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
 import workspaceParticipation from "../netlify/functions/workspace-participation.mjs";
@@ -24,6 +25,7 @@ const files = new Map([
   ["/organization-view.js", { url: new URL("../organization-view.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/organization-view-demo-data.js", { url: new URL("../organization-view-demo-data.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/organization-aggregation-engine.js", { url: new URL("../organization-aggregation-engine.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/organization-comparison-engine.js", { url: new URL("../organization-comparison-engine.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/contact.html", { url: new URL("../contact.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/privacy.html", { url: new URL("../privacy.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/assessment.js", { url: new URL("../assessment.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
@@ -70,6 +72,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
 
   if ([
     "/api/workspace/config",
+    "/api/workspace/comparison",
     "/api/workspace/action-cycles",
     "/api/workspace/invitations",
     "/api/workspace/participation",
@@ -86,6 +89,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     });
     const handler = url.pathname.endsWith("/config")
       ? workspaceConfig
+      : url.pathname.endsWith("/comparison")
+        ? workspaceComparison
       : url.pathname.endsWith("/action-cycles")
         ? workspaceActionCycles
       : url.pathname.endsWith("/invitations")

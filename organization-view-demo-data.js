@@ -20,3 +20,11 @@ export const illustrativeOrganizationSubmissions = Object.freeze([
   submission(4, { leadership: 67, decisions: 67, rhythm: 67, alignment: 75, technology: 67, culture: 58 }, 67, ["leadership", "decisions", "rhythm", "technology"]),
   submission(5, { leadership: 58, decisions: 75, rhythm: 58, alignment: 58, technology: 75, culture: 67 }, 66, ["leadership", "rhythm", "alignment"])
 ]);
+
+export const illustrativeFollowUpSubmissions = Object.freeze([
+  submission(11, { leadership: 67, decisions: 50, rhythm: 58, alignment: 50, technology: 67, culture: 58 }, 58, ["alignment", "decisions"]),
+  submission(12, { leadership: 67, decisions: 58, rhythm: 67, alignment: 67, technology: 67, culture: 67 }, 65, ["decisions"]),
+  submission(13, { leadership: 58, decisions: 67, rhythm: 58, alignment: 67, technology: 75, culture: 67 }, 65, ["leadership", "rhythm"]),
+  submission(14, { leadership: 75, decisions: 75, rhythm: 67, alignment: 75, technology: 75, culture: 67 }, 72, ["rhythm", "culture"]),
+  submission(15, { leadership: 67, decisions: 75, rhythm: 67, alignment: 67, technology: 75, culture: 75 }, 71, ["leadership", "rhythm", "alignment"])
+]);
