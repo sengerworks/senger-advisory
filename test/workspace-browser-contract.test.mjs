@@ -23,6 +23,13 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.doesNotMatch(script, /CLERK_SECRET_KEY|NEON_DATABASE_URL|workspaceId|organizationId|userId/);
 });
 
+test("workspace authentication always returns to the workspace route", async () => {
+  const script = await source("workspace/workspace.js");
+  assert.match(script, /forceRedirectUrl:\s*"\/workspace\/"/);
+  assert.match(script, /signUpForceRedirectUrl:\s*"\/workspace\/"/);
+  assert.doesNotMatch(script, /afterSignInUrl|afterSignUpUrl/);
+});
+
 test("workspace has a route-only Clerk CSP and authentication return fallback", async () => {
   const config = await source("netlify.toml");
   assert.match(config, /for = "\/workspace\/\*"/);
