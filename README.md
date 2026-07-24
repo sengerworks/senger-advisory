@@ -128,6 +128,11 @@ authentication-readiness response. The development Clerk Organization is mapped 
 development workspace; no production identity instance or production database branch is
 connected.
 
+`workspace/` is the isolated, no-index browser surface for invited Organization members. Its
+first release supports email sign-in, invitation return paths, active Organization handling,
+server-verified role-aware landing states, mobile layout, reduced motion, and a local
+development server. It does not yet collect assessments or expose organization operations.
+
 Optional longitudinal evidence uses a third, deliberately separate boundary.
 `longitudinal-evidence-client.js` creates a random research subject ID and independent
 withdrawal capability, then projects only versioned aggregate assessments, outcome

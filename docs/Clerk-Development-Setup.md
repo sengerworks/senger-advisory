@@ -24,6 +24,10 @@ The application has three Organization roles:
 `org:member` role has been deleted so it cannot accidentally expose the Organization member
 directory to a participant.
 
+The first development Owner invitation has been accepted. A real email sign-in, active
+Organization session, server-side session verification, workspace resolution, and role-aware
+Owner landing state have been completed successfully at the local `/workspace/` route.
+
 ## Provider-to-database boundary
 
 Migration `003_workspace_resolution.sql` adds a narrowly granted, `SECURITY DEFINER`
@@ -49,10 +53,9 @@ not return provider IDs, internal workspace IDs, user IDs, member lists, or priv
 
 ## Remaining development steps
 
-- Add the isolated browser workspace application and Clerk frontend SDK.
-- Configure explicit local and Netlify authorized-party origins.
-- Invite the first development Owner and complete the email sign-up flow.
-- Verify a real browser session against `/api/workspace/session`.
+- Keep the isolated `/workspace/` browser application and Clerk UI bundle version pinned.
+- Configure explicit Netlify authorized-party origins.
+- Verify the same Owner session in a deploy preview before enabling any live collection.
 - Add Clerk and Neon runtime secrets only to the appropriate Netlify development/deploy
   contexts before testing a deployed function.
 - Keep the production Clerk instance inactive until the full pilot flow and security review

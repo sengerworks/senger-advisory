@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Organizational Capacity Workspace | Senger Advisory</title>
+  <meta name="description" content="A private Organizational Capacity workspace for invited participants and facilitators." />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="workspace.css" />
+</head>
+<body>
+  <a class="skip-link" href="#workspace-main">Skip to workspace</a>
+
+  <header class="workspace-header">
+    <a class="workspace-brand" href="../index.html" aria-label="Senger Advisory home">
+      <span>Senger Advisory</span>
+      <small>Organizational Capacity</small>
+    </a>
+    <div class="workspace-account" data-account hidden>
+      <span data-account-label></span>
+      <button class="text-button" type="button" data-sign-out>Sign out</button>
+    </div>
+  </header>
+
+  <main id="workspace-main" class="workspace-main">
+    <section class="workspace-introduction" aria-labelledby="workspace-title">
+      <p class="eyebrow">Private Organizational Workspace</p>
+      <h1 id="workspace-title">See how capacity shapes execution.</h1>
+      <p>
+        This workspace brings informed perspectives together without exposing individual
+        responses. Shared results appear only when the participation threshold is met.
+      </p>
+    </section>
+
+    <section class="workspace-surface" aria-live="polite" aria-busy="true" data-workspace-surface>
+      <div class="workspace-loading" data-loading>
+        <span class="loading-mark" aria-hidden="true"></span>
+        <p>Preparing your workspace…</p>
+      </div>
+
+      <div class="workspace-error" data-error hidden>
+        <p class="state-label">Workspace unavailable</p>
+        <h2>We couldn’t prepare sign-in.</h2>
+        <p data-error-message>Please try again in a moment.</p>
+        <button class="primary-button" type="button" data-retry>Try again</button>
+      </div>
+
+      <div class="sign-in-state" data-sign-in-state hidden>
+        <div class="state-copy">
+          <p class="state-label">Invitation access</p>
+          <h2>Enter the workspace securely.</h2>
+          <p>
+            Use the email address that received your invitation. Your identity confirms
+            participation; your assessment responses remain private.
+          </p>
+          <ul class="privacy-points" aria-label="Workspace privacy commitments">
+            <li>Individual scores are never shown to workspace roles.</li>
+            <li>Results remain suppressed below five valid submissions.</li>
+            <li>Workspace participation is separate from research consent.</li>
+          </ul>
+        </div>
+        <div class="clerk-panel" data-sign-in-mount></div>
+      </div>
+
+      <div class="membership-state" data-membership-state hidden>
+        <p class="state-label">Invitation required</p>
+        <h2>Your account is ready, but no workspace is active.</h2>
+        <p>
+          Open the invitation sent by Senger Advisory, or ask the workspace owner to resend
+          it. This account cannot create an unmanaged organization.
+        </p>
+        <button class="secondary-button" type="button" data-refresh>Check again</button>
+      </div>
+
+      <div class="ready-state" data-ready-state hidden>
+        <div class="ready-heading">
+          <div>
+            <p class="state-label" data-role-label>Workspace member</p>
+            <h2 data-organization-name>Your organizational workspace</h2>
+          </div>
+          <span class="secure-state">Private &amp; threshold-protected</span>
+        </div>
+
+        <div class="focus-card">
+          <p class="card-kicker">Current focus</p>
+          <h3 data-focus-title>Prepare the first collection round.</h3>
+          <p data-focus-description>
+            The workspace identity boundary is active. Assessment collection will be enabled
+            in the next product milestone.
+          </p>
+          <button class="primary-button" type="button" disabled data-primary-action>
+            Collection setup coming next
+          </button>
+        </div>
+
+        <div class="workspace-principles">
+          <article>
+            <span>01</span>
+            <h3>Private inputs</h3>
+            <p>No owner or facilitator can inspect an individual assessment.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Shared pattern</h3>
+            <p>The organization—not any participant—is the unit of interpretation.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Actionable learning</h3>
+            <p>Results lead to a constraint hypothesis, action cycle, and reassessment.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="workspace-footer">
+    <p>Organizational Capacity Workspace · Development release</p>
+    <a href="../privacy.html">Privacy</a>
+  </footer>
+
+  <script src="workspace.js" defer></script>
+</body>
+</html>

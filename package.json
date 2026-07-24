@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "node --test",
+    "dev:workspace": "node --env-file=.env scripts/workspace-dev-server.mjs",
     "db:migrate": "node --env-file=.env scripts/apply-workspace-migrations.mjs",
     "db:link-development-workspace": "node --env-file=.env scripts/link-development-workspace.mjs",
     "test:workspace-db": "node --env-file=.env --test test/workspace-neon.integration.test.mjs"

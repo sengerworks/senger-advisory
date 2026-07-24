@@ -29,6 +29,23 @@
   [headers.values]
     Cache-Control = "public, max-age=604800, must-revalidate"
 
+[[headers]]
+  for = "/workspace/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: https://img.clerk.com; script-src 'self' https://*.clerk.accounts.dev https://challenges.cloudflare.com; connect-src 'self' https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; frame-src 'self' https://challenges.cloudflare.com; font-src 'self'"
+    Cache-Control = "no-store"
+    Referrer-Policy = "no-referrer"
+
+[[redirects]]
+  from = "/workspace"
+  to = "/workspace/"
+  status = 301
+
+[[redirects]]
+  from = "/workspace/*"
+  to = "/workspace/index.html"
+  status = 200
+
 [[redirects]]
   from = "/model"
   to = "/framework.html"
