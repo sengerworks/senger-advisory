@@ -255,6 +255,12 @@
                   <p class="action-cycle-empty" data-action-cycle-empty>
                     No shared action cycle has been defined for this collection.
                   </p>
+                  <p
+                    class="form-message action-cycle-message"
+                    role="status"
+                    aria-live="polite"
+                    data-action-cycle-message
+                  ></p>
                   <form class="workspace-action-form" data-action-cycle-form>
                     <label>
                       <span>Constraint to address</span>
@@ -318,7 +324,6 @@
                     </label>
                     <input name="status" type="hidden" value="active" />
                     <div class="action-cycle-submit action-field-wide">
-                      <p class="form-message" role="status" aria-live="polite" data-action-cycle-message></p>
                       <button class="primary-button" type="submit" data-save-action-cycle>
                         Start shared action cycle
                       </button>

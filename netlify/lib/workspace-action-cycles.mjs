@@ -107,6 +107,20 @@ export async function createWorkspaceActionCycle(
         "An action cycle can begin only after the privacy threshold is met."
       );
     }
+    const existing = await query(
+      `SELECT 1
+       FROM app_shared.action_cycles
+       WHERE workspace_id = $1
+         AND round_id = $2
+         AND status IN ('planned', 'active')
+       LIMIT 1`,
+      [workspaceId, input.roundId]
+    );
+    if (existing.rowCount > 0) {
+      throw new ActionCycleStateError(
+        "Review or close the current action cycle before starting another."
+      );
+    }
     const cycle = input.cycle;
     const result = await query(
       `INSERT INTO app_shared.action_cycles
@@ -194,6 +208,34 @@ export async function reviewWorkspaceActionCycle(
   connectionString
 ) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
+    const current = await query(
+      `SELECT status
+       FROM app_shared.action_cycles
+       WHERE workspace_id = $1 AND round_id = $2 AND id = $3
+       FOR UPDATE`,
+      [workspaceId, review.roundId, review.actionCycleId]
+    );
+    if (current.rowCount !== 1) throw new ActionCycleStateError("Action cycle not found.");
+    if (
+      ["completed", "stopped"].includes(current.rows[0].status)
+      && ["planned", "active"].includes(review.status)
+    ) {
+      const anotherOpen = await query(
+        `SELECT 1
+         FROM app_shared.action_cycles
+         WHERE workspace_id = $1
+           AND round_id = $2
+           AND id <> $3
+           AND status IN ('planned', 'active')
+         LIMIT 1`,
+        [workspaceId, review.roundId, review.actionCycleId]
+      );
+      if (anotherOpen.rowCount > 0) {
+        throw new ActionCycleStateError(
+          "Close the current action cycle before reopening this one."
+        );
+      }
+    }
     const result = await query(
       `UPDATE app_shared.action_cycles
        SET status = $4, review_note = $5, closed_at = $6, updated_at = $7
@@ -209,7 +251,6 @@ export async function reviewWorkspaceActionCycle(
         review.updatedAt
       ]
     );
-    if (result.rowCount !== 1) throw new ActionCycleStateError("Action cycle not found.");
     await query(
       `INSERT INTO app_operations.audit_events
         (workspace_id, actor_clerk_user_id, action, target_type, target_id, metadata)

@@ -28,7 +28,10 @@ const elements = {
   actionEvidence: app.querySelector("[data-demo-action-evidence]"),
   actionDate: app.querySelector("[data-demo-action-date]"),
   actionMessage: app.querySelector("[data-demo-action-message]"),
-  reviewDate: app.querySelector("[data-demo-review-date]")
+  reviewDate: app.querySelector("[data-demo-review-date]"),
+  reviewForm: app.querySelector("[data-demo-review-form]"),
+  reviewResult: app.querySelector("[data-demo-review-result]"),
+  actionStatus: app.querySelector("[data-demo-action-status]")
 };
 
 const domainNames = {
@@ -162,4 +165,15 @@ elements.actionForm.addEventListener("submit", event => {
   elements.actionForm.hidden = true;
   elements.actionMessage.textContent = "Fictional action cycle started.";
   elements.actionCard.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+elements.reviewForm.addEventListener("submit", event => {
+  event.preventDefault();
+  if (!elements.reviewForm.reportValidity()) return;
+  const values = Object.fromEntries(new FormData(elements.reviewForm));
+  elements.actionStatus.textContent = values.status;
+  elements.reviewResult.textContent =
+    `Latest review: ${values.reviewNote} This observation is context, not proof of causality.`;
+  elements.reviewResult.hidden = false;
+  elements.reviewForm.hidden = true;
 });

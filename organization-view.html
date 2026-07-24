@@ -131,7 +131,28 @@
               <div><dt>Evidence to watch</dt><dd data-demo-action-evidence></dd></div>
               <div><dt>Review date</dt><dd data-demo-action-date></dd></div>
             </dl>
-            <p>This is a hypothesis to test—not a claim that the action caused a later result.</p>
+            <p class="demo-action-caution">This is a hypothesis to test—not a claim that the action caused a later result.</p>
+            <form class="demo-review-form" data-demo-review-form>
+              <label>
+                <span>Cycle status</span>
+                <select name="status" required>
+                  <option value="active">Active</option>
+                  <option value="completed">Completed</option>
+                  <option value="stopped">Stopped</option>
+                </select>
+              </label>
+              <label>
+                <span>Review observation</span>
+                <textarea
+                  name="reviewNote"
+                  maxlength="500"
+                  rows="2"
+                  required
+                >Approval time and senior escalations both fell during the four-week cycle. Continue observing before attributing the change to this intervention.</textarea>
+              </label>
+              <button class="button secondary" type="submit">Save fictional review</button>
+            </form>
+            <p class="demo-review-result" data-demo-review-result hidden></p>
           </div>
 
           <form class="demo-action-form" data-demo-action-form>

@@ -185,7 +185,33 @@
 .demo-action-card dl > div { display: grid; grid-template-columns: 170px 1fr; gap: 24px; padding: 14px 0; border-top: 1px solid rgba(255,255,255,.14); }
 .demo-action-card dt { color: rgba(255,255,255,.58); font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .demo-action-card dd { margin: 0; font-size: .84rem; }
-.demo-action-card > p:last-child { margin: 24px 0 0; color: rgba(255,255,255,.58); font-size: .72rem; }
+.demo-action-caution { margin: 24px 0 0; color: rgba(255,255,255,.58); font-size: .72rem; }
+
+.demo-review-form {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.14);
+}
+.demo-review-form label { display: grid; gap: 7px; }
+.demo-review-form label > span { color: rgba(255,255,255,.62); font-size: .68rem; font-weight: 800; text-transform: uppercase; }
+.demo-review-form select,
+.demo-review-form textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 9px;
+  background: rgba(255,255,255,.95);
+  color: var(--ink);
+  font: inherit;
+}
+.demo-review-form textarea { resize: vertical; }
+.demo-review-form .button { min-height: 44px; background: #fff; }
+.demo-review-result { margin: 22px 0 0 !important; color: rgba(255,255,255,.78) !important; font-size: .8rem !important; }
 
 .organization-next { margin-top: 60px; }
 .organization-next > div:last-child > p { margin-top: 0; color: var(--ink-soft); }
@@ -213,6 +239,7 @@
   .demo-action-wide { grid-column: auto; }
   .demo-action-submit { align-items: stretch; flex-direction: column; }
   .demo-action-card dl > div { grid-template-columns: 1fr; gap: 5px; }
+  .demo-review-form { grid-template-columns: 1fr; align-items: stretch; }
 }
 
 @media (prefers-reduced-motion: reduce) {

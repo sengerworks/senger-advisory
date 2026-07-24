@@ -484,7 +484,15 @@ function renderActionCycles(actionCycles) {
     const title = document.createElement("h6");
     const status = document.createElement("span");
     title.textContent = domainLabels[cycle.constraintDomainId] || cycle.constraintDomainId;
-    status.textContent = cycle.status;
+    const today = localDateValue();
+    const lifecycle = ["completed", "stopped"].includes(cycle.status)
+      ? cycle.status
+      : cycle.reviewDate < today
+        ? "review overdue"
+        : cycle.reviewDate === today
+          ? "review due"
+          : cycle.status;
+    status.textContent = lifecycle;
     heading.append(title, status);
     const hypothesis = document.createElement("p");
     hypothesis.textContent = cycle.hypothesis;
@@ -504,9 +512,55 @@ function renderActionCycles(actionCycles) {
       row.append(term, description);
       details.append(row);
     }
+    const reviewNote = cycle.reviewNote ? document.createElement("p") : null;
+    if (reviewNote) {
+      reviewNote.className = "workspace-action-review-note";
+      reviewNote.textContent = `Latest review: ${cycle.reviewNote}`;
+    }
+    const reviewForm = document.createElement("form");
+    reviewForm.className = "workspace-action-review";
+    reviewForm.dataset.actionReview = cycle.actionCycleId;
+    const statusLabel = document.createElement("label");
+    const statusText = document.createElement("span");
+    const statusSelect = document.createElement("select");
+    statusSelect.name = "status";
+    statusText.textContent = "Cycle status";
+    for (const [value, label] of [
+      ["active", "Active"],
+      ["completed", "Completed"],
+      ["stopped", "Stopped"]
+    ]) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      option.selected = cycle.status === value;
+      statusSelect.append(option);
+    }
+    statusLabel.append(statusText, statusSelect);
+    const noteLabel = document.createElement("label");
+    noteLabel.className = "action-review-note";
+    const noteText = document.createElement("span");
+    const note = document.createElement("textarea");
+    note.name = "reviewNote";
+    note.maxLength = 500;
+    note.rows = 2;
+    note.required = true;
+    note.placeholder = "What did the team observe? Record context, not proof of causality.";
+    noteText.textContent = "Review observation";
+    noteLabel.append(noteText, note);
+    const submit = document.createElement("button");
+    submit.className = "secondary-button";
+    submit.type = "submit";
+    submit.textContent = "Save review";
+    reviewForm.append(statusLabel, noteLabel, submit);
     card.append(heading, hypothesis, details);
+    if (reviewNote) card.append(reviewNote);
+    card.append(reviewForm);
     elements.actionCycleList.append(card);
   }
+  elements.actionCycleForm.hidden = actionCycles.some(
+    cycle => ["planned", "active"].includes(cycle.status)
+  );
 }
 
 async function loadActionCycles(roundId) {
@@ -899,6 +953,35 @@ elements.actionCycleForm.addEventListener("submit", async event => {
     elements.actionCycleMessage.dataset.tone = "error";
   } finally {
     elements.saveActionCycle.disabled = false;
+  }
+});
+elements.actionCycleList.addEventListener("submit", async event => {
+  const form = event.target.closest("[data-action-review]");
+  if (!form || currentRole !== "org:admin" || !selectedRoundId) return;
+  event.preventDefault();
+  if (!form.reportValidity()) return;
+  const submit = form.querySelector("button[type='submit']");
+  submit.disabled = true;
+  elements.actionCycleMessage.textContent = "Saving the organizational review…";
+  delete elements.actionCycleMessage.dataset.tone;
+  try {
+    const values = Object.fromEntries(new FormData(form));
+    await workspaceRequest("/api/workspace/action-cycles", {
+      method: "PATCH",
+      body: {
+        roundId: selectedRoundId,
+        actionCycleId: form.dataset.actionReview,
+        ...values
+      }
+    });
+    elements.actionCycleMessage.textContent =
+      "Review saved. The observation remains context, not proof of causality.";
+    elements.actionCycleMessage.dataset.tone = "success";
+    await loadActionCycles(selectedRoundId);
+  } catch (error) {
+    elements.actionCycleMessage.textContent = error.message;
+    elements.actionCycleMessage.dataset.tone = "error";
+    submit.disabled = false;
   }
 });
 elements.participantAcknowledgement.addEventListener("change", event => {

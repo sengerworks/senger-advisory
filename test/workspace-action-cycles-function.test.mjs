@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { createWorkspaceActionCyclesHandler } from "../netlify/functions/workspace-action-cycles.mjs";
 import {
   ActionCycleInputError,
-  validateActionCycleInput
+  validateActionCycleInput,
+  validateActionCycleReview
 } from "../netlify/lib/workspace-action-cycles.mjs";
 import { WORKSPACE_ROLES } from "../workspace-authorization.js";
 
@@ -56,6 +57,18 @@ test("validates a bounded shared action cycle with an accountable owner", () => 
   );
 });
 
+test("validates a causal-cautious action-cycle review", () => {
+  const review = validateActionCycleReview({
+    roundId,
+    actionCycleId: "33333333-3333-4333-8333-333333333333",
+    status: "completed",
+    reviewNote: "Approval time fell during the cycle; continue observing."
+  }, { now });
+  assert.equal(review.status, "completed");
+  assert.equal(review.closedAt, now.toISOString());
+  assert.match(review.reviewNote, /continue observing/);
+});
+
 test("lists and creates action cycles only within the authenticated workspace", async () => {
   const calls = [];
   const handler = createWorkspaceActionCyclesHandler({
@@ -98,4 +111,25 @@ test("blocks participants, foreign origins, malformed inputs, and unsupported me
     now: () => now
   });
   assert.equal((await owner(request("POST", { ...values, hypothesis: "" }))).status, 400);
+});
+
+test("updates only the selected action cycle in the authenticated workspace", async () => {
+  let reviewed;
+  const handler = createWorkspaceActionCyclesHandler({
+    authenticate: authentication(),
+    reviewCycle: async value => {
+      reviewed = value;
+      return { ...value.review, responsibleOwner: "Chief Operating Officer" };
+    },
+    now: () => now
+  });
+  const response = await handler(request("PATCH", {
+    roundId,
+    actionCycleId: "33333333-3333-4333-8333-333333333333",
+    status: "completed",
+    reviewNote: "Decision time improved during the cycle."
+  }));
+  assert.equal(response.status, 200);
+  assert.equal(reviewed.workspaceId, workspaceId);
+  assert.equal(reviewed.review.status, "completed");
 });

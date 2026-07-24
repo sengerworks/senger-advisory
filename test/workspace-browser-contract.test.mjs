@@ -65,6 +65,9 @@ test("owner collection setup presents dates and the fixed privacy threshold", as
   assert.match(html, /Turn the signal into a testable commitment/);
   assert.match(html, /Responsible owner/);
   assert.match(script, /\/api\/workspace\/action-cycles/);
+  assert.match(script, /Review observation/);
+  assert.match(script, /method:\s*"PATCH"/);
+  assert.match(script, /review overdue/);
 });
 
 test("workspace authentication always returns to the workspace route", async () => {

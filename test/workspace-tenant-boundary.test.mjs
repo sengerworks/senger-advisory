@@ -116,6 +116,16 @@ test("shared action-cycle migration is tenant-isolated and threshold-linked", as
   assert.match(migration, /GRANT SELECT, INSERT, UPDATE, DELETE\s+ON app_shared\.action_cycles/);
 });
 
+test("only one organizational action cycle can remain open per round", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/006_single_active_action_cycle.sql", import.meta.url),
+    "utf8"
+  );
+  assert.match(migration, /CREATE UNIQUE INDEX action_cycles_one_open_per_round_idx/);
+  assert.match(migration, /ON app_shared\.action_cycles\(workspace_id, round_id\)/);
+  assert.match(migration, /WHERE status IN \('planned', 'active'\)/);
+});
+
 test("tenant-owned relationships use composite workspace foreign keys", async () => {
   const sql = await readFile(migrationUrl, "utf8");
 

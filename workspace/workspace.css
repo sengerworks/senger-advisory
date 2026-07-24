@@ -744,6 +744,7 @@ h2 {
 
 .workspace-action-list { display: grid; gap: 12px; margin-top: 22px; }
 .action-cycle-empty { margin: 20px 0 0; color: var(--ink-soft); font-size: .8rem; }
+.action-cycle-message { margin-top: 14px; }
 
 .workspace-action-card {
   padding: 22px;
@@ -773,6 +774,33 @@ h2 {
 .workspace-action-card dl > div { display: grid; grid-template-columns: 130px 1fr; gap: 16px; padding: 9px 0; border-top: 1px solid var(--line); }
 .workspace-action-card dt { color: var(--ink-soft); font-size: .68rem; font-weight: 800; text-transform: uppercase; }
 .workspace-action-card dd { margin: 0; font-size: .78rem; }
+.workspace-action-review-note { margin: 14px 0 0; color: var(--ink-soft); font-size: .78rem; }
+
+.workspace-action-review {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.workspace-action-review label { display: grid; gap: 6px; }
+.workspace-action-review label > span { font-size: .68rem; font-weight: 800; }
+.workspace-action-review select,
+.workspace-action-review textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid #d9d4cc;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+.workspace-action-review textarea { resize: vertical; }
+.workspace-action-review .secondary-button { min-height: 42px; }
 
 .workspace-action-form {
   display: grid;
@@ -800,7 +828,7 @@ h2 {
 }
 .workspace-action-form textarea { resize: vertical; }
 .action-field-wide { grid-column: 1 / -1; }
-.action-cycle-submit { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.action-cycle-submit { display: flex; justify-content: flex-end; }
 
 .invitation-list {
   display: grid;
@@ -946,6 +974,7 @@ h2 {
   .action-field-wide { grid-column: auto; }
   .action-cycle-submit { align-items: stretch; flex-direction: column; }
   .workspace-action-card dl > div { grid-template-columns: 1fr; gap: 4px; }
+  .workspace-action-review { grid-template-columns: 1fr; align-items: stretch; }
   .invitation-form { grid-template-columns: 1fr; }
   .invitation-card { align-items: start; grid-template-columns: 1fr; }
   .invitation-card-actions { justify-content: flex-start; }
