@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Illustrative Organizational View | Senger Advisory</title>
-  <meta name="description" content="Explore an illustrative, privacy-thresholded multi-perspective Organizational Capacity view." />
+  <title>Organizational Capacity Platform Demo | Senger Advisory</title>
+  <meta name="description" content="Explore how five private perspectives become a threshold-protected organizational capacity profile, constraint hypothesis, and action cycle." />
+  <link rel="canonical" href="https://sengeradvisory.com/organization-view.html" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css?v=organization-view-v1" />
   <link rel="stylesheet" href="organization-view.css?v=organization-view-v1" />
@@ -20,9 +20,9 @@
   <main id="main-content">
     <section class="organization-hero">
       <div>
-        <p class="eyebrow">Organizational View · Illustrative</p>
+        <p class="eyebrow">Organizational Capacity Platform · Interactive Demo</p>
         <h1>See the organization through more than one perspective.</h1>
-        <p class="page-lede">Explore how a leadership team’s private assessments become a shared capacity pattern—without exposing any individual’s answers or scores.</p>
+        <p class="page-lede">Follow a fictional leadership team from private participation to a shared capacity pattern, constraint hypothesis, and testable action—without exposing any individual’s answers or scores.</p>
       </div>
       <aside>
         <strong>Fictional demonstration</strong>
@@ -109,6 +109,71 @@
           <article><span data-pattern="widely-varied"></span><strong>Widely varied</strong><p>The spread itself warrants investigation before action.</p></article>
         </div>
         <p class="organization-caution">Perspective variation does not identify who is correct, prove organizational conflict, or establish statistical significance. It tells the team where shared inquiry may matter most.</p>
+
+        <section class="demo-action-cycle" aria-labelledby="demo-action-title">
+          <div class="demo-action-heading">
+            <div>
+              <p class="eyebrow">Constraint Action Cycle</p>
+              <h2 id="demo-action-title">Turn the signal into a testable commitment.</h2>
+            </div>
+            <p>A shared profile is useful only when it changes how the organization learns and acts. Define one bounded experiment and decide what evidence the team will review.</p>
+          </div>
+
+          <div class="demo-action-card" data-demo-action-card hidden>
+            <div>
+              <p class="eyebrow">Active Organizational Experiment</p>
+              <span data-demo-action-status>Active</span>
+            </div>
+            <h3 data-demo-action-hypothesis></h3>
+            <dl>
+              <div><dt>Commitment</dt><dd data-demo-action-commitment></dd></div>
+              <div><dt>Responsible owner</dt><dd data-demo-action-owner></dd></div>
+              <div><dt>Evidence to watch</dt><dd data-demo-action-evidence></dd></div>
+              <div><dt>Review date</dt><dd data-demo-action-date></dd></div>
+            </dl>
+            <p>This is a hypothesis to test—not a claim that the action caused a later result.</p>
+          </div>
+
+          <form class="demo-action-form" data-demo-action-form>
+            <label>
+              <span>Constraint to address</span>
+              <select name="constraintDomainId" data-demo-action-constraint required></select>
+            </label>
+            <label>
+              <span>Responsible owner</span>
+              <input name="responsibleOwner" type="text" maxlength="120" value="Chief Operating Officer" required />
+            </label>
+            <label class="demo-action-wide">
+              <span>Action hypothesis</span>
+              <textarea name="hypothesis" maxlength="500" rows="3" required>If decision ownership and escalation thresholds become explicit, routine approvals will move faster because fewer decisions will wait for senior intervention.</textarea>
+            </label>
+            <label class="demo-action-wide">
+              <span>Commitment</span>
+              <textarea name="commitment" maxlength="500" rows="3" required>Publish decision owners and escalation thresholds for the three highest-volume approval types, then use them for four weeks.</textarea>
+            </label>
+            <label>
+              <span>Operating evidence to watch</span>
+              <select name="evidenceMeasureId" required>
+                <option value="decisionPace">Decision pace</option>
+                <option value="leadershipEscalationLoad">Leadership escalation load</option>
+                <option value="crossFunctionalCoordinationLoad">Cross-functional coordination load</option>
+                <option value="executionReliability">Execution reliability</option>
+              </select>
+            </label>
+            <label>
+              <span>Review date</span>
+              <input name="reviewDate" type="date" data-demo-review-date required />
+            </label>
+            <label class="demo-action-wide">
+              <span>What will the team look for?</span>
+              <textarea name="evidenceDescription" maxlength="300" rows="2" required>Median elapsed time and senior escalations for the three selected approval types.</textarea>
+            </label>
+            <div class="demo-action-submit demo-action-wide">
+              <p role="status" aria-live="polite" data-demo-action-message>Demo entries stay in this browser and are not stored.</p>
+              <button class="button primary" type="submit">Start fictional action cycle</button>
+            </div>
+          </form>
+        </section>
       </section>
     </section>
 
@@ -118,8 +183,11 @@
         <h2>The report is the beginning of the conversation.</h2>
       </div>
       <div>
-        <p>A production workspace would connect this shared constraint hypothesis to an organizational action cycle, operating evidence, and later reassessment—while keeping individual private profiles independent.</p>
-        <a class="button primary" href="saved-results.html?demo=1">View the individual product loop</a>
+        <p>The production workspace carries this action into a review and reassessment cycle. For organizations that want help interpreting the pattern or increasing capacity, Senger Advisory can provide a facilitated debrief, coaching, targeted training, or implementation support.</p>
+        <div class="organization-next-actions">
+          <a class="button primary" href="contact.html">Discuss your organization</a>
+          <a class="button secondary" href="assessment.html">Take the individual assessment</a>
+        </div>
       </div>
     </section>
   </main>

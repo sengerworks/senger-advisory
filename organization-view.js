@@ -18,7 +18,17 @@ const elements = {
   domains: app.querySelector("[data-organization-domains]"),
   constraint: app.querySelector("[data-organization-constraint]"),
   hypothesis: app.querySelector("[data-constraint-hypothesis]"),
-  questions: app.querySelector("[data-constraint-questions]")
+  questions: app.querySelector("[data-constraint-questions]"),
+  actionForm: app.querySelector("[data-demo-action-form]"),
+  actionConstraint: app.querySelector("[data-demo-action-constraint]"),
+  actionCard: app.querySelector("[data-demo-action-card]"),
+  actionHypothesis: app.querySelector("[data-demo-action-hypothesis]"),
+  actionCommitment: app.querySelector("[data-demo-action-commitment]"),
+  actionOwner: app.querySelector("[data-demo-action-owner]"),
+  actionEvidence: app.querySelector("[data-demo-action-evidence]"),
+  actionDate: app.querySelector("[data-demo-action-date]"),
+  actionMessage: app.querySelector("[data-demo-action-message]"),
+  reviewDate: app.querySelector("[data-demo-review-date]")
 };
 
 const domainNames = {
@@ -34,6 +44,13 @@ const patternNames = {
   "closely-aligned": "Closely aligned",
   varied: "Varied perspectives",
   "widely-varied": "Widely varied perspectives"
+};
+
+const evidenceNames = {
+  decisionPace: "Decision pace",
+  leadershipEscalationLoad: "Leadership escalation load",
+  crossFunctionalCoordinationLoad: "Cross-functional coordination load",
+  executionReliability: "Execution reliability"
 };
 
 const constraintContent = {
@@ -85,6 +102,13 @@ function renderAggregate(result) {
   elements.constraint.textContent = result.primaryConstraintIds.map(id => domainNames[id]).join(" + ");
   elements.hypothesis.textContent = constraintContent[primary].hypothesis;
   elements.questions.innerHTML = constraintContent[primary].questions.map(question => `<li>${question}</li>`).join("");
+  elements.actionConstraint.replaceChildren();
+  for (const id of result.primaryConstraintIds) {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = domainNames[id];
+    elements.actionConstraint.append(option);
+  }
 }
 
 function render(count) {
@@ -114,3 +138,28 @@ elements.previous.addEventListener("click", () => render(Math.max(1, Number(elem
 elements.next.addEventListener("click", () => render(Math.min(5, Number(elements.slider.value) + 1)));
 
 render(1);
+
+const defaultReviewDate = new Date();
+defaultReviewDate.setDate(defaultReviewDate.getDate() + 30);
+elements.reviewDate.value = defaultReviewDate.toISOString().slice(0, 10);
+elements.reviewDate.min = new Date().toISOString().slice(0, 10);
+
+elements.actionForm.addEventListener("submit", event => {
+  event.preventDefault();
+  if (!elements.actionForm.reportValidity()) return;
+  const values = Object.fromEntries(new FormData(elements.actionForm));
+  elements.actionHypothesis.textContent = values.hypothesis;
+  elements.actionCommitment.textContent = values.commitment;
+  elements.actionOwner.textContent = values.responsibleOwner;
+  elements.actionEvidence.textContent =
+    `${evidenceNames[values.evidenceMeasureId]} — ${values.evidenceDescription}`;
+  elements.actionDate.textContent = new Intl.DateTimeFormat(undefined, {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  }).format(new Date(`${values.reviewDate}T12:00:00`));
+  elements.actionCard.hidden = false;
+  elements.actionForm.hidden = true;
+  elements.actionMessage.textContent = "Fictional action cycle started.";
+  elements.actionCard.scrollIntoView({ behavior: "smooth", block: "center" });
+});
