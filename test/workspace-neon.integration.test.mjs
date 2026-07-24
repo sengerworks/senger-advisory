@@ -5,6 +5,12 @@ import {
   resolveNeonWorkspaceId,
   withNeonWorkspaceTransaction
 } from "../netlify/lib/neon-workspace-database.mjs";
+import {
+  acceptWorkspaceNotice,
+  getWorkspaceParticipation,
+  submitWorkspaceAssessment,
+  WORKSPACE_NOTICE_VERSION
+} from "../netlify/lib/workspace-participation.mjs";
 
 const connectionString = process.env.NEON_DATABASE_URL;
 const integrationTest = connectionString ? test : test.skip;
@@ -65,18 +71,64 @@ integrationTest("real Postgres RLS isolates two workspaces", async () => {
     const round = await withNeonWorkspaceTransaction(alphaWorkspaceId, async ({ query }) => {
       return query(
         `INSERT INTO app_identity.collection_rounds
-          (workspace_id, display_label, assessment_version, scoring_version, notice_version,
+          (workspace_id, display_label, status, assessment_version, scoring_version, notice_version,
            minimum_participants, opens_at, closes_at)
-         VALUES ($1, $2, '1.0.0', '0.1.0', '1.0.0', 5, now(), now() + interval '14 days')
-         RETURNING display_label, status, minimum_participants`,
+         VALUES ($1, $2, 'open', '1.0.0', '0.1.0', '1.0.0', 5, now() - interval '1 minute', now() + interval '14 days')
+         RETURNING id, display_label, status, minimum_participants`,
         [alphaWorkspaceId, "Integration Capacity Baseline"]
       );
     }, connectionString);
-    assert.deepEqual(round.rows[0], {
-      display_label: "Integration Capacity Baseline",
-      status: "draft",
-      minimum_participants: 5
-    });
+    assert.equal(round.rows[0].display_label, "Integration Capacity Baseline");
+    assert.equal(round.rows[0].status, "open");
+    assert.equal(round.rows[0].minimum_participants, 5);
+
+    const participantUserId = `user_participant_${marker}`;
+    const participation = await getWorkspaceParticipation({
+      workspaceId: alphaWorkspaceId,
+      userId: participantUserId
+    }, connectionString);
+    assert.equal(participation.state, "ready");
+    assert.equal(participation.noticeAccepted, false);
+    await acceptWorkspaceNotice({
+      workspaceId: alphaWorkspaceId,
+      userId: participantUserId,
+      roundId: round.rows[0].id,
+      noticeVersion: WORKSPACE_NOTICE_VERSION
+    }, connectionString);
+    await submitWorkspaceAssessment({
+      workspaceId: alphaWorkspaceId,
+      userId: participantUserId,
+      roundId: round.rows[0].id,
+      submission: {
+        submissionId: randomUUID(),
+        completedAt: new Date().toISOString(),
+        assessmentVersion: "1.0.0",
+        scoringVersion: "0.1.0",
+        domainScores: {
+          leadership: 50,
+          decisions: 50,
+          rhythm: 50,
+          alignment: 50,
+          technology: 50,
+          culture: 50
+        },
+        overallIndex: 50,
+        interpretationBand: "Strained",
+        primaryConstraintIds: [
+          "leadership",
+          "decisions",
+          "rhythm",
+          "alignment",
+          "technology",
+          "culture"
+        ]
+      }
+    }, connectionString);
+    const completed = await getWorkspaceParticipation({
+      workspaceId: alphaWorkspaceId,
+      userId: participantUserId
+    }, connectionString);
+    assert.equal(completed.submitted, true);
 
     const crossTenantMutation = await withNeonWorkspaceTransaction(
       alphaWorkspaceId,

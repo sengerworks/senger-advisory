@@ -22,7 +22,27 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(script, /fetch\("\/api\/workspace\/session"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/rounds"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/invitations"/);
+  assert.match(script, /workspaceRequest\("\/api\/workspace\/participation"/);
   assert.doesNotMatch(script, /CLERK_SECRET_KEY|NEON_DATABASE_URL|workspaceId|organizationId|userId/);
+});
+
+test("participant entry requires a privacy acknowledgement before assessment navigation", async () => {
+  const html = await source("workspace/index.html");
+  const script = await source("workspace/workspace.js");
+  assert.match(html, /I understand how my workspace assessment will be used/);
+  assert.match(html, /Begin private assessment/);
+  assert.match(script, /noticeVersion:\s*currentParticipation\.noticeVersion/);
+  assert.match(script, /workspaceRound/);
+});
+
+test("workspace assessment submits aggregate scores without individual answers or identity", async () => {
+  const html = await source("assessment.html");
+  const script = await source("assessment.js");
+  assert.match(html, /Individual answers remain in this browser/);
+  assert.match(script, /fetch\("\/api\/workspace\/submission"/);
+  assert.match(script, /domainScores:/);
+  assert.match(script, /nextAction\.textContent = "Return to workspace"/);
+  assert.doesNotMatch(script, /workspaceSubmission\(\)[\s\S]{0,700}(responses|emailAddress|userId)/);
 });
 
 test("owner collection setup presents dates and the fixed privacy threshold", async () => {

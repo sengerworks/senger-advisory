@@ -1160,6 +1160,37 @@ h3 {
   padding: 0 clamp(20px, 5vw, 56px) clamp(90px, 12vw, 160px);
 }
 
+.workspace-assessment-notice,
+.workspace-contribution-status {
+  margin-bottom: 22px;
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid rgba(164, 107, 56, 0.28);
+  border-radius: 20px;
+  background: #faf8f5;
+}
+
+.workspace-assessment-notice h2,
+.workspace-contribution-status h3 {
+  margin: 0 0 10px;
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.workspace-assessment-notice > p:last-child,
+.workspace-contribution-status > p {
+  margin-bottom: 0;
+  color: var(--ink-soft);
+}
+
+.workspace-contribution-status a {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--blue);
+  font-weight: 750;
+}
+
 .assessment-progress,
 .assessment-form,
 .assessment-results {

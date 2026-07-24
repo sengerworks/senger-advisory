@@ -191,6 +191,28 @@
           </section>
         </section>
 
+        <section class="participant-panel" aria-labelledby="participant-round-title" data-participant-panel hidden>
+          <p class="card-kicker">Your invited perspective</p>
+          <h3 id="participant-round-title" data-participant-round>Collection round</h3>
+          <p data-participant-dates></p>
+          <div class="participant-notice" data-participant-notice>
+            <h4>Before you begin</h4>
+            <ul>
+              <li>Your individual answers and scores are never shown to the Owner or Facilitator.</li>
+              <li>Only aggregate organizational results can appear, and only after five valid submissions.</li>
+              <li>Your workspace participation does not enroll you in research or anonymous evidence sharing.</li>
+            </ul>
+            <label>
+              <input type="checkbox" data-participant-acknowledgement />
+              <span>I understand how my workspace assessment will be used.</span>
+            </label>
+          </div>
+          <p class="form-message" role="status" aria-live="polite" data-participant-message></p>
+          <button class="primary-button" type="button" data-begin-assessment disabled>
+            Begin private assessment
+          </button>
+        </section>
+
         <div class="workspace-principles">
           <article>
             <span>01</span>

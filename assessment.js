@@ -195,6 +195,14 @@ import {
     privateOpen: app.querySelector("[data-private-open]"),
     retake: app.querySelector("[data-retake]"),
     print: app.querySelector("[data-print]")
+    ,
+    workspaceAssessment: app.querySelector("[data-workspace-assessment]"),
+    workspaceRoundLabel: app.querySelector("[data-workspace-round-label]"),
+    workspaceAssessmentStatus: app.querySelector("[data-workspace-assessment-status]"),
+    workspaceContribution: app.querySelector("[data-workspace-contribution]"),
+    workspaceContributionStatus: app.querySelector("[data-workspace-contribution-status]"),
+    returnWorkspace: app.querySelector("[data-return-workspace]"),
+    nextAction: app.querySelector("[data-assessment-next-action]")
   };
 
   let currentDomain = 0;
@@ -204,6 +212,10 @@ import {
   let followUpState = null;
   let followUpSaved = false;
   let followUpInitializationFailed = false;
+  const workspaceRoundId = new URLSearchParams(location.search).get("workspaceRound");
+  let workspaceParticipation = null;
+  let workspaceInitializationFailed = false;
+  let workspaceSubmissionPromise = null;
 
   function createSessionId() {
     if (crypto.randomUUID) return crypto.randomUUID();
@@ -434,6 +446,94 @@ import {
     }
   }
 
+  async function initializeWorkspaceAssessment() {
+    if (!workspaceRoundId) return;
+    elements.workspaceAssessment.hidden = false;
+    elements.workspaceAssessmentStatus.textContent = "Confirming your private workspace access…";
+    try {
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(workspaceRoundId)) {
+        throw new Error("This workspace assessment link is invalid.");
+      }
+      if (location.hash.startsWith("#recovery=")) {
+        throw new Error("A workspace assessment cannot also be a private profile follow-up.");
+      }
+      const response = await fetch("/api/workspace/participation", {
+        credentials: "same-origin",
+        headers: { Accept: "application/json" }
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Workspace participation is unavailable.");
+      if (
+        data.state !== "ready"
+        || data.round?.id !== workspaceRoundId
+        || !data.noticeAccepted
+        || data.submitted
+      ) {
+        throw new Error(
+          data.submitted
+            ? "Your perspective has already been submitted."
+            : "Return to the workspace to confirm participation before beginning."
+        );
+      }
+      workspaceParticipation = data;
+      elements.workspaceRoundLabel.textContent = data.round.label;
+      elements.workspaceAssessmentStatus.textContent = `Collection closes ${new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(new Date(data.round.closesAt))}.`;
+      elements.nextAction.href = "/workspace/";
+      elements.nextAction.textContent = "Return to workspace";
+    } catch (error) {
+      workspaceInitializationFailed = true;
+      elements.workspaceAssessmentStatus.textContent = error.message || "Workspace participation is unavailable.";
+      app.querySelector(".assessment-progress").hidden = true;
+      elements.form.hidden = true;
+    }
+  }
+
+  function workspaceSubmission() {
+    const lowest = Math.min(...lastResult.scores.map(domain => domain.score));
+    return {
+      submissionId: crypto.randomUUID(),
+      completedAt: new Date().toISOString(),
+      assessmentVersion,
+      scoringVersion,
+      domainScores: Object.fromEntries(lastResult.scores.map(domain => [domain.id, domain.score])),
+      overallIndex: lastResult.overall,
+      interpretationBand: lastResult.band,
+      primaryConstraintIds: lastResult.scores
+        .filter(domain => domain.score === lowest)
+        .map(domain => domain.id)
+    };
+  }
+
+  function submitWorkspaceResult() {
+    if (!workspaceParticipation || workspaceSubmissionPromise) return workspaceSubmissionPromise;
+    elements.workspaceContribution.hidden = false;
+    elements.workspaceContributionStatus.textContent = "Saving your aggregate perspective to the protected collection…";
+    workspaceSubmissionPromise = fetch("/api/workspace/submission", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        roundId: workspaceParticipation.round.id,
+        submission: workspaceSubmission()
+      })
+    }).then(async response => {
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Your workspace contribution could not be saved.");
+      elements.workspaceContributionStatus.textContent = "Your aggregate perspective was submitted. Shared organizational results remain hidden until at least five valid submissions are received.";
+      elements.returnWorkspace.hidden = false;
+      elements.retake.disabled = true;
+      elements.retake.textContent = "Workspace perspective submitted";
+      return true;
+    }).catch(error => {
+      elements.workspaceContributionStatus.textContent = `${error.message} Keep this page open and try again by refreshing only if requested.`;
+      return false;
+    });
+    return workspaceSubmissionPromise;
+  }
+
   async function postEvidence(payload, showStatus = false) {
     try {
       const response = await fetch(evidenceEndpoint, {
@@ -528,6 +628,7 @@ import {
     }).join("");
     elements.evidenceResultConsent.checked = elements.evidenceConsent.checked;
     if (hasEvidenceConsent()) shareCompletion(true);
+    if (workspaceParticipation) submitWorkspaceResult();
     elements.results.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   }
 
@@ -688,7 +789,7 @@ import {
     }
   });
   elements.panel.setAttribute("tabindex", "-1");
-  initializeFollowUp().finally(() => {
-    if (!followUpInitializationFailed) renderDomain();
+  Promise.all([initializeFollowUp(), initializeWorkspaceAssessment()]).finally(() => {
+    if (!followUpInitializationFailed && !workspaceInitializationFailed) renderDomain();
   });
 })();

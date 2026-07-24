@@ -3,8 +3,10 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
 import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
+import workspaceParticipation from "../netlify/functions/workspace-participation.mjs";
 import workspaceRounds from "../netlify/functions/workspace-rounds.mjs";
 import workspaceSession from "../netlify/functions/workspace-session.mjs";
+import workspaceSubmission from "../netlify/functions/workspace-submission.mjs";
 
 const port = 8888;
 const origin = `http://localhost:${port}`;
@@ -14,6 +16,14 @@ const files = new Map([
   ["/workspace/", { url: new URL("../workspace/index.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/workspace.css", { url: new URL("../workspace/workspace.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/workspace.js", { url: new URL("../workspace/workspace.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/assessment.html", { url: new URL("../assessment.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/contact.html", { url: new URL("../contact.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/privacy.html", { url: new URL("../privacy.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/assessment.js", { url: new URL("../assessment.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/saved-results-crypto.js", { url: new URL("../saved-results-crypto.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/private-results-api.js", { url: new URL("../private-results-api.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/script.js", { url: new URL("../script.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/styles.css", { url: new URL("../styles.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/assets/favicon.svg", { url: new URL("../assets/favicon.svg", import.meta.url), type: "image/svg+xml" }]
 ]);
 
@@ -54,6 +64,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
   if ([
     "/api/workspace/config",
     "/api/workspace/invitations",
+    "/api/workspace/participation",
+    "/api/workspace/submission",
     "/api/workspace/session",
     "/api/workspace/rounds"
   ].includes(url.pathname)) {
@@ -67,6 +79,10 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
       ? workspaceConfig
       : url.pathname.endsWith("/invitations")
         ? workspaceInvitations
+      : url.pathname.endsWith("/participation")
+        ? workspaceParticipation
+      : url.pathname.endsWith("/submission")
+        ? workspaceSubmission
       : url.pathname.endsWith("/rounds")
         ? workspaceRounds
         : workspaceSession;

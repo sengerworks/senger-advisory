@@ -51,6 +51,16 @@
     <section class="assessment-shell" data-assessment-app>
       <noscript><p class="assessment-notice">JavaScript is required to calculate your assessment results.</p></noscript>
 
+      <section class="assessment-notice workspace-assessment-notice" data-workspace-assessment hidden>
+        <p class="eyebrow">Private workspace contribution</p>
+        <h2 data-workspace-round-label>Your collection round</h2>
+        <p>
+          Individual answers remain in this browser. When complete, only aggregate domain
+          scores and the constraint signal are submitted to the protected workspace.
+        </p>
+        <p data-workspace-assessment-status role="status" aria-live="polite"></p>
+      </section>
+
       <div class="assessment-progress" aria-label="Assessment progress">
         <div class="assessment-progress-copy">
           <span data-progress-label>Domain 1 of 6</span>
@@ -203,6 +213,15 @@
           <p class="results-context" data-context-summary hidden></p>
         </div>
 
+        <section class="assessment-notice workspace-contribution-status" data-workspace-contribution hidden>
+          <p class="eyebrow">Workspace contribution</p>
+          <h3>Your individual report remains yours.</h3>
+          <p data-workspace-contribution-status>
+            Saving your aggregate perspective to the protected collection…
+          </p>
+          <a href="workspace/" data-return-workspace hidden>Return to workspace</a>
+        </section>
+
         <div class="domain-results" data-domain-results></div>
 
         <div class="constraint-summary">
@@ -321,7 +340,7 @@
         <div class="assessment-controls results-controls">
           <button class="button secondary" type="button" data-retake>Retake assessment</button>
           <button class="button secondary" type="button" data-print>Save or print report</button>
-          <a class="button primary" href="contact.html">Discuss the results</a>
+          <a class="button primary" href="contact.html" data-assessment-next-action>Discuss the results</a>
         </div>
       </section>
     </section>

@@ -33,7 +33,14 @@ const elements = {
   invitedCount: document.querySelector("[data-invited-count]"),
   acceptedCount: document.querySelector("[data-accepted-count]"),
   pendingCount: document.querySelector("[data-pending-count]"),
-  invitationList: document.querySelector("[data-invitation-list]")
+  invitationList: document.querySelector("[data-invitation-list]"),
+  participantPanel: document.querySelector("[data-participant-panel]"),
+  participantRound: document.querySelector("[data-participant-round]"),
+  participantDates: document.querySelector("[data-participant-dates]"),
+  participantNotice: document.querySelector("[data-participant-notice]"),
+  participantAcknowledgement: document.querySelector("[data-participant-acknowledgement]"),
+  participantMessage: document.querySelector("[data-participant-message]"),
+  beginAssessment: document.querySelector("[data-begin-assessment]")
 };
 
 let clerk = null;
@@ -42,6 +49,7 @@ let currentRole = null;
 let collectionRounds = [];
 let editingRoundId = null;
 let selectedRoundId = null;
+let currentParticipation = null;
 
 function showState(name) {
   for (const key of ["loading", "error", "signInState", "membershipState", "readyState"]) {
@@ -96,9 +104,9 @@ function roleContent(role) {
   }
   return {
     label: "Invited participant",
-    title: "Your private assessment will begin here.",
-    description: "Your identity confirms participation. Your answers and individual scores will not be visible to workspace roles.",
-    action: "Assessment invitation coming next"
+    title: "Contribute your private perspective.",
+    description: "Your identity confirms participation, while your answers and individual scores remain inaccessible to workspace roles.",
+    action: "Review participation privacy"
   };
 }
 
@@ -295,6 +303,51 @@ async function prepareOwnerCollection() {
   }
 }
 
+async function prepareParticipant() {
+  currentParticipation = await workspaceRequest("/api/workspace/participation");
+  elements.participantPanel.hidden = false;
+  elements.primaryAction.disabled = false;
+  if (currentParticipation.state === "unavailable") {
+    elements.participantRound.textContent = "No collection is currently available.";
+    elements.participantDates.textContent = "The workspace Owner will notify you when a collection round opens.";
+    elements.participantNotice.hidden = true;
+    elements.beginAssessment.disabled = true;
+    return;
+  }
+
+  const { round } = currentParticipation;
+  elements.participantRound.textContent = round.label;
+  elements.participantDates.textContent = `${formattedDate(round.opensAt)}–${formattedDate(round.closesAt)} · shared results require ${round.minimumParticipants} valid submissions`;
+  if (currentParticipation.submitted) {
+    elements.participantNotice.hidden = true;
+    elements.beginAssessment.disabled = true;
+    elements.beginAssessment.textContent = "Perspective submitted";
+    elements.participantMessage.textContent = "Your private contribution is complete. Its identity cannot be connected to the organizational result.";
+    elements.primaryAction.textContent = "Perspective submitted";
+    return;
+  }
+  if (currentParticipation.state === "scheduled") {
+    elements.participantNotice.hidden = true;
+    elements.beginAssessment.disabled = true;
+    elements.participantMessage.textContent = `This collection opens ${formattedDate(round.opensAt)}.`;
+    return;
+  }
+  if (currentParticipation.state === "ended") {
+    elements.participantNotice.hidden = true;
+    elements.beginAssessment.disabled = true;
+    elements.participantMessage.textContent = "This collection period has ended.";
+    return;
+  }
+
+  elements.participantNotice.hidden = currentParticipation.noticeAccepted;
+  elements.participantAcknowledgement.checked = currentParticipation.noticeAccepted;
+  elements.beginAssessment.disabled = !currentParticipation.noticeAccepted;
+  elements.beginAssessment.textContent = "Begin private assessment";
+  elements.participantMessage.textContent = currentParticipation.noticeAccepted
+    ? "Privacy notice accepted. You may begin when ready."
+    : "Acknowledge the workspace privacy notice to continue.";
+}
+
 async function sessionState() {
   const response = await fetch("/api/workspace/session", {
     credentials: "same-origin",
@@ -367,7 +420,9 @@ async function render() {
   elements.primaryAction.textContent = content.action;
   elements.primaryAction.disabled = session.role !== "org:admin";
   elements.collectionPanel.hidden = true;
+  elements.participantPanel.hidden = true;
   if (session.role === "org:admin") await prepareOwnerCollection();
+  if (session.role === "org:participant") await prepareParticipant();
   showState("readyState");
 }
 
@@ -398,6 +453,13 @@ elements.retry.addEventListener("click", () => initialize());
 elements.refresh.addEventListener("click", () => render().catch(() => showError("The workspace could not refresh your session.")));
 elements.signOut.addEventListener("click", () => clerk?.signOut({ redirectUrl: "/workspace/" }));
 elements.primaryAction.addEventListener("click", () => {
+  if (currentRole === "org:participant") {
+    elements.participantPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!elements.participantNotice.hidden) {
+      elements.participantAcknowledgement.focus({ preventScroll: true });
+    }
+    return;
+  }
   if (currentRole !== "org:admin") return;
   if (!elements.invitationPanel.hidden) {
     elements.invitationPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -545,6 +607,40 @@ elements.invitationList.addEventListener("click", async event => {
     setInvitationMessage(error.message, "error");
   } finally {
     button.disabled = false;
+  }
+});
+elements.participantAcknowledgement.addEventListener("change", event => {
+  elements.beginAssessment.disabled = !event.currentTarget.checked;
+  elements.participantMessage.textContent = event.currentTarget.checked
+    ? "Ready to confirm and begin."
+    : "Acknowledge the workspace privacy notice to continue.";
+});
+elements.beginAssessment.addEventListener("click", async () => {
+  if (
+    currentRole !== "org:participant"
+    || !currentParticipation
+    || currentParticipation.state !== "ready"
+    || currentParticipation.submitted
+  ) return;
+  elements.beginAssessment.disabled = true;
+  try {
+    if (!currentParticipation.noticeAccepted) {
+      if (!elements.participantAcknowledgement.checked) return;
+      await workspaceRequest("/api/workspace/participation", {
+        method: "POST",
+        body: {
+          roundId: currentParticipation.round.id,
+          noticeVersion: currentParticipation.noticeVersion
+        }
+      });
+    }
+    const assessmentUrl = new URL("/assessment.html", window.location.origin);
+    assessmentUrl.searchParams.set("workspaceRound", currentParticipation.round.id);
+    window.location.assign(assessmentUrl);
+  } catch (error) {
+    elements.participantMessage.textContent = error.message;
+    elements.participantMessage.dataset.tone = "error";
+    elements.beginAssessment.disabled = false;
   }
 });
 
