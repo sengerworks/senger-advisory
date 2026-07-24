@@ -13,13 +13,14 @@ function invitationRoundId(invitation) {
   return invitation.privateMetadata?.collectionRoundId || null;
 }
 
-function publicInvitation(invitation) {
+function publicInvitation(invitation, participantUserId = null) {
   return Object.freeze({
     id: invitation.id,
     emailAddress: invitation.emailAddress,
     status: invitation.status || "pending",
     createdAt: new Date(invitation.createdAt).toISOString(),
-    expiresAt: new Date(invitation.expiresAt).toISOString()
+    expiresAt: new Date(invitation.expiresAt).toISOString(),
+    ...(participantUserId ? { participantUserId } : {})
   });
 }
 
@@ -63,14 +64,31 @@ export function createClerkInvitationGateway(
 ) {
   return {
     async list({ organizationId, roundId }) {
-      const response = await clerkClient.organizations.getOrganizationInvitationList({
-        organizationId,
-        status: ["pending", "accepted", "revoked", "expired"],
-        limit: 100
-      });
-      return response.data
+      const [invitationResponse, membershipResponse] = await Promise.all([
+        clerkClient.organizations.getOrganizationInvitationList({
+          organizationId,
+          status: ["pending", "accepted", "revoked", "expired"],
+          limit: 100
+        }),
+        clerkClient.organizations.getOrganizationMembershipList({
+          organizationId,
+          limit: 100
+        })
+      ]);
+      const participantByEmail = new Map(
+        membershipResponse.data
+          .filter(membership => membership.role === PARTICIPANT_ROLE && membership.publicUserData)
+          .map(membership => [
+            membership.publicUserData.identifier.toLowerCase(),
+            membership.publicUserData.userId
+          ])
+      );
+      return invitationResponse.data
         .filter(invitation => invitationRoundId(invitation) === roundId)
-        .map(publicInvitation);
+        .map(invitation => publicInvitation(
+          invitation,
+          participantByEmail.get(invitation.emailAddress.toLowerCase()) || null
+        ));
     },
 
     async create({
@@ -136,4 +154,54 @@ export async function recordInvitationEvent(
       ]
     );
   }, connectionString);
+}
+
+export async function getParticipantCompletionStates(
+  workspaceId,
+  roundId,
+  participantUserIds,
+  connectionString
+) {
+  requireWorkspaceId(roundId);
+  const uniqueUserIds = [...new Set(
+    participantUserIds.filter(value => typeof value === "string" && value.startsWith("user_"))
+  )];
+  if (uniqueUserIds.length === 0) return new Map();
+  return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
+    const result = await query(
+      `SELECT clerk_user_id, notice_accepted_at IS NOT NULL AS started,
+              submission_id IS NOT NULL AS submitted
+       FROM app_identity.participant_slots
+       WHERE workspace_id = $1
+         AND round_id = $2
+         AND clerk_user_id = ANY($3::text[])
+         AND revoked_at IS NULL`,
+      [workspaceId, roundId, uniqueUserIds]
+    );
+    return new Map(result.rows.map(row => [
+      row.clerk_user_id,
+      { started: row.started, submitted: row.submitted }
+    ]));
+  }, connectionString);
+}
+
+export function invitationWithCompletion(invitation, completionStates) {
+  const completion = invitation.participantUserId
+    ? completionStates.get(invitation.participantUserId)
+    : null;
+  const participationStatus = completion?.submitted
+    ? "submitted"
+    : completion?.started
+      ? "started"
+      : invitation.status === "accepted"
+        ? "accepted"
+        : invitation.status;
+  return Object.freeze({
+    id: invitation.id,
+    emailAddress: invitation.emailAddress,
+    status: invitation.status,
+    participationStatus,
+    createdAt: invitation.createdAt,
+    expiresAt: invitation.expiresAt
+  });
 }

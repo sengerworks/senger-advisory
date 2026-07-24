@@ -2,8 +2,10 @@ import { authorizeWorkspaceAction } from "../../workspace-authorization.js";
 import { authenticateWorkspaceRequest } from "../lib/clerk-workspace-auth.mjs";
 import {
   createClerkInvitationGateway,
+  getParticipantCompletionStates,
   InvitationInputError,
   InvitationStateError,
+  invitationWithCompletion,
   recordInvitationEvent,
   validateInvitationInput,
   validateInvitationReference
@@ -37,6 +39,7 @@ export function createWorkspaceInvitationsHandler({
   authenticate = authenticateWorkspaceRequest,
   gateway = createClerkInvitationGateway(),
   getRound = getWorkspaceRound,
+  getCompletionStates = getParticipantCompletionStates,
   recordEvent = recordInvitationEvent
 } = {}) {
   return async request => {
@@ -65,12 +68,21 @@ export function createWorkspaceInvitationsHandler({
         const round = await getRound(workspaceId, roundId);
         if (!round) return json(404, { error: "Collection round not found." });
         const invitations = await gateway.list({ organizationId, roundId });
+        const completionStates = await getCompletionStates(
+          workspaceId,
+          roundId,
+          invitations.map(value => value.participantUserId)
+        );
+        const publicInvitations = invitations.map(value =>
+          invitationWithCompletion(value, completionStates)
+        );
         return json(200, {
-          invitations,
+          invitations: publicInvitations,
           counts: {
-            invited: invitations.length,
-            accepted: invitations.filter(value => value.status === "accepted").length,
-            pending: invitations.filter(value => value.status === "pending").length
+            invited: publicInvitations.length,
+            accepted: publicInvitations.filter(value => value.status === "accepted").length,
+            pending: publicInvitations.filter(value => value.status === "pending").length,
+            submitted: publicInvitations.filter(value => value.participationStatus === "submitted").length
           }
         });
       }

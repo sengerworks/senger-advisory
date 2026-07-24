@@ -163,6 +163,7 @@
                 <span><strong data-invited-count>0</strong> invited</span>
                 <span><strong data-accepted-count>0</strong> accepted</span>
                 <span><strong data-pending-count>0</strong> pending</span>
+                <span><strong data-submitted-count>0</strong> submitted</span>
               </div>
             </div>
 
@@ -187,6 +188,46 @@
               Invitation status is separate from assessment completion. No workspace role can
               connect a participant’s identity to an individual response.
             </p>
+            <div class="reminder-actions" data-reminder-actions hidden>
+              <p data-reminder-summary></p>
+              <button class="secondary-button" type="button" data-remind-nonrespondents>
+                Draft reminders for nonrespondents
+              </button>
+            </div>
+            <section class="results-panel" aria-labelledby="results-title" data-results-panel>
+              <div class="results-heading">
+                <div>
+                  <p class="card-kicker">Threshold-protected results</p>
+                  <h4 id="results-title">Collection progress</h4>
+                </div>
+                <strong class="results-count" data-results-count>0 of 5</strong>
+              </div>
+              <div
+                class="results-progress"
+                role="progressbar"
+                aria-label="Private perspectives submitted"
+                aria-valuemin="0"
+                aria-valuemax="5"
+                aria-valuenow="0"
+                data-results-progress
+              >
+                <span data-results-progress-fill></span>
+              </div>
+              <p class="results-message" data-results-message>
+                Organizational results remain hidden until five valid perspectives are submitted.
+              </p>
+              <p class="results-separation">
+                Submission count is not connected to the invitation list.
+              </p>
+              <div class="aggregate-profile" data-aggregate-profile hidden>
+                <div class="aggregate-summary">
+                  <span>Organizational Capacity Index</span>
+                  <strong data-aggregate-index>—</strong>
+                </div>
+                <div class="aggregate-domains" data-aggregate-domains></div>
+                <p class="aggregate-constraint" data-aggregate-constraint></p>
+              </div>
+            </section>
             <div class="invitation-list" data-invitation-list></div>
           </section>
         </section>

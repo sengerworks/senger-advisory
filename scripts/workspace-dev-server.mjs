@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
 import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
 import workspaceParticipation from "../netlify/functions/workspace-participation.mjs";
+import workspaceResults from "../netlify/functions/workspace-results.mjs";
 import workspaceRounds from "../netlify/functions/workspace-rounds.mjs";
 import workspaceSession from "../netlify/functions/workspace-session.mjs";
 import workspaceSubmission from "../netlify/functions/workspace-submission.mjs";
@@ -65,6 +66,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/config",
     "/api/workspace/invitations",
     "/api/workspace/participation",
+    "/api/workspace/results",
     "/api/workspace/submission",
     "/api/workspace/session",
     "/api/workspace/rounds"
@@ -81,6 +83,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceInvitations
       : url.pathname.endsWith("/participation")
         ? workspaceParticipation
+      : url.pathname.endsWith("/results")
+        ? workspaceResults
       : url.pathname.endsWith("/submission")
         ? workspaceSubmission
       : url.pathname.endsWith("/rounds")

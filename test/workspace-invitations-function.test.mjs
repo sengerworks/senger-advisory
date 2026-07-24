@@ -4,6 +4,7 @@ import { createWorkspaceInvitationsHandler } from "../netlify/functions/workspac
 import {
   createClerkInvitationGateway,
   InvitationInputError,
+  invitationWithCompletion,
   validateInvitationInput,
   validateInvitationReference
 } from "../netlify/lib/workspace-invitations.mjs";
@@ -71,6 +72,19 @@ test("accepts one normalized participant email and rejects extra or malformed fi
   );
 });
 
+test("reveals completion state without exposing a participant or submission identifier", () => {
+  const value = invitationWithCompletion(
+    {
+      ...invitation("accepted"),
+      participantUserId: "user_participant"
+    },
+    new Map([["user_participant", { started: true, submitted: true }]])
+  );
+  assert.equal(value.participationStatus, "submitted");
+  assert.equal("participantUserId" in value, false);
+  assert.equal("submissionId" in value, false);
+});
+
 test("Clerk gateway fixes the participant role, redirect, expiry, and private round mapping", async () => {
   let createParams;
   const gateway = createClerkInvitationGateway({
@@ -105,13 +119,14 @@ test("lists invitation counts, sends one invitation, and records a content-free 
     authenticate: authentication(),
     gateway,
     getRound: async () => openRound,
+    getCompletionStates: async () => new Map(),
     recordEvent: async value => events.push(value)
   });
 
   const listed = await handler(request());
   assert.equal(listed.status, 200);
   const listBody = await listed.json();
-  assert.deepEqual(listBody.counts, { invited: 2, accepted: 1, pending: 1 });
+  assert.deepEqual(listBody.counts, { invited: 2, accepted: 1, pending: 1, submitted: 0 });
 
   const created = await handler(request("POST", {
     roundId,

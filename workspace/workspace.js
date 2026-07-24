@@ -33,7 +33,19 @@ const elements = {
   invitedCount: document.querySelector("[data-invited-count]"),
   acceptedCount: document.querySelector("[data-accepted-count]"),
   pendingCount: document.querySelector("[data-pending-count]"),
+  submittedCount: document.querySelector("[data-submitted-count]"),
   invitationList: document.querySelector("[data-invitation-list]"),
+  reminderActions: document.querySelector("[data-reminder-actions]"),
+  reminderSummary: document.querySelector("[data-reminder-summary]"),
+  remindNonrespondents: document.querySelector("[data-remind-nonrespondents]"),
+  resultsCount: document.querySelector("[data-results-count]"),
+  resultsProgress: document.querySelector("[data-results-progress]"),
+  resultsProgressFill: document.querySelector("[data-results-progress-fill]"),
+  resultsMessage: document.querySelector("[data-results-message]"),
+  aggregateProfile: document.querySelector("[data-aggregate-profile]"),
+  aggregateIndex: document.querySelector("[data-aggregate-index]"),
+  aggregateDomains: document.querySelector("[data-aggregate-domains]"),
+  aggregateConstraint: document.querySelector("[data-aggregate-constraint]"),
   participantPanel: document.querySelector("[data-participant-panel]"),
   participantRound: document.querySelector("[data-participant-round]"),
   participantDates: document.querySelector("[data-participant-dates]"),
@@ -50,6 +62,16 @@ let collectionRounds = [];
 let editingRoundId = null;
 let selectedRoundId = null;
 let currentParticipation = null;
+let currentNonrespondents = [];
+
+const domainLabels = {
+  leadership: "Leadership",
+  decisions: "Decisions",
+  rhythm: "Operating Rhythm",
+  alignment: "Alignment",
+  technology: "Technology",
+  culture: "Culture"
+};
 
 function showState(name) {
   for (const key of ["loading", "error", "signInState", "membershipState", "readyState"]) {
@@ -246,7 +268,15 @@ function renderInvitations(data) {
   elements.invitedCount.textContent = String(data.counts.invited);
   elements.acceptedCount.textContent = String(data.counts.accepted);
   elements.pendingCount.textContent = String(data.counts.pending);
+  elements.submittedCount.textContent = String(data.counts.submitted);
   elements.invitationList.replaceChildren();
+  currentNonrespondents = data.invitations.filter(
+    invitation => ["pending", "accepted", "started"].includes(invitation.participationStatus)
+  );
+  elements.reminderActions.hidden = currentNonrespondents.length === 0;
+  elements.reminderSummary.textContent = currentNonrespondents.length === 1
+    ? "1 invited participant has not yet submitted."
+    : `${currentNonrespondents.length} invited participants have not yet submitted.`;
   for (const invitation of data.invitations) {
     const card = document.createElement("article");
     card.className = "invitation-card";
@@ -254,19 +284,112 @@ function renderInvitations(data) {
     const email = document.createElement("strong");
     email.textContent = invitation.emailAddress;
     const status = document.createElement("span");
-    status.textContent = `${invitation.status} · expires ${formattedDate(invitation.expiresAt)}`;
+    const participationLabel = {
+      pending: "Invitation pending",
+      accepted: "Accepted · not started",
+      started: "Assessment started",
+      submitted: "Submitted",
+      revoked: "Invitation revoked",
+      expired: "Invitation expired"
+    }[invitation.participationStatus] || invitation.participationStatus;
+    status.textContent = participationLabel;
     copy.append(email, status);
     card.append(copy);
+    const actions = document.createElement("div");
+    actions.className = "invitation-card-actions";
+    if (["pending", "accepted", "started"].includes(invitation.participationStatus)) {
+      const reminder = document.createElement("button");
+      reminder.className = "round-action";
+      reminder.type = "button";
+      reminder.dataset.reminderEmail = invitation.emailAddress;
+      reminder.textContent = "Draft reminder";
+      actions.append(reminder);
+    }
     if (invitation.status === "pending") {
       const revoke = document.createElement("button");
       revoke.className = "round-action";
       revoke.type = "button";
       revoke.dataset.invitationId = invitation.id;
       revoke.textContent = "Revoke";
-      card.append(revoke);
+      actions.append(revoke);
     }
+    if (actions.childElementCount > 0) card.append(actions);
     elements.invitationList.append(card);
   }
+}
+
+function reminderUrl(emailAddresses) {
+  const round = collectionRounds.find(value => value.id === selectedRoundId);
+  const subject = `Reminder: ${round?.label || "Organizational Capacity assessment"}`;
+  const body = [
+    "Your private Organizational Capacity perspective has not yet been submitted.",
+    "",
+    "Please use your original invitation and complete the assessment before the collection closes.",
+    "",
+    "Your individual answers and scores are never shown to the workspace Owner or Facilitator."
+  ].join("\n");
+  const url = new URL("mailto:");
+  if (emailAddresses.length === 1) url.pathname = emailAddresses[0];
+  else url.searchParams.set("bcc", emailAddresses.join(","));
+  url.searchParams.set("subject", subject);
+  url.searchParams.set("body", body);
+  return url.toString();
+}
+
+function renderWorkspaceResults(data) {
+  const result = data.result;
+  const minimumRequired = result.minimumRequired || 5;
+  const participantCount = result.participantCount || 0;
+  const percentage = Math.min(100, Math.round((participantCount / minimumRequired) * 100));
+  elements.resultsCount.textContent = `${participantCount} of ${minimumRequired}`;
+  elements.resultsProgress.setAttribute("aria-valuemax", String(minimumRequired));
+  elements.resultsProgress.setAttribute("aria-valuenow", String(participantCount));
+  elements.resultsProgressFill.style.width = `${percentage}%`;
+  elements.aggregateProfile.hidden = result.policy !== "aggregate";
+
+  if (result.policy === "suppressed") {
+    const perspectiveWord = participantCount === 1 ? "perspective" : "perspectives";
+    const remainingWord = result.remaining === 1 ? "perspective" : "perspectives";
+    elements.resultsMessage.textContent =
+      `${participantCount} private ${perspectiveWord} submitted. ` +
+      `${result.remaining} more ${remainingWord} needed before shared results appear.`;
+    elements.aggregateDomains.replaceChildren();
+    return;
+  }
+
+  if (result.policy !== "aggregate") {
+    elements.resultsMessage.textContent =
+      "These submissions use incompatible assessment versions and cannot be combined.";
+    elements.aggregateDomains.replaceChildren();
+    return;
+  }
+
+  elements.resultsMessage.textContent =
+    `${participantCount} private perspectives submitted. The privacy threshold is met.`;
+  elements.aggregateIndex.textContent = String(result.overallIndex);
+  elements.aggregateDomains.replaceChildren();
+  for (const [domain, score] of Object.entries(result.domainScores)) {
+    const card = document.createElement("article");
+    const heading = document.createElement("div");
+    const label = document.createElement("strong");
+    const value = document.createElement("span");
+    const track = document.createElement("div");
+    const fill = document.createElement("span");
+    const pattern = document.createElement("p");
+    label.textContent = domainLabels[domain] || domain;
+    value.textContent = String(score.mean);
+    heading.append(label, value);
+    track.className = "aggregate-domain-track";
+    fill.style.width = `${score.mean}%`;
+    track.append(fill);
+    pattern.textContent = `Perspectives: ${score.perspectivePattern.replaceAll("-", " ")}`;
+    card.append(heading, track, pattern);
+    elements.aggregateDomains.append(card);
+  }
+  const constraints = result.primaryConstraintIds
+    .map(domain => domainLabels[domain] || domain)
+    .join(", ");
+  elements.aggregateConstraint.textContent = `Primary capacity constraint: ${constraints}.`;
 }
 
 async function loadInvitations(roundId) {
@@ -275,8 +398,12 @@ async function loadInvitations(roundId) {
   selectedRoundId = roundId;
   elements.invitationPanel.hidden = false;
   elements.invitationRound.textContent = `${round.label} · ${formattedDate(round.opensAt)}–${formattedDate(round.closesAt)}`;
-  const data = await workspaceRequest(`/api/workspace/invitations?roundId=${encodeURIComponent(roundId)}`);
-  renderInvitations(data);
+  const [invitations, results] = await Promise.all([
+    workspaceRequest(`/api/workspace/invitations?roundId=${encodeURIComponent(roundId)}`),
+    workspaceRequest(`/api/workspace/results?roundId=${encodeURIComponent(roundId)}`)
+  ]);
+  renderInvitations(invitations);
+  renderWorkspaceResults(results);
 }
 
 async function prepareOwnerCollection() {
@@ -589,6 +716,11 @@ elements.invitationForm.addEventListener("submit", async event => {
   }
 });
 elements.invitationList.addEventListener("click", async event => {
+  const reminderButton = event.target.closest("[data-reminder-email]");
+  if (reminderButton) {
+    window.location.assign(reminderUrl([reminderButton.dataset.reminderEmail]));
+    return;
+  }
   const button = event.target.closest("[data-invitation-id]");
   if (!button || !selectedRoundId || currentRole !== "org:admin") return;
   if (!window.confirm("Revoke this pending invitation? Its email link will stop working.")) return;
@@ -608,6 +740,12 @@ elements.invitationList.addEventListener("click", async event => {
   } finally {
     button.disabled = false;
   }
+});
+elements.remindNonrespondents.addEventListener("click", () => {
+  if (currentNonrespondents.length === 0) return;
+  window.location.assign(reminderUrl(
+    currentNonrespondents.map(invitation => invitation.emailAddress)
+  ));
 });
 elements.participantAcknowledgement.addEventListener("change", event => {
   elements.beginAssessment.disabled = !event.currentTarget.checked;

@@ -11,6 +11,7 @@ import {
   submitWorkspaceAssessment,
   WORKSPACE_NOTICE_VERSION
 } from "../netlify/lib/workspace-participation.mjs";
+import { getWorkspaceResults } from "../netlify/lib/workspace-results.mjs";
 
 const connectionString = process.env.NEON_DATABASE_URL;
 const integrationTest = connectionString ? test : test.skip;
@@ -129,6 +130,18 @@ integrationTest("real Postgres RLS isolates two workspaces", async () => {
       userId: participantUserId
     }, connectionString);
     assert.equal(completed.submitted, true);
+    const suppressedResults = await getWorkspaceResults(
+      alphaWorkspaceId,
+      round.rows[0].id,
+      connectionString
+    );
+    assert.deepEqual(suppressedResults.result, {
+      policy: "suppressed",
+      participantCount: 1,
+      minimumRequired: 5,
+      remaining: 4,
+      reason: "Organizational results remain hidden until the privacy threshold is met."
+    });
 
     const crossTenantMutation = await withNeonWorkspaceTransaction(
       alphaWorkspaceId,

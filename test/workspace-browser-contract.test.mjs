@@ -23,6 +23,7 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(script, /workspaceRequest\("\/api\/workspace\/rounds"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/invitations"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/participation"/);
+  assert.match(script, /\/api\/workspace\/results\?roundId=/);
   assert.doesNotMatch(script, /CLERK_SECRET_KEY|NEON_DATABASE_URL|workspaceId|organizationId|userId/);
 });
 
@@ -47,10 +48,17 @@ test("workspace assessment submits aggregate scores without individual answers o
 
 test("owner collection setup presents dates and the fixed privacy threshold", async () => {
   const html = await source("workspace/index.html");
+  const script = await source("workspace/workspace.js");
   assert.match(html, /Create a collection round/);
   assert.match(html, /Participation opens/);
   assert.match(html, /Participation closes/);
   assert.match(html, /valid submissions required before shared results appear/);
+  assert.match(html, /Submission count is not connected to the invitation list/);
+  assert.match(html, /Draft reminders for nonrespondents/);
+  assert.match(script, /Accepted · not started/);
+  assert.match(script, /Assessment started/);
+  assert.match(script, /Submitted/);
+  assert.match(script, /mailto:/);
 });
 
 test("workspace authentication always returns to the workspace route", async () => {
