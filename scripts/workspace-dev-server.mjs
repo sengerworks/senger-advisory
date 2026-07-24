@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
+import workspaceActionCycles from "../netlify/functions/workspace-action-cycles.mjs";
 import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
 import workspaceParticipation from "../netlify/functions/workspace-participation.mjs";
 import workspaceResults from "../netlify/functions/workspace-results.mjs";
@@ -64,6 +65,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
 
   if ([
     "/api/workspace/config",
+    "/api/workspace/action-cycles",
     "/api/workspace/invitations",
     "/api/workspace/participation",
     "/api/workspace/results",
@@ -79,6 +81,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     });
     const handler = url.pathname.endsWith("/config")
       ? workspaceConfig
+      : url.pathname.endsWith("/action-cycles")
+        ? workspaceActionCycles
       : url.pathname.endsWith("/invitations")
         ? workspaceInvitations
       : url.pathname.endsWith("/participation")

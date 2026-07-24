@@ -100,6 +100,22 @@ test("collection setup migration adds a bounded round label", async () => {
   assert.match(migration, /char_length\(display_label\) BETWEEN 3 AND 120/);
 });
 
+test("shared action-cycle migration is tenant-isolated and threshold-linked", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/005_shared_action_cycles.sql", import.meta.url),
+    "utf8"
+  );
+  assert.match(migration, /CREATE TABLE app_shared\.action_cycles/);
+  assert.match(migration, /ALTER TABLE app_shared\.action_cycles ENABLE ROW LEVEL SECURITY/);
+  assert.match(migration, /ALTER TABLE app_shared\.action_cycles FORCE ROW LEVEL SECURITY/);
+  assert.match(migration, /CREATE POLICY action_cycle_tenant_policy/);
+  assert.match(
+    migration,
+    /FOREIGN KEY \(workspace_id, round_id\)\s+REFERENCES app_identity\.collection_rounds\(workspace_id, id\)/
+  );
+  assert.match(migration, /GRANT SELECT, INSERT, UPDATE, DELETE\s+ON app_shared\.action_cycles/);
+});
+
 test("tenant-owned relationships use composite workspace foreign keys", async () => {
   const sql = await readFile(migrationUrl, "utf8");
 

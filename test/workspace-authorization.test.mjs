@@ -10,6 +10,9 @@ test("limits workspace administration to owner and invitation operations to admi
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "invitation:list" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "round:update" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "completion:read" }), false);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "action-cycle:create" }), true);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "action-cycle:update" }), true);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "action-cycle:read" }), false);
 });
 
 test("allows each member to control only their own submission while a round is open", () => {

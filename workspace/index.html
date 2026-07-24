@@ -224,8 +224,107 @@
                   <span>Organizational Capacity Index</span>
                   <strong data-aggregate-index>—</strong>
                 </div>
+                <p class="aggregate-method">
+                  This organizational view combines threshold-qualified aggregate profiles. It is
+                  not a benchmark, consensus score, or measure of individual performance.
+                </p>
                 <div class="aggregate-domains" data-aggregate-domains></div>
-                <p class="aggregate-constraint" data-aggregate-constraint></p>
+                <section class="constraint-hypothesis" aria-labelledby="constraint-hypothesis-title">
+                  <p class="card-kicker">Shared constraint hypothesis</p>
+                  <h5 id="constraint-hypothesis-title" data-aggregate-constraint></h5>
+                  <p data-constraint-hypothesis></p>
+                  <h6>Questions for the leadership team</h6>
+                  <ul data-constraint-questions></ul>
+                </section>
+                <p class="aggregate-caution">
+                  Perspective variation is a signal for shared inquiry. It does not identify who
+                  is correct, prove conflict, or establish statistical significance.
+                </p>
+                <section class="workspace-action-cycle" aria-labelledby="action-cycle-title">
+                  <div class="action-cycle-heading">
+                    <div>
+                      <p class="card-kicker">Constraint Action Cycle</p>
+                      <h5 id="action-cycle-title">Turn the signal into a testable commitment.</h5>
+                    </div>
+                    <p>
+                      Choose one constraint, make one bounded commitment, and identify the
+                      operating evidence the leadership team will review.
+                    </p>
+                  </div>
+                  <div class="workspace-action-list" data-action-cycle-list></div>
+                  <p class="action-cycle-empty" data-action-cycle-empty>
+                    No shared action cycle has been defined for this collection.
+                  </p>
+                  <form class="workspace-action-form" data-action-cycle-form>
+                    <label>
+                      <span>Constraint to address</span>
+                      <select name="constraintDomainId" data-action-constraint required></select>
+                    </label>
+                    <label>
+                      <span>Responsible owner</span>
+                      <input
+                        name="responsibleOwner"
+                        type="text"
+                        maxlength="120"
+                        placeholder="Name or accountable role"
+                        required
+                      />
+                    </label>
+                    <label class="action-field-wide">
+                      <span>Action hypothesis</span>
+                      <textarea
+                        name="hypothesis"
+                        maxlength="500"
+                        rows="3"
+                        placeholder="If we change… then we expect… because…"
+                        required
+                      ></textarea>
+                    </label>
+                    <label class="action-field-wide">
+                      <span>Commitment</span>
+                      <textarea
+                        name="commitment"
+                        maxlength="500"
+                        rows="3"
+                        placeholder="What will be done, by whom, and within what boundary?"
+                        required
+                      ></textarea>
+                    </label>
+                    <label>
+                      <span>Operating evidence to watch</span>
+                      <select name="evidenceMeasureId" required>
+                        <option value="">Select evidence</option>
+                        <option value="decisionPace">Decision pace</option>
+                        <option value="leadershipEscalationLoad">Leadership escalation load</option>
+                        <option value="crossFunctionalCoordinationLoad">Cross-functional coordination load</option>
+                        <option value="executionReliability">Execution reliability</option>
+                        <option value="changeAbsorption">Change absorption</option>
+                        <option value="other">Another operating indicator</option>
+                      </select>
+                    </label>
+                    <label>
+                      <span>Review date</span>
+                      <input name="reviewDate" type="date" required />
+                    </label>
+                    <label class="action-field-wide">
+                      <span>What will you look for?</span>
+                      <textarea
+                        name="evidenceDescription"
+                        maxlength="300"
+                        rows="2"
+                        placeholder="Describe the observable pattern or measure that will inform the review."
+                        required
+                      ></textarea>
+                    </label>
+                    <input name="status" type="hidden" value="active" />
+                    <div class="action-cycle-submit action-field-wide">
+                      <p class="form-message" role="status" aria-live="polite" data-action-cycle-message></p>
+                      <button class="primary-button" type="submit" data-save-action-cycle>
+                        Start shared action cycle
+                      </button>
+                    </div>
+                  </form>
+                </section>
               </div>
             </section>
             <div class="invitation-list" data-invitation-list></div>

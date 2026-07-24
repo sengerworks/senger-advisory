@@ -46,6 +46,14 @@ const elements = {
   aggregateIndex: document.querySelector("[data-aggregate-index]"),
   aggregateDomains: document.querySelector("[data-aggregate-domains]"),
   aggregateConstraint: document.querySelector("[data-aggregate-constraint]"),
+  constraintHypothesis: document.querySelector("[data-constraint-hypothesis]"),
+  constraintQuestions: document.querySelector("[data-constraint-questions]"),
+  actionCycleList: document.querySelector("[data-action-cycle-list]"),
+  actionCycleEmpty: document.querySelector("[data-action-cycle-empty]"),
+  actionCycleForm: document.querySelector("[data-action-cycle-form]"),
+  actionConstraint: document.querySelector("[data-action-constraint]"),
+  actionCycleMessage: document.querySelector("[data-action-cycle-message]"),
+  saveActionCycle: document.querySelector("[data-save-action-cycle]"),
   participantPanel: document.querySelector("[data-participant-panel]"),
   participantRound: document.querySelector("[data-participant-round]"),
   participantDates: document.querySelector("[data-participant-dates]"),
@@ -71,6 +79,61 @@ const domainLabels = {
   alignment: "Alignment",
   technology: "Technology",
   culture: "Culture"
+};
+
+const constraintContent = {
+  leadership: {
+    hypothesis: "Senior attention may be absorbing ambiguity that the organization has not yet learned to resolve elsewhere.",
+    questions: [
+      "Which decisions still depend on senior intervention?",
+      "What leadership work is being displaced by recurring escalation?"
+    ]
+  },
+  decisions: {
+    hypothesis: "Decision ownership and closure may not be scaling at the pace execution requires.",
+    questions: [
+      "Where do important decisions remain open longest?",
+      "Which decisions are repeatedly reopened or escalated?",
+      "What ownership or decision threshold remains unclear?"
+    ]
+  },
+  rhythm: {
+    hypothesis: "Operating forums may be consuming coordination effort without reliably producing decisions and commitments.",
+    questions: [
+      "Which recurring forums consistently produce clear decisions?",
+      "Where does the same issue travel through multiple meetings?"
+    ]
+  },
+  alignment: {
+    hypothesis: "Strategic priorities may not translate into sufficiently consistent tradeoffs across the organization.",
+    questions: [
+      "Where do teams make conflicting tradeoffs?",
+      "Which priorities compete without an explicit resolution rule?"
+    ]
+  },
+  technology: {
+    hypothesis: "Systems and information may be adding friction rather than increasing organizational leverage.",
+    questions: [
+      "Where does work depend on manual translation?",
+      "Which system boundaries create the most rework?"
+    ]
+  },
+  culture: {
+    hypothesis: "Local norms may be making challenge, ownership, or adaptation less reliable than execution requires.",
+    questions: [
+      "Where is productive challenge least safe?",
+      "Which commitments depend more on heroics than shared norms?"
+    ]
+  }
+};
+
+const evidenceLabels = {
+  decisionPace: "Decision pace",
+  leadershipEscalationLoad: "Leadership escalation load",
+  crossFunctionalCoordinationLoad: "Cross-functional coordination load",
+  executionReliability: "Execution reliability",
+  changeAbsorption: "Change absorption",
+  other: "Another operating indicator"
 };
 
 function showState(name) {
@@ -354,6 +417,7 @@ function renderWorkspaceResults(data) {
       `${participantCount} private ${perspectiveWord} submitted. ` +
       `${result.remaining} more ${remainingWord} needed before shared results appear.`;
     elements.aggregateDomains.replaceChildren();
+    elements.constraintQuestions.replaceChildren();
     return;
   }
 
@@ -361,6 +425,7 @@ function renderWorkspaceResults(data) {
     elements.resultsMessage.textContent =
       "These submissions use incompatible assessment versions and cannot be combined.";
     elements.aggregateDomains.replaceChildren();
+    elements.constraintQuestions.replaceChildren();
     return;
   }
 
@@ -389,7 +454,66 @@ function renderWorkspaceResults(data) {
   const constraints = result.primaryConstraintIds
     .map(domain => domainLabels[domain] || domain)
     .join(", ");
-  elements.aggregateConstraint.textContent = `Primary capacity constraint: ${constraints}.`;
+  const primaryConstraint = result.primaryConstraintIds[0];
+  const interpretation = constraintContent[primaryConstraint];
+  elements.aggregateConstraint.textContent = constraints;
+  elements.constraintHypothesis.textContent = interpretation.hypothesis;
+  elements.constraintQuestions.replaceChildren();
+  for (const question of interpretation.questions) {
+    const item = document.createElement("li");
+    item.textContent = question;
+    elements.constraintQuestions.append(item);
+  }
+  elements.actionConstraint.replaceChildren();
+  for (const domain of result.primaryConstraintIds) {
+    const option = document.createElement("option");
+    option.value = domain;
+    option.textContent = domainLabels[domain] || domain;
+    elements.actionConstraint.append(option);
+  }
+  elements.actionCycleForm.elements.reviewDate.min = localDateValue();
+}
+
+function renderActionCycles(actionCycles) {
+  elements.actionCycleList.replaceChildren();
+  elements.actionCycleEmpty.hidden = actionCycles.length > 0;
+  for (const cycle of actionCycles) {
+    const card = document.createElement("article");
+    card.className = "workspace-action-card";
+    const heading = document.createElement("div");
+    const title = document.createElement("h6");
+    const status = document.createElement("span");
+    title.textContent = domainLabels[cycle.constraintDomainId] || cycle.constraintDomainId;
+    status.textContent = cycle.status;
+    heading.append(title, status);
+    const hypothesis = document.createElement("p");
+    hypothesis.textContent = cycle.hypothesis;
+    const details = document.createElement("dl");
+    const values = [
+      ["Commitment", cycle.commitment],
+      ["Responsible owner", cycle.responsibleOwner],
+      ["Evidence", `${evidenceLabels[cycle.evidenceMeasureId]} — ${cycle.evidenceDescription}`],
+      ["Review date", formattedDate(`${cycle.reviewDate}T12:00:00Z`)]
+    ];
+    for (const [label, value] of values) {
+      const row = document.createElement("div");
+      const term = document.createElement("dt");
+      const description = document.createElement("dd");
+      term.textContent = label;
+      description.textContent = value;
+      row.append(term, description);
+      details.append(row);
+    }
+    card.append(heading, hypothesis, details);
+    elements.actionCycleList.append(card);
+  }
+}
+
+async function loadActionCycles(roundId) {
+  const data = await workspaceRequest(
+    `/api/workspace/action-cycles?roundId=${encodeURIComponent(roundId)}`
+  );
+  renderActionCycles(data.actionCycles);
 }
 
 async function loadInvitations(roundId) {
@@ -404,6 +528,8 @@ async function loadInvitations(roundId) {
   ]);
   renderInvitations(invitations);
   renderWorkspaceResults(results);
+  if (results.result.policy === "aggregate") await loadActionCycles(roundId);
+  else renderActionCycles([]);
 }
 
 async function prepareOwnerCollection() {
@@ -746,6 +872,34 @@ elements.remindNonrespondents.addEventListener("click", () => {
   window.location.assign(reminderUrl(
     currentNonrespondents.map(invitation => invitation.emailAddress)
   ));
+});
+elements.actionCycleForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (
+    currentRole !== "org:admin"
+    || !selectedRoundId
+    || !elements.actionCycleForm.reportValidity()
+  ) return;
+  elements.saveActionCycle.disabled = true;
+  elements.actionCycleMessage.textContent = "Starting the shared action cycle…";
+  delete elements.actionCycleMessage.dataset.tone;
+  try {
+    const values = Object.fromEntries(new FormData(elements.actionCycleForm));
+    await workspaceRequest("/api/workspace/action-cycles", {
+      method: "POST",
+      body: { roundId: selectedRoundId, ...values }
+    });
+    elements.actionCycleForm.reset();
+    elements.actionCycleMessage.textContent =
+      "Shared action cycle started. This records a hypothesis, not proof of causality.";
+    elements.actionCycleMessage.dataset.tone = "success";
+    await loadActionCycles(selectedRoundId);
+  } catch (error) {
+    elements.actionCycleMessage.textContent = error.message;
+    elements.actionCycleMessage.dataset.tone = "error";
+  } finally {
+    elements.saveActionCycle.disabled = false;
+  }
 });
 elements.participantAcknowledgement.addEventListener("change", event => {
   elements.beginAssessment.disabled = !event.currentTarget.checked;

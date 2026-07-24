@@ -12,6 +12,12 @@ import {
   WORKSPACE_NOTICE_VERSION
 } from "../netlify/lib/workspace-participation.mjs";
 import { getWorkspaceResults } from "../netlify/lib/workspace-results.mjs";
+import {
+  ActionCycleStateError,
+  createWorkspaceActionCycle,
+  listWorkspaceActionCycles,
+  validateActionCycleInput
+} from "../netlify/lib/workspace-action-cycles.mjs";
 
 const connectionString = process.env.NEON_DATABASE_URL;
 const integrationTest = connectionString ? test : test.skip;
@@ -142,6 +148,29 @@ integrationTest("real Postgres RLS isolates two workspaces", async () => {
       remaining: 4,
       reason: "Organizational results remain hidden until the privacy threshold is met."
     });
+    assert.deepEqual(
+      await listWorkspaceActionCycles(alphaWorkspaceId, round.rows[0].id, connectionString),
+      []
+    );
+    const actionInput = validateActionCycleInput({
+      roundId: round.rows[0].id,
+      constraintDomainId: "decisions",
+      hypothesis: "If ownership is explicit, routine approvals should move faster.",
+      commitment: "Publish owners and thresholds for three recurring approvals.",
+      responsibleOwner: "Chief Operating Officer",
+      evidenceMeasureId: "decisionPace",
+      evidenceDescription: "Median elapsed time for the three approval types.",
+      reviewDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+      status: "active"
+    });
+    await assert.rejects(
+      () => createWorkspaceActionCycle({
+        workspaceId: alphaWorkspaceId,
+        actorUserId: `user_owner_${marker}`,
+        input: actionInput
+      }, connectionString),
+      ActionCycleStateError
+    );
 
     const crossTenantMutation = await withNeonWorkspaceTransaction(
       alphaWorkspaceId,
