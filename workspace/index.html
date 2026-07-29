@@ -129,6 +129,158 @@
           <p class="form-message" role="status" aria-live="polite" data-diagnostic-message></p>
           <div class="diagnostic-list" data-diagnostic-list></div>
           <p class="diagnostic-empty" data-diagnostic-empty>No diagnostic engagement has been started.</p>
+
+          <section class="diagnostic-context" aria-labelledby="diagnostic-context-title" data-diagnostic-context hidden>
+            <div class="diagnostic-context-heading">
+              <div>
+                <p class="card-kicker">Governed discovery</p>
+                <h4 id="diagnostic-context-title">Approve the Diagnostic Context Brief</h4>
+                <p>
+                  Establish the organizational moment and the leadership decision this diagnostic
+                  must inform. Approved context guides participant design without predetermining findings.
+                </p>
+              </div>
+              <button class="text-button" type="button" data-close-diagnostic-context>Close</button>
+            </div>
+            <div class="diagnostic-context-approved" data-diagnostic-context-approved hidden>
+              <strong>Context approved</strong>
+              <p data-diagnostic-context-summary></p>
+              <span>The diagnostic is ready for participant design.</span>
+            </div>
+            <form class="diagnostic-context-form" data-diagnostic-context-form>
+              <input type="hidden" name="diagnosticId" />
+              <label class="field"><span>Organization size</span><select name="organizationSizeBand" required>
+                <option value="">Select size</option><option value="under-25">Under 25</option>
+                <option value="25-49">25–49</option><option value="50-149">50–149</option>
+                <option value="150-399">150–399</option><option value="400-plus">400+</option>
+              </select></label>
+              <label class="field"><span>Entry-point perspective</span><select name="sponsorPerspective" required>
+                <option value="">Select perspective</option><option value="founder-ceo">Founder / CEO</option>
+                <option value="executive">Executive</option><option value="functional-leader">Functional leader</option>
+                <option value="people-operations">People / operations</option><option value="board-advisor">Board / advisor</option>
+              </select></label>
+              <label class="field diagnostic-context-wide"><span>Organization context</span><textarea name="organizationContext" maxlength="1500" required></textarea></label>
+              <label class="field diagnostic-context-wide"><span>Strategic priority</span><textarea name="strategicPriority" maxlength="1000" required></textarea></label>
+              <label class="field diagnostic-context-wide"><span>Triggering concern</span><textarea name="triggeringConcern" maxlength="1500" required></textarea></label>
+              <label class="field"><span>Decisions or outcomes at risk</span><textarea name="decisionsAtRisk" maxlength="1000" required></textarea></label>
+              <label class="field"><span>Leadership decision this must inform</span><textarea name="decisionNeeded" maxlength="1000" required></textarea></label>
+              <label class="field"><span>Recent changes <small>One per line, up to twelve</small></span><textarea name="recentChanges" maxlength="4800"></textarea></label>
+              <label class="field"><span>Prior interventions <small>One per line, up to twelve</small></span><textarea name="priorInterventions" maxlength="4800"></textarea></label>
+              <label class="field diagnostic-context-wide"><span>Known sensitivities</span><textarea name="knownSensitivities" maxlength="1000"></textarea></label>
+              <label class="field diagnostic-context-wide"><span>Approval note</span><textarea name="approvalNote" maxlength="500"></textarea></label>
+              <label class="diagnostic-context-confirm diagnostic-context-wide">
+                <input type="checkbox" name="approved" required />
+                <span>I approve this context as the bounded starting point—not a predetermined diagnosis.</span>
+              </label>
+              <div class="diagnostic-context-actions diagnostic-context-wide">
+                <button class="primary-button" type="submit" data-approve-diagnostic-context>Approve and continue</button>
+                <p class="form-message" role="status" aria-live="polite" data-diagnostic-context-message></p>
+              </div>
+            </form>
+          </section>
+
+          <section class="diagnostic-context" aria-labelledby="participant-design-title" data-participant-design hidden>
+            <div class="diagnostic-context-heading">
+              <div>
+                <p class="card-kicker">Perspective design</p>
+                <h4 id="participant-design-title">Design for coverage, not convenience</h4>
+                <p>
+                  Define the perspectives the diagnostic needs before adding names or email addresses.
+                  There is no fixed qualitative minimum; coverage and acknowledged limitations govern the plan.
+                </p>
+              </div>
+              <button class="text-button" type="button" data-close-participant-design>Close</button>
+            </div>
+            <div class="diagnostic-context-approved" data-participant-plan-approved hidden>
+              <strong>Participant design approved</strong>
+              <p data-participant-plan-summary></p>
+              <span>The diagnostic is ready for its contextualized common-question protocol.</span>
+            </div>
+            <form class="participant-design-form" data-participant-design-form>
+              <input type="hidden" name="diagnosticId" />
+              <fieldset><legend>Leadership levels to cover</legend>
+                <label><input type="checkbox" name="leadershipLevels" value="enterprise" /> Enterprise</label>
+                <label><input type="checkbox" name="leadershipLevels" value="functional" /> Functional</label>
+                <label><input type="checkbox" name="leadershipLevels" value="operational" /> Operational</label>
+                <label><input type="checkbox" name="leadershipLevels" value="frontline" /> Frontline</label>
+              </fieldset>
+              <fieldset><legend>Execution proximity to cover</legend>
+                <label><input type="checkbox" name="executionProximities" value="strategy" /> Strategy</label>
+                <label><input type="checkbox" name="executionProximities" value="coordination" /> Coordination</label>
+                <label><input type="checkbox" name="executionProximities" value="delivery" /> Delivery</label>
+              </fieldset>
+              <fieldset class="participant-functional"><legend>Functional lenses to cover</legend>
+                <label><input type="checkbox" name="functionalLenses" value="executive-leadership" /> Executive leadership</label>
+                <label><input type="checkbox" name="functionalLenses" value="operations" /> Operations</label>
+                <label><input type="checkbox" name="functionalLenses" value="people" /> People</label>
+                <label><input type="checkbox" name="functionalLenses" value="finance" /> Finance</label>
+                <label><input type="checkbox" name="functionalLenses" value="commercial" /> Commercial</label>
+                <label><input type="checkbox" name="functionalLenses" value="product-service" /> Product / service</label>
+                <label><input type="checkbox" name="functionalLenses" value="technology" /> Technology</label>
+                <label><input type="checkbox" name="functionalLenses" value="frontline-delivery" /> Frontline delivery</label>
+                <label><input type="checkbox" name="functionalLenses" value="other" /> Other</label>
+              </fieldset>
+              <div class="participant-slots-heading">
+                <div><strong>Perspective slots</strong><span>Identity is added only after this plan is approved.</span></div>
+                <button class="secondary-button" type="button" data-add-participant-slot>Add perspective slot</button>
+              </div>
+              <div class="participant-slots" data-participant-slots></div>
+              <div class="coverage-gaps" data-coverage-gaps hidden>
+                <strong>Uncovered objectives</strong>
+                <p>Add a perspective slot, remove the objective, or explicitly accept each limitation with a reason.</p>
+                <div data-coverage-gap-list></div>
+              </div>
+              <label class="field"><span>Approval note</span><textarea name="approvalNote" maxlength="500"></textarea></label>
+              <label class="diagnostic-context-confirm">
+                <input type="checkbox" name="approved" required />
+                <span>I approve this identity-free perspective plan and its documented limitations.</span>
+              </label>
+              <div class="diagnostic-context-actions">
+                <button class="primary-button" type="submit" data-approve-participant-plan>Review coverage</button>
+                <p class="form-message" role="status" aria-live="polite" data-participant-design-message></p>
+              </div>
+            </form>
+          </section>
+
+          <section class="diagnostic-context" aria-labelledby="protocol-review-title" data-protocol-review hidden>
+            <div class="diagnostic-context-heading">
+              <div>
+                <p class="card-kicker">Common-question governance</p>
+                <h4 id="protocol-review-title">Review the 15-question protocol</h4>
+                <p>
+                  Every participant receives this same contextualized core protocol. Bounded adaptive
+                  follow-ups may deepen evidence, but they cannot replace or rewrite these questions.
+                </p>
+              </div>
+              <button class="text-button" type="button" data-close-protocol-review>Close</button>
+            </div>
+            <div class="protocol-coverage" data-protocol-coverage></div>
+            <div class="diagnostic-context-approved" data-protocol-approved hidden>
+              <strong>Core protocol approved</strong>
+              <p data-protocol-approved-summary></p>
+              <span>Participant identity, invitation, and notice acceptance remain required before collection.</span>
+            </div>
+            <section class="diagnostic-invitation-panel" data-diagnostic-invitation-panel hidden>
+              <div>
+                <strong>Assign approved perspective slots</strong>
+                <p>Participant identity is connected here, after method approval, and remains separate from confidential interview content.</p>
+              </div>
+              <div class="diagnostic-invitation-slots" data-diagnostic-invitation-slots></div>
+              <p class="form-message" role="status" aria-live="polite" data-diagnostic-invitation-message></p>
+            </section>
+            <form class="protocol-review-form" data-protocol-review-form>
+              <div class="protocol-question-list" data-protocol-question-list></div>
+              <label class="field"><span>Approval note</span><textarea name="approvalNote" maxlength="500" required></textarea></label>
+              <label class="diagnostic-context-confirm">
+                <input type="checkbox" name="approved" required />
+                <span>I approve one common protocol for every participant and confirm that contextualization does not predetermine findings.</span>
+              </label>
+              <div class="diagnostic-context-actions">
+                <button class="primary-button" type="submit" data-approve-protocol>Approve core protocol</button>
+                <p class="form-message" role="status" aria-live="polite" data-protocol-message></p>
+              </div>
+            </form>
+          </section>
         </section>
 
         <section class="collection-panel" aria-labelledby="collection-setup-title" data-collection-panel hidden>
@@ -416,6 +568,14 @@
           <button class="primary-button" type="button" data-begin-assessment disabled>
             Begin private assessment
           </button>
+          <form class="participant-interview" data-participant-interview hidden>
+            <div data-participant-interview-questions></div>
+            <div class="diagnostic-context-actions">
+              <button class="secondary-button" type="button" data-save-interview>Save private draft</button>
+              <button class="primary-button" type="submit">Submit diagnostic interview</button>
+            </div>
+            <p class="form-message" role="status" data-interview-message></p>
+          </form>
         </section>
 
         <div class="workspace-principles">

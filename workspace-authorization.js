@@ -21,7 +21,8 @@ const ADMINISTRATIVE = new Set([
   "action-cycle:create",
   "action-cycle:update",
   "diagnostic:read",
-  "diagnostic:create"
+  "diagnostic:create",
+  "diagnostic:update"
 ]);
 const ALL_MEMBERS = new Set(["workspace:read", "round:read"]);
 const OWN_SUBMISSION = new Set(["submission:read-own", "submission:replace-own", "submission:delete-own"]);

@@ -1,0 +1,188 @@
+import {
+  approveDiagnosticProtocol,
+  createDiagnosticProtocol,
+  diagnosticProtocol
+} from "../../diagnostic-protocol-engine.js";
+import {
+  diagnosticQuestionLibrary,
+  diagnosticQuestionTemplates,
+  recommendedProtocolTemplateIds
+} from "../../diagnostic-question-library.js";
+import { withNeonWorkspaceTransaction } from "./neon-workspace-database.mjs";
+import { validateDiagnosticContextId } from "./workspace-diagnostic-context.mjs";
+
+const templateById = new Map(diagnosticQuestionTemplates.map(template => [template.id, template]));
+
+export class DiagnosticProtocolInputError extends Error {}
+export class DiagnosticProtocolStateError extends Error {}
+
+function boundedContext(value, maximum = 180) {
+  const text = String(value || "").trim().replace(/\s+/g, " ");
+  return text.length <= maximum ? text : `${text.slice(0, maximum - 1).trim()}…`;
+}
+
+function contextualQuestion(template, context) {
+  const cues = {
+    "strategy-translation": `Keep this approved strategic priority in view: ${boundedContext(context.strategicPriority)}\n\n`,
+    "decision-example": `Keep this leadership decision in view: ${boundedContext(context.decisionNeeded)}\n\n`,
+    "change-absorption": context.recentChanges?.length
+      ? `Consider these recent changes: ${boundedContext(context.recentChanges.join("; "))}\n\n`
+      : "",
+    "prior-intervention": context.priorInterventions?.length
+      ? `Consider what has already been tried: ${boundedContext(context.priorInterventions.join("; "))}\n\n`
+      : ""
+  };
+  return `${cues[template.id] || ""}${template.question}`;
+}
+
+export function compileWorkspaceDiagnosticProtocol({ diagnosticId, contextBriefId, participantPlanId, context }) {
+  try {
+    return createDiagnosticProtocol({
+      diagnosticId: validateDiagnosticContextId(diagnosticId),
+      contextBriefId,
+      participantPlanId,
+      questions: recommendedProtocolTemplateIds.map(templateId => {
+        const template = templateById.get(templateId);
+        return {
+          templateId,
+          questionText: contextualQuestion(template, context),
+          contextualizationNote: template.question === contextualQuestion(template, context)
+            ? "Canonical wording retained to avoid unnecessary sponsor framing."
+            : "Bounded approved context added; canonical question preserved."
+        };
+      })
+    });
+  } catch (error) {
+    throw new DiagnosticProtocolInputError(error.message);
+  }
+}
+
+export function validateWorkspaceDiagnosticProtocolApproval(value, source) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new DiagnosticProtocolInputError("Enter the protocol approval.");
+  if (Object.keys(value).sort().join(",") !== "approvalNote,diagnosticId,questions") {
+    throw new DiagnosticProtocolInputError("Only the diagnostic, governed questions, and approval note are accepted.");
+  }
+  try {
+    const draft = createDiagnosticProtocol({
+      diagnosticId: validateDiagnosticContextId(value.diagnosticId),
+      contextBriefId: source.contextBriefId,
+      participantPlanId: source.participantPlanId,
+      questions: value.questions
+    }, { id: "00000000-0000-4000-8000-000000000003", now: new Date(0) });
+    const approved = approveDiagnosticProtocol(draft, { approvalNote: value.approvalNote }, { now: new Date(0) });
+    if (!approved.approvalNote) throw new Error("An approval note is required.");
+    return Object.freeze({
+      diagnosticId: approved.diagnosticId,
+      questions: Object.freeze(approved.questions.map(question => Object.freeze({
+        templateId: question.templateId,
+        questionText: question.questionText,
+        contextualizationNote: question.contextualizationNote
+      }))),
+      approvalNote: approved.approvalNote
+    });
+  } catch (error) {
+    if (error instanceof DiagnosticProtocolInputError) throw error;
+    throw new DiagnosticProtocolInputError(error.message);
+  }
+}
+
+function publicProtocol(row) {
+  if (!row) return null;
+  return Object.freeze({
+    id: row.id,
+    diagnosticId: row.diagnostic_id,
+    protocolVersion: row.protocol_version,
+    questionLibraryVersion: row.question_library_version,
+    questions: row.governed_questions,
+    approvalNote: row.approval_note,
+    approvedAt: new Date(row.approved_at).toISOString()
+  });
+}
+
+async function protocolSource(query, diagnosticId) {
+  const result = await query(
+    `SELECT diagnostic.state, context.id AS context_id, context.approved_payload AS context_payload,
+            plan.id AS participant_plan_id
+     FROM app_shared.diagnostics diagnostic
+     LEFT JOIN app_private.diagnostic_context_briefs context
+       ON context.workspace_id = diagnostic.workspace_id AND context.diagnostic_id = diagnostic.id
+     LEFT JOIN app_private.diagnostic_participant_plans plan
+       ON plan.workspace_id = diagnostic.workspace_id AND plan.diagnostic_id = diagnostic.id
+     WHERE diagnostic.id = $1`,
+    [diagnosticId]
+  );
+  const row = result.rows[0];
+  if (!row) throw new DiagnosticProtocolStateError("That diagnostic is not available in this workspace.");
+  if (row.state !== "protocol-review" || !row.context_id || !row.participant_plan_id) {
+    throw new DiagnosticProtocolStateError("Approve participant design before protocol review.");
+  }
+  return {
+    contextBriefId: row.context_id,
+    participantPlanId: row.participant_plan_id,
+    context: row.context_payload
+  };
+}
+
+export async function getWorkspaceDiagnosticProtocol(workspaceId, diagnosticId, connectionString) {
+  return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
+    const existing = await query(
+      `SELECT id, diagnostic_id, protocol_version, question_library_version,
+              governed_questions, approval_note, approved_at
+       FROM app_shared.diagnostic_protocols WHERE diagnostic_id = $1 LIMIT 1`,
+      [diagnosticId]
+    );
+    if (existing.rows[0]) return { protocol: publicProtocol(existing.rows[0]), draft: null };
+    const source = await protocolSource(query, diagnosticId);
+    return {
+      protocol: null,
+      draft: compileWorkspaceDiagnosticProtocol({ diagnosticId, ...source })
+    };
+  }, connectionString);
+}
+
+export async function approveWorkspaceDiagnosticProtocol(
+  { workspaceId, actorUserId, input }, connectionString
+) {
+  return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
+    const source = await protocolSource(query, input.diagnosticId);
+    const validated = validateWorkspaceDiagnosticProtocolApproval(input, source);
+    const draft = createDiagnosticProtocol({
+      diagnosticId: validated.diagnosticId,
+      contextBriefId: source.contextBriefId,
+      participantPlanId: source.participantPlanId,
+      questions: validated.questions
+    });
+    const approved = approveDiagnosticProtocol(draft, { approvalNote: validated.approvalNote });
+    const inserted = await query(
+      `INSERT INTO app_shared.diagnostic_protocols
+        (id, workspace_id, diagnostic_id, protocol_version, question_library_version,
+         governed_questions, approval_note, approved_by_clerk_user_id, approved_at, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9, $9)
+       RETURNING id, diagnostic_id, protocol_version, question_library_version,
+                 governed_questions, approval_note, approved_at`,
+      [approved.protocolId, workspaceId, approved.diagnosticId, approved.protocolVersion,
+        approved.questionLibraryVersion, JSON.stringify(approved.questions), approved.approvalNote,
+        actorUserId, approved.approvedAt]
+    );
+    await query(
+      `INSERT INTO app_operations.audit_events
+        (workspace_id, actor_clerk_user_id, action, target_type, target_id, metadata)
+       VALUES ($1, $2, 'diagnostic.protocol-approved', 'diagnostic', $3, $4::jsonb)`,
+      [workspaceId, actorUserId, approved.diagnosticId, JSON.stringify({
+        protocolVersion: approved.protocolVersion,
+        questionLibraryVersion: approved.questionLibraryVersion,
+        questionCount: approved.questions.length
+      })]
+    );
+    return publicProtocol(inserted.rows[0]);
+  }, connectionString);
+}
+
+export const workspaceDiagnosticProtocolPolicy = Object.freeze({
+  protocolVersion: diagnosticProtocol.version,
+  questionLibraryVersion: diagnosticQuestionLibrary.version,
+  requiredQuestionCount: diagnosticProtocol.requiredQuestionCount,
+  requiredDomains: diagnosticQuestionLibrary.domains,
+  requiredEvidenceObjectives: diagnosticQuestionLibrary.evidenceObjectives,
+  sameCoreProtocolForEveryParticipant: true
+});

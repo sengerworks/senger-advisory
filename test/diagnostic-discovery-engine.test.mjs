@@ -53,7 +53,7 @@ test("creates and explicitly approves a bounded Diagnostic Context Brief", () =>
 test("rejects unsupported context fields and unbounded sponsor content", () => {
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, sponsorEmail: "sponsor@example.com" }, { now }), /unsupported fields/);
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, triggeringConcern: "" }, { now }), /Triggering concern/);
-  assert.throws(() => createDiagnosticContextBrief({ ...contextValues, recentChanges: Array(9).fill("Change") }, { now }), /at most 8/);
+  assert.throws(() => createDiagnosticContextBrief({ ...contextValues, recentChanges: Array(13).fill("Change") }, { now }), /at most 12/);
 });
 
 test("approves a participant plan when its declared perspective objectives are covered", () => {

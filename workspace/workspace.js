@@ -23,6 +23,36 @@ const elements = {
   diagnosticList: document.querySelector("[data-diagnostic-list]"),
   diagnosticEmpty: document.querySelector("[data-diagnostic-empty]"),
   createDiagnostic: document.querySelector("[data-create-diagnostic]"),
+  diagnosticContext: document.querySelector("[data-diagnostic-context]"),
+  diagnosticContextForm: document.querySelector("[data-diagnostic-context-form]"),
+  diagnosticContextApproved: document.querySelector("[data-diagnostic-context-approved]"),
+  diagnosticContextSummary: document.querySelector("[data-diagnostic-context-summary]"),
+  diagnosticContextMessage: document.querySelector("[data-diagnostic-context-message]"),
+  approveDiagnosticContext: document.querySelector("[data-approve-diagnostic-context]"),
+  closeDiagnosticContext: document.querySelector("[data-close-diagnostic-context]"),
+  participantDesign: document.querySelector("[data-participant-design]"),
+  participantDesignForm: document.querySelector("[data-participant-design-form]"),
+  participantPlanApproved: document.querySelector("[data-participant-plan-approved]"),
+  participantPlanSummary: document.querySelector("[data-participant-plan-summary]"),
+  participantDesignMessage: document.querySelector("[data-participant-design-message]"),
+  participantSlots: document.querySelector("[data-participant-slots]"),
+  coverageGaps: document.querySelector("[data-coverage-gaps]"),
+  coverageGapList: document.querySelector("[data-coverage-gap-list]"),
+  addParticipantSlot: document.querySelector("[data-add-participant-slot]"),
+  approveParticipantPlan: document.querySelector("[data-approve-participant-plan]"),
+  closeParticipantDesign: document.querySelector("[data-close-participant-design]"),
+  protocolReview: document.querySelector("[data-protocol-review]"),
+  protocolReviewForm: document.querySelector("[data-protocol-review-form]"),
+  protocolQuestionList: document.querySelector("[data-protocol-question-list]"),
+  protocolCoverage: document.querySelector("[data-protocol-coverage]"),
+  protocolApproved: document.querySelector("[data-protocol-approved]"),
+  protocolApprovedSummary: document.querySelector("[data-protocol-approved-summary]"),
+  protocolMessage: document.querySelector("[data-protocol-message]"),
+  approveProtocol: document.querySelector("[data-approve-protocol]"),
+  closeProtocolReview: document.querySelector("[data-close-protocol-review]"),
+  diagnosticInvitationPanel: document.querySelector("[data-diagnostic-invitation-panel]"),
+  diagnosticInvitationSlots: document.querySelector("[data-diagnostic-invitation-slots]"),
+  diagnosticInvitationMessage: document.querySelector("[data-diagnostic-invitation-message]"),
   collectionPanel: document.querySelector("[data-collection-panel]"),
   collectionForm: document.querySelector("[data-collection-form]"),
   collectionMessage: document.querySelector("[data-collection-message]"),
@@ -72,7 +102,11 @@ const elements = {
   participantNotice: document.querySelector("[data-participant-notice]"),
   participantAcknowledgement: document.querySelector("[data-participant-acknowledgement]"),
   participantMessage: document.querySelector("[data-participant-message]"),
-  beginAssessment: document.querySelector("[data-begin-assessment]")
+  beginAssessment: document.querySelector("[data-begin-assessment]"),
+  participantInterview: document.querySelector("[data-participant-interview]"),
+  participantInterviewQuestions: document.querySelector("[data-participant-interview-questions]"),
+  saveInterview: document.querySelector("[data-save-interview]"),
+  interviewMessage: document.querySelector("[data-interview-message]")
 };
 
 let clerk = null;
@@ -84,6 +118,11 @@ let followUpRoundId = null;
 let selectedRoundId = null;
 let currentParticipation = null;
 let currentNonrespondents = [];
+let selectedDiagnosticId = null;
+let participantSlotCount = 0;
+let interviewAutosaveTimer = null;
+let interviewDirty = false;
+let interviewSavePromise = Promise.resolve();
 
 const domainLabels = {
   leadership: "Leadership",
@@ -282,10 +321,255 @@ function renderDiagnostics(diagnostics) {
       ? "No human review required"
       : `Human review · ${diagnostic.humanReviewState}`;
     status.append(stage, entitlement, review);
-    card.append(copy, status);
+    const action = document.createElement("button");
+    action.className = "diagnostic-card-action";
+    action.type = "button";
+    action.dataset.diagnosticId = diagnostic.id;
+    action.dataset.diagnosticStage = diagnostic.state;
+    action.disabled = diagnostic.entitlementStatus !== "active";
+    action.textContent = diagnostic.entitlementStatus !== "active"
+      ? "Awaiting access"
+      : diagnostic.state === "draft" || diagnostic.state === "discovery"
+        ? "Begin discovery"
+        : diagnostic.state === "participant-design"
+          ? "Design participants"
+          : diagnostic.state === "protocol-review"
+            ? "Review protocol"
+            : "Review diagnostic method";
+    card.append(copy, status, action);
     elements.diagnosticList.append(card);
   }
   elements.diagnosticEmpty.hidden = diagnostics.length > 0;
+}
+
+const participantOptions = {
+  leadershipLevel: [["enterprise", "Enterprise"], ["functional", "Functional"], ["operational", "Operational"], ["frontline", "Frontline"]],
+  executionProximity: [["strategy", "Strategy"], ["coordination", "Coordination"], ["delivery", "Delivery"]],
+  functionalLens: [["executive-leadership", "Executive leadership"], ["operations", "Operations"], ["people", "People"], ["finance", "Finance"], ["commercial", "Commercial"], ["product-service", "Product / service"], ["technology", "Technology"], ["frontline-delivery", "Frontline delivery"], ["other", "Other"]]
+};
+
+function participantSelect(name, options) {
+  const select = document.createElement("select");
+  select.name = name;
+  select.required = true;
+  select.append(new Option(`Select ${name.replace(/([A-Z])/g, " $1").toLowerCase()}`, ""));
+  for (const [value, label] of options) select.append(new Option(label, value));
+  return select;
+}
+
+function addParticipantSlot(values = {}) {
+  participantSlotCount += 1;
+  const row = document.createElement("div");
+  row.className = "participant-slot";
+  row.dataset.slotId = values.slotId || `slot-${participantSlotCount}`;
+  const number = document.createElement("span");
+  number.textContent = String(elements.participantSlots.children.length + 1).padStart(2, "0");
+  const leadership = participantSelect("leadershipLevel", participantOptions.leadershipLevel);
+  const proximity = participantSelect("executionProximity", participantOptions.executionProximity);
+  const functional = participantSelect("functionalLens", participantOptions.functionalLens);
+  leadership.value = values.leadershipLevel || "";
+  proximity.value = values.executionProximity || "";
+  functional.value = values.functionalLens || "";
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.textContent = "Remove";
+  remove.addEventListener("click", () => row.remove());
+  row.append(number, leadership, proximity, functional, remove);
+  elements.participantSlots.append(row);
+}
+
+function checkedValues(name) {
+  return [...elements.participantDesignForm.querySelectorAll(`[name="${name}"]:checked`)].map(input => input.value);
+}
+
+function participantPlanDraft() {
+  const participantSlots = [...elements.participantSlots.children].map(row => ({
+    slotId: row.dataset.slotId,
+    leadershipLevel: row.querySelector('[name="leadershipLevel"]').value,
+    executionProximity: row.querySelector('[name="executionProximity"]').value,
+    functionalLens: row.querySelector('[name="functionalLens"]').value
+  }));
+  return {
+    targetLeadershipLevels: checkedValues("leadershipLevels"),
+    targetExecutionProximities: checkedValues("executionProximities"),
+    targetFunctionalLenses: checkedValues("functionalLenses"),
+    participantSlots
+  };
+}
+
+function participantCoverageGaps(plan) {
+  const dimensions = [
+    ["leadershipLevels", "targetLeadershipLevels", "leadershipLevel"],
+    ["executionProximities", "targetExecutionProximities", "executionProximity"],
+    ["functionalLenses", "targetFunctionalLenses", "functionalLens"]
+  ];
+  return dimensions.flatMap(([dimension, target, slotKey]) => {
+    const present = new Set(plan.participantSlots.map(slot => slot[slotKey]));
+    return plan[target].filter(value => !present.has(value)).map(value => `${dimension}:${value}`);
+  });
+}
+
+function showCoverageGaps(gaps) {
+  elements.coverageGapList.replaceChildren();
+  for (const gapId of gaps) {
+    const row = document.createElement("div");
+    row.className = "coverage-gap";
+    row.dataset.gapId = gapId;
+    const label = document.createElement("label");
+    label.textContent = gapId.replace(":", " · ").replace(/([A-Z])/g, " $1");
+    const reason = document.createElement("input");
+    reason.type = "text";
+    reason.maxLength = 500;
+    reason.placeholder = "Reason this limitation is accepted";
+    row.append(label, reason);
+    elements.coverageGapList.append(row);
+  }
+  elements.coverageGaps.hidden = gaps.length === 0;
+  elements.approveParticipantPlan.textContent = gaps.length ? "Approve documented plan" : "Approve participant design";
+}
+
+async function openParticipantDesign(diagnosticId) {
+  selectedDiagnosticId = diagnosticId;
+  elements.diagnosticContext.hidden = true;
+  elements.participantDesign.hidden = false;
+  elements.participantDesignMessage.textContent = "Loading perspective design…";
+  const data = await workspaceRequest(`/api/workspace/diagnostic-participants?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  elements.participantDesignMessage.textContent = "";
+  const approved = Boolean(data.participantPlan);
+  elements.participantDesignForm.hidden = approved;
+  elements.participantPlanApproved.hidden = !approved;
+  if (approved) {
+    elements.participantPlanSummary.textContent = `${data.participantPlan.participantSlots.length} identity-free perspective slots approved; ${data.participantPlan.acceptedGaps.length} coverage limitations accepted.`;
+  } else {
+    elements.participantDesignForm.reset();
+    elements.participantDesignForm.elements.diagnosticId.value = diagnosticId;
+    elements.participantSlots.replaceChildren();
+    participantSlotCount = 0;
+    addParticipantSlot(); addParticipantSlot(); addParticipantSlot();
+    showCoverageGaps([]);
+  }
+  elements.participantDesign.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderProtocolQuestions(questions) {
+  elements.protocolQuestionList.replaceChildren();
+  for (const question of questions) {
+    const row = document.createElement("div");
+    row.className = "protocol-question";
+    row.dataset.templateId = question.templateId;
+    row.dataset.contextualizationNote = question.contextualizationNote;
+    const number = document.createElement("span");
+    number.textContent = String(question.position || elements.protocolQuestionList.children.length + 1).padStart(2, "0");
+    const label = document.createElement("label");
+    const textarea = document.createElement("textarea");
+    textarea.maxLength = 500;
+    textarea.required = true;
+    textarea.value = question.questionText;
+    const governance = document.createElement("small");
+    governance.textContent = `${question.domainId} · ${question.evidenceObjectiveId} · governed template ${question.templateId}`;
+    label.append(textarea, governance);
+    row.append(number, label);
+    elements.protocolQuestionList.append(row);
+  }
+}
+
+function perspectiveLabel(slot) {
+  return [slot.leadershipLevel, slot.executionProximity, slot.functionalLens]
+    .map(value => value.replace(/-/g, " "))
+    .join(" · ");
+}
+
+async function loadDiagnosticInvitations(diagnosticId) {
+  elements.diagnosticInvitationMessage.textContent = "Loading approved perspective slots…";
+  const data = await workspaceRequest(`/api/workspace/diagnostic-invitations?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  elements.diagnosticInvitationSlots.replaceChildren();
+  for (const slot of data.planSlots) {
+    const card = document.createElement("article");
+    card.className = "diagnostic-invitation-slot";
+    const copy = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = slot.slotId;
+    const perspective = document.createElement("span");
+    perspective.textContent = perspectiveLabel(slot);
+    copy.append(title, perspective);
+    if (slot.invitation) {
+      const status = document.createElement("span");
+      status.textContent = `${slot.invitation.emailAddress} · ${slot.noticeAccepted ? "notice accepted" : slot.invitation.status}`;
+      card.append(copy, status);
+    } else {
+      const form = document.createElement("form");
+      form.dataset.planSlotId = slot.slotId;
+      const email = document.createElement("input");
+      email.type = "email";
+      email.required = true;
+      email.maxLength = 254;
+      email.placeholder = "participant@example.com";
+      email.setAttribute("aria-label", `Email for ${slot.slotId}`);
+      const send = document.createElement("button");
+      send.type = "submit";
+      send.textContent = "Send invitation";
+      form.append(email, send);
+      card.append(copy, form);
+    }
+    elements.diagnosticInvitationSlots.append(card);
+  }
+  elements.diagnosticInvitationMessage.textContent = "";
+}
+
+async function openProtocolReview(diagnosticId) {
+  selectedDiagnosticId = diagnosticId;
+  elements.diagnosticContext.hidden = true;
+  elements.participantDesign.hidden = true;
+  elements.protocolReview.hidden = false;
+  elements.protocolMessage.textContent = "Compiling the governed protocol…";
+  const data = await workspaceRequest(`/api/workspace/diagnostic-protocol?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  elements.protocolMessage.textContent = "";
+  const protocol = data.protocol || data.draft;
+  const approved = Boolean(data.protocol);
+  elements.protocolReviewForm.hidden = approved;
+  elements.protocolApproved.hidden = !approved;
+  elements.diagnosticInvitationPanel.hidden = !approved;
+  renderProtocolQuestions(protocol.questions);
+  elements.protocolQuestionList.querySelectorAll("textarea").forEach(textarea => { textarea.disabled = approved; });
+  elements.protocolCoverage.replaceChildren(
+    ...[
+      `${data.policy.requiredQuestionCount} common questions`,
+      `${data.policy.requiredDomains.length} capacity domains`,
+      `${data.policy.requiredEvidenceObjectives.length} evidence objectives`,
+      "Same core protocol for everyone"
+    ].map(label => Object.assign(document.createElement("span"), { textContent: label }))
+  );
+  if (approved) {
+    elements.protocolApprovedSummary.textContent = `Protocol ${protocol.protocolVersion} approved ${formattedDate(protocol.approvedAt)} with ${protocol.questions.length} governed questions.`;
+    await loadDiagnosticInvitations(diagnosticId);
+  } else {
+    elements.protocolReviewForm.reset();
+    renderProtocolQuestions(protocol.questions);
+  }
+  elements.protocolReview.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function diagnosticList(value) {
+  return String(value || "").split(/\n+/).map(item => item.trim()).filter(Boolean);
+}
+
+async function openDiagnosticContext(diagnosticId) {
+  selectedDiagnosticId = diagnosticId;
+  elements.diagnosticContext.hidden = false;
+  elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
+  elements.diagnosticContextMessage.textContent = "Loading governed discovery…";
+  const data = await workspaceRequest(`/api/workspace/diagnostic-context?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  elements.diagnosticContextMessage.textContent = "";
+  const approved = Boolean(data.context);
+  elements.diagnosticContextForm.hidden = approved;
+  elements.diagnosticContextApproved.hidden = !approved;
+  if (approved) {
+    elements.diagnosticContextSummary.textContent = `${data.context.triggeringConcern} Decision to inform: ${data.context.decisionNeeded}`;
+  } else {
+    elements.diagnosticContextForm.reset();
+    elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
+  }
+  elements.diagnosticContext.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 let workspaceDiagnosticMethodVersion = "1.0.0";
@@ -318,7 +602,18 @@ async function workspaceRequest(path, options = {}) {
     ...options,
     body: options.body === undefined ? undefined : JSON.stringify(options.body)
   });
-  const data = await response.json();
+  const responseText = await response.text();
+  let data;
+  try {
+    data = responseText ? JSON.parse(responseText) : {};
+  } catch {
+    if (response.status === 404) {
+      throw new Error("This local workspace server is out of date. Stop it, restart the development server, and try again.");
+    }
+    throw new Error(response.ok
+      ? "The workspace returned an unreadable response. Please try again."
+      : responseText || "The workspace operation could not be completed.");
+  }
   if (!response.ok) throw new Error(data.error || "The workspace operation could not be completed.");
   return data;
 }
@@ -763,7 +1058,36 @@ async function prepareOwnerCollection() {
 }
 
 async function prepareParticipant() {
-  currentParticipation = await workspaceRequest("/api/workspace/participation");
+  const diagnosticParticipation = await workspaceRequest("/api/workspace/diagnostic-participation");
+  if (diagnosticParticipation.state !== "unavailable") {
+    currentParticipation = { ...diagnosticParticipation, kind: "diagnostic" };
+    elements.participantPanel.hidden = false;
+    elements.primaryAction.disabled = false;
+    elements.focusTitle.textContent = "Complete your confidential diagnostic interview.";
+    elements.focusDescription.textContent = "Your identity confirms the intended perspective slot. Your interview content remains separated from workspace identity records.";
+    elements.primaryAction.textContent = diagnosticParticipation.noticeAccepted
+      ? "Interview workspace coming next"
+      : "Review diagnostic privacy";
+    elements.participantRound.textContent = "Organizational Capacity Diagnostic";
+    elements.participantDates.textContent = `${diagnosticParticipation.route === "automated" ? "Automated written" : "Advisor-led"} route · Common protocol ${diagnosticParticipation.protocol?.version || "1.0"}`;
+    const noticeItems = elements.participantNotice.querySelectorAll("li");
+    noticeItems[0].textContent = "Your interview responses are confidential and are never shown to the sponsor as an attributed record.";
+    noticeItems[1].textContent = "De-identified evidence may be synthesized across the approved participant group.";
+    noticeItems[2].textContent = "Sensitive or potentially identifying evidence is held for human review before synthesis.";
+    elements.participantNotice.querySelector("label span").textContent = "I understand how my diagnostic interview will be used and protected.";
+    elements.participantNotice.hidden = diagnosticParticipation.noticeAccepted;
+    elements.participantAcknowledgement.checked = diagnosticParticipation.noticeAccepted;
+    elements.beginAssessment.textContent = diagnosticParticipation.noticeAccepted
+      ? "Guided interview coming next"
+      : "Accept notice and continue";
+    elements.beginAssessment.disabled = diagnosticParticipation.noticeAccepted;
+    elements.participantMessage.textContent = diagnosticParticipation.noticeAccepted
+      ? "Diagnostic privacy accepted. The protected interview response workspace is the next development gate."
+      : "Accept the diagnostic privacy notice before interview access is prepared.";
+    if (diagnosticParticipation.noticeAccepted) await loadParticipantInterview(diagnosticParticipation.diagnosticId);
+    return;
+  }
+  currentParticipation = { ...(await workspaceRequest("/api/workspace/participation")), kind: "assessment" };
   elements.participantPanel.hidden = false;
   elements.primaryAction.disabled = false;
   if (currentParticipation.state === "unavailable") {
@@ -805,6 +1129,42 @@ async function prepareParticipant() {
   elements.participantMessage.textContent = currentParticipation.noticeAccepted
     ? "Privacy notice accepted. You may begin when ready."
     : "Acknowledge the workspace privacy notice to continue.";
+}
+
+async function loadParticipantInterview(diagnosticId) {
+  const localAnswers=new Map([...elements.participantInterviewQuestions.querySelectorAll("textarea")].map(input=>[input.name,input.value]));
+  const interview=await workspaceRequest(`/api/workspace/diagnostic-interview?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  const answers=new Map(interview.answers.map(answer=>[answer.questionId,answer.answerText]));
+  elements.participantInterviewQuestions.replaceChildren();
+  for(const question of interview.questions){const label=document.createElement("label");const number=document.createElement("span");number.textContent=String(question.position).padStart(2,"0");const body=document.createElement("div");const prompt=document.createElement("p");prompt.textContent=question.questionText;const answer=document.createElement("textarea");answer.name=question.questionId;answer.maxLength=6000;answer.required=true;answer.value=localAnswers.has(question.questionId)?localAnswers.get(question.questionId):(answers.get(question.questionId)||"");body.append(prompt,answer);label.append(number,body);elements.participantInterviewQuestions.append(label);}
+  elements.participantInterview.hidden=interview.status!=="in-progress";
+  elements.beginAssessment.hidden=true;
+  if(interview.status==="submitted")renderDiagnosticInterviewComplete();
+  else elements.interviewMessage.textContent="Your draft is encrypted before it is stored.";
+}
+
+function renderDiagnosticInterviewComplete(){
+  elements.focusTitle.textContent="Your confidential diagnostic interview is complete.";
+  elements.focusDescription.textContent="Your responses were received and securely recorded. They remain separated from your workspace identity.";
+  elements.primaryAction.textContent="Responses received";
+  elements.primaryAction.disabled=true;
+  elements.participantNotice.hidden=true;
+  elements.beginAssessment.hidden=false;
+  elements.beginAssessment.textContent="Diagnostic responses submitted";
+  elements.beginAssessment.disabled=true;
+  elements.participantInterview.hidden=true;
+  elements.participantMessage.textContent="Submission confirmed. No further action is required right now. Senger Advisory will synthesize de-identified evidence across the approved participant group and will contact the organization if anything further is needed.";
+  elements.participantMessage.dataset.tone="success";
+  elements.interviewMessage.textContent="Your confidential diagnostic interview has been submitted.";
+}
+
+function interviewPayload(){return{diagnosticId:currentParticipation.diagnosticId,answers:[...elements.participantInterviewQuestions.querySelectorAll("textarea")].filter(input=>input.value.trim()).map(input=>({questionId:input.name,answerText:input.value}))};}
+
+function saveInterviewDraft(){
+  clearTimeout(interviewAutosaveTimer);
+  const payload=interviewPayload();
+  interviewSavePromise=interviewSavePromise.then(async()=>{elements.interviewMessage.textContent="Saving encrypted draft…";await workspaceRequest("/api/workspace/diagnostic-interview",{method:"PATCH",body:payload});interviewDirty=false;elements.interviewMessage.textContent="Private draft saved.";}).catch(error=>{elements.interviewMessage.textContent=error.message;elements.interviewMessage.dataset.tone="error";});
+  return interviewSavePromise;
 }
 
 async function sessionState() {
@@ -900,6 +1260,7 @@ async function initialize() {
         ui: { ClerkUI: window.__internal_ClerkUICtor }
       });
       clerk.addListener(() => {
+        if (currentParticipation?.kind === "diagnostic" && !elements.participantInterview.hidden) return;
         render().catch(() => showError("The workspace could not refresh your session."));
       });
     }
@@ -951,6 +1312,191 @@ elements.diagnosticForm.addEventListener("submit", async event => {
     elements.diagnosticMessage.dataset.tone = "error";
   } finally {
     elements.createDiagnostic.disabled = false;
+  }
+});
+elements.diagnosticList.addEventListener("click", event => {
+  const button = event.target.closest("[data-diagnostic-id]");
+  if (!button || button.disabled) return;
+  const stage = button.dataset.diagnosticStage;
+  const operation = new Set(["draft", "discovery"]).has(stage)
+    ? openDiagnosticContext(button.dataset.diagnosticId)
+    : stage === "participant-design"
+      ? openParticipantDesign(button.dataset.diagnosticId)
+      : openProtocolReview(button.dataset.diagnosticId);
+  operation.catch(error => {
+    const message = stage === "participant-design"
+      ? elements.participantDesignMessage
+      : new Set(["draft", "discovery"]).has(stage)
+        ? elements.diagnosticContextMessage
+        : elements.protocolMessage;
+    const surface = stage === "participant-design"
+      ? elements.participantDesign
+      : new Set(["draft", "discovery"]).has(stage)
+        ? elements.diagnosticContext
+        : elements.protocolReview;
+    surface.hidden = false;
+    message.textContent = error.message;
+    message.dataset.tone = "error";
+  });
+});
+elements.closeDiagnosticContext.addEventListener("click", () => {
+  selectedDiagnosticId = null;
+  elements.diagnosticContext.hidden = true;
+});
+elements.closeParticipantDesign.addEventListener("click", () => {
+  selectedDiagnosticId = null;
+  elements.participantDesign.hidden = true;
+});
+elements.closeProtocolReview.addEventListener("click", () => {
+  selectedDiagnosticId = null;
+  elements.protocolReview.hidden = true;
+});
+elements.addParticipantSlot.addEventListener("click", () => addParticipantSlot());
+elements.diagnosticContextForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.diagnosticContextForm.reportValidity()) return;
+  elements.approveDiagnosticContext.disabled = true;
+  elements.diagnosticContextMessage.textContent = "Approving the bounded context…";
+  delete elements.diagnosticContextMessage.dataset.tone;
+  const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
+  try {
+    await workspaceRequest("/api/workspace/diagnostic-context", {
+      method: "POST",
+      body: {
+        diagnosticId: selectedDiagnosticId,
+        organizationSizeBand: values.organizationSizeBand,
+        sponsorPerspective: values.sponsorPerspective,
+        organizationContext: values.organizationContext,
+        strategicPriority: values.strategicPriority,
+        triggeringConcern: values.triggeringConcern,
+        decisionsAtRisk: values.decisionsAtRisk,
+        recentChanges: diagnosticList(values.recentChanges),
+        priorInterventions: diagnosticList(values.priorInterventions),
+        knownSensitivities: values.knownSensitivities,
+        decisionNeeded: values.decisionNeeded,
+        approvalNote: values.approvalNote
+      }
+    });
+    elements.diagnosticContextMessage.textContent = "Context approved. Participant design is now the next governed step.";
+    elements.diagnosticContextMessage.dataset.tone = "success";
+    await loadDiagnostics();
+    await openDiagnosticContext(selectedDiagnosticId);
+  } catch (error) {
+    elements.diagnosticContextMessage.textContent = error.message;
+    elements.diagnosticContextMessage.dataset.tone = "error";
+  } finally {
+    elements.approveDiagnosticContext.disabled = false;
+  }
+});
+elements.participantDesignForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.participantDesignForm.reportValidity()) return;
+  const draft = participantPlanDraft();
+  if (!draft.targetLeadershipLevels.length || !draft.targetExecutionProximities.length || !draft.targetFunctionalLenses.length) {
+    elements.participantDesignMessage.textContent = "Choose at least one objective in every coverage dimension.";
+    elements.participantDesignMessage.dataset.tone = "error";
+    return;
+  }
+  if (!draft.participantSlots.length) {
+    elements.participantDesignMessage.textContent = "Add at least one identity-free perspective slot.";
+    elements.participantDesignMessage.dataset.tone = "error";
+    return;
+  }
+  const gaps = participantCoverageGaps(draft);
+  let displayedGaps = [...elements.coverageGapList.querySelectorAll("[data-gap-id]")];
+  if (gaps.join("|") !== displayedGaps.map(row => row.dataset.gapId).join("|")) {
+    showCoverageGaps(gaps);
+    if (gaps.length) {
+      elements.participantDesignMessage.textContent = "Coverage gaps need a design change or an explicit acceptance reason.";
+      elements.participantDesignMessage.dataset.tone = "error";
+      return;
+    }
+    displayedGaps = [...elements.coverageGapList.querySelectorAll("[data-gap-id]")];
+  }
+  const acceptedGaps = displayedGaps.map(row => ({
+    gapId: row.dataset.gapId,
+    reason: row.querySelector("input").value.trim()
+  }));
+  if (acceptedGaps.some(gap => !gap.reason)) {
+    elements.participantDesignMessage.textContent = "Explain why every uncovered objective is an accepted limitation.";
+    elements.participantDesignMessage.dataset.tone = "error";
+    return;
+  }
+  elements.approveParticipantPlan.disabled = true;
+  elements.participantDesignMessage.textContent = "Approving the identity-free participant design…";
+  delete elements.participantDesignMessage.dataset.tone;
+  try {
+    await workspaceRequest("/api/workspace/diagnostic-participants", {
+      method: "POST",
+      body: {
+        diagnosticId: selectedDiagnosticId,
+        ...draft,
+        acceptedGaps,
+        approvalNote: elements.participantDesignForm.elements.approvalNote.value
+      }
+    });
+    await loadDiagnostics();
+    await openParticipantDesign(selectedDiagnosticId);
+  } catch (error) {
+    elements.participantDesignMessage.textContent = error.message;
+    elements.participantDesignMessage.dataset.tone = "error";
+  } finally {
+    elements.approveParticipantPlan.disabled = false;
+  }
+});
+elements.protocolReviewForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.protocolReviewForm.reportValidity()) return;
+  const questions = [...elements.protocolQuestionList.children].map(row => ({
+    templateId: row.dataset.templateId,
+    questionText: row.querySelector("textarea").value,
+    contextualizationNote: row.dataset.contextualizationNote
+  }));
+  elements.approveProtocol.disabled = true;
+  elements.protocolMessage.textContent = "Validating coverage and approving the common protocol…";
+  delete elements.protocolMessage.dataset.tone;
+  try {
+    await workspaceRequest("/api/workspace/diagnostic-protocol", {
+      method: "POST",
+      body: {
+        diagnosticId: selectedDiagnosticId,
+        questions,
+        approvalNote: elements.protocolReviewForm.elements.approvalNote.value
+      }
+    });
+    await openProtocolReview(selectedDiagnosticId);
+  } catch (error) {
+    elements.protocolMessage.textContent = error.message;
+    elements.protocolMessage.dataset.tone = "error";
+  } finally {
+    elements.approveProtocol.disabled = false;
+  }
+});
+elements.diagnosticInvitationSlots.addEventListener("submit", async event => {
+  event.preventDefault();
+  const form = event.target.closest("form[data-plan-slot-id]");
+  if (!form || !selectedDiagnosticId || !form.reportValidity()) return;
+  const button = form.querySelector("button");
+  button.disabled = true;
+  elements.diagnosticInvitationMessage.textContent = "Sending the protected participant invitation…";
+  delete elements.diagnosticInvitationMessage.dataset.tone;
+  try {
+    await workspaceRequest("/api/workspace/diagnostic-invitations", {
+      method: "POST",
+      body: {
+        diagnosticId: selectedDiagnosticId,
+        planSlotId: form.dataset.planSlotId,
+        emailAddress: form.querySelector("input").value
+      }
+    });
+    elements.diagnosticInvitationMessage.textContent = "Invitation sent. Interview access remains gated by notice acceptance.";
+    elements.diagnosticInvitationMessage.dataset.tone = "success";
+    await loadDiagnosticInvitations(selectedDiagnosticId);
+  } catch (error) {
+    elements.diagnosticInvitationMessage.textContent = error.message;
+    elements.diagnosticInvitationMessage.dataset.tone = "error";
+  } finally {
+    button.disabled = false;
   }
 });
 elements.collectionForm.elements.opensAt.addEventListener("change", event => {
@@ -1202,11 +1748,24 @@ elements.beginAssessment.addEventListener("click", async () => {
   if (
     currentRole !== "org:participant"
     || !currentParticipation
-    || currentParticipation.state !== "ready"
-    || currentParticipation.submitted
+    || (currentParticipation.kind === "assessment" && currentParticipation.state !== "ready")
+    || (currentParticipation.kind === "assessment" && currentParticipation.submitted)
+    || (currentParticipation.kind === "diagnostic" && currentParticipation.noticeAccepted)
   ) return;
   elements.beginAssessment.disabled = true;
   try {
+    if (currentParticipation.kind === "diagnostic") {
+      if (!elements.participantAcknowledgement.checked) return;
+      await workspaceRequest("/api/workspace/diagnostic-participation", {
+        method: "POST",
+        body: {
+          diagnosticId: currentParticipation.diagnosticId,
+          noticeVersion: currentParticipation.noticeVersion
+        }
+      });
+      await prepareParticipant();
+      return;
+    }
     if (!currentParticipation.noticeAccepted) {
       if (!elements.participantAcknowledgement.checked) return;
       await workspaceRequest("/api/workspace/participation", {
@@ -1226,5 +1785,9 @@ elements.beginAssessment.addEventListener("click", async () => {
     elements.beginAssessment.disabled = false;
   }
 });
+elements.participantInterviewQuestions.addEventListener("input",()=>{interviewDirty=true;elements.interviewMessage.textContent="Draft changes not yet saved.";clearTimeout(interviewAutosaveTimer);interviewAutosaveTimer=setTimeout(()=>saveInterviewDraft(),1200);});
+elements.saveInterview.addEventListener("click",async()=>{elements.saveInterview.disabled=true;await saveInterviewDraft();elements.saveInterview.disabled=false;});
+elements.participantInterview.addEventListener("submit",async event=>{event.preventDefault();if(!elements.participantInterview.reportValidity())return;try{clearTimeout(interviewAutosaveTimer);await interviewSavePromise;await workspaceRequest("/api/workspace/diagnostic-interview",{method:"POST",body:interviewPayload()});interviewDirty=false;renderDiagnosticInterviewComplete();}catch(error){elements.interviewMessage.textContent=error.message;elements.interviewMessage.dataset.tone="error";}});
+window.addEventListener("beforeunload",event=>{if(!interviewDirty)return;event.preventDefault();event.returnValue="";});
 
 initialize();

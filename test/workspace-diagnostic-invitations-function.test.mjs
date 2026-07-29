@@ -1,0 +1,68 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createWorkspaceDiagnosticInvitationsHandler } from "../netlify/functions/workspace-diagnostic-invitations.mjs";
+import {
+  DiagnosticInvitationInputError,
+  DiagnosticInvitationStateError,
+  diagnosticInvitationProviderError,
+  validateDiagnosticInvitationInput
+} from "../netlify/lib/workspace-diagnostic-invitations.mjs";
+import { WORKSPACE_ROLES } from "../workspace-authorization.js";
+
+const workspaceId = "11111111-1111-4111-8111-111111111111";
+const diagnosticId = "22222222-2222-4222-8222-222222222222";
+const planSlot = { slotId: "slot-1", leadershipLevel: "enterprise", executionProximity: "strategy", functionalLens: "executive-leadership" };
+const input = { diagnosticId, planSlotId: "slot-1", emailAddress: "Participant@Example.com" };
+function request(method = "GET", body, query = `?diagnosticId=${diagnosticId}`, origin = "https://example.com") {
+  return new Request(`https://example.com/api/workspace/diagnostic-invitations${query}`, { method, headers: { origin, ...(body ? { "content-type": "application/json" } : {}) }, body: body ? JSON.stringify(body) : undefined });
+}
+function authentication(role = WORKSPACE_ROLES.owner) { return async () => ({ ok: true, value: { role, workspaceId, userId: "user_owner", organizationId: "org_alpha" } }); }
+
+test("accepts one normalized email for one approved perspective slot", () => {
+  assert.deepEqual(validateDiagnosticInvitationInput(input), { diagnosticId, planSlotId: "slot-1", emailAddress: "participant@example.com" });
+  assert.throws(() => validateDiagnosticInvitationInput({ ...input, participantName: "A Person" }), DiagnosticInvitationInputError);
+  assert.throws(() => validateDiagnosticInvitationInput({ ...input, emailAddress: "invalid" }), DiagnosticInvitationInputError);
+});
+
+test("translates provider failures without exposing provider payloads", () => {
+  assert.match(diagnosticInvitationProviderError({ message: "membership already exists" }).message, /already belongs/);
+  assert.match(diagnosticInvitationProviderError({ errors: [{ code: "duplicate_invitation" }] }).message, /pending diagnostic invitation/);
+  assert.match(diagnosticInvitationProviderError({ errors: [{ code: "invalid_role" }] }).message, /org:participant/);
+  assert.equal(diagnosticInvitationProviderError({ message: "Bad Request" }), null);
+});
+
+test("administrators list plan slots and create a diagnostic-specific invitation", async () => {
+  let created; let recorded;
+  const invitation = { id: "orginv_123", planSlotId: "slot-1", emailAddress: "participant@example.com", status: "pending", createdAt: "2026-07-29T00:00:00.000Z", expiresAt: "2026-08-28T00:00:00.000Z" };
+  const handler = createWorkspaceDiagnosticInvitationsHandler({
+    authenticate: authentication(),
+    getReadiness: async () => ({ diagnosticId, planSlots: [planSlot] }),
+    listSlots: async () => [],
+    gateway: { list: async () => [], create: async value => { created = value; return invitation; } },
+    recordInvitation: async value => { recorded = value; }
+  });
+  const listed = await handler(request());
+  assert.equal(listed.status, 200);
+  assert.equal((await listed.json()).planSlots[0].invitation, null);
+  const response = await handler(request("POST", input, ""));
+  assert.equal(response.status, 201);
+  assert.equal(created.organizationId, "org_alpha");
+  assert.equal(created.planSlotId, "slot-1");
+  assert.equal(recorded.planSlot.functionalLens, "executive-leadership");
+});
+
+test("participants, foreign origins, unknown slots, and duplicate invitations fail closed", async () => {
+  const participant = createWorkspaceDiagnosticInvitationsHandler({ authenticate: authentication(WORKSPACE_ROLES.participant) });
+  assert.equal((await participant(request())).status, 403);
+  const foreign = createWorkspaceDiagnosticInvitationsHandler({ authenticate: authentication() });
+  assert.equal((await foreign(request("GET", undefined, `?diagnosticId=${diagnosticId}`, "https://attacker.example"))).status, 403);
+  const unknown = createWorkspaceDiagnosticInvitationsHandler({
+    authenticate: authentication(), getReadiness: async () => ({ diagnosticId, planSlots: [] }), listSlots: async () => [], gateway: { list: async () => [] }
+  });
+  assert.equal((await unknown(request("POST", input, ""))).status, 400);
+  const duplicate = createWorkspaceDiagnosticInvitationsHandler({
+    authenticate: authentication(), getReadiness: async () => ({ diagnosticId, planSlots: [planSlot] }), listSlots: async () => [{ planSlotId: "slot-1" }], gateway: { list: async () => [] }
+  });
+  assert.equal((await duplicate(request("POST", input, ""))).status, 409);
+  assert.equal(new DiagnosticInvitationStateError("duplicate") instanceof Error, true);
+});

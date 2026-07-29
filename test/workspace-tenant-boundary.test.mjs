@@ -216,3 +216,25 @@ test("diagnostic review-state alignment is a forward-only migration", async () =
   assert.match(migration, /SET human_review_status = 'clear'/);
   assert.match(migration, /WHERE human_review_status = 'not-required'/);
 });
+
+test("diagnostic participant plans remain identity-free and tenant-isolated", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/010_diagnostic_participant_plans.sql", import.meta.url),
+    "utf8"
+  );
+  assert.match(migration, /CREATE TABLE app_private\.diagnostic_participant_plans/);
+  assert.match(migration, /FOREIGN KEY \(workspace_id, diagnostic_id\)\s+REFERENCES app_shared\.diagnostics\(workspace_id, id\)/);
+  assert.match(migration, /ENABLE ROW LEVEL SECURITY/);
+  assert.match(migration, /FORCE ROW LEVEL SECURITY/);
+  assert.match(migration, /CREATE POLICY diagnostic_participant_plan_tenant_policy/);
+  assert.doesNotMatch(migration, /participant_name|participant_email|invitation_digest/);
+});
+
+test("diagnostic invitation links bind identity slots to approved plan slots", async () => {
+  const migration = await readFile(new URL("../db/migrations/011_diagnostic_participant_invitation_links.sql", import.meta.url), "utf8");
+  assert.match(migration, /ADD COLUMN plan_slot_id text/);
+  assert.match(migration, /ADD COLUMN clerk_invitation_id text/);
+  assert.match(migration, /diagnostic_participant_plan_slot_idx/);
+  assert.match(migration, /diagnostic_participant_invitation_idx/);
+  assert.doesNotMatch(migration, /email_address|response_payload|interview_text/);
+});

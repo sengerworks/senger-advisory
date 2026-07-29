@@ -3,6 +3,12 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
 import workspaceDiagnostics from "../netlify/functions/workspace-diagnostics.mjs";
+import workspaceDiagnosticContext from "../netlify/functions/workspace-diagnostic-context.mjs";
+import workspaceDiagnosticParticipants from "../netlify/functions/workspace-diagnostic-participants.mjs";
+import workspaceDiagnosticProtocol from "../netlify/functions/workspace-diagnostic-protocol.mjs";
+import workspaceDiagnosticInvitations from "../netlify/functions/workspace-diagnostic-invitations.mjs";
+import workspaceDiagnosticParticipation from "../netlify/functions/workspace-diagnostic-participation.mjs";
+import workspaceDiagnosticInterview from "../netlify/functions/workspace-diagnostic-interview.mjs";
 import workspaceComparison from "../netlify/functions/workspace-comparison.mjs";
 import workspaceActionCycles from "../netlify/functions/workspace-action-cycles.mjs";
 import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
@@ -77,6 +83,12 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
   if ([
     "/api/workspace/config",
     "/api/workspace/diagnostics",
+    "/api/workspace/diagnostic-context",
+    "/api/workspace/diagnostic-participants",
+    "/api/workspace/diagnostic-protocol",
+    "/api/workspace/diagnostic-invitations",
+    "/api/workspace/diagnostic-participation",
+    "/api/workspace/diagnostic-interview",
     "/api/workspace/comparison",
     "/api/workspace/action-cycles",
     "/api/workspace/invitations",
@@ -94,6 +106,18 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     });
     const handler = url.pathname.endsWith("/config")
       ? workspaceConfig
+      : url.pathname.endsWith("/diagnostic-context")
+        ? workspaceDiagnosticContext
+      : url.pathname.endsWith("/diagnostic-participants")
+        ? workspaceDiagnosticParticipants
+      : url.pathname.endsWith("/diagnostic-protocol")
+        ? workspaceDiagnosticProtocol
+      : url.pathname.endsWith("/diagnostic-invitations")
+        ? workspaceDiagnosticInvitations
+      : url.pathname.endsWith("/diagnostic-participation")
+        ? workspaceDiagnosticParticipation
+      : url.pathname.endsWith("/diagnostic-interview")
+        ? workspaceDiagnosticInterview
       : url.pathname.endsWith("/diagnostics")
         ? workspaceDiagnostics
       : url.pathname.endsWith("/comparison")
