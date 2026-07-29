@@ -1,0 +1,27 @@
+{
+  "diagnosticRecordVersion": "1.0.0",
+  "interventionProposalVersion": "1.0.0",
+  "status": "architecture-contract",
+  "diagnosticRecord": {
+    "leadershipValidationRequired": true,
+    "materialObjectionsMustBeResolved": true,
+    "competingExplanationsVisible": true,
+    "blindSpotsVisible": true,
+    "confidenceBasisVisible": true,
+    "alternativeInterventionsRequired": true
+  },
+  "leadershipValidation": {
+    "decisions": ["accepted", "revision-required"],
+    "individualIdentityStoredWithResponse": false,
+    "materialObjectionRequiresExplanation": true,
+    "acceptanceRequiresObjectionResolution": true
+  },
+  "interventionProposal": {
+    "validatedDiagnosticRequired": true,
+    "evidenceClassesRequired": ["delivery", "operating-change", "capacity-change"],
+    "commercialOfferStoredByReference": true,
+    "scopeAcceptanceRequired": true,
+    "commercialAcceptanceRequired": true,
+    "activeEntitlementRequired": true
+  }
+}

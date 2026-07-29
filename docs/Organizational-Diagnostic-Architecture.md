@@ -124,6 +124,25 @@ constraint hypothesis requires at least two themes, a competing explanation, a d
 blind spot, and an evidence-based confidence statement. The intervention direction remains a
 hypothesis to test rather than a prescription or causal conclusion.
 
+## Diagnostic record, leadership validation, and intervention decision
+
+`diagnostic-decision-engine.js` owns diagnostic-record and intervention-proposal version
+`1.0.0`. The Diagnostic Record turns the evidence-linked hypothesis into an executive finding,
+why-it-matters-now narrative, strategic exposure, operating symptoms, visible uncertainty,
+and alternative interventions considered. It cannot become final through synthesis alone.
+
+Leadership validation records whether the finding resonates, appears complete, surprises the
+team, omits evidence, or faces a material objection. Validation response identity remains in
+a separate operational boundary. Every material objection must have a documented resolution
+before the record can be accepted; otherwise the decision returns the record for revision.
+
+Only a leadership-validated Diagnostic Record can produce an intervention proposal. The
+proposal defines the objective, rationale, scope, operating changes, role-based commitments,
+learning requirements, review cadence, and evidence plan. Every evidence plan must distinguish
+delivery, observed operating change, and reassessed capacity change. Commercial details are
+stored through an offer reference, and activation requires accepted scope, accepted terms,
+and a server-verified entitlement.
+
 ## Sponsor discovery and participant design
 
 `diagnostic-discovery-engine.js` owns discovery contract version `1.0.0`. Sponsor discovery
