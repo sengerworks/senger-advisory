@@ -19,7 +19,9 @@ const ADMINISTRATIVE = new Set([
   "round:follow-up",
   "action-cycle:read",
   "action-cycle:create",
-  "action-cycle:update"
+  "action-cycle:update",
+  "diagnostic:read",
+  "diagnostic:create"
 ]);
 const ALL_MEMBERS = new Set(["workspace:read", "round:read"]);
 const OWN_SUBMISSION = new Set(["submission:read-own", "submission:replace-own", "submission:delete-own"]);

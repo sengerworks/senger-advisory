@@ -205,3 +205,14 @@ test("diagnostic relationships cannot cross workspace boundaries", async () => {
   const singleColumnReferences = migration.match(/REFERENCES app_(?:identity|private|shared)\.[a-z_]+\(id\)/g) || [];
   assert.deepEqual(singleColumnReferences, ["REFERENCES app_identity.workspaces(id)"]);
 });
+
+test("diagnostic review-state alignment is a forward-only migration", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/009_align_diagnostic_review_state.sql", import.meta.url),
+    "utf8"
+  );
+  assert.match(migration, /DROP CONSTRAINT diagnostics_human_review_status_check/);
+  assert.match(migration, /CHECK \(human_review_status IN \('clear', 'required', 'in-review', 'resolved'\)\)/);
+  assert.match(migration, /SET human_review_status = 'clear'/);
+  assert.match(migration, /WHERE human_review_status = 'not-required'/);
+});
