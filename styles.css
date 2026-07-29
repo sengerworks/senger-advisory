@@ -87,9 +87,18 @@ a {
 }
 
 .brand {
-  font-family: var(--serif);
-  font-size: 1.28rem;
-  letter-spacing: -0.035em;
+  display: block;
+  font-family: Arial, "Helvetica Neue", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.65;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.brand span:last-child {
+  font-weight: 400;
 }
 
 .site-nav {
