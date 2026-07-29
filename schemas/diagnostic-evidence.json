@@ -1,0 +1,23 @@
+{
+  "evidenceVersion": "1.0.0",
+  "synthesisVersion": "1.0.0",
+  "status": "architecture-contract",
+  "redactionCategories": ["person", "role", "organization", "client", "location", "date", "project", "other"],
+  "disclosureRisks": ["low", "medium", "high"],
+  "highRiskRequiresHumanReview": true,
+  "deidentificationGuaranteesAnonymity": false,
+  "excludedEvidenceCannotEnterSynthesis": true,
+  "theme": {
+    "minimumSupportingEvidenceRecords": 2,
+    "perspectivePatterns": ["convergent", "mixed", "minority-signal", "unknown"],
+    "confidenceLevels": ["limited", "moderate", "strong"],
+    "weakeningEvidenceSupported": true
+  },
+  "constraintHypothesis": {
+    "minimumSupportingThemes": 2,
+    "competingExplanationRequired": true,
+    "blindSpotRequired": true,
+    "confidenceBasisRequired": true,
+    "interventionDirectionIsPrescription": false
+  }
+}

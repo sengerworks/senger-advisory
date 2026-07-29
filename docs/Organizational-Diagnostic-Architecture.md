@@ -106,6 +106,24 @@ Insufficient depth triggers clarification rather than synthesis. Sensitive conte
 model uncertainty requires human review. POC findings must calibrate these thresholds before
 they are treated as production evidence standards.
 
+## De-identification, disclosure review, and synthesis
+
+`diagnostic-evidence-engine.js` owns de-identified evidence and synthesis version `1.0.0`.
+Each evidence record retains an opaque source reference and question reference for restricted
+traceability, while excluding respondent identity. It records what identifying categories
+were removed, how operating meaning was preserved, and the remaining disclosure risk.
+
+De-identification does not guarantee anonymity. Every record requires disclosure review;
+high-risk material requires a human reviewer. Excluded or pending evidence cannot enter
+synthesis. Direct quotations remain disfavored because distinctive incidents and language can
+re-identify a participant even after names are removed.
+
+An evidence theme requires at least two approved records and identifies its capacity domains,
+perspective pattern, supporting and weakening evidence, confidence, and confidence basis. A
+constraint hypothesis requires at least two themes, a competing explanation, a documented
+blind spot, and an evidence-based confidence statement. The intervention direction remains a
+hypothesis to test rather than a prescription or causal conclusion.
+
 ## Sponsor discovery and participant design
 
 `diagnostic-discovery-engine.js` owns discovery contract version `1.0.0`. Sponsor discovery
