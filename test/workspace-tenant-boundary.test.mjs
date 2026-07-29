@@ -152,3 +152,56 @@ test("tenant-owned relationships use composite workspace foreign keys", async ()
   );
   assert.doesNotMatch(sql, /REFERENCES app_private\.submissions\(id\)/);
 });
+
+test("diagnostic platform foundation isolates every record by workspace", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/008_diagnostic_platform_foundation.sql", import.meta.url),
+    "utf8"
+  );
+  const tenantTables = [
+    "app_shared.diagnostics",
+    "app_private.diagnostic_context_briefs",
+    "app_identity.diagnostic_participant_slots",
+    "app_shared.diagnostic_protocols",
+    "app_private.diagnostic_interviews",
+    "app_private.diagnostic_evidence",
+    "app_shared.diagnostic_findings",
+    "app_shared.commercial_entitlements",
+    "app_shared.diagnostic_interventions"
+  ];
+  for (const table of tenantTables) {
+    const escaped = table.replace(".", "\\.");
+    assert.match(migration, new RegExp(`ALTER TABLE ${escaped} ENABLE ROW LEVEL SECURITY`));
+    assert.match(migration, new RegExp(`ALTER TABLE ${escaped} FORCE ROW LEVEL SECURITY`));
+  }
+  assert.equal((migration.match(/CREATE POLICY /g) || []).length, tenantTables.length);
+  assert.equal((migration.match(/PRIMARY KEY \(workspace_id, id\)/g) || []).length, tenantTables.length);
+});
+
+test("diagnostic confidentiality and entitlement boundaries are structural", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/008_diagnostic_platform_foundation.sql", import.meta.url),
+    "utf8"
+  );
+  assert.match(migration, /CREATE TABLE app_identity\.diagnostic_participant_slots/);
+  assert.match(migration, /CREATE TABLE app_private\.diagnostic_interviews/);
+  assert.match(migration, /encrypted_response_payload bytea/);
+  assert.match(migration, /status <> 'withdrawn' OR encrypted_response_payload IS NULL/);
+  assert.match(migration, /disclosure_risk <> 'high' OR review_status = 'pending' OR reviewed_by_type = 'human'/);
+  assert.match(migration, /CREATE TABLE app_shared\.commercial_entitlements/);
+  assert.match(migration, /payment_provider_ref text/);
+  assert.doesNotMatch(migration, /card_number|card_last_four|payment_method|partner_revenue/i);
+});
+
+test("diagnostic relationships cannot cross workspace boundaries", async () => {
+  const migration = await readFile(
+    new URL("../db/migrations/008_diagnostic_platform_foundation.sql", import.meta.url),
+    "utf8"
+  );
+  assert.match(migration, /FOREIGN KEY \(workspace_id, participant_slot_id\)\s+REFERENCES app_identity\.diagnostic_participant_slots\(workspace_id, id\)/);
+  assert.match(migration, /FOREIGN KEY \(workspace_id, source_interview_id\)\s+REFERENCES app_private\.diagnostic_interviews\(workspace_id, id\)/);
+  assert.match(migration, /FOREIGN KEY \(workspace_id, finding_id\)\s+REFERENCES app_shared\.diagnostic_findings\(workspace_id, id\)/);
+  assert.match(migration, /FOREIGN KEY \(workspace_id, entitlement_id\)\s+REFERENCES app_shared\.commercial_entitlements\(workspace_id, id\)/);
+  const singleColumnReferences = migration.match(/REFERENCES app_(?:identity|private|shared)\.[a-z_]+\(id\)/g) || [];
+  assert.deepEqual(singleColumnReferences, ["REFERENCES app_identity.workspaces(id)"]);
+});
