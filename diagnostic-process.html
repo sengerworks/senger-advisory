@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Diagnostic Discovery Prototype | Senger Advisory</title>
+  <meta name="description" content="A fictional, no-storage prototype of sponsor discovery and participant design." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css?v=diagnostic-process-v1" />
+  <link rel="stylesheet" href="diagnostic-process.css?v=diagnostic-process-v1" />
+</head>
+<body class="diagnostic-process-page">
+  <a class="skip-link" href="#process-main">Skip to diagnostic setup</a>
+  <header class="process-header">
+    <a class="brand" href="index.html">Senger Advisory</a>
+    <div><span>Organizational Capacity Diagnostic</span><strong>Fictional setup</strong></div>
+    <a href="diagnostic-workspace.html">View Operating Brief</a>
+  </header>
+
+  <main id="process-main">
+    <section class="process-introduction">
+      <div><p class="eyebrow">Diagnostic setup · POC prototype</p><h1>Begin with context, not a questionnaire.</h1><p>The sponsor frames the decision leadership needs to make. The platform then tests whether the proposed participant group covers enough of the operating system to support a credible diagnostic.</p></div>
+      <aside><strong>Entries disappear on refresh.</strong><p>This prototype sends no request and stores nothing. Use only fictional information while reviewing it.</p></aside>
+    </section>
+
+    <section class="process-shell" data-diagnostic-process>
+      <nav class="process-steps" aria-label="Diagnostic setup progress">
+        <button type="button" data-process-step="context" aria-current="step"><span>01</span><strong>Discovery context</strong><small>Frame the decision</small></button>
+        <button type="button" data-process-step="participants" disabled><span>02</span><strong>Participant design</strong><small>Cover the system</small></button>
+        <button type="button" data-process-step="ready" disabled><span>03</span><strong>Ready for protocol</strong><small>Approve the foundation</small></button>
+      </nav>
+
+      <section class="process-panel" data-process-panel="context" aria-labelledby="context-title">
+        <header class="panel-heading"><div><p class="eyebrow">Sponsor discovery</p><h2 id="context-title">What must this diagnostic help leadership decide?</h2></div><p>Concrete organizational context improves the interview protocol. Avoid naming individuals or including confidential client details.</p></header>
+        <form class="discovery-form" data-context-form novalidate>
+          <div class="form-pair">
+            <label>Organization size<select name="organizationSizeBand" required><option value="under-25">Fewer than 25</option><option value="25-49">25–49</option><option value="50-149" selected>50–149</option><option value="150-399">150–399</option><option value="400-plus">400 or more</option></select></label>
+            <label>Your perspective<select name="sponsorPerspective" required><option value="founder-ceo" selected>Founder or CEO</option><option value="executive">Executive leader</option><option value="functional-leader">Functional leader</option><option value="people-operations">People or operations leader</option><option value="board-advisor">Board member or advisor</option></select></label>
+          </div>
+          <label>Organization context <span>What does the organization do, and what is changing?</span><textarea name="organizationContext" maxlength="1500" rows="4" required>A growing professional-services organization is preparing to enter a second market while protecting delivery quality in its established business.</textarea></label>
+          <label>Strategic priority <span>What must the organization accomplish?</span><textarea name="strategicPriority" maxlength="1000" rows="3" required>Enter the second market without slowing existing client delivery or making the founders the routing point for every consequential decision.</textarea></label>
+          <label>Triggering concern <span>What caused you to seek a diagnostic now?</span><textarea name="triggeringConcern" maxlength="1500" rows="4" required>Routine decisions increasingly return to the founders. Meetings have multiplied, but leaders still leave unclear about ownership and teams wait for approvals.</textarea></label>
+          <label>Decisions or outcomes at risk<textarea name="decisionsAtRisk" maxlength="1000" rows="3" required>Market-entry sequencing, resource allocation, pricing exceptions, and the reliability of current client commitments.</textarea></label>
+          <div class="form-pair">
+            <label>Recent material change<textarea name="recentChange" maxlength="300" rows="3">A new operating leader joined this quarter and the organization introduced a second weekly coordination meeting.</textarea></label>
+            <label>Prior intervention<textarea name="priorIntervention" maxlength="300" rows="3">The leadership team clarified the organization chart, but decision ownership remained implicit.</textarea></label>
+          </div>
+          <label>Known sensitivity <span>Optional</span><textarea name="knownSensitivities" maxlength="1000" rows="3">Avoid framing the concern as an individual leadership failure; the operating system has not evolved with growth.</textarea></label>
+          <label>The leadership decision this diagnostic must inform<textarea name="decisionNeeded" maxlength="1000" rows="3" required>Determine which operating constraint to address before adding another management layer or investing in a new workflow platform.</textarea></label>
+          <div class="form-action"><p data-context-status role="status"></p><button class="button primary" type="submit">Create Context Brief</button></div>
+        </form>
+        <section class="approved-context" data-approved-context hidden aria-live="polite">
+          <div><p class="eyebrow">Diagnostic Context Brief · Approved</p><h3 data-context-decision></h3></div>
+          <dl><div><dt>Strategic priority</dt><dd data-context-priority></dd></div><div><dt>Triggering concern</dt><dd data-context-concern></dd></div><div><dt>Outcomes at risk</dt><dd data-context-risk></dd></div></dl>
+          <button class="button primary" type="button" data-continue-participants>Design the participant group</button>
+        </section>
+      </section>
+
+      <section class="process-panel" data-process-panel="participants" aria-labelledby="participants-title" hidden>
+        <header class="panel-heading"><div><p class="eyebrow">Perspective coverage</p><h2 id="participants-title">Who can see the operating system from different positions?</h2></div><p>The sponsor proposes identity-free perspective slots. Names, emails, invitations, and response content belong in separate platform boundaries.</p></header>
+        <section class="coverage-objectives"><div><span>Coverage objective</span><h3>This diagnostic should include:</h3></div><ul><li>Enterprise, functional, and operational leadership</li><li>Strategy, coordination, and delivery proximity</li><li>Executive, operations, commercial, people, and technology lenses</li></ul></section>
+        <form data-participant-form novalidate>
+          <div class="participant-table" data-participant-table role="group" aria-label="Proposed participant perspectives"></div>
+          <div class="form-action"><p data-participant-status role="status"></p><button class="button primary" type="submit">Review perspective coverage</button></div>
+        </form>
+        <section class="coverage-result" data-coverage-result hidden aria-live="polite">
+          <div data-coverage-ready hidden><span>Coverage ready</span><h3>The proposed group covers the declared operating perspectives.</h3><p>The POC will test whether this design produces enough evidence depth. No fixed qualitative participant threshold is being claimed.</p><button class="button primary" type="button" data-approve-plan>Approve participant plan</button></div>
+          <div data-coverage-gaps hidden><span>Coverage gaps</span><h3>The proposed group leaves parts of the operating system unseen.</h3><ul data-gap-list></ul><p>Revise the slots, or explicitly accept these limitations so they remain visible in diagnostic confidence and reporting.</p><button class="button secondary" type="button" data-accept-gaps>Accept documented gaps</button></div>
+        </section>
+      </section>
+
+      <section class="process-panel" data-process-panel="ready" aria-labelledby="ready-title" hidden>
+        <div class="ready-state"><p class="eyebrow">Foundation approved</p><h2 id="ready-title">The diagnostic is ready for a governed interview protocol.</h2><p>The Context Brief and participant plan are approved in memory. Next, the platform contextualizes 15 governed questions, secures participant notice acceptance, and begins confidential interviews.</p>
+          <div class="ready-summary"><article><span>Context</span><strong>Approved</strong><p>The strategic decision and triggering concern are explicit.</p></article><article><span>Perspective plan</span><strong data-ready-count>5 slots</strong><p>Coverage gaps are resolved or transparently accepted.</p></article><article><span>Next gate</span><strong>Protocol review</strong><p>One common question set must be approved before invitations.</p></article></div>
+          <div class="ready-actions"><a class="button primary" href="diagnostic-workspace.html">View the resulting Operating Brief</a><button class="button secondary" type="button" data-restart-process>Restart fictional setup</button></div>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="diagnostic-process-demo.js?v=diagnostic-process-v1"></script>
+</body>
+</html>
