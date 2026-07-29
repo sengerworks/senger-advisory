@@ -1,0 +1,41 @@
+{
+  "lifecycleVersion": "1.0.0",
+  "status": "architecture-contract",
+  "routes": ["automated", "advisor-led"],
+  "entitlementTypes": ["paid", "poc"],
+  "states": [
+    "draft",
+    "discovery",
+    "participant-design",
+    "protocol-review",
+    "collecting",
+    "evidence-review",
+    "synthesis",
+    "leadership-validation",
+    "intervention-proposed",
+    "intervention-accepted",
+    "active-intervention",
+    "reassessment",
+    "completed"
+  ],
+  "humanReviewStates": ["clear", "required", "in-review", "resolved"],
+  "evidenceClasses": ["delivery", "operating-change", "capacity-change"],
+  "storageBoundaries": [
+    "identity-and-participation",
+    "raw-confidential-responses",
+    "deidentified-evidence",
+    "diagnostic-findings",
+    "commercial-entitlements",
+    "intervention-and-operating-brief"
+  ],
+  "principles": {
+    "assessmentIsDiagnostic": false,
+    "sameMethodAcrossRoutes": true,
+    "sameClientOperatingBriefAcrossRoutes": true,
+    "fixedQualitativeParticipantThreshold": null,
+    "participantPlanMustBeApproved": true,
+    "perspectiveCoverageMustBeReviewed": true,
+    "automatedRouteMayRequireHumanEscalation": true,
+    "activityImpliesCapacityImprovement": false
+  }
+}

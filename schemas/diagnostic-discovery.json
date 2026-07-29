@@ -1,0 +1,36 @@
+{
+  "discoveryVersion": "1.0.0",
+  "status": "architecture-contract",
+  "contextBrief": {
+    "organizationSizeBands": ["under-25", "25-49", "50-149", "150-399", "400-plus"],
+    "sponsorPerspectives": ["founder-ceo", "executive", "functional-leader", "people-operations", "board-advisor"],
+    "requiredFields": [
+      "organizationContext",
+      "strategicPriority",
+      "triggeringConcern",
+      "decisionsAtRisk",
+      "decisionNeeded"
+    ],
+    "approvalRequired": true
+  },
+  "participantPlan": {
+    "leadershipLevels": ["enterprise", "functional", "operational", "frontline"],
+    "executionProximities": ["strategy", "coordination", "delivery"],
+    "functionalLenses": [
+      "executive-leadership",
+      "operations",
+      "people",
+      "finance",
+      "commercial",
+      "product-service",
+      "technology",
+      "frontline-delivery",
+      "other"
+    ],
+    "fixedParticipantMinimum": null,
+    "coverageObjectivesRequired": true,
+    "unresolvedGapBlocksApproval": true,
+    "acceptedGapRequiresReason": true,
+    "participantIdentityStoredInPlan": false
+  }
+}

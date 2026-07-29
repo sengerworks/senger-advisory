@@ -1,0 +1,28 @@
+{
+  "questionLibraryVersion": "1.0.0",
+  "status": "architecture-contract",
+  "requiredCoreQuestionCount": 15,
+  "availableTemplateCount": 18,
+  "requiredDomainCoverage": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"],
+  "requiredEvidenceObjectiveCoverage": [
+    "operating-example",
+    "recurrence-pattern",
+    "consequence",
+    "enabling-condition",
+    "disconfirming-evidence",
+    "intervention-history"
+  ],
+  "adaptiveFollowUps": {
+    "allowedTypes": ["example", "recurrence", "consequence", "mechanism", "alternative-explanation", "evidence-source"],
+    "maximumPerCoreQuestionPerInterview": 3,
+    "freeformModelGeneratedPromptAllowed": false,
+    "triggerReasonRequired": true
+  },
+  "governance": {
+    "sameCoreProtocolForEveryParticipant": true,
+    "uniqueTemplateRequiredForEachCoreQuestion": true,
+    "sponsorMayRewriteQuestions": false,
+    "protocolApprovalRequired": true,
+    "adaptivePromptsStoredSeparately": true
+  }
+}

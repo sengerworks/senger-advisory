@@ -31,6 +31,15 @@ Create workspace
   → observe and reassess
 ```
 
+This assessment-based organizational view identifies capacity signals and may support
+diagnostic readiness, but it is not the paid Organizational Capacity Diagnostic. The
+diagnostic adds discovery, intentional participant design, a contextualized common interview
+protocol, confidential qualitative evidence, de-identification, synthesis, confidence and
+blind-spot analysis, and an intervention recommendation. Both automated and advisor-led
+diagnostics ultimately produce the same client-facing Capacity Operating Brief. The
+diagnostic, intervention, partner, and final-product architecture are defined in
+`Product-Architecture-and-Vision.md`.
+
 ## Non-goals
 
 The first organizational workspace will not:
@@ -78,6 +87,15 @@ An optional delegated administrator who can manage invitations, see completion s
 facilitate the organizational report. The facilitator cannot change privacy policy, see
 individual response content, or export respondent-level data.
 
+### Advisor
+
+A future advisor role may be assigned to Senger Advisory or an authorized partner for a
+specific client workspace and defined engagement period. The advisor can facilitate
+interpretation, review threshold-qualified organizational results, guide shared action
+cycles, and contribute approved intervention or learning materials. The advisor cannot see
+individual response content, alter aggregation or privacy policy, or access another client
+workspace. Advisor access must be disclosed, time-bounded, revocable, and audited.
+
 ### Participant
 
 An invited respondent who can complete one assessment for a collection round and view the
@@ -88,6 +106,32 @@ identity unless that visibility is explicitly disclosed in the invitation experi
 There is no analyst, researcher, or super-administrator role in the product contract. Any
 future operational access requires a separately documented support workflow, least-privilege
 controls, and an audit record.
+
+## Partner tenancy boundary
+
+A future co-branded deployment adds a partner above one or more client organizations without
+changing the organization as the unit of interpretation. Partner identity, branding,
+licensing, and reusable content must remain separate from client participation and response
+data. A partner administrator may provision and support authorized client workspaces but
+must not receive respondent-level content or cross-client reporting. Every request must bind
+the authenticated account to the partner, client workspace, role, and permitted action.
+
+Assessment versions, scoring, privacy thresholds, evidence language, and core governance
+remain platform-controlled. Co-branding cannot override them. Detailed partner capabilities
+and the two intervention routes are defined in `Product-Architecture-and-Vision.md`.
+
+## Relationship to the Capacity Operating Brief
+
+The threshold-qualified organizational assessment pattern may appear as one source in a
+later diagnostic record, but it must not be relabeled as a completed diagnosis. After a paid
+diagnostic is completed and an intervention is accepted, the organization moves into the
+Capacity Operating Brief: a living executive decision workspace centered on the diagnosed
+constraint, accepted intervention, observable change, decisions, and reassessment.
+
+The Brief may expose aggregate organizational evidence permitted by this contract. It must
+not weaken response suppression, disclose individual assessment content, or combine
+respondent identity with diagnostic evidence. Intervention delivery, operating change, and
+reassessed capacity change remain distinct evidence classes.
 
 ## Identity and identifier separation
 
