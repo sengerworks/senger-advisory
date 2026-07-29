@@ -87,6 +87,25 @@ selected from six approved types: example, recurrence, consequence, mechanism, a
 explanation, and evidence source. Each prompt requires a recorded evidence-quality reason;
 freeform model-generated follow-up wording is not permitted in version `1.0.0`.
 
+## Confidential interview and evidence-quality contract
+
+`diagnostic-interview-engine.js` owns interview and evidence-quality version `1.0.0`. An
+interview begins only after participant notice acceptance and references an approved protocol.
+The response record contains an opaque interview instance ID but no participant name, email,
+account ID, or invitation ID. Operational identity mapping remains outside the raw confidential
+response boundary.
+
+The automated route stores written core and adaptive answers. The advisor-led route may map a
+consented transcript into the same question-oriented response contract after human review.
+All 15 core questions require sufficiently developed answers before submission. Withdrawal
+clears core and follow-up response content from the interview record.
+
+Evidence-quality policy `1.0.0` is explicitly a POC hypothesis. It tests for concrete
+examples, recurring patterns, consequences, and alternative or disconfirming evidence.
+Insufficient depth triggers clarification rather than synthesis. Sensitive content or repeated
+model uncertainty requires human review. POC findings must calibrate these thresholds before
+they are treated as production evidence standards.
+
 ## Sponsor discovery and participant design
 
 `diagnostic-discovery-engine.js` owns discovery contract version `1.0.0`. Sponsor discovery

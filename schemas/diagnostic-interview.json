@@ -1,0 +1,23 @@
+{
+  "interviewVersion": "1.0.0",
+  "evidenceQualityVersion": "1.0.0",
+  "status": "architecture-contract",
+  "collectionModes": ["automated-written", "advisor-transcript"],
+  "participantNoticeAcceptanceRequired": true,
+  "requiredCoreAnswers": 15,
+  "minimumCoreAnswerCharactersAtSubmission": 40,
+  "maximumCoreAnswerCharacters": 6000,
+  "maximumFollowUpAnswerCharacters": 4000,
+  "identityFieldsPermitted": false,
+  "withdrawalDeletesResponseContent": true,
+  "evidenceQualityPolicy": {
+    "status": "poc-hypothesis",
+    "minimumConcreteExamples": 8,
+    "minimumRecurringPatterns": 4,
+    "minimumConsequences": 5,
+    "minimumAlternativeEvidence": 1,
+    "lowConfidenceHumanReviewCount": 3,
+    "sensitiveContentAlwaysRequiresHumanReview": true
+  },
+  "qualityOutcomes": ["passed", "clarification-required", "human-review-required"]
+}
