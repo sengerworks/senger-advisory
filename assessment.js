@@ -27,6 +27,7 @@ import {
       name: "Leadership",
       description: "How leaders create clarity, make tradeoffs, and prevent ambiguity from accumulating at the top.",
       interpretation: "Leadership capacity may be constrained when senior attention becomes the organization’s default routing mechanism for ambiguity.",
+      diagnosticGap: "Leadership overload may reflect unclear authority, weak information, cross-functional design, capability gaps, or deliberate risk controls. This assessment cannot distinguish among them.",
       implication: "Clarify the decisions that require senior judgment, then move routine ambiguity to explicit owners closer to the work.",
       strength: "Leadership is creating useful clarity without becoming the default path for every decision.",
       prompts: [
@@ -45,6 +46,7 @@ import {
       name: "Decision Velocity",
       description: "How efficiently ambiguity becomes committed action at the appropriate level.",
       interpretation: "Decision capacity may be constrained when ownership is unclear, escalation is routine, or settled choices repeatedly reopen.",
+      diagnosticGap: "Decision delay may come from unclear authority, missing information, contested priorities, risk exposure, or insufficient capability. The symptom alone does not identify the cause.",
       implication: "Make decision ownership and escalation thresholds explicit, then reinforce closure unless material new evidence emerges.",
       strength: "Decision ownership and closure are supporting timely action at the appropriate level.",
       prompts: [
@@ -63,6 +65,7 @@ import {
       name: "Operating Rhythm",
       description: "How recurring cadences convert priorities into coordinated movement without creating meeting debt.",
       interpretation: "Operating rhythm may be constrained when coordination consumes more capacity than it creates or issues surface too late.",
+      diagnosticGap: "Meeting load may be compensating for unclear decisions, unreliable information, conflicting priorities, or weak cross-functional ownership. More or fewer meetings is not yet the diagnosis.",
       implication: "Redesign recurring forums around the decisions, risks, and commitments they must produce—not the information they can collect.",
       strength: "Operating cadences are converting information into coordinated movement with limited meeting debt.",
       prompts: [
@@ -81,6 +84,7 @@ import {
       name: "Alignment",
       description: "How consistently teams understand priorities, ownership, and changes in direction.",
       interpretation: "Alignment capacity may be constrained when teams require constant translation or ownership becomes unclear at organizational boundaries.",
+      diagnosticGap: "Alignment symptoms may reflect strategic ambiguity, inconsistent incentives, unclear ownership, delayed communication, or reasonable differences across operating contexts.",
       implication: "Create a repeatable translation path from strategy to team priorities, especially where work crosses organizational boundaries.",
       strength: "Teams are receiving coherent priorities and ownership signals across organizational boundaries.",
       prompts: [
@@ -99,6 +103,7 @@ import {
       name: "Technology",
       description: "How systems reduce coordination load and create leverage rather than hard-coding complexity.",
       interpretation: "Technology capacity may be constrained when systems add handoffs, information is unreliable, or adoption lacks process ownership.",
+      diagnosticGap: "Technology friction may originate in the tool, the workflow, data quality, ownership, adoption, or the decision system surrounding it. A technology purchase is not yet justified.",
       implication: "Prioritize technology changes that remove handoffs or improve decision information, with clear ownership for process adoption.",
       strength: "Technology is reducing coordination load and making reliable information available at the point of decision.",
       prompts: [
@@ -117,6 +122,7 @@ import {
       name: "Culture",
       description: "How repeated and rewarded behaviors support execution as the organization grows.",
       interpretation: "Cultural capacity may be constrained when risk stays hidden, rewarded behavior conflicts with priorities, or change exhausts the system.",
+      diagnosticGap: "Cultural symptoms may be produced by leadership responses, incentives, workload, operating design, local history, or unresolved risk. The assessment cannot assign a cultural cause.",
       implication: "Align visible leadership responses and rewards with the behaviors required for early risk disclosure, adaptation, and execution.",
       strength: "Repeated and rewarded behaviors are helping the organization surface risk and adapt without exhausting execution.",
       prompts: [
@@ -162,6 +168,7 @@ import {
     domainResults: app.querySelector("[data-domain-results]"),
     constraintName: app.querySelector("[data-constraint-name]"),
     constraintInterpretation: app.querySelector("[data-constraint-interpretation]"),
+    diagnosticGap: app.querySelector("[data-diagnostic-gap]"),
     reportDate: app.querySelector("[data-report-date]"),
     patternSummary: app.querySelector("[data-pattern-summary]"),
     strengthName: app.querySelector("[data-strength-name]"),
@@ -599,6 +606,7 @@ import {
     elements.contextSummary.textContent = contextValues.length ? `Context: ${contextValues.join(" · ")}` : "";
     elements.constraintName.textContent = constraint.name;
     elements.constraintInterpretation.textContent = constraint.interpretation;
+    elements.diagnosticGap.textContent = constraint.diagnosticGap;
     elements.reportDate.textContent = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(new Date());
     elements.patternSummary.textContent = spread >= 35
       ? `Your profile is uneven: ${spread} points separate the strongest and most constrained domains. This suggests that execution may depend on where work travels through the organization, not only on its difficulty.`

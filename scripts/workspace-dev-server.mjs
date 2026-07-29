@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
+import workspaceDiagnostics from "../netlify/functions/workspace-diagnostics.mjs";
 import workspaceComparison from "../netlify/functions/workspace-comparison.mjs";
 import workspaceActionCycles from "../netlify/functions/workspace-action-cycles.mjs";
 import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
@@ -20,6 +21,9 @@ const files = new Map([
   ["/workspace/workspace.css", { url: new URL("../workspace/workspace.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/workspace.js", { url: new URL("../workspace/workspace.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/assessment.html", { url: new URL("../assessment.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/diagnostic.html", { url: new URL("../diagnostic.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/capacity-brief-example.html", { url: new URL("../capacity-brief-example.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/capacity-brief-example.css", { url: new URL("../capacity-brief-example.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/organization-view.html", { url: new URL("../organization-view.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/organization-view.css", { url: new URL("../organization-view.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/organization-view.js", { url: new URL("../organization-view.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
@@ -72,6 +76,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
 
   if ([
     "/api/workspace/config",
+    "/api/workspace/diagnostics",
     "/api/workspace/comparison",
     "/api/workspace/action-cycles",
     "/api/workspace/invitations",
@@ -89,6 +94,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     });
     const handler = url.pathname.endsWith("/config")
       ? workspaceConfig
+      : url.pathname.endsWith("/diagnostics")
+        ? workspaceDiagnostics
       : url.pathname.endsWith("/comparison")
         ? workspaceComparison
       : url.pathname.endsWith("/action-cycles")

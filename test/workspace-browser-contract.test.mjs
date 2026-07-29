@@ -18,13 +18,31 @@ test("workspace is private-indexed and presents the threshold privacy contract",
 
 test("workspace browser uses server configuration and minimized session endpoints", async () => {
   const script = await source("workspace/workspace.js");
+  const server = await source("scripts/workspace-dev-server.mjs");
   assert.match(script, /fetch\("\/api\/workspace\/config"/);
   assert.match(script, /fetch\("\/api\/workspace\/session"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/rounds"/);
+  assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostics"/);
+  assert.match(server, /import workspaceDiagnostics/);
+  assert.match(server, /"\/api\/workspace\/diagnostics"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/invitations"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/participation"/);
   assert.match(script, /\/api\/workspace\/results\?roundId=/);
   assert.doesNotMatch(script, /CLERK_SECRET_KEY|NEON_DATABASE_URL|workspaceId|organizationId|userId/);
+});
+
+test("workspace keeps assessment collection separate from paid diagnostic engagement", async () => {
+  const html = await source("workspace/index.html");
+  const script = await source("workspace/workspace.js");
+  assert.match(html, /Paid Organizational Diagnostic/);
+  assert.match(html, /This is separate from the lightweight assessment/);
+  assert.match(html, /Automated written diagnostic/);
+  assert.match(html, /Advisor-led diagnostic/);
+  assert.match(html, /POC client · no charge/);
+  assert.match(html, /Paid client · payment pending/);
+  assert.match(script, /Payment and access pending/);
+  assert.match(script, /No human review required/);
+  assert.doesNotMatch(script, /diagnostic\.individualAnswers|diagnostic\.participantIdentity/);
 });
 
 test("participant entry requires a privacy acknowledgement before assessment navigation", async () => {

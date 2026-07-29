@@ -17,6 +17,12 @@ const elements = {
   focusTitle: document.querySelector("[data-focus-title]"),
   focusDescription: document.querySelector("[data-focus-description]"),
   primaryAction: document.querySelector("[data-primary-action]"),
+  diagnosticPanel: document.querySelector("[data-diagnostic-panel]"),
+  diagnosticForm: document.querySelector("[data-diagnostic-form]"),
+  diagnosticMessage: document.querySelector("[data-diagnostic-message]"),
+  diagnosticList: document.querySelector("[data-diagnostic-list]"),
+  diagnosticEmpty: document.querySelector("[data-diagnostic-empty]"),
+  createDiagnostic: document.querySelector("[data-create-diagnostic]"),
   collectionPanel: document.querySelector("[data-collection-panel]"),
   collectionForm: document.querySelector("[data-collection-form]"),
   collectionMessage: document.querySelector("[data-collection-message]"),
@@ -232,6 +238,62 @@ function formattedDate(value) {
     day: "numeric",
     year: "numeric"
   }).format(new Date(value));
+}
+
+const diagnosticStateLabels = {
+  draft: "Ready for entitlement",
+  discovery: "Discovery",
+  "participant-design": "Participant design",
+  "protocol-review": "Protocol review",
+  collecting: "Confidential interviews",
+  "evidence-review": "Evidence review",
+  synthesis: "Synthesis",
+  "leadership-validation": "Leadership validation",
+  "intervention-proposed": "Intervention proposed",
+  "intervention-accepted": "Intervention accepted",
+  "active-intervention": "Active intervention",
+  reassessment: "Reassessment",
+  completed: "Completed"
+};
+
+function renderDiagnostics(diagnostics) {
+  elements.diagnosticList.replaceChildren();
+  for (const diagnostic of diagnostics) {
+    const card = document.createElement("article");
+    card.className = "diagnostic-card";
+    const copy = document.createElement("div");
+    const title = document.createElement("h4");
+    title.textContent = diagnostic.route === "automated"
+      ? "Automated written diagnostic"
+      : "Advisor-led diagnostic";
+    const detail = document.createElement("p");
+    detail.textContent = `Started ${formattedDate(diagnostic.createdAt)} · Method ${workspaceDiagnosticMethodVersion}`;
+    copy.append(title, detail);
+    const status = document.createElement("div");
+    status.className = "diagnostic-status";
+    const stage = document.createElement("strong");
+    stage.textContent = diagnosticStateLabels[diagnostic.state] || diagnostic.state;
+    const entitlement = document.createElement("span");
+    entitlement.textContent = diagnostic.entitlementStatus === "active"
+      ? `${diagnostic.entitlementType.toUpperCase()} access active`
+      : "Payment and access pending";
+    const review = document.createElement("small");
+    review.textContent = diagnostic.humanReviewState === "clear"
+      ? "No human review required"
+      : `Human review · ${diagnostic.humanReviewState}`;
+    status.append(stage, entitlement, review);
+    card.append(copy, status);
+    elements.diagnosticList.append(card);
+  }
+  elements.diagnosticEmpty.hidden = diagnostics.length > 0;
+}
+
+let workspaceDiagnosticMethodVersion = "1.0.0";
+async function loadDiagnostics() {
+  const data = await workspaceRequest("/api/workspace/diagnostics");
+  workspaceDiagnosticMethodVersion = data.policy.methodVersion;
+  renderDiagnostics(data.diagnostics);
+  return data.diagnostics;
 }
 
 function setCollectionMessage(message = "", tone = null) {
@@ -668,6 +730,8 @@ async function loadInvitations(roundId) {
 }
 
 async function prepareOwnerCollection() {
+  elements.diagnosticPanel.hidden = false;
+  await loadDiagnostics();
   elements.collectionPanel.hidden = false;
   const today = localDateValue();
   const opensInput = elements.collectionForm.elements.opensAt;
@@ -815,6 +879,7 @@ async function render() {
   elements.primaryAction.textContent = content.action;
   elements.primaryAction.disabled = session.role !== "org:admin";
   elements.collectionPanel.hidden = true;
+  elements.diagnosticPanel.hidden = true;
   elements.participantPanel.hidden = true;
   if (session.role === "org:admin") await prepareOwnerCollection();
   if (session.role === "org:participant") await prepareParticipant();
@@ -863,6 +928,30 @@ elements.primaryAction.addEventListener("click", () => {
   }
   elements.collectionPanel.scrollIntoView({ behavior: "smooth", block: "start" });
   elements.collectionForm.elements.label.focus({ preventScroll: true });
+});
+elements.diagnosticForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (currentRole !== "org:admin" || !elements.diagnosticForm.reportValidity()) return;
+  elements.createDiagnostic.disabled = true;
+  elements.diagnosticMessage.textContent = "Creating the governed diagnostic record…";
+  delete elements.diagnosticMessage.dataset.tone;
+  try {
+    const values = Object.fromEntries(new FormData(elements.diagnosticForm));
+    const data = await workspaceRequest("/api/workspace/diagnostics", {
+      method: "POST",
+      body: { route: values.route, entitlementType: values.entitlementType }
+    });
+    elements.diagnosticMessage.textContent = data.diagnostic.entitlementStatus === "active"
+      ? "POC diagnostic created with active development access."
+      : "Paid diagnostic created. Access remains pending until payment is confirmed.";
+    elements.diagnosticMessage.dataset.tone = "success";
+    await loadDiagnostics();
+  } catch (error) {
+    elements.diagnosticMessage.textContent = error.message;
+    elements.diagnosticMessage.dataset.tone = "error";
+  } finally {
+    elements.createDiagnostic.disabled = false;
+  }
 });
 elements.collectionForm.elements.opensAt.addEventListener("change", event => {
   elements.collectionForm.elements.closesAt.min = event.currentTarget.value || localDateValue();

@@ -1,0 +1,7 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+
+const root=new URL("../",import.meta.url);const source=path=>readFile(new URL(path,root),"utf8");
+test("public diagnostic page offers a curated output instead of the proprietary workflow",async()=>{const[page,sample,config,sitemap]=await Promise.all([source("diagnostic.html"),source("capacity-brief-example.html"),source("netlify.toml"),source("sitemap.xml")]);assert.match(page,/capacity-brief-example\.html/);assert.doesNotMatch(page,/diagnostic-workspace\.html/);assert.match(sample,/Confidential source material and the proprietary diagnostic method are intentionally omitted/);assert.match(sample,/What this example does not disclose/);for(const path of ["diagnostic-process","diagnostic-interview","diagnostic-synthesis","diagnostic-decision","diagnostic-workspace"])assert.match(config,new RegExp(`from = "\\/${path}\\.html"[\\s\\S]{0,80}status = 404`));assert.match(sitemap,/capacity-brief-example\.html/)});
+test("assessment names symptoms, bounded actions, and the diagnostic boundary",async()=>{const[html,script]=await Promise.all([source("assessment.html"),source("assessment.js")]);assert.match(html,/Likely Symptom Pattern/);assert.match(html,/Bounded First Actions/);assert.match(html,/What This Assessment Cannot Determine/);assert.match(html,/Similar symptoms can have different causes/);assert.match(script,/diagnosticGap/);assert.match(script,/A technology purchase is not yet justified/)});

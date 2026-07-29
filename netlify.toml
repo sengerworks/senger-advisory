@@ -37,6 +37,36 @@
     Referrer-Policy = "no-referrer"
 
 [[redirects]]
+  from = "/diagnostic-process.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/diagnostic-interview.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/diagnostic-synthesis.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/diagnostic-decision.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/diagnostic-workspace.html"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
   from = "/workspace"
   to = "/workspace/"
   status = 301
