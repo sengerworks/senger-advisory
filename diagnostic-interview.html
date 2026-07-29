@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Guided Diagnostic Interview Prototype | Senger Advisory</title>
+  <meta name="description" content="A fictional, no-storage prototype of governed protocol review and confidential diagnostic interviews." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css?v=diagnostic-interview-v1" />
+  <link rel="stylesheet" href="diagnostic-interview.css?v=diagnostic-interview-v1" />
+</head>
+<body class="diagnostic-interview-page">
+  <a class="skip-link" href="#interview-main">Skip to interview workflow</a>
+  <header class="interview-header">
+    <a class="brand" href="index.html">Senger Advisory</a>
+    <div><span>Organizational Capacity Diagnostic</span><strong>Fictional interview</strong></div>
+    <a href="diagnostic-process.html">Back to setup</a>
+  </header>
+
+  <main id="interview-main">
+    <section class="interview-introduction">
+      <div><p class="eyebrow">Protocol + participant experience</p><h1>One governed method. Fifteen contextual questions.</h1><p>The protocol owner confirms evidence coverage before invitations begin. Every participant then receives the same core questions, with bounded follow-ups only when an answer needs clarification.</p></div>
+      <aside><strong>Nothing is recorded or saved.</strong><p>This prototype uses fictional sample responses in memory and clears them when the page is refreshed.</p></aside>
+    </section>
+
+    <section class="interview-shell" data-interview-demo>
+      <nav class="interview-steps" aria-label="Interview workflow progress">
+        <button type="button" data-stage-button="protocol" aria-current="step"><span>01</span><strong>Protocol review</strong></button>
+        <button type="button" data-stage-button="notice" disabled><span>02</span><strong>Participant notice</strong></button>
+        <button type="button" data-stage-button="interview" disabled><span>03</span><strong>Guided interview</strong></button>
+        <button type="button" data-stage-button="quality" disabled><span>04</span><strong>Evidence quality</strong></button>
+      </nav>
+
+      <section class="interview-stage" data-stage-panel="protocol" aria-labelledby="protocol-title">
+        <header class="stage-heading"><div><p class="eyebrow">Method-owner review</p><h2 id="protocol-title">Approve the common interview protocol.</h2></div><p>AI may contextualize governed questions, but cannot create an unconstrained method. These 15 questions cover every capacity domain and required evidence objective.</p></header>
+        <div class="protocol-coverage" data-protocol-coverage></div>
+        <ol class="protocol-questions" data-protocol-questions></ol>
+        <div class="stage-action"><p data-protocol-status role="status"></p><button class="button primary" type="button" data-approve-protocol>Approve 15-question protocol</button></div>
+      </section>
+
+      <section class="interview-stage" data-stage-panel="notice" aria-labelledby="notice-title" hidden>
+        <div class="notice-card">
+          <p class="eyebrow">Before the confidential interview</p>
+          <h2 id="notice-title">Your perspective will inform an organizational finding—not an individual evaluation.</h2>
+          <div class="notice-grid">
+            <article><span>The sponsor can see</span><p>Whether your interview is complete and whether the diagnostic has enough participation to proceed.</p></article>
+            <article><span>The sponsor cannot see</span><p>Your individual answers, interview record, adaptive follow-ups, or attributed quotations.</p></article>
+            <article><span>The platform does</span><p>Review evidence quality, de-identify operating examples, and synthesize themes across informed perspectives.</p></article>
+            <article><span>The platform does not</span><p>Guarantee anonymity, rank participants, diagnose individuals, or treat one answer as organizational truth.</p></article>
+          </div>
+          <label class="notice-acceptance"><input type="checkbox" data-notice-accept /><span>I understand how this fictional interview would be used and want to continue.</span></label>
+          <button class="button primary" type="button" data-begin-interview disabled>Begin guided interview</button>
+        </div>
+      </section>
+
+      <section class="interview-stage" data-stage-panel="interview" aria-labelledby="guided-title" hidden>
+        <header class="guided-header"><div><p class="eyebrow">Confidential guided interview</p><h2 id="guided-title">Describe what actually happens.</h2></div><div><strong data-question-progress>Question 1 of 15</strong><span>Fictional sample response</span></div></header>
+        <div class="question-progress-track" aria-hidden="true"><span data-question-progress-bar></span></div>
+        <div class="guided-layout">
+          <nav class="question-navigator" data-question-navigator aria-label="Interview questions"></nav>
+          <form class="question-panel" data-question-form novalidate>
+            <div class="question-meta"><span data-question-domain></span><span data-question-objective></span></div>
+            <h3 data-question-text></h3>
+            <label>Your response <span>Use a recent example when possible.</span><textarea data-answer-text rows="8" maxlength="6000" required></textarea></label>
+            <div class="adaptive-area" data-adaptive-area>
+              <button type="button" data-request-follow-up>Show a governed follow-up</button>
+              <div data-follow-up-panel hidden><p data-follow-up-prompt></p><label>Follow-up response<textarea data-follow-up-answer rows="4" maxlength="4000"></textarea></label></div>
+            </div>
+            <p class="question-error" data-question-error role="alert"></p>
+            <div class="question-actions"><button class="button secondary" type="button" data-previous-question disabled>Previous</button><button class="button primary" type="submit" data-next-question>Save and continue</button></div>
+          </form>
+        </div>
+      </section>
+
+      <section class="interview-stage" data-stage-panel="quality" aria-labelledby="quality-title" hidden>
+        <div class="quality-result">
+          <p class="eyebrow">Evidence-quality gate</p>
+          <h2 id="quality-title">This fictional interview is ready for de-identification.</h2>
+          <p>The platform found enough concrete examples, recurring patterns, consequences, and alternative evidence to proceed. Passing this gate does not make the response correct; it means the evidence is developed enough to enter controlled synthesis.</p>
+          <div class="quality-counts" data-quality-counts></div>
+          <section><span>Next controlled step</span><h3>De-identification and disclosure-risk review</h3><p>Response identity remains separate. High-risk material requires human review before it can support an organizational theme.</p></section>
+          <div class="quality-actions"><a class="button primary" href="diagnostic-workspace.html">View the resulting Operating Brief</a><button class="button secondary" type="button" data-restart-interview>Restart fictional interview</button></div>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="diagnostic-interview-demo.js?v=diagnostic-interview-v1"></script>
+</body>
+</html>
