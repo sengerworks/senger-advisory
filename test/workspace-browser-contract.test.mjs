@@ -261,6 +261,15 @@ test("client sponsor receives only a confidentiality-gated governed finding", as
   assert.match(advisorScript, /advisor-escalation-queue/);
   assert.match(html, /Decision History/);
   assert.match(script, /capacity-brief-decision-history/);
+  assert.match(html, /Platform-guided setup/);
+  assert.match(script, /capacity-brief-guided-plan/);
+  assert.match(html, /POC checkpoint/);
+  assert.match(html, /Optional product feedback/);
+  assert.match(script, /workspace\/poc-feedback/);
+  assert.match(advisorHtml, /POC scorecard/);
+  assert.match(advisorScript, /workspace\/poc-scorecard/);
+  assert.match(advisorHtml, /POC cohort decision/);
+  assert.match(advisorScript, /workspace\/poc-cohort-decisions/);
   assert.match(script, /currentClerkContextKey\(\) === clerkContextKey/);
   assert.match(script, /workspaceRenderPromise/);
   assert.match(script, /beginDiagnosticCheckout\(selectedDiagnosticId,"intervention"\)/);

@@ -308,3 +308,12 @@ release, and validation measure.
 Go-live readiness is evaluated across methodological defensibility, participant trust and
 completion, leadership actionability, Operating Brief usefulness, expert-judgment alignment,
 and realistic willingness to pay.
+
+The operating stages, issue taxonomy, change-control rule, launch thresholds, and cohort decision
+are defined in `docs/POC-Operating-Protocol.md`. Each organization uses a separate
+`docs/POC-Scorecard.md` copy that excludes participant interview content and identity.
+
+POC product learning is governed separately from diagnostic evidence. Assignment-scoped aggregate
+scorecards may inform an immutable cohort-decision ledger, but neither participant identity nor
+participant feedback text enters that ledger. Ready-to-monetize remains an explicit advisor judgment,
+not an automated diagnostic or commercial claim.

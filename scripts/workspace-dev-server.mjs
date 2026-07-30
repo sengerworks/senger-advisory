@@ -25,6 +25,10 @@ import workspaceCapacityBriefAttention from "../netlify/functions/workspace-capa
 import workspaceInterventionAdvisorEscalation from "../netlify/functions/workspace-intervention-advisor-escalation.mjs";
 import workspaceAdvisorEscalationQueue from "../netlify/functions/workspace-advisor-escalation-queue.mjs";
 import workspaceCapacityBriefDecisionHistory from "../netlify/functions/workspace-capacity-brief-decision-history.mjs";
+import workspaceCapacityBriefGuidedPlan from "../netlify/functions/workspace-capacity-brief-guided-plan.mjs";
+import workspacePocFeedback from "../netlify/functions/workspace-poc-feedback.mjs";
+import workspacePocScorecard from "../netlify/functions/workspace-poc-scorecard.mjs";
+import workspacePocCohortDecisions from "../netlify/functions/workspace-poc-cohort-decisions.mjs";
 import workspaceCapacityBriefReviews from "../netlify/functions/workspace-capacity-brief-reviews.mjs";
 import workspaceDiagnosticReassessment from "../netlify/functions/workspace-diagnostic-reassessment.mjs";
 import workspaceDiagnosticReassessmentComparison from "../netlify/functions/workspace-diagnostic-reassessment-comparison.mjs";
@@ -57,6 +61,8 @@ const files = new Map([
   ["/diagnostic.html", { url: new URL("../diagnostic.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/capacity-brief-example.html", { url: new URL("../capacity-brief-example.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/capacity-brief-example.css", { url: new URL("../capacity-brief-example.css", import.meta.url), type: "text/css; charset=utf-8" }],
+  ["/platform-journey.html", { url: new URL("../platform-journey.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/platform-journey.css", { url: new URL("../platform-journey.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/organization-view.html", { url: new URL("../organization-view.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/organization-view.css", { url: new URL("../organization-view.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/organization-view.js", { url: new URL("../organization-view.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
@@ -132,6 +138,10 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/intervention-advisor-escalation",
     "/api/workspace/advisor-escalation-queue",
     "/api/workspace/capacity-brief-decision-history",
+    "/api/workspace/capacity-brief-guided-plan",
+    "/api/workspace/poc-feedback",
+    "/api/workspace/poc-scorecard",
+    "/api/workspace/poc-cohort-decisions",
     "/api/workspace/capacity-brief-reviews",
     "/api/workspace/diagnostic-reassessment",
     "/api/workspace/diagnostic-reassessment-comparison",
@@ -202,6 +212,14 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceAdvisorEscalationQueue
       : url.pathname.endsWith("/capacity-brief-decision-history")
         ? workspaceCapacityBriefDecisionHistory
+      : url.pathname.endsWith("/capacity-brief-guided-plan")
+        ? workspaceCapacityBriefGuidedPlan
+      : url.pathname.endsWith("/poc-feedback")
+        ? workspacePocFeedback
+      : url.pathname.endsWith("/poc-scorecard")
+        ? workspacePocScorecard
+      : url.pathname.endsWith("/poc-cohort-decisions")
+        ? workspacePocCohortDecisions
       : url.pathname.endsWith("/capacity-brief-reviews")
         ? workspaceCapacityBriefReviews
       : url.pathname.endsWith("/diagnostic-reassessment")

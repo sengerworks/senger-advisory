@@ -66,6 +66,18 @@
 - Publish buyer-facing security, subprocessor, data-handling, and incident-contact information before launch
 - Complete independent penetration testing before broad enterprise availability and pursue SOC 2 when operating maturity warrants it
 
+## Cross-cutting — POC validation and launch evidence
+- Run every POC through the paid-product workflow using a no-charge, time-bounded entitlement
+- Collect role-specific feedback at each product gate without mixing participant feedback into diagnostic evidence
+- Use fixed issue severity, change-control, scorecard, and cohort-decision rules
+- Require explicit methodological, trust, completion, actionability, operating-effort, and willingness-to-pay evidence before monetized launch
+- Capture role-bounded POC checkpoint feedback without respondent identity, interview linkage,
+  participant-level sponsor visibility, or entry into diagnostic evidence
+- Aggregate POC completion, trust, method, intervention, support, and commercial signals into an
+  assignment-scoped advisor scorecard without participant feedback text or interview content
+- Preserve advisor-governed POC cohort decisions as immutable product history, with required
+  changes, unresolved risks, next hypotheses, and explicit review dates; never infer monetization readiness
+
 ## Phase 5 — Capacity Operating Brief and guided intervention
 - Replace the generic dashboard concept with a living executive Capacity Operating Brief
 - Center the Brief on the diagnosed constraint, supporting evidence, accepted intervention,
@@ -89,6 +101,8 @@
   escalations while preserving least privilege and the shared engagement history
 - Present leadership validation, intervention acceptance, reviews, action resolutions, check-in
   decisions, and advisor-support handling in one participant-free Decision History
+- Generate an idempotent, sponsor-reviewable first draft of the 30/60/90 Action Path, focused
+  Learning Path, and guided check-in cadence from the accepted intervention
 - Give automated and advisor-led customers the same client-facing Brief while providing
   advisors additional governed facilitation and intervention controls
 - Let customers escalate from automated to advisor-led service without losing diagnostic,

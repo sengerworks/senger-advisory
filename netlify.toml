@@ -67,6 +67,16 @@
   force = true
 
 [[redirects]]
+  from = "/capacity-brief-example.html"
+  to = "/platform-journey.html#destination"
+  status = 301
+
+[[redirects]]
+  from = "/journey"
+  to = "/platform-journey.html"
+  status = 301
+
+[[redirects]]
   from = "/workspace"
   to = "/workspace/"
   status = 301

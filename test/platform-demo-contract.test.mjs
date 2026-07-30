@@ -28,13 +28,16 @@ test("public demo walks from private perspectives to a shared action cycle", asy
   assert.doesNotMatch(script, /fetch\(|localStorage|sessionStorage/);
 });
 
-test("public navigation features the sample Brief while assessment retains its organizational demo", async () => {
-  const [home, assessment, sitemap] = await Promise.all([
+test("public navigation features the Platform Journey while assessment retains its organizational demo", async () => {
+  const [home, journey, assessment, sitemap] = await Promise.all([
     source("index.html"),
+    source("platform-journey.html"),
     source("assessment.html"),
     source("sitemap.xml")
   ]);
-  assert.match(home, /href="capacity-brief-example\.html">Sample Brief/);
+  assert.match(home, /href="platform-journey\.html">Platform Journey/);
+  assert.match(journey, /approximately 8 minutes/);
+  assert.match(journey, /Request a Guided Walkthrough/);
   assert.match(assessment, /href="organization-view\.html">View organizational demo/);
-  assert.match(sitemap, /https:\/\/sengeradvisory\.com\/organization-view\.html/);
+  assert.match(sitemap, /https:\/\/sengeradvisory\.com\/platform-journey\.html/);
 });

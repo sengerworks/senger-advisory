@@ -1,0 +1,1 @@
+GRANT SELECT ON app_operations.poc_checkpoint_feedback TO capacity_workspace_app;

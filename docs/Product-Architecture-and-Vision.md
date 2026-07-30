@@ -156,6 +156,12 @@ activity feed. It includes leadership validation, intervention acceptance, forma
 resolved commitments and check-ins, and advisor-support handling. Participant content is never
 included, and the timeline does not imply that a recorded decision produced an observed outcome.
 
+For the platform-guided route, initial intervention setup may be generated directly from the
+accepted proposal. Generation is idempotent and refuses to overwrite any existing action,
+learning, or check-in record. The output is a sponsor-reviewable operating draft—not autonomous
+prescription—and retains the accepted proposal's owners, operating changes, learning needs, and
+evidence plan as its source.
+
 ## Capacity Operating Brief
 
 The shared post-diagnostic experience is not a generic analytics dashboard. It is a living
@@ -267,3 +273,11 @@ Diagnostic and intervention access use separate entitlements and separate offer 
 diagnostic entitlement permits the diagnostic workflow and intervention proposal design; it
 does not silently purchase the proposed intervention. POC engagements retain one explicit,
 no-charge POC entitlement across the governed proof-of-concept loop.
+
+### POC product-decision governance
+
+The aggregate scorecard feeds an advisor-governed POC decision ledger. Continue,
+monitored-adjustment, hold, narrow-scope, and ready-to-monetize decisions are immutable,
+time-stamped records with rationale, required changes, unresolved risks, and next hypotheses.
+Monetization readiness is never inferred from aggregate metrics alone, and the ledger contains
+no participant identity, feedback text, interview content, or diagnostic evidence text.
