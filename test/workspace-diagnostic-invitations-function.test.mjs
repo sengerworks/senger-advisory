@@ -4,7 +4,9 @@ import { createWorkspaceDiagnosticInvitationsHandler } from "../netlify/function
 import {
   DiagnosticInvitationInputError,
   DiagnosticInvitationStateError,
+  diagnosticCollectionStatus,
   diagnosticInvitationProviderError,
+  summarizeDiagnosticCollection,
   validateDiagnosticInvitationInput
 } from "../netlify/lib/workspace-diagnostic-invitations.mjs";
 import { WORKSPACE_ROLES } from "../workspace-authorization.js";
@@ -31,12 +33,25 @@ test("translates provider failures without exposing provider payloads", () => {
   assert.equal(diagnosticInvitationProviderError({ message: "Bad Request" }), null);
 });
 
+test("derives collection progress without exposing interview content", () => {
+  assert.equal(diagnosticCollectionStatus({}), "not-invited");
+  assert.equal(diagnosticCollectionStatus({ invitation: { status: "pending" } }), "invited");
+  assert.equal(diagnosticCollectionStatus({ invitation: { status: "accepted" } }), "joined");
+  assert.equal(diagnosticCollectionStatus({ noticeAccepted: true }), "started");
+  assert.equal(diagnosticCollectionStatus({ interviewStatus: "in-progress" }), "in-progress");
+  assert.equal(diagnosticCollectionStatus({ interviewStatus: "submitted" }), "submitted");
+  assert.deepEqual(summarizeDiagnosticCollection([
+    { collectionStatus: "not-invited" }, { collectionStatus: "invited" },
+    { collectionStatus: "in-progress" }, { collectionStatus: "submitted" }
+  ]), { total: 4, invited: 3, joined: 2, inProgress: 1, submitted: 1, remaining: 1 });
+});
+
 test("administrators list plan slots and create a diagnostic-specific invitation", async () => {
   let created; let recorded;
   const invitation = { id: "orginv_123", planSlotId: "slot-1", emailAddress: "participant@example.com", status: "pending", createdAt: "2026-07-29T00:00:00.000Z", expiresAt: "2026-08-28T00:00:00.000Z" };
   const handler = createWorkspaceDiagnosticInvitationsHandler({
     authenticate: authentication(),
-    getReadiness: async () => ({ diagnosticId, planSlots: [planSlot] }),
+    getReadiness: async () => ({ diagnosticId, diagnosticState: "protocol-review", canInvite: true, planSlots: [planSlot] }),
     listSlots: async () => [],
     gateway: { list: async () => [], create: async value => { created = value; return invitation; } },
     recordInvitation: async value => { recorded = value; }
@@ -57,11 +72,11 @@ test("participants, foreign origins, unknown slots, and duplicate invitations fa
   const foreign = createWorkspaceDiagnosticInvitationsHandler({ authenticate: authentication() });
   assert.equal((await foreign(request("GET", undefined, `?diagnosticId=${diagnosticId}`, "https://attacker.example"))).status, 403);
   const unknown = createWorkspaceDiagnosticInvitationsHandler({
-    authenticate: authentication(), getReadiness: async () => ({ diagnosticId, planSlots: [] }), listSlots: async () => [], gateway: { list: async () => [] }
+    authenticate: authentication(), getReadiness: async () => ({ diagnosticId, canInvite: true, planSlots: [] }), listSlots: async () => [], gateway: { list: async () => [] }
   });
   assert.equal((await unknown(request("POST", input, ""))).status, 400);
   const duplicate = createWorkspaceDiagnosticInvitationsHandler({
-    authenticate: authentication(), getReadiness: async () => ({ diagnosticId, planSlots: [planSlot] }), listSlots: async () => [{ planSlotId: "slot-1" }], gateway: { list: async () => [] }
+    authenticate: authentication(), getReadiness: async () => ({ diagnosticId, canInvite: true, planSlots: [planSlot] }), listSlots: async () => [{ planSlotId: "slot-1" }], gateway: { list: async () => [] }
   });
   assert.equal((await duplicate(request("POST", input, ""))).status, 409);
   assert.equal(new DiagnosticInvitationStateError("duplicate") instanceof Error, true);

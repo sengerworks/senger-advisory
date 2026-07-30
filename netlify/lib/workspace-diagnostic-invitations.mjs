@@ -9,6 +9,29 @@ const PARTICIPANT_ROLE = "org:participant";
 export class DiagnosticInvitationInputError extends Error {}
 export class DiagnosticInvitationStateError extends Error {}
 
+const COMPLETE_INTERVIEW_STATES = new Set(["submitted", "review-required", "evidence-ready"]);
+
+export function diagnosticCollectionStatus({ invitation, noticeAccepted, interviewStatus }) {
+  if (COMPLETE_INTERVIEW_STATES.has(interviewStatus)) return "submitted";
+  if (interviewStatus === "in-progress") return "in-progress";
+  if (noticeAccepted) return "started";
+  if (invitation?.status === "accepted") return "joined";
+  if (invitation) return "invited";
+  return "not-invited";
+}
+
+export function summarizeDiagnosticCollection(planSlots) {
+  const counts = { total: planSlots.length, invited: 0, joined: 0, inProgress: 0, submitted: 0, remaining: 0 };
+  for (const slot of planSlots) {
+    if (slot.collectionStatus !== "not-invited") counts.invited += 1;
+    if (["joined", "started", "in-progress", "submitted"].includes(slot.collectionStatus)) counts.joined += 1;
+    if (["started", "in-progress"].includes(slot.collectionStatus)) counts.inProgress += 1;
+    if (slot.collectionStatus === "submitted") counts.submitted += 1;
+    if (slot.collectionStatus === "not-invited") counts.remaining += 1;
+  }
+  return Object.freeze(counts);
+}
+
 export function diagnosticInvitationProviderError(error) {
   const codes = Array.isArray(error?.errors)
     ? error.errors.map(item => String(item?.code || "").toLowerCase())
@@ -126,9 +149,11 @@ export async function getDiagnosticInvitationReadiness(workspaceId, diagnosticId
     );
     const row = result.rows[0];
     if (!row) throw new DiagnosticInvitationStateError("That diagnostic is not available in this workspace.");
-    if (!row.protocol_id || row.state !== "protocol-review") throw new DiagnosticInvitationStateError("Approve the common protocol before inviting participants.");
+    if (!row.protocol_id || !row.plan_payload) throw new DiagnosticInvitationStateError("Approve the common protocol before managing collection.");
     return Object.freeze({
       diagnosticId,
+      diagnosticState: row.state,
+      canInvite: ["protocol-review", "collecting"].includes(row.state),
       planSlots: Object.freeze(row.plan_payload.participantSlots.map(slot => Object.freeze({ ...slot })))
     });
   }, connectionString);
@@ -168,15 +193,22 @@ export async function recordDiagnosticInvitation(
 export async function listRecordedDiagnosticSlots(workspaceId, diagnosticId, connectionString) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const result = await query(
-      `SELECT plan_slot_id, clerk_invitation_id, notice_accepted_at IS NOT NULL AS notice_accepted
-       FROM app_identity.diagnostic_participant_slots
-       WHERE diagnostic_id = $1 AND revoked_at IS NULL`,
+      `SELECT slot.plan_slot_id, slot.clerk_invitation_id,
+              slot.notice_accepted_at IS NOT NULL AS notice_accepted,
+              interview.status AS interview_status
+       FROM app_identity.diagnostic_participant_slots slot
+       LEFT JOIN app_private.diagnostic_interviews interview
+         ON interview.workspace_id = slot.workspace_id
+        AND interview.diagnostic_id = slot.diagnostic_id
+        AND interview.participant_slot_id = slot.id
+       WHERE slot.diagnostic_id = $1 AND slot.revoked_at IS NULL`,
       [diagnosticId]
     );
     return result.rows.map(row => ({
       planSlotId: row.plan_slot_id,
       invitationId: row.clerk_invitation_id,
-      noticeAccepted: row.notice_accepted
+      noticeAccepted: row.notice_accepted,
+      interviewStatus: row.interview_status || null
     }));
   }, connectionString);
 }

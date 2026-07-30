@@ -1,6 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { authorizeWorkspaceAction, WORKSPACE_ROLES } from "../workspace-authorization.js";
+import { authorizeWorkspaceAction, PRODUCT_ROLE_BOUNDARY, WORKSPACE_ROLES } from "../workspace-authorization.js";
+
+test("separates client workspace roles from platform and advisor assignments", () => {
+  assert.equal(PRODUCT_ROLE_BOUNDARY.clientSponsor.providerRole, WORKSPACE_ROLES.owner);
+  assert.equal(PRODUCT_ROLE_BOUNDARY.clientSponsor.responseContentAccess, false);
+  assert.equal(PRODUCT_ROLE_BOUNDARY.assignedAdvisor.providerRole, null);
+  assert.equal(PRODUCT_ROLE_BOUNDARY.assignedAdvisor.scope, "time-bounded-engagement-assignment");
+  assert.equal(PRODUCT_ROLE_BOUNDARY.platformAdmin.responseContentAccess, false);
+});
 
 test("limits workspace administration to owner and invitation operations to administrators", () => {
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "workspace:delete" }), true);

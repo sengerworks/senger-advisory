@@ -9,6 +9,9 @@ import workspaceDiagnosticProtocol from "../netlify/functions/workspace-diagnost
 import workspaceDiagnosticInvitations from "../netlify/functions/workspace-diagnostic-invitations.mjs";
 import workspaceDiagnosticParticipation from "../netlify/functions/workspace-diagnostic-participation.mjs";
 import workspaceDiagnosticInterview from "../netlify/functions/workspace-diagnostic-interview.mjs";
+import workspaceDiagnosticEvidenceReview from "../netlify/functions/workspace-diagnostic-evidence-review.mjs";
+import workspaceDiagnosticEvidencePreparation from "../netlify/functions/workspace-diagnostic-evidence-preparation.mjs";
+import workspaceDiagnosticAdvisorAssignments from "../netlify/functions/workspace-diagnostic-advisor-assignments.mjs";
 import workspaceComparison from "../netlify/functions/workspace-comparison.mjs";
 import workspaceActionCycles from "../netlify/functions/workspace-action-cycles.mjs";
 import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
@@ -26,6 +29,12 @@ const files = new Map([
   ["/workspace/", { url: new URL("../workspace/index.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/workspace.css", { url: new URL("../workspace/workspace.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/workspace.js", { url: new URL("../workspace/workspace.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/workspace/advisor.html", { url: new URL("../workspace/advisor.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/workspace/advisor.css", { url: new URL("../workspace/advisor.css", import.meta.url), type: "text/css; charset=utf-8" }],
+  ["/workspace/advisor.js", { url: new URL("../workspace/advisor.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/workspace/presenter-demo.html", { url: new URL("../workspace/presenter-demo.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/workspace/presenter-demo.css", { url: new URL("../workspace/presenter-demo.css", import.meta.url), type: "text/css; charset=utf-8" }],
+  ["/workspace/presenter-demo.js", { url: new URL("../workspace/presenter-demo.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/assessment.html", { url: new URL("../assessment.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/diagnostic.html", { url: new URL("../diagnostic.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/capacity-brief-example.html", { url: new URL("../capacity-brief-example.html", import.meta.url), type: "text/html; charset=utf-8" }],
@@ -89,6 +98,9 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/diagnostic-invitations",
     "/api/workspace/diagnostic-participation",
     "/api/workspace/diagnostic-interview",
+    "/api/workspace/diagnostic-evidence-review",
+    "/api/workspace/diagnostic-evidence-preparation",
+    "/api/workspace/diagnostic-advisor-assignments",
     "/api/workspace/comparison",
     "/api/workspace/action-cycles",
     "/api/workspace/invitations",
@@ -118,6 +130,12 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceDiagnosticParticipation
       : url.pathname.endsWith("/diagnostic-interview")
         ? workspaceDiagnosticInterview
+      : url.pathname.endsWith("/diagnostic-evidence-review")
+        ? workspaceDiagnosticEvidenceReview
+      : url.pathname.endsWith("/diagnostic-evidence-preparation")
+        ? workspaceDiagnosticEvidencePreparation
+      : url.pathname.endsWith("/diagnostic-advisor-assignments")
+        ? workspaceDiagnosticAdvisorAssignments
       : url.pathname.endsWith("/diagnostics")
         ? workspaceDiagnostics
       : url.pathname.endsWith("/comparison")

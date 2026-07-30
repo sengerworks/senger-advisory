@@ -75,11 +75,18 @@ The first organizational workspace will not:
 
 ## Roles and permissions
 
-### Owner
+### Client Sponsor
 
-The accountable customer administrator. The owner can create and close a workspace, invite
+The accountable sponsoring executive or designated customer administrator. The sponsor can
+review diagnostic progress, approve organizational decisions and interventions, and view
+the Capacity Operating Brief and outcomes. A sponsor may delegate logistics but cannot
+govern the diagnostic method, review attributed evidence, or access individual response
+content. During the POC, the Clerk `org:admin` role temporarily retains setup controls while
+the separate operating console is developed.
+
+For the lightweight assessment, the sponsor can create and close a workspace, invite
 or remove participants, see invitation and completion status, and view threshold-qualified
-organizational results. The owner cannot see individual response content or scores.
+organizational results. The sponsor cannot see individual response content or scores.
 
 ### Facilitator
 
@@ -87,14 +94,22 @@ An optional delegated administrator who can manage invitations, see completion s
 facilitate the organizational report. The facilitator cannot change privacy policy, see
 individual response content, or export respondent-level data.
 
-### Advisor
+### Assigned Advisor
 
-A future advisor role may be assigned to Senger Advisory or an authorized partner for a
+An advisor role may be assigned to Senger Advisory or an authorized partner for a
 specific client workspace and defined engagement period. The advisor can facilitate
-interpretation, review threshold-qualified organizational results, guide shared action
-cycles, and contribute approved intervention or learning materials. The advisor cannot see
-individual response content, alter aggregation or privacy policy, or access another client
-workspace. Advisor access must be disclosed, time-bounded, revocable, and audited.
+discovery, govern the common protocol, review de-identified diagnostic evidence held for
+human judgment, facilitate interpretation, guide shared action cycles, and contribute
+approved intervention or learning materials. The advisor cannot browse attributed raw
+responses, alter privacy policy, or access another client workspace. Advisor access must be
+disclosed, purpose-limited, time-bounded, revocable, and audited.
+
+### Senger Platform Admin
+
+The platform role provisions tenants, partners, entitlements, billing state, method versions,
+and operational support. It does not inherit access to confidential interview content. A
+Senger team member who also delivers an engagement must receive a separate Assigned Advisor
+assignment so platform operations and evidence review remain independently auditable.
 
 ### Participant
 
@@ -103,9 +118,9 @@ organizational result after the threshold is met. A participant can see and dele
 submission before the round is closed. They cannot see another participant’s completion
 identity unless that visibility is explicitly disclosed in the invitation experience.
 
-There is no analyst, researcher, or super-administrator role in the product contract. Any
-future operational access requires a separately documented support workflow, least-privilege
-controls, and an audit record.
+There is no analyst, researcher, or response-content super-administrator role in the product
+contract. Platform operations and engagement evidence review are separate grants. Any support
+access requires a documented workflow, least-privilege controls, and an audit record.
 
 ## Partner tenancy boundary
 

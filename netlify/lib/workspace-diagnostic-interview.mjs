@@ -20,7 +20,7 @@ function encrypt(value) {
   const content=Buffer.concat([cipher.update(JSON.stringify(value)),cipher.final()]);
   return Buffer.concat([iv,cipher.getAuthTag(),content]);
 }
-function decrypt(value) {
+export function decryptDiagnosticResponsePayload(value) {
   const data=Buffer.from(value); const decipher=createDecipheriv("aes-256-gcm",key(),data.subarray(0,12));
   decipher.setAuthTag(data.subarray(12,28));
   return JSON.parse(Buffer.concat([decipher.update(data.subarray(28)),decipher.final()]).toString("utf8"));
@@ -48,7 +48,7 @@ export async function getParticipantInterview({workspaceId,userId,diagnosticId},
   let result=await query(`SELECT id,status,encrypted_response_payload,updated_at FROM app_private.diagnostic_interviews WHERE diagnostic_id=$1 AND participant_slot_id=$2`,[diagnosticId,source.rows[0].slot_id]);
   if(!result.rows[0])result=await query(`INSERT INTO app_private.diagnostic_interviews(id,workspace_id,diagnostic_id,participant_slot_id,protocol_id,collection_mode,status,encryption_version,encryption_key_ref,encrypted_response_payload)
    VALUES($1,$2,$3,$4,$5,'automated-written','in-progress','aes-256-gcm-v1','diagnostic-development-v1',$6) RETURNING id,status,encrypted_response_payload,updated_at`,[randomUUID(),workspaceId,diagnosticId,source.rows[0].slot_id,source.rows[0].protocol_id,encrypt({answers:[]})]);
-  const row=result.rows[0]; return{interviewId:row.id,status:row.status,questions:source.rows[0].governed_questions,answers:row.encrypted_response_payload?decrypt(row.encrypted_response_payload).answers:[],updatedAt:new Date(row.updated_at).toISOString()};
+  const row=result.rows[0]; return{interviewId:row.id,status:row.status,questions:source.rows[0].governed_questions,answers:row.encrypted_response_payload?decryptDiagnosticResponsePayload(row.encrypted_response_payload).answers:[],updatedAt:new Date(row.updated_at).toISOString()};
  },connectionString);
 }
 export async function saveParticipantInterview({workspaceId,userId,input,submit=false,now=new Date()},connectionString){

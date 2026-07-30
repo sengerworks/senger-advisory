@@ -38,6 +38,8 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(server, /"\/api\/workspace\/diagnostic-participation"/);
   assert.match(server, /import workspaceDiagnosticInterview/);
   assert.match(server, /"\/api\/workspace\/diagnostic-interview"/);
+  assert.match(server, /"\/api\/workspace\/diagnostic-evidence-review"/);
+  assert.match(server, /"\/api\/workspace\/diagnostic-evidence-preparation"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/invitations"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/participation"/);
   assert.match(script, /\/api\/workspace\/results\?roundId=/);
@@ -72,6 +74,11 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Assign approved perspective slots/);
   assert.match(html, /remains separate from confidential interview content/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-invitations"/);
+  assert.match(html, /data-diagnostic-collection-progress/);
+  assert.match(html, /Paid Organizational Diagnostic · POC operating controls · temporary sponsor placement/);
+  assert.match(script, /Client sponsor · POC workspace/);
+  assert.match(script, /Responses submitted/);
+  assert.doesNotMatch(script, /slot\.interviewAnswers|slot\.encryptedResponse/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-participation"/);
   assert.match(script, /Accept the diagnostic privacy notice/);
   assert.match(html, /Save private draft/);
@@ -151,4 +158,47 @@ test("workspace has a route-only Clerk CSP and authentication return fallback", 
 test("workspace remains excluded from search crawling", async () => {
   const robots = await source("robots.txt");
   assert.match(robots, /Disallow: \/workspace\//);
+});
+
+test("advisor console is separate, assignment-scoped, and excludes raw interview fields", async () => {
+  const html = await readFile(new URL("../workspace/advisor.html", import.meta.url), "utf8");
+  const advisor = await readFile(new URL("../workspace/advisor.js", import.meta.url), "utf8");
+  assert.match(html, /Advisor Operating Console/);
+  assert.match(html, /active, time-bounded advisor assignment/);
+  assert.match(advisor, /diagnostic-advisor-assignments/);
+  assert.match(advisor, /diagnostic-evidence-preparation/);
+  assert.match(advisor, /diagnostic-evidence-review/);
+  assert.doesNotMatch(advisor, /answerText|encrypted_response_payload|sourceInterviewId/);
+});
+
+test("guided presenter demo is fictional, resettable, and disconnected from live records", async () => {
+  const html = await source("workspace/presenter-demo.html");
+  const script = await source("workspace/presenter-demo.js");
+  const server = await source("scripts/workspace-dev-server.mjs");
+  assert.match(html, /Private guided demo/);
+  assert.match(html, /fictional organization/i);
+  assert.match(html, /Nothing is saved, submitted, or connected to a live client workspace/);
+  assert.match(html, /data-role="sponsor"/);
+  assert.match(html, /data-role="participant"/);
+  assert.match(script, /label:"Assessment"/);
+  assert.match(script, /label:"Choose diagnostic"/);
+  assert.match(script, /label:"Six sponsor prompts"/);
+  assert.match(script, /label:"Invite the cohort"/);
+  assert.match(script, /label:"Participant experience"/);
+  assert.match(script, /label:"Privacy threshold"/);
+  assert.match(script, /label:"De-identify & synthesize"/);
+  assert.match(script, /label:"Results & intervention"/);
+  assert.match(script, /Capacity Operating Brief/);
+  assert.match(script, /data-brief-view/);
+  assert.match(script, /data-intake/);
+  assert.match(script, /data-cohort-range/);
+  assert.match(script, /data-add-submission/);
+  assert.match(script, /Organizational results remain hidden/);
+  assert.match(script, /de-identified and disclosure-reviewed/);
+  assert.match(script, /Separate from this controlled demo/);
+  assert.doesNotMatch(script, /pressure test|Pressure Test/);
+  assert.match(script, /Your confidential diagnostic interview is complete/);
+  assert.match(script, /Question 6 of 15/);
+  assert.doesNotMatch(script, /fetch\(|workspaceRequest\(|localStorage|sessionStorage/);
+  assert.match(server, /"\/workspace\/presenter-demo\.html"/);
 });

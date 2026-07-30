@@ -359,11 +359,17 @@ h2 {
 .protocol-question textarea { width: 100%; min-height: 92px; padding: 11px 13px; border: 1px solid #d9d4cc; border-radius: 9px; color: var(--ink); font: inherit; resize: vertical; }
 .protocol-question small { color: var(--ink-soft); font-size: .7rem; }
 .diagnostic-invitation-panel { display: grid; gap: 16px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.diagnostic-role-note { padding: 12px 14px; border-left: 3px solid var(--bronze); background: #fff8ed; color: var(--ink-soft); font-size: .76rem; }
 .diagnostic-invitation-panel > div > p { margin: 5px 0 0; color: var(--ink-soft); font-size: .78rem; }
+.diagnostic-collection-progress { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.diagnostic-collection-progress > div { display: grid; gap: 3px; padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--ivory); }
+.diagnostic-collection-progress strong { color: var(--ink); font-size: 1.25rem; }
+.diagnostic-collection-progress span { color: var(--ink-soft); font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
 .diagnostic-invitation-slots { display: grid; gap: 10px; }
 .diagnostic-invitation-slot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .8fr); gap: 16px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .diagnostic-invitation-slot strong { display: block; font-size: .8rem; }
 .diagnostic-invitation-slot span { color: var(--ink-soft); font-size: .72rem; }
+.diagnostic-invitation-slot span[data-collection-status="submitted"] { color: #315a38; font-weight: 800; }
 .diagnostic-invitation-slot form { display: flex; gap: 8px; }
 .diagnostic-invitation-slot input { min-width: 0; flex: 1; padding: 9px 10px; border: 1px solid #d9d4cc; border-radius: 8px; }
 .diagnostic-invitation-slot button { padding: 9px 12px; border: 0; border-radius: 8px; background: var(--ink); color: #fff; font: inherit; font-size: .72rem; font-weight: 800; cursor: pointer; }

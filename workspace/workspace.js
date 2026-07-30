@@ -51,6 +51,7 @@ const elements = {
   approveProtocol: document.querySelector("[data-approve-protocol]"),
   closeProtocolReview: document.querySelector("[data-close-protocol-review]"),
   diagnosticInvitationPanel: document.querySelector("[data-diagnostic-invitation-panel]"),
+  diagnosticCollectionProgress: document.querySelector("[data-diagnostic-collection-progress]"),
   diagnosticInvitationSlots: document.querySelector("[data-diagnostic-invitation-slots]"),
   diagnosticInvitationMessage: document.querySelector("[data-diagnostic-invitation-message]"),
   collectionPanel: document.querySelector("[data-collection-panel]"),
@@ -225,15 +226,15 @@ function loadExternalScript(src, publishableKey = null) {
 function roleContent(role) {
   if (role === "org:admin") {
     return {
-      label: "Workspace owner",
+      label: "Client sponsor · POC workspace",
       title: "Prepare the first collection round.",
-      description: "Name the collection, set the participation period, and review the privacy threshold before inviting participants.",
+      description: "This is the sponsoring organization’s workspace. POC method-setup controls remain visible temporarily while the separate Senger and Advisor console is built.",
       action: "Set up a collection round"
     };
   }
   if (role === "org:facilitator") {
     return {
-      label: "Workspace facilitator",
+      label: "Client facilitator",
       title: "The workspace is ready to facilitate.",
       description: "You will manage invitations and collection progress without access to any individual response.",
       action: "Facilitation tools coming next"
@@ -335,7 +336,9 @@ function renderDiagnostics(diagnostics) {
           ? "Design participants"
           : diagnostic.state === "protocol-review"
             ? "Review protocol"
-            : "Review diagnostic method";
+            : diagnostic.state === "collecting"
+              ? "Monitor interviews"
+              : "Review diagnostic method";
     card.append(copy, status, action);
     elements.diagnosticList.append(card);
   }
@@ -482,6 +485,22 @@ function perspectiveLabel(slot) {
 async function loadDiagnosticInvitations(diagnosticId) {
   elements.diagnosticInvitationMessage.textContent = "Loading approved perspective slots…";
   const data = await workspaceRequest(`/api/workspace/diagnostic-invitations?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  elements.diagnosticCollectionProgress.replaceChildren();
+  const progressLabels = [
+    [data.progress.submitted, "Submitted"],
+    [data.progress.inProgress, "In progress"],
+    [data.progress.invited, "Invited"],
+    [data.progress.total, "Approved slots"]
+  ];
+  for (const [value, label] of progressLabels) {
+    const item = document.createElement("div");
+    const count = document.createElement("strong");
+    const caption = document.createElement("span");
+    count.textContent = value;
+    caption.textContent = label;
+    item.append(count, caption);
+    elements.diagnosticCollectionProgress.append(item);
+  }
   elements.diagnosticInvitationSlots.replaceChildren();
   for (const slot of data.planSlots) {
     const card = document.createElement("article");
@@ -494,9 +513,11 @@ async function loadDiagnosticInvitations(diagnosticId) {
     copy.append(title, perspective);
     if (slot.invitation) {
       const status = document.createElement("span");
-      status.textContent = `${slot.invitation.emailAddress} · ${slot.noticeAccepted ? "notice accepted" : slot.invitation.status}`;
+      const statusLabels = { invited: "Invitation sent", joined: "Invitation accepted", started: "Interview started", "in-progress": "Interview in progress", submitted: "Responses submitted" };
+      status.textContent = `${slot.invitation.emailAddress} · ${statusLabels[slot.collectionStatus] || slot.collectionStatus}`;
+      status.dataset.collectionStatus = slot.collectionStatus;
       card.append(copy, status);
-    } else {
+    } else if (data.canInvite) {
       const form = document.createElement("form");
       form.dataset.planSlotId = slot.slotId;
       const email = document.createElement("input");
@@ -510,6 +531,10 @@ async function loadDiagnosticInvitations(diagnosticId) {
       send.textContent = "Send invitation";
       form.append(email, send);
       card.append(copy, form);
+    } else {
+      const status = document.createElement("span");
+      status.textContent = "Not invited before collection closed";
+      card.append(copy, status);
     }
     elements.diagnosticInvitationSlots.append(card);
   }

@@ -25,11 +25,20 @@ security. The first two custom production roles are currently available without 
 B2B add-on, which fits the required facilitator and participant roles alongside the built-in
 administrator role.
 
-Use three provider roles:
+Use three client-organization provider roles for the POC:
 
-- `org:admin` → product Owner;
-- `org:facilitator` → product Facilitator; and
+- `org:admin` → Client Sponsor (the sponsoring executive or designated internal lead);
+- `org:facilitator` → Client Facilitator; and
 - `org:participant` → product Participant.
+
+These are not platform-level roles. Senger Platform Admin and Assigned Advisor access must
+not be represented as a standing client-organization administrator. They require separate
+platform or engagement assignments with explicit client scope, expiration, revocation, and
+audit history. Platform administration does not grant diagnostic response-content access.
+
+During the POC, `org:admin` temporarily exposes discovery, participant-design, and protocol
+controls so the end-to-end method can be tested. Those controls are a development bridge,
+not the final Client Sponsor permission contract.
 
 The custom Participant role receives no Clerk system permission to read members. This is
 necessary because Clerk's default Member role can read other organization members. The

@@ -238,3 +238,15 @@ test("diagnostic invitation links bind identity slots to approved plan slots", a
   assert.match(migration, /diagnostic_participant_invitation_idx/);
   assert.doesNotMatch(migration, /email_address|response_payload|interview_text/);
 });
+
+test("diagnostic advisor evidence review is assignment-scoped and tenant-isolated", async () => {
+  const migration = await readFile(new URL("../db/migrations/012_diagnostic_advisor_evidence_review.sql", import.meta.url), "utf8");
+  assert.match(migration, /CREATE TABLE app_operations\.diagnostic_advisor_assignments/);
+  assert.match(migration, /advisor_clerk_user_id text NOT NULL/);
+  assert.match(migration, /expires_at timestamptz NOT NULL/);
+  assert.match(migration, /FOREIGN KEY \(workspace_id, diagnostic_id\)\s+REFERENCES app_shared\.diagnostics\(workspace_id, id\)/);
+  assert.match(migration, /ENABLE ROW LEVEL SECURITY/);
+  assert.match(migration, /FORCE ROW LEVEL SECURITY/);
+  assert.match(migration, /CREATE POLICY diagnostic_advisor_assignment_tenant_policy/);
+  assert.match(migration, /ADD COLUMN reviewed_by_clerk_user_id text/);
+});

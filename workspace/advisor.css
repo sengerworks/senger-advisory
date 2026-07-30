@@ -1,0 +1,18 @@
+.advisor-main { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 64px 0 96px; }
+.advisor-hero { max-width: 760px; }
+.advisor-hero h1 { margin: 8px 0 14px; font-family: Georgia, serif; font-size: clamp(2.4rem, 6vw, 4.8rem); line-height: .98; }
+.advisor-hero p:last-child { color: var(--ink-soft); line-height: 1.7; }
+.advisor-surface { margin-top: 38px; padding: clamp(24px, 4vw, 42px); border: 1px solid var(--line); border-radius: 20px; background: var(--ivory); }
+.advisor-surface section { display: grid; gap: 18px; }
+.advisor-surface h2 { margin: 0; }
+[data-advisor-diagnostics], .advisor-evidence { display: grid; gap: 12px; }
+.advisor-diagnostic, .advisor-assignment, .advisor-evidence article { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.advisor-diagnostic { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.advisor-progress { display: flex; flex-wrap: wrap; gap: 8px; }
+.advisor-progress span { padding: 8px 11px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-size: .72rem; font-weight: 700; }
+.advisor-evidence article { display: grid; gap: 12px; }
+.advisor-evidence blockquote { margin: 0; color: var(--ink); line-height: 1.65; }
+.advisor-evidence footer { color: var(--ink-soft); font-size: .74rem; }
+.advisor-review { display: flex; gap: 8px; }
+.advisor-review input { flex: 1; padding: 10px; border: 1px solid var(--line); border-radius: 8px; }
+@media (max-width: 680px) { .advisor-diagnostic, .advisor-review { align-items: stretch; flex-direction: column; } }

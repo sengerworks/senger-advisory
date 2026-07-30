@@ -3,12 +3,14 @@ import { authenticateWorkspaceRequest } from "../lib/clerk-workspace-auth.mjs";
 import { DiagnosticContextInputError, validateDiagnosticContextId } from "../lib/workspace-diagnostic-context.mjs";
 import {
   createDiagnosticInvitationGateway,
+  diagnosticCollectionStatus,
   diagnosticInvitationProviderError,
   DiagnosticInvitationInputError,
   DiagnosticInvitationStateError,
   getDiagnosticInvitationReadiness,
   listRecordedDiagnosticSlots,
   recordDiagnosticInvitation,
+  summarizeDiagnosticCollection,
   validateDiagnosticInvitationInput
 } from "../lib/workspace-diagnostic-invitations.mjs";
 
@@ -47,20 +49,30 @@ export function createWorkspaceDiagnosticInvitationsHandler({
           listSlots(auth.value.workspaceId, diagnosticId)
         ]);
         const invitationById = new Map(invitations.map(invitation => [invitation.id, invitation]));
-        return json(200, {
-          planSlots: readiness.planSlots.map(planSlot => {
+        const planSlots = readiness.planSlots.map(planSlot => {
             const recorded = recordedSlots.find(slot => slot.planSlotId === planSlot.slotId);
+            const invitation = recorded ? invitationById.get(recorded.invitationId) || null : null;
             return {
               ...planSlot,
-              invitation: recorded ? invitationById.get(recorded.invitationId) || null : null,
-              noticeAccepted: recorded?.noticeAccepted || false
+              invitation,
+              collectionStatus: diagnosticCollectionStatus({
+                invitation,
+                noticeAccepted: recorded?.noticeAccepted || false,
+                interviewStatus: recorded?.interviewStatus || null
+              })
             };
-          })
+          });
+        return json(200, {
+          diagnosticState: readiness.diagnosticState,
+          canInvite: readiness.canInvite,
+          progress: summarizeDiagnosticCollection(planSlots),
+          planSlots
         });
       }
 
       const input = validateDiagnosticInvitationInput(await jsonBody(request));
       const readiness = await getReadiness(auth.value.workspaceId, input.diagnosticId);
+      if (!readiness.canInvite) throw new DiagnosticInvitationStateError("Participant invitations are closed for this diagnostic stage.");
       const planSlot = readiness.planSlots.find(slot => slot.slotId === input.planSlotId);
       if (!planSlot) throw new DiagnosticInvitationInputError("Choose a perspective slot from the approved plan.");
       const recorded = await listSlots(auth.value.workspaceId, input.diagnosticId);

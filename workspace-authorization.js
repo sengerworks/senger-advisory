@@ -4,6 +4,34 @@ export const WORKSPACE_ROLES = Object.freeze({
   participant: "org:participant"
 });
 
+export const PRODUCT_ROLE_BOUNDARY = Object.freeze({
+  clientSponsor: Object.freeze({
+    providerRole: WORKSPACE_ROLES.owner,
+    scope: "one-client-workspace",
+    responseContentAccess: false
+  }),
+  clientFacilitator: Object.freeze({
+    providerRole: WORKSPACE_ROLES.facilitator,
+    scope: "one-client-workspace",
+    responseContentAccess: false
+  }),
+  participant: Object.freeze({
+    providerRole: WORKSPACE_ROLES.participant,
+    scope: "own-participation",
+    responseContentAccess: "own-only"
+  }),
+  assignedAdvisor: Object.freeze({
+    providerRole: null,
+    scope: "time-bounded-engagement-assignment",
+    responseContentAccess: "governed-evidence-review-only"
+  }),
+  platformAdmin: Object.freeze({
+    providerRole: null,
+    scope: "platform-operations",
+    responseContentAccess: false
+  })
+});
+
 const ALL_ROLES = new Set(Object.values(WORKSPACE_ROLES));
 const OWNER_ONLY = new Set(["workspace:update", "workspace:delete", "audit:read"]);
 const ADMINISTRATIVE = new Set([
