@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import {readFile} from "node:fs/promises";
+const sql=await readFile(new URL("../db/migrations/019_diagnostic_reassessment_plans.sql",import.meta.url),"utf8");
+test("reassessment plans are tenant-isolated and tied to the governing review",()=>{assert.match(sql,/CREATE TABLE app_private\.diagnostic_reassessment_plans/);assert.match(sql,/source_review_id uuid NOT NULL/);assert.match(sql,/REFERENCES app_shared\.capacity_brief_reviews/);assert.match(sql,/ENABLE ROW LEVEL SECURITY/);assert.match(sql,/FORCE ROW LEVEL SECURITY/);assert.match(sql,/current_workspace_id\(\)/);});
+test("reassessment stores immutable comparison controls",()=>{assert.match(sql,/method_version text NOT NULL/);assert.match(sql,/protocol_snapshot jsonb NOT NULL/);assert.match(sql,/coverage_snapshot jsonb NOT NULL/);assert.match(sql,/UNIQUE \(workspace_id,diagnostic_id\)/);});

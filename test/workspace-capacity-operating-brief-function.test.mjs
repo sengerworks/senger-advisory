@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createWorkspaceCapacityOperatingBriefHandler } from "../netlify/functions/workspace-capacity-operating-brief.mjs";
+import { WORKSPACE_ROLES } from "../workspace-authorization.js";
+const diagnosticId="22222222-2222-4222-8222-222222222222";
+const auth=role=>async()=>({ok:true,value:{workspaceId:"11111111-1111-4111-8111-111111111111",userId:"user_sponsor",role}});
+const request=(method="GET",body)=>new Request(`https://example.com/api/workspace/capacity-operating-brief?diagnosticId=${diagnosticId}`,{method,headers:{origin:"https://example.com",...(body?{"content-type":"application/json"}:{})},body:body?JSON.stringify(body):undefined});
+test("client roles read the Brief while only the sponsor activates it",async()=>{let received;const owner=createWorkspaceCapacityOperatingBriefHandler({authenticate:auth(WORKSPACE_ROLES.owner),get:async()=>({state:"ready",brief:null}),activate:async value=>{received=value;return{briefId:"brief-1",status:"active"};}});assert.equal((await owner(request())).status,200);assert.equal((await owner(request("POST",{diagnosticId}))).status,201);assert.equal(received.diagnosticId,diagnosticId);const facilitator=createWorkspaceCapacityOperatingBriefHandler({authenticate:auth(WORKSPACE_ROLES.facilitator),get:async()=>({state:"active"})});assert.equal((await facilitator(request())).status,200);assert.equal((await facilitator(request("POST",{diagnosticId}))).status,403);});
+test("Brief access blocks participants, foreign origins, malformed input, and unsupported methods",async()=>{const handler=createWorkspaceCapacityOperatingBriefHandler({authenticate:auth(WORKSPACE_ROLES.participant)});assert.equal((await handler(request())).status,403);assert.equal((await handler(new Request(`https://example.com/api/workspace/capacity-operating-brief?diagnosticId=${diagnosticId}`,{headers:{origin:"https://attacker.example"}}))).status,403);assert.equal((await handler(request("DELETE"))).status,405);});
+

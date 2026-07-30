@@ -54,6 +54,58 @@ const elements = {
   diagnosticCollectionProgress: document.querySelector("[data-diagnostic-collection-progress]"),
   diagnosticInvitationSlots: document.querySelector("[data-diagnostic-invitation-slots]"),
   diagnosticInvitationMessage: document.querySelector("[data-diagnostic-invitation-message]"),
+  leadershipValidation: document.querySelector("[data-leadership-validation]"),
+  leadershipReleaseState: document.querySelector("[data-leadership-release-state]"),
+  leadershipFinding: document.querySelector("[data-leadership-finding]"),
+  leadershipValidationForm: document.querySelector("[data-leadership-validation-form]"),
+  leadershipValidationMessage: document.querySelector("[data-leadership-validation-message]"),
+  closeLeadershipValidation: document.querySelector("[data-close-leadership-validation]"),
+  interventionAcceptance: document.querySelector("[data-intervention-acceptance]"),
+  clientInterventionProposal: document.querySelector("[data-client-intervention-proposal]"),
+  clientInterventionAcceptance: document.querySelector("[data-client-intervention-acceptance]"),
+  interventionCheckout: document.querySelector("[data-intervention-checkout]"),
+  interventionAcceptanceMessage: document.querySelector("[data-intervention-acceptance-message]"),
+  closeInterventionAcceptance: document.querySelector("[data-close-intervention-acceptance]"),
+  capacityBrief: document.querySelector("[data-capacity-brief]"),
+  capacityBriefContent: document.querySelector("[data-capacity-brief-content]"),
+  activateCapacityBrief: document.querySelector("[data-activate-capacity-brief]"),
+  capacityBriefMessage: document.querySelector("[data-capacity-brief-message]"),
+  capacityBriefAttention: document.querySelector("[data-capacity-brief-attention]"),
+  capacityAttentionHeading: document.querySelector("[data-capacity-attention-heading]"),
+  capacityAttentionList: document.querySelector("[data-capacity-attention-list]"),
+  advisorEscalation: document.querySelector("[data-advisor-escalation]"),
+  advisorEscalationForm: document.querySelector("[data-advisor-escalation-form]"),
+  advisorEscalationList: document.querySelector("[data-advisor-escalation-list]"),
+  advisorEscalationMessage: document.querySelector("[data-advisor-escalation-message]"),
+  decisionHistory: document.querySelector("[data-decision-history]"),
+  decisionHistoryList: document.querySelector("[data-decision-history-list]"),
+  decisionHistoryMessage: document.querySelector("[data-decision-history-message]"),
+  closeCapacityBrief: document.querySelector("[data-close-capacity-brief]"),
+  capacityLearningPath: document.querySelector("[data-capacity-learning-path]"),
+  capacityLearningForm: document.querySelector("[data-capacity-learning-form]"),
+  capacityLearningList: document.querySelector("[data-capacity-learning-list]"),
+  capacityLearningMessage: document.querySelector("[data-capacity-learning-message]"),
+  capacityActionPath: document.querySelector("[data-capacity-action-path]"),
+  capacityActionForm: document.querySelector("[data-capacity-action-form]"),
+  capacityActionList: document.querySelector("[data-capacity-action-list]"),
+  capacityActionMessage: document.querySelector("[data-capacity-action-message]"),
+  capacityCheckIns: document.querySelector("[data-capacity-check-ins]"),
+  capacityCheckInForm: document.querySelector("[data-capacity-check-in-form]"),
+  capacityCheckInList: document.querySelector("[data-capacity-check-in-list]"),
+  capacityCheckInMessage: document.querySelector("[data-capacity-check-in-message]"),
+  capacityEvidenceJournal: document.querySelector("[data-capacity-evidence-journal]"),
+  capacityEvidenceForm: document.querySelector("[data-capacity-evidence-form]"),
+  capacityEvidenceList: document.querySelector("[data-capacity-evidence-list]"),
+  capacityEvidenceMessage: document.querySelector("[data-capacity-evidence-message]"),
+  capacityReviewJournal: document.querySelector("[data-capacity-review-journal]"),
+  capacityReviewForm: document.querySelector("[data-capacity-review-form]"),
+  capacityReviewList: document.querySelector("[data-capacity-review-list]"),
+  capacityReviewMessage: document.querySelector("[data-capacity-review-message]"),
+  reassessmentPlanning: document.querySelector("[data-reassessment-planning]"),
+  reassessmentForm: document.querySelector("[data-reassessment-form]"),
+  reassessmentSummary: document.querySelector("[data-reassessment-summary]"),
+  reassessmentComparison: document.querySelector("[data-reassessment-comparison]"),
+  reassessmentMessage: document.querySelector("[data-reassessment-message]"),
   collectionPanel: document.querySelector("[data-collection-panel]"),
   collectionForm: document.querySelector("[data-collection-form]"),
   collectionMessage: document.querySelector("[data-collection-message]"),
@@ -113,6 +165,8 @@ const elements = {
 let clerk = null;
 let signInMounted = false;
 let currentRole = null;
+let clerkContextKey = "";
+let workspaceRenderPromise = null;
 let collectionRounds = [];
 let editingRoundId = null;
 let followUpRoundId = null;
@@ -327,9 +381,9 @@ function renderDiagnostics(diagnostics) {
     action.type = "button";
     action.dataset.diagnosticId = diagnostic.id;
     action.dataset.diagnosticStage = diagnostic.state;
-    action.disabled = diagnostic.entitlementStatus !== "active";
+    action.disabled = diagnostic.entitlementStatus !== "active" && diagnostic.entitlementType !== "paid";
     action.textContent = diagnostic.entitlementStatus !== "active"
-      ? "Awaiting access"
+      ? diagnostic.entitlementType === "paid" ? "Complete payment" : "Awaiting access"
       : diagnostic.state === "draft" || diagnostic.state === "discovery"
         ? "Begin discovery"
         : diagnostic.state === "participant-design"
@@ -338,7 +392,15 @@ function renderDiagnostics(diagnostics) {
             ? "Review protocol"
             : diagnostic.state === "collecting"
               ? "Monitor interviews"
-              : "Review diagnostic method";
+              : new Set(["synthesis", "leadership-validation"]).has(diagnostic.state)
+                ? "Review governed finding"
+                : diagnostic.state === "intervention-proposed"
+                  ? "Review intervention proposal"
+                  : new Set(["intervention-accepted","active-intervention"]).has(diagnostic.state)
+                    ? "Open Capacity Operating Brief"
+                    : diagnostic.state === "reassessment"
+                      ? "Plan governed reassessment"
+                    : "Review diagnostic method";
     card.append(copy, status, action);
     elements.diagnosticList.append(card);
   }
@@ -573,6 +635,136 @@ async function openProtocolReview(diagnosticId) {
   }
   elements.protocolReview.scrollIntoView({ behavior: "smooth", block: "start" });
 }
+
+function leadershipList(titleText, values) {
+  const section = document.createElement("section");
+  const title = document.createElement("strong");
+  title.textContent = titleText;
+  const list = document.createElement("ul");
+  for (const value of values) {
+    const item = document.createElement("li");
+    item.textContent = value;
+    list.append(item);
+  }
+  section.append(title, list);
+  return section;
+}
+
+async function openLeadershipValidation(diagnosticId) {
+  selectedDiagnosticId = diagnosticId;
+  elements.diagnosticContext.hidden = true;
+  elements.participantDesign.hidden = true;
+  elements.protocolReview.hidden = true;
+  elements.leadershipValidation.hidden = false;
+  elements.leadershipFinding.hidden = true;
+  elements.leadershipValidationForm.hidden = true;
+  elements.leadershipFinding.replaceChildren();
+  elements.leadershipValidationMessage.textContent = "Checking collection and confidentiality gates…";
+  const data = await workspaceRequest(`/api/workspace/diagnostic-leadership-validation?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  if (data.state !== "ready") {
+    const reason = data.reason === "advisor-validation"
+      ? "The protected synthesis still requires advisor approval."
+      : data.reason === "evidence-review"
+        ? "Disclosure review must finish before any organizational finding can appear."
+        : `Organizational findings remain withheld until every assigned perspective is complete and at least ${data.requiredCompleted} perspectives have contributed.`;
+    elements.leadershipReleaseState.textContent = reason;
+    elements.leadershipReleaseState.dataset.state = "withheld";
+    elements.leadershipValidationMessage.textContent = "No participant-level or organizational finding data has been released.";
+    elements.leadershipValidation.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  elements.leadershipReleaseState.textContent = `${data.confidentiality.completed} completed perspectives · Identity protected · Raw responses excluded`;
+  elements.leadershipReleaseState.dataset.state = "ready";
+  const hypothesis = document.createElement("article");
+  const heading = document.createElement("strong");
+  heading.textContent = `Organizational constraint hypothesis · ${data.finding.confidence} confidence`;
+  const statement = document.createElement("p");
+  statement.textContent = data.finding.hypothesis.statement;
+  const basis = document.createElement("p");
+  basis.textContent = `Confidence basis: ${data.finding.hypothesis.confidenceBasis}`;
+  const direction = document.createElement("p");
+  direction.className = "leadership-intervention-direction";
+  direction.textContent = `Intervention direction: ${data.finding.hypothesis.interventionDirection}`;
+  hypothesis.append(heading, statement, basis,
+    leadershipList("Competing explanations", data.finding.hypothesis.competingExplanations.map(item => `${item.statement} Evidence needed: ${item.evidenceNeeded}`)),
+    leadershipList("Blind spots and limitations", data.finding.hypothesis.blindSpots), direction);
+  elements.leadershipFinding.append(hypothesis);
+  for (const theme of data.finding.themes) {
+    const card = document.createElement("article");
+    const themeTitle = document.createElement("strong");
+    themeTitle.textContent = `${theme.title} · ${theme.confidence} confidence`;
+    const summary = document.createElement("p");
+    summary.textContent = theme.summary;
+    const themeBasis = document.createElement("p");
+    themeBasis.textContent = `Confidence basis: ${theme.confidenceBasis}`;
+    card.append(themeTitle, summary, themeBasis);
+    elements.leadershipFinding.append(card);
+  }
+  elements.leadershipFinding.hidden = false;
+  elements.leadershipValidationForm.hidden = Boolean(data.validation);
+  elements.leadershipValidationMessage.textContent = data.validation
+    ? data.validation.decision === "accepted"
+      ? "Leadership accepted this finding. Intervention design is the next governed gate."
+      : "Leadership requested revision. The finding has returned to protected synthesis review."
+    : "This is an organizational finding for leadership validation—not participant-level reporting or a final causal conclusion.";
+  elements.leadershipValidation.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function openInterventionAcceptance(diagnosticId) {
+  selectedDiagnosticId = diagnosticId;
+  elements.diagnosticContext.hidden = true;
+  elements.participantDesign.hidden = true;
+  elements.protocolReview.hidden = true;
+  elements.leadershipValidation.hidden = true;
+  elements.interventionAcceptance.hidden = false;
+  elements.clientInterventionAcceptance.hidden = true;
+  elements.interventionCheckout.hidden = true;
+  elements.clientInterventionProposal.replaceChildren();
+  elements.interventionAcceptanceMessage.textContent = "Loading the governed intervention proposal…";
+  const data = await workspaceRequest(`/api/workspace/diagnostic-intervention-acceptance?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  if (data.state === "blocked") {
+    elements.interventionAcceptanceMessage.textContent = "A governed intervention proposal is not yet available.";
+    return;
+  }
+  const proposal = data.intervention;
+  const heading = document.createElement("article");
+  const title = document.createElement("strong"); title.textContent = proposal.objective;
+  const rationale = document.createElement("p"); rationale.textContent = proposal.rationale;
+  const scope = document.createElement("p"); scope.textContent = `Scope: ${proposal.scope}`;
+  const terms = document.createElement("p"); terms.textContent = `${proposal.serviceRoute} · ${proposal.duration} · Offer ${proposal.commercialOfferRef}`;
+  heading.append(title,rationale,scope,terms,
+    leadershipList("Operating changes",proposal.operatingChanges),
+    leadershipList("Accountable commitments",proposal.commitments.map(item=>`${item.ownerRole}: ${item.action} · ${item.timing}`)),
+    leadershipList("Learning requirements",proposal.learningRequirements.length?proposal.learningRequirements:["No separate learning requirement proposed."]),
+    leadershipList("Evidence plan",proposal.evidencePlan.map(item=>`${item.evidenceClass}: ${item.measure} · ${item.observationCadence}`)));
+  elements.clientInterventionProposal.append(heading);
+  elements.clientInterventionAcceptance.hidden=data.state!=="review"||!data.canAccept;
+  elements.interventionCheckout.hidden=data.state!=="review"||!data.paymentRequired;
+  elements.interventionAcceptanceMessage.textContent=data.state==="accepted"?"Intervention accepted. Capacity Operating Brief activation is the next gate.":data.paymentRequired?"Payment and intervention access must be verified before this proposal can be accepted.":"Review the complete scope and commercial terms before accepting.";
+  elements.interventionAcceptance.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function renderCapacityBrief(brief){elements.capacityBriefContent.replaceChildren();const focus=document.createElement("article");const focusTitle=document.createElement("strong");focusTitle.textContent="Current diagnosed constraint";const constraint=document.createElement("p");constraint.textContent=brief.currentFocus.constraint;const confidence=document.createElement("p");confidence.textContent=`${brief.currentFocus.confidence} confidence · ${brief.currentFocus.confidenceBasis}`;focus.append(focusTitle,constraint,confidence);const intervention=document.createElement("article");const interventionTitle=document.createElement("strong");interventionTitle.textContent=brief.intervention.objective;const detail=document.createElement("p");detail.textContent=`${brief.intervention.serviceRoute} · ${brief.intervention.duration} · ${brief.intervention.reviewCadence}`;intervention.append(interventionTitle,detail,leadershipList("Operating changes",brief.intervention.operatingChanges),leadershipList("Accountable commitments",brief.intervention.commitments.map(item=>`${item.ownerRole}: ${item.action} · ${item.timing}`)),leadershipList("Evidence plan",brief.intervention.evidencePlan.map(item=>`${item.evidenceClass}: ${item.measure} · ${item.observationCadence}`)));const uncertainty=document.createElement("article");const uncertaintyTitle=document.createElement("strong");uncertaintyTitle.textContent="Uncertainty kept visible";uncertainty.append(uncertaintyTitle,leadershipList("Competing explanations",brief.uncertainty.competingExplanations.map(item=>item.statement)),leadershipList("Blind spots",brief.uncertainty.blindSpots));elements.capacityBriefContent.append(focus,intervention,uncertainty);}
+function renderCapacityAttention(data){elements.capacityBriefAttention.hidden=data.state!=="active";if(data.state!=="active")return;elements.capacityAttentionList.replaceChildren();elements.capacityAttentionHeading.textContent=data.items.length?`${data.summary.total} item${data.summary.total===1?"":"s"} require leadership attention.`:"No current leadership decision requires attention.";for(const item of data.items){const card=document.createElement("article"),title=document.createElement("strong"),summary=document.createElement("p"),decision=document.createElement("p");title.textContent=`${item.priority} priority · ${item.title}`;summary.textContent=item.summary;decision.textContent=`Decision needed: ${item.decisionNeeded||"Review the item and establish the next accountable action."}`;card.append(title,summary,decision);if(item.dueAt){const due=document.createElement("small");due.textContent=`Due ${formattedDate(item.dueAt)}`;card.append(due);}elements.capacityAttentionList.append(card);}}
+async function loadCapacityAttention(){renderCapacityAttention(await workspaceRequest(`/api/workspace/capacity-brief-attention?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`));}
+function renderAdvisorEscalations(data){elements.advisorEscalation.hidden=data.state!=="active";if(data.state!=="active")return;elements.advisorEscalationList.replaceChildren();for(const item of data.requests){const card=document.createElement("article"),title=document.createElement("strong"),context=document.createElement("p"),outcome=document.createElement("p");title.textContent=`${item.supportType} · ${item.urgency} · ${item.status}`;context.textContent=item.context;outcome.textContent=`Desired outcome: ${item.desiredOutcome}`;card.append(title,context,outcome);elements.advisorEscalationList.append(card);}const active=data.requests.some(x=>["requested","contacted"].includes(x.status));elements.advisorEscalationForm.hidden=active;elements.advisorEscalationMessage.textContent=active?"Advisor support has been requested. The existing diagnostic and intervention history remain unchanged.":"Use this only when the platform-guided route needs targeted human judgment or delivery support.";}
+async function loadAdvisorEscalations(){renderAdvisorEscalations(await workspaceRequest(`/api/workspace/intervention-advisor-escalation?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`));}
+function renderDecisionHistory(data){elements.decisionHistory.hidden=data.state!=="active";if(data.state!=="active")return;elements.decisionHistoryList.replaceChildren();for(const event of data.events){const card=document.createElement("article"),title=document.createElement("strong"),summary=document.createElement("p"),date=document.createElement("small");title.textContent=`${event.title} · ${event.status}`;summary.textContent=event.summary;date.textContent=formattedDate(event.decidedAt);card.append(title,summary,date);elements.decisionHistoryList.append(card);}elements.decisionHistoryMessage.textContent=data.events.length?`${data.events.length} governed decision event${data.events.length===1?"":"s"}, newest first.`:"No governed decision events have been recorded yet.";}
+async function loadDecisionHistory(){renderDecisionHistory(await workspaceRequest(`/api/workspace/capacity-brief-decision-history?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`));}
+function renderCapacityLearning(items){elements.capacityLearningList.replaceChildren();for(const item of items){const card=document.createElement("article"),title=document.createElement("strong"),purpose=document.createElement("p"),details=document.createElement("small");title.textContent=`${item.title} · ${item.status}`;purpose.textContent=item.purpose;details.textContent=`${item.accountableRole} · Due ${formattedDate(item.dueAt)}`;card.append(title,purpose,details);if(item.status==="planned"){const prompt=document.createElement("p");prompt.textContent=`Application prompt: ${item.applicationPrompt}`;const form=document.createElement("form");form.dataset.learningCompletion=item.itemId;const note=document.createElement("textarea");note.name="applicationNote";note.minLength=20;note.maxLength=1200;note.required=true;note.placeholder="How was this applied in real work?";const complete=document.createElement("button");complete.className="secondary-button";complete.type="submit";complete.textContent="Record applied learning";form.append(note,complete);card.append(prompt,form);}else if(item.applicationNote){const note=document.createElement("p");note.textContent=`Applied learning: ${item.applicationNote}`;card.append(note);}elements.capacityLearningList.append(card);}elements.capacityLearningMessage.textContent=items.length?`${items.length} focused learning item${items.length===1?"":"s"}. Completion remains separate from outcome evidence.`:"No focused learning has been assigned yet.";}
+async function loadCapacityLearning(){const data=await workspaceRequest(`/api/workspace/capacity-brief-learning?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);elements.capacityLearningPath.hidden=data.state!=="active";if(data.state==="active"){renderCapacityLearning(data.items);if(!elements.capacityLearningForm.elements.dueAt.value){const due=new Date(Date.now()+14*24*60*60*1000-new Date().getTimezoneOffset()*60000);elements.capacityLearningForm.elements.dueAt.value=due.toISOString().slice(0,16);}}}
+function renderCapacityActions(items){elements.capacityActionList.replaceChildren();for(const item of items){const card=document.createElement("article"),title=document.createElement("strong"),commitment=document.createElement("p"),gate=document.createElement("p"),evidence=document.createElement("small");title.textContent=`Day ${item.phaseDays} · ${item.status} · ${item.accountableRole}`;commitment.textContent=item.commitment;gate.textContent=`Decision gate: ${item.decisionGate}`;evidence.textContent=`Evidence prompt: ${item.evidencePrompt} · Due ${formattedDate(item.dueAt)}`;card.append(title,commitment,gate,evidence);if(item.status==="planned"){const form=document.createElement("form");form.dataset.actionResolution=item.itemId;const note=document.createElement("textarea");note.name="resolutionNote";note.minLength=20;note.maxLength=1200;note.required=true;note.placeholder="What happened, or what is blocking the commitment?";for(const [status,label,style] of [["completed","Mark completed","secondary-button"],["blocked","Flag for attention","text-button"]]){const button=document.createElement("button");button.type="submit";button.name="status";button.value=status;button.className=style;button.textContent=label;form.append(button);}form.prepend(note);card.append(form);}else if(item.resolutionNote){const note=document.createElement("p");note.textContent=`Resolution: ${item.resolutionNote}`;card.append(note);}elements.capacityActionList.append(card);}const blocked=items.filter(x=>x.status==="blocked").length;elements.capacityActionMessage.textContent=blocked?`${blocked} commitment${blocked===1?"":"s"} flagged for leadership attention.`:items.length?`${items.length} sequenced operating commitment${items.length===1?"":"s"}.`:"No 30/60/90-day commitments have been sequenced yet.";}
+async function loadCapacityActions(){const data=await workspaceRequest(`/api/workspace/capacity-brief-action-path?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);elements.capacityActionPath.hidden=data.state!=="active";if(data.state==="active"){renderCapacityActions(data.items);if(!elements.capacityActionForm.elements.dueAt.value){const due=new Date(Date.now()+30*24*60*60*1000-new Date().getTimezoneOffset()*60000);elements.capacityActionForm.elements.dueAt.value=due.toISOString().slice(0,16);}await loadCapacityAttention();await loadAdvisorEscalations();await loadDecisionHistory();}}
+function renderCapacityCheckIns(checkIns){elements.capacityCheckInList.replaceChildren();for(const item of checkIns){const card=document.createElement("article"),title=document.createElement("strong"),prompt=document.createElement("p");title.textContent=`${item.attention?"Attention · ":""}${item.status} · ${formattedDate(item.dueAt)}`;prompt.textContent=item.prompt;card.append(title,prompt);if(item.status==="open"){const form=document.createElement("form");form.dataset.checkInResolution=item.checkInId;const note=document.createElement("textarea");note.name="note";note.minLength=20;note.maxLength=1500;note.required=true;note.placeholder="What was observed, or why does this require attention?";for(const [status,label,style] of [["responded","Record response","secondary-button"],["escalated","Escalate","text-button"]]){const button=document.createElement("button");button.type="submit";button.value=status;button.textContent=label;button.className=style;form.append(button);}form.prepend(note);card.append(form);}else{const detail=document.createElement("p");detail.textContent=item.response||item.attentionReason;card.append(detail);}elements.capacityCheckInList.append(card);}const attention=checkIns.filter(x=>x.attention).length;elements.capacityCheckInMessage.textContent=attention?`${attention} check-in${attention===1?" requires":"s require"} leadership attention.`:checkIns.length?`${checkIns.length} guided check-in${checkIns.length===1?"":"s"} scheduled or resolved.`:"No guided check-ins have been scheduled yet.";}
+async function loadCapacityCheckIns(){const data=await workspaceRequest(`/api/workspace/capacity-brief-check-ins?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);elements.capacityCheckIns.hidden=data.state!=="active";if(data.state==="active"){renderCapacityCheckIns(data.checkIns);if(!elements.capacityCheckInForm.elements.dueAt.value){const due=new Date(Date.now()+7*24*60*60*1000-new Date().getTimezoneOffset()*60000);elements.capacityCheckInForm.elements.dueAt.value=due.toISOString().slice(0,16);}await loadCapacityAttention();await loadDecisionHistory();}}
+function renderCapacityEvidence(entries){elements.capacityEvidenceList.replaceChildren();for(const entry of entries){const card=document.createElement("article");const title=document.createElement("strong");title.textContent=`${entry.evidenceClass} · ${formattedDate(entry.observedAt)}`;const observation=document.createElement("p");observation.textContent=entry.observation;const source=document.createElement("small");source.textContent=`Source: ${entry.sourceNote}`;card.append(title,observation,source);elements.capacityEvidenceList.append(card);}elements.capacityEvidenceMessage.textContent=entries.length?`${entries.length} evidence observation${entries.length===1?"":"s"} recorded.`:"No evidence observations have been recorded yet.";}
+async function loadCapacityEvidence(){const data=await workspaceRequest(`/api/workspace/capacity-brief-evidence?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);elements.capacityEvidenceJournal.hidden=data.state!=="active";if(data.state==="active"){renderCapacityEvidence(data.entries);if(!elements.capacityEvidenceForm.elements.observedAt.value){const now=new Date(Date.now()-new Date().getTimezoneOffset()*60000);elements.capacityEvidenceForm.elements.observedAt.value=now.toISOString().slice(0,16);}}}
+function renderCapacityReviews(reviews){elements.capacityReviewList.replaceChildren();for(const review of reviews){const card=document.createElement("article");const title=document.createElement("strong");title.textContent=`${review.decision} · ${formattedDate(review.createdAt)}`;const summary=document.createElement("p");summary.textContent=review.summary;const assessment=document.createElement("p");assessment.textContent=`Evidence assessment: ${review.evidenceAssessment}`;card.append(title,summary,assessment);if(review.adjustments.length)card.append(leadershipList("Adjustments",review.adjustments));if(review.nextReviewAt){const next=document.createElement("small");next.textContent=`Next review: ${formattedDate(review.nextReviewAt)}`;card.append(next);}elements.capacityReviewList.append(card);}elements.capacityReviewMessage.textContent=reviews.length?`${reviews.length} intervention review${reviews.length===1?"":"s"} recorded.`:"No formal intervention reviews have been recorded yet.";}
+async function loadCapacityReviews(){const data=await workspaceRequest(`/api/workspace/capacity-brief-reviews?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);elements.capacityReviewJournal.hidden=data.state!=="active";if(data.state==="active"){renderCapacityReviews(data.reviews);if(!elements.capacityReviewForm.elements.nextReviewAt.value){const next=new Date(Date.now()+14*24*60*60*1000-new Date().getTimezoneOffset()*60000);elements.capacityReviewForm.elements.nextReviewAt.value=next.toISOString().slice(0,16);}}}
+function renderReassessment(plan){elements.reassessmentSummary.replaceChildren();if(!plan)return;const card=document.createElement("article"),title=document.createElement("strong"),method=document.createElement("p"),coverage=document.createElement("p"),privacy=document.createElement("p");title.textContent=`Reassessment planned for ${formattedDate(plan.targetAt)}`;method.textContent=`Method ${plan.methodVersion} · Protocol ${plan.protocol.protocolVersion} · Question library ${plan.protocol.questionLibraryVersion}`;coverage.textContent=`Original coverage preserved across ${(plan.coverage.coverageObjectives?.leadershipLevels||[]).length} leadership levels, ${(plan.coverage.coverageObjectives?.executionProximities||[]).length} execution proximities, and ${(plan.coverage.coverageObjectives?.functionalLenses||[]).length} functional lenses.`;privacy.textContent="Participant identities and response content are not copied. New invitations create a separate confidential evidence set.";card.append(title,method,coverage,privacy);if(plan.status==="planned"){const activate=document.createElement("button");activate.className="primary-button";activate.type="button";activate.dataset.activateReassessment="";activate.textContent="Open reassessment collection";card.append(activate);}else{const state=document.createElement("strong");state.textContent="Reassessment collection opened";const next=document.createElement("p");next.textContent="The linked diagnostic is ready for new participant invitations. Comparison remains withheld.";card.append(state,next);}elements.reassessmentSummary.append(card);elements.reassessmentForm.hidden=true;elements.reassessmentMessage.textContent=plan.comparison.message;}
+function renderReassessmentComparison(data){elements.reassessmentComparison.replaceChildren();if(data.state!=="released")return;const value=data.comparison,card=document.createElement("article"),title=document.createElement("strong"),changed=document.createElement("p"),persisted=document.createElement("p"),emerged=document.createElement("p"),uncertainty=document.createElement("p"),implication=document.createElement("p"),trace=document.createElement("small");title.textContent=`Governed comparison · ${value.changeAssessment}`;changed.textContent=`Changed: ${value.changed}`;persisted.textContent=`Persisted: ${value.persisted}`;emerged.textContent=`Newly emerged: ${value.emerged||"No separate newly emerged pattern was established."}`;uncertainty.textContent=`Still uncertain: ${value.uncertainty}`;implication.textContent=`Leadership implication: ${value.leadershipImplication}`;trace.textContent=`Evidence trace: ${value.evidenceTrace.baselineThemeTitles.length} baseline themes · ${value.evidenceTrace.followupThemeTitles.length} reassessment themes · ${value.confidentiality.completed} confidential perspectives`;card.append(title,changed,persisted,emerged,uncertainty,implication,trace);elements.reassessmentComparison.append(card);}
+async function loadReassessment(){const data=await workspaceRequest(`/api/workspace/diagnostic-reassessment?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);elements.reassessmentPlanning.hidden=!new Set(["reassessment","completed"]).has(data.state);if(!elements.reassessmentPlanning.hidden){renderReassessment(data.plan);if(!data.plan&&!elements.reassessmentForm.elements.targetAt.value){const next=new Date(Date.now()+30*24*60*60*1000-new Date().getTimezoneOffset()*60000);elements.reassessmentForm.elements.targetAt.value=next.toISOString().slice(0,16);}if(data.plan){const comparison=await workspaceRequest(`/api/workspace/diagnostic-reassessment-comparison?baselineDiagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);renderReassessmentComparison(comparison);elements.reassessmentMessage.textContent=comparison.state==="released"?"Comparison released after method, confidentiality, advisor, leadership, and evidence-trace gates passed.":data.plan.comparison.message;}else elements.reassessmentMessage.textContent=data.comparison.message;}}
+async function openCapacityBrief(diagnosticId){selectedDiagnosticId=diagnosticId;elements.diagnosticContext.hidden=true;elements.participantDesign.hidden=true;elements.protocolReview.hidden=true;elements.leadershipValidation.hidden=true;elements.interventionAcceptance.hidden=true;elements.capacityBrief.hidden=false;elements.capacityLearningPath.hidden=true;elements.capacityActionPath.hidden=true;elements.capacityCheckIns.hidden=true;elements.capacityEvidenceJournal.hidden=true;elements.capacityReviewJournal.hidden=true;elements.reassessmentPlanning.hidden=true;elements.activateCapacityBrief.hidden=true;elements.capacityBriefContent.replaceChildren();elements.capacityBriefMessage.textContent="Preparing the Capacity Operating Brief…";const data=await workspaceRequest(`/api/workspace/capacity-operating-brief?diagnosticId=${encodeURIComponent(diagnosticId)}`);if(data.state==="blocked"){elements.capacityBriefMessage.textContent="The intervention must be accepted before the Brief can be activated.";return;}if(data.state==="ready"){elements.activateCapacityBrief.hidden=false;elements.capacityBriefMessage.textContent="The accepted intervention is ready to become the active executive workspace.";return;}renderCapacityBrief(data.brief);await loadCapacityActions();await loadCapacityCheckIns();await loadCapacityLearning();await loadCapacityEvidence();await loadCapacityReviews();await loadReassessment();elements.capacityBriefMessage.textContent=`Brief ${data.brief.briefVersion} active · Next review ${data.brief.nextReview.cadence}`;elements.capacityBrief.scrollIntoView({behavior:"smooth",block:"start"});}
 
 function diagnosticList(value) {
   return String(value || "").split(/\n+/).map(item => item.trim()).filter(Boolean);
@@ -1271,6 +1463,19 @@ async function render() {
   showState("readyState");
 }
 
+function currentClerkContextKey() {
+  return `${clerk?.user?.id || "signed-out"}:${clerk?.organization?.id || "no-organization"}`;
+}
+
+function refreshWorkspace() {
+  if (workspaceRenderPromise) return workspaceRenderPromise;
+  workspaceRenderPromise = render().finally(() => {
+    workspaceRenderPromise = null;
+    clerkContextKey = currentClerkContextKey();
+  });
+  return workspaceRenderPromise;
+}
+
 async function initialize() {
   showState("loading");
   try {
@@ -1284,19 +1489,21 @@ async function initialize() {
       await clerk.load({
         ui: { ClerkUI: window.__internal_ClerkUICtor }
       });
+      clerkContextKey = currentClerkContextKey();
       clerk.addListener(() => {
         if (currentParticipation?.kind === "diagnostic" && !elements.participantInterview.hidden) return;
-        render().catch(() => showError("The workspace could not refresh your session."));
+        if (currentClerkContextKey() === clerkContextKey) return;
+        refreshWorkspace().catch(() => showError("The workspace could not refresh your session."));
       });
     }
-    await render();
+    await refreshWorkspace();
   } catch (error) {
     showError(error instanceof Error ? error.message : "The workspace could not be prepared.");
   }
 }
 
 elements.retry.addEventListener("click", () => initialize());
-elements.refresh.addEventListener("click", () => render().catch(() => showError("The workspace could not refresh your session.")));
+elements.refresh.addEventListener("click", () => refreshWorkspace().catch(() => showError("The workspace could not refresh your session.")));
 elements.signOut.addEventListener("click", () => clerk?.signOut({ redirectUrl: "/workspace/" }));
 elements.primaryAction.addEventListener("click", () => {
   if (currentRole === "org:participant") {
@@ -1339,22 +1546,48 @@ elements.diagnosticForm.addEventListener("submit", async event => {
     elements.createDiagnostic.disabled = false;
   }
 });
+async function beginDiagnosticCheckout(diagnosticId,entitlementKind="diagnostic"){elements.diagnosticMessage.textContent="Preparing secure payment checkout…";elements.diagnosticMessage.dataset.tone="";const data=await workspaceRequest("/api/workspace/commerce-checkout",{method:"POST",body:{diagnosticId,entitlementKind}});if(!data.checkout?.checkoutUrl)throw new Error("Secure checkout did not return a destination.");window.location.assign(data.checkout.checkoutUrl);}
 elements.diagnosticList.addEventListener("click", event => {
   const button = event.target.closest("[data-diagnostic-id]");
   if (!button || button.disabled) return;
   const stage = button.dataset.diagnosticStage;
-  const operation = new Set(["draft", "discovery"]).has(stage)
+  const operation = button.textContent === "Complete payment"
+    ? beginDiagnosticCheckout(button.dataset.diagnosticId)
+    : new Set(["draft", "discovery"]).has(stage)
     ? openDiagnosticContext(button.dataset.diagnosticId)
     : stage === "participant-design"
       ? openParticipantDesign(button.dataset.diagnosticId)
-      : openProtocolReview(button.dataset.diagnosticId);
+      : new Set(["synthesis", "leadership-validation"]).has(stage)
+        ? openLeadershipValidation(button.dataset.diagnosticId)
+        : stage === "intervention-proposed"
+          ? openInterventionAcceptance(button.dataset.diagnosticId)
+          : new Set(["intervention-accepted","active-intervention","reassessment"]).has(stage)
+            ? openCapacityBrief(button.dataset.diagnosticId)
+            : openProtocolReview(button.dataset.diagnosticId);
   operation.catch(error => {
-    const message = stage === "participant-design"
+    const isCheckout=button.textContent==="Complete payment";
+    const message = isCheckout
+      ? elements.diagnosticMessage
+      : new Set(["intervention-accepted","active-intervention","reassessment"]).has(stage)
+      ? elements.capacityBriefMessage
+      : stage === "intervention-proposed"
+      ? elements.interventionAcceptanceMessage
+      : new Set(["synthesis", "leadership-validation"]).has(stage)
+      ? elements.leadershipValidationMessage
+      : stage === "participant-design"
       ? elements.participantDesignMessage
       : new Set(["draft", "discovery"]).has(stage)
         ? elements.diagnosticContextMessage
         : elements.protocolMessage;
-    const surface = stage === "participant-design"
+    const surface = isCheckout
+      ? elements.diagnosticPanel
+      : new Set(["intervention-accepted","active-intervention"]).has(stage)
+      ? elements.capacityBrief
+      : stage === "intervention-proposed"
+      ? elements.interventionAcceptance
+      : new Set(["synthesis", "leadership-validation"]).has(stage)
+      ? elements.leadershipValidation
+      : stage === "participant-design"
       ? elements.participantDesign
       : new Set(["draft", "discovery"]).has(stage)
         ? elements.diagnosticContext
@@ -1363,6 +1596,56 @@ elements.diagnosticList.addEventListener("click", event => {
     message.textContent = error.message;
     message.dataset.tone = "error";
   });
+});
+elements.closeLeadershipValidation.addEventListener("click", () => {
+  selectedDiagnosticId = null;
+  elements.leadershipValidation.hidden = true;
+});
+elements.closeInterventionAcceptance.addEventListener("click",()=>{selectedDiagnosticId=null;elements.interventionAcceptance.hidden=true;});
+elements.closeCapacityBrief.addEventListener("click",()=>{selectedDiagnosticId=null;elements.capacityBrief.hidden=true;});
+elements.activateCapacityBrief.addEventListener("click",async()=>{if(!selectedDiagnosticId)return;elements.activateCapacityBrief.disabled=true;elements.capacityBriefMessage.textContent="Verifying the accepted intervention and activating the Brief…";try{const data=await workspaceRequest("/api/workspace/capacity-operating-brief",{method:"POST",body:{diagnosticId:selectedDiagnosticId}});renderCapacityBrief(data.brief);elements.activateCapacityBrief.hidden=true;await loadCapacityActions();await loadCapacityCheckIns();await loadCapacityLearning();await loadCapacityEvidence();await loadCapacityReviews();elements.capacityBriefMessage.textContent=`Brief ${data.brief.briefVersion} active · Next review ${data.brief.nextReview.cadence}`;await loadDiagnostics();}catch(error){elements.capacityBriefMessage.textContent=error.message;elements.activateCapacityBrief.disabled=false;}});
+elements.capacityActionForm.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.capacityActionForm.reportValidity())return;const values=Object.fromEntries(new FormData(elements.capacityActionForm)),button=elements.capacityActionForm.querySelector("button");button.disabled=true;elements.capacityActionMessage.textContent="Adding the operating commitment…";try{await workspaceRequest("/api/workspace/capacity-brief-action-path",{method:"POST",body:{diagnosticId:selectedDiagnosticId,phaseDays:Number(values.phaseDays),commitment:values.commitment,accountableRole:values.accountableRole,decisionGate:values.decisionGate,evidencePrompt:values.evidencePrompt,dueAt:new Date(values.dueAt).toISOString()}});elements.capacityActionForm.reset();await loadCapacityActions();}catch(error){elements.capacityActionMessage.textContent=error.message;}finally{button.disabled=false;}});
+elements.capacityActionList.addEventListener("submit",async event=>{const form=event.target.closest("[data-action-resolution]");if(!form)return;event.preventDefault();if(!form.reportValidity())return;const submitter=event.submitter;if(!submitter)return;submitter.disabled=true;try{await workspaceRequest("/api/workspace/capacity-brief-action-path",{method:"PATCH",body:{itemId:form.dataset.actionResolution,status:submitter.value,resolutionNote:form.elements.resolutionNote.value}});await loadCapacityActions();}catch(error){elements.capacityActionMessage.textContent=error.message;submitter.disabled=false;}});
+elements.capacityCheckInForm.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.capacityCheckInForm.reportValidity())return;const values=Object.fromEntries(new FormData(elements.capacityCheckInForm)),button=elements.capacityCheckInForm.querySelector("button");button.disabled=true;try{await workspaceRequest("/api/workspace/capacity-brief-check-ins",{method:"POST",body:{diagnosticId:selectedDiagnosticId,prompt:values.prompt,dueAt:new Date(values.dueAt).toISOString()}});elements.capacityCheckInForm.reset();await loadCapacityCheckIns();}catch(error){elements.capacityCheckInMessage.textContent=error.message;}finally{button.disabled=false;}});
+elements.capacityCheckInList.addEventListener("submit",async event=>{const form=event.target.closest("[data-check-in-resolution]");if(!form)return;event.preventDefault();if(!form.reportValidity())return;const submitter=event.submitter;if(!submitter)return;submitter.disabled=true;const note=form.elements.note.value;try{await workspaceRequest("/api/workspace/capacity-brief-check-ins",{method:"PATCH",body:{checkInId:form.dataset.checkInResolution,status:submitter.value,response:submitter.value==="responded"?note:null,attentionReason:submitter.value==="escalated"?note:null}});await loadCapacityCheckIns();}catch(error){elements.capacityCheckInMessage.textContent=error.message;submitter.disabled=false;}});
+elements.advisorEscalationForm.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.advisorEscalationForm.reportValidity())return;const values=Object.fromEntries(new FormData(elements.advisorEscalationForm)),button=elements.advisorEscalationForm.querySelector("button");button.disabled=true;elements.advisorEscalationMessage.textContent="Recording the advisor-support request…";try{await workspaceRequest("/api/workspace/intervention-advisor-escalation",{method:"POST",body:{diagnosticId:selectedDiagnosticId,supportType:values.supportType,urgency:values.urgency,context:values.context,desiredOutcome:values.desiredOutcome}});elements.advisorEscalationForm.reset();await loadAdvisorEscalations();await loadDecisionHistory();}catch(error){elements.advisorEscalationMessage.textContent=error.message;}finally{button.disabled=false;}});
+elements.capacityLearningForm.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.capacityLearningForm.reportValidity())return;const values=Object.fromEntries(new FormData(elements.capacityLearningForm)),button=elements.capacityLearningForm.querySelector("button");button.disabled=true;elements.capacityLearningMessage.textContent="Adding focused learning to the intervention…";try{await workspaceRequest("/api/workspace/capacity-brief-learning",{method:"POST",body:{diagnosticId:selectedDiagnosticId,title:values.title,purpose:values.purpose,accountableRole:values.accountableRole,dueAt:new Date(values.dueAt).toISOString(),applicationPrompt:values.applicationPrompt}});elements.capacityLearningForm.reset();await loadCapacityLearning();}catch(error){elements.capacityLearningMessage.textContent=error.message;}finally{button.disabled=false;}});
+elements.capacityLearningList.addEventListener("submit",async event=>{const form=event.target.closest("[data-learning-completion]");if(!form)return;event.preventDefault();if(!form.reportValidity())return;const button=form.querySelector("button");button.disabled=true;try{await workspaceRequest("/api/workspace/capacity-brief-learning",{method:"PATCH",body:{itemId:form.dataset.learningCompletion,status:"completed",applicationNote:form.elements.applicationNote.value}});await loadCapacityLearning();}catch(error){elements.capacityLearningMessage.textContent=error.message;button.disabled=false;}});
+elements.capacityEvidenceForm.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.capacityEvidenceForm.reportValidity())return;const values=Object.fromEntries(new FormData(elements.capacityEvidenceForm));const button=elements.capacityEvidenceForm.querySelector("button");button.disabled=true;elements.capacityEvidenceMessage.textContent="Recording the evidence observation…";try{await workspaceRequest("/api/workspace/capacity-brief-evidence",{method:"POST",body:{diagnosticId:selectedDiagnosticId,evidenceClass:values.evidenceClass,observation:values.observation,sourceNote:values.sourceNote,observedAt:new Date(values.observedAt).toISOString()}});elements.capacityEvidenceForm.elements.observation.value="";elements.capacityEvidenceForm.elements.sourceNote.value="";await loadCapacityEvidence();}catch(error){elements.capacityEvidenceMessage.textContent=error.message;}finally{button.disabled=false;}});
+elements.capacityReviewForm.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.capacityReviewForm.reportValidity())return;const values=Object.fromEntries(new FormData(elements.capacityReviewForm)),ongoing=new Set(["continue","adjust","escalate"]);const button=elements.capacityReviewForm.querySelector("button");button.disabled=true;elements.capacityReviewMessage.textContent="Recording the intervention review…";try{await workspaceRequest("/api/workspace/capacity-brief-reviews",{method:"POST",body:{diagnosticId:selectedDiagnosticId,decision:values.decision,summary:values.summary,evidenceAssessment:values.evidenceAssessment,adjustments:lines(values.adjustments),nextReviewAt:ongoing.has(values.decision)&&values.nextReviewAt?new Date(values.nextReviewAt).toISOString():null}});elements.capacityReviewForm.elements.summary.value="";elements.capacityReviewForm.elements.evidenceAssessment.value="";elements.capacityReviewForm.elements.adjustments.value="";await loadCapacityReviews();await loadDiagnostics();}catch(error){elements.capacityReviewMessage.textContent=error.message;}finally{button.disabled=false;}});
+elements.reassessmentForm.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.reassessmentForm.reportValidity())return;const values=Object.fromEntries(new FormData(elements.reassessmentForm)),button=elements.reassessmentForm.querySelector("button");button.disabled=true;elements.reassessmentMessage.textContent="Preserving the baseline method and planning reassessment…";try{const data=await workspaceRequest("/api/workspace/diagnostic-reassessment",{method:"POST",body:{diagnosticId:selectedDiagnosticId,targetAt:new Date(values.targetAt).toISOString(),planningNote:values.planningNote}});renderReassessment(data.plan);}catch(error){elements.reassessmentMessage.textContent=error.message;}finally{button.disabled=false;}});
+elements.reassessmentSummary.addEventListener("click",async event=>{const button=event.target.closest("[data-activate-reassessment]");if(!button||!selectedDiagnosticId)return;button.disabled=true;elements.reassessmentMessage.textContent="Opening a separate confidential reassessment collection…";try{const data=await workspaceRequest("/api/workspace/diagnostic-reassessment",{method:"PUT",body:{diagnosticId:selectedDiagnosticId}});renderReassessment(data.plan);await loadDiagnostics();elements.reassessmentMessage.textContent="Reassessment collection opened. Assign new invitations from the linked diagnostic; baseline identities and responses were not copied.";}catch(error){elements.reassessmentMessage.textContent=error.message;button.disabled=false;}});
+elements.clientInterventionAcceptance.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.clientInterventionAcceptance.reportValidity())return;const button=elements.clientInterventionAcceptance.querySelector("button");button.disabled=true;elements.interventionAcceptanceMessage.textContent="Verifying entitlement and recording acceptance…";try{await workspaceRequest("/api/workspace/diagnostic-intervention-acceptance",{method:"POST",body:{diagnosticId:selectedDiagnosticId,scopeAccepted:elements.clientInterventionAcceptance.elements.scopeAccepted.checked,commercialTermsAccepted:elements.clientInterventionAcceptance.elements.commercialTermsAccepted.checked}});elements.clientInterventionAcceptance.hidden=true;elements.interventionAcceptanceMessage.textContent="Intervention accepted. Capacity Operating Brief activation is the next gate.";await loadDiagnostics();}catch(error){elements.interventionAcceptanceMessage.textContent=error.message;button.disabled=false;}});
+elements.interventionCheckout.addEventListener("click",async()=>{if(!selectedDiagnosticId)return;elements.interventionCheckout.disabled=true;elements.interventionAcceptanceMessage.textContent="Preparing secure intervention checkout…";try{await beginDiagnosticCheckout(selectedDiagnosticId,"intervention");}catch(error){elements.interventionAcceptanceMessage.textContent=error.message;elements.interventionCheckout.disabled=false;}});
+elements.leadershipValidationForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  const submitter = event.submitter;
+  if (!submitter || !selectedDiagnosticId || !elements.leadershipValidationForm.reportValidity()) return;
+  const values = Object.fromEntries(new FormData(elements.leadershipValidationForm));
+  for (const button of elements.leadershipValidationForm.querySelectorAll("button")) button.disabled = true;
+  elements.leadershipValidationMessage.textContent = "Recording the leadership validation decision…";
+  try {
+    const data = await workspaceRequest("/api/workspace/diagnostic-leadership-validation", { method: "POST", body: {
+      diagnosticId: selectedDiagnosticId,
+      resonance: values.resonance,
+      completeness: values.completeness,
+      surprised: elements.leadershipValidationForm.elements.surprised.checked,
+      missingEvidence: values.missingEvidence || "",
+      materialObjection: elements.leadershipValidationForm.elements.materialObjection.checked,
+      objection: values.objection || "",
+      decision: submitter.value,
+      decisionNote: values.decisionNote
+    }});
+    elements.leadershipValidationForm.hidden = true;
+    elements.leadershipValidationMessage.textContent = data.validation.decision === "accepted"
+      ? "Finding accepted. Intervention design is the next governed gate."
+      : "Revision requested. The finding has returned to protected synthesis review.";
+    await loadDiagnostics();
+  } catch (error) {
+    elements.leadershipValidationMessage.textContent = error.message;
+    elements.leadershipValidationMessage.dataset.tone = "error";
+    for (const button of elements.leadershipValidationForm.querySelectorAll("button")) button.disabled = false;
+  }
 });
 elements.closeDiagnosticContext.addEventListener("click", () => {
   selectedDiagnosticId = null;

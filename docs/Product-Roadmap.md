@@ -56,6 +56,15 @@
 - Add evidence traceability, competing explanations, contradictions, blind spots, diagnostic
   confidence, retention, deletion, and human-escalation rules
 - Produce one versioned diagnostic record and recommended intervention across both routes
+- Make advisor synthesis validation a governed, audited gate distinct from client leadership validation
+
+## Cross-cutting — Security, privacy, and confidentiality
+- Maintain a data-flow map, threat model, control inventory, and internal technical-security brief
+- Enforce identity/content separation, tenant isolation, least privilege, time-bounded advisor access, and auditability
+- Calibrate minimum-cohort, small-segment, quotation, and deductive-identification protections through POCs
+- Implement production retention, deletion, backup restoration, incident response, monitoring, and secrets management
+- Publish buyer-facing security, subprocessor, data-handling, and incident-contact information before launch
+- Complete independent penetration testing before broad enterprise availability and pursue SOC 2 when operating maturity warrants it
 
 ## Phase 5 — Capacity Operating Brief and guided intervention
 - Replace the generic dashboard concept with a living executive Capacity Operating Brief
@@ -66,12 +75,28 @@
   Decision History views with progressive disclosure
 - Add platform-guided intervention options, 30/60/90-day action paths, just-in-time learning,
   templates, evidence prompts, check-ins, and escalation signals
+- Add a governed Learning Path that ties just-in-time learning to accountable roles, due dates,
+  real-work application prompts, and auditable completion without treating completion as capacity evidence
+- Sequence accepted interventions into governed 30/60/90-day commitments with accountable roles,
+  decision gates, evidence prompts, and explicit blocked-item escalation
+- Add governed check-ins that collect bounded operating observations and surface overdue or
+  explicitly escalated items without treating self-reported progress as capacity evidence
+- Consolidate blocked commitments, overdue and escalated check-ins, overdue reviews, and due
+  reassessments into a concise executive attention layer at the top of the Operating Brief
+- Let platform-guided clients request targeted advisor facilitation, coaching, learning design,
+  or intervention review without restarting or fragmenting the governed intervention history
+- Give time-bounded assigned advisors a governed request queue to acknowledge and close support
+  escalations while preserving least privilege and the shared engagement history
+- Present leadership validation, intervention acceptance, reviews, action resolutions, check-in
+  decisions, and advisor-support handling in one participant-free Decision History
 - Give automated and advisor-led customers the same client-facing Brief while providing
   advisors additional governed facilitation and intervention controls
 - Let customers escalate from automated to advisor-led service without losing diagnostic,
   intervention, evidence, decision, or reassessment history
 - Govern automated recommendations as testable hypotheses rather than prescriptions or causal
   conclusions
+- Activate separate diagnostic and intervention entitlements only through verified hosted-checkout
+  webhooks; retain explicit no-charge POC entitlements without treating browser returns as payment
 
 ## Phase 6 — Co-branded partner platform
 - Add a platform → partner → client-organization tenancy hierarchy with strict cross-client

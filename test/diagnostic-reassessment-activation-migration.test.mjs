@@ -1,0 +1,3 @@
+import test from "node:test";import assert from "node:assert/strict";import {readFile} from "node:fs/promises";const sql=await readFile(new URL("../db/migrations/020_activate_diagnostic_reassessment.sql",import.meta.url),"utf8");
+test("reassessment activation links exactly one follow-up diagnostic",()=>{assert.match(sql,/followup_diagnostic_id uuid/);assert.match(sql,/REFERENCES app_shared\.diagnostics/);assert.match(sql,/CREATE UNIQUE INDEX diagnostic_reassessment_followup_idx/);assert.match(sql,/activated_at timestamptz/);});
+test("planned reassessments cannot claim an activated collection",()=>{assert.match(sql,/status='planned'/);assert.match(sql,/followup_diagnostic_id IS NULL AND activated_at IS NULL/);});

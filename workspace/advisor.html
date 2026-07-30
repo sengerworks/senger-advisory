@@ -34,6 +34,65 @@
         <p class="form-message" data-preparation-message></p>
         <div class="advisor-progress" data-evidence-progress></div>
         <div class="advisor-evidence" data-evidence-list></div>
+        <section class="advisor-synthesis" data-synthesis-section hidden>
+          <div>
+            <p class="card-kicker">Protected synthesis</p>
+            <h2>Draft the constraint hypothesis</h2>
+            <p>Only advisor-approved de-identified evidence enters this draft. Client release remains blocked until leadership validation.</p>
+          </div>
+          <button class="primary-button" type="button" data-create-synthesis>Create synthesis draft</button>
+          <p class="form-message" data-synthesis-message></p>
+          <div data-synthesis-result></div>
+          <form class="advisor-synthesis-review" data-synthesis-review hidden>
+            <div>
+              <p class="card-kicker">Advisor validation</p>
+              <h3>Decide whether this draft is ready for leadership validation.</h3>
+              <p>Approval confirms the draft faithfully represents the protected evidence and its uncertainty. It does not release the finding or replace client leadership validation.</p>
+            </div>
+            <label>Advisor review note<textarea data-synthesis-review-note maxlength="1200" placeholder="Record rationale, cautions, or required changes."></textarea></label>
+            <div class="advisor-review-actions">
+              <button class="primary-button" type="submit" name="decision" value="approved">Approve for leadership validation</button>
+              <button class="text-button" type="submit" name="decision" value="revision-required">Request revision</button>
+            </div>
+          </form>
+        </section>
+        <section class="advisor-synthesis" data-comparison-section hidden>
+          <div><p class="card-kicker">Governed reassessment comparison</p><h2>Release only evidence-traceable change.</h2><p>Describe what changed, persisted, emerged, and remains uncertain. This record cannot claim that the intervention caused the observed difference.</p></div>
+          <form class="advisor-synthesis-review" data-comparison-form hidden>
+            <label>Change assessment<select name="changeAssessment" required><option value="material-shift">Material shift</option><option value="directional-shift">Directional shift</option><option value="persistent">Persistent</option><option value="mixed">Mixed</option><option value="insufficient-evidence">Insufficient evidence</option></select></label><label>What changed<textarea name="changed" minlength="40" maxlength="1200" required></textarea></label><label>What persisted<textarea name="persisted" minlength="40" maxlength="1200" required></textarea></label><label>What newly emerged<textarea name="emerged" maxlength="1200"></textarea></label><label>What remains uncertain<textarea name="uncertainty" minlength="40" maxlength="1200" required></textarea></label><label>Leadership implication<textarea name="leadershipImplication" minlength="40" maxlength="1200" required></textarea></label><label>Baseline themes cited <small>One exact governed title per line</small><textarea name="baselineThemeTitles" required></textarea></label><label>Reassessment themes cited <small>One exact governed title per line</small><textarea name="followupThemeTitles" required></textarea></label><button class="primary-button" type="submit">Release governed comparison</button>
+          </form><div data-comparison-themes></div><p class="form-message" data-comparison-message></p>
+        </section>
+        <section class="advisor-intervention" data-intervention-section hidden>
+          <div>
+            <p class="card-kicker">Governed intervention design</p>
+            <h2>Translate the validated finding into a bounded intervention.</h2>
+            <p data-intervention-message></p>
+          </div>
+          <div data-intervention-status></div>
+          <form class="advisor-intervention-form" data-intervention-form hidden>
+            <label><span>Delivery route</span><select name="serviceRoute" required><option value="platform-guided">Platform-guided intervention</option><option value="advisor-guided">Advisor-guided intervention</option></select></label>
+            <label><span>Intervention objective</span><textarea name="objective" minlength="40" maxlength="800" required></textarea></label>
+            <label><span>Evidence-based rationale</span><textarea name="rationale" minlength="40" maxlength="1200" required></textarea></label>
+            <label><span>Bounded scope</span><textarea name="scope" minlength="40" maxlength="1200" required></textarea></label>
+            <label><span>Operating changes <small>One per line</small></span><textarea name="operatingChanges" maxlength="6000" required></textarea></label>
+            <fieldset><legend>Accountable commitment</legend>
+              <label><span>Action</span><textarea name="commitmentAction" minlength="20" maxlength="500" required></textarea></label>
+              <label><span>Owner role</span><input name="commitmentOwnerRole" maxlength="120" required /></label>
+              <label><span>Timing</span><input name="commitmentTiming" maxlength="120" required /></label>
+            </fieldset>
+            <label><span>Learning requirements <small>One per line; optional</small></span><textarea name="learningRequirements" maxlength="6000"></textarea></label>
+            <fieldset class="advisor-evidence-plan"><legend>Evidence plan</legend>
+              <div><strong>Delivery</strong><input name="deliveryMeasure" minlength="20" maxlength="500" placeholder="What will show that the intervention was delivered?" required /><input name="deliveryCadence" maxlength="120" placeholder="Observation cadence" required /></div>
+              <div><strong>Observed operating change</strong><input name="operatingMeasure" minlength="20" maxlength="500" placeholder="What operating behavior or result should change?" required /><input name="operatingCadence" maxlength="120" placeholder="Observation cadence" required /></div>
+              <div><strong>Reassessed capacity change</strong><input name="capacityMeasure" minlength="20" maxlength="500" placeholder="How will organizational capacity be reassessed?" required /><input name="capacityCadence" maxlength="120" placeholder="Observation cadence" required /></div>
+            </fieldset>
+            <label><span>Review cadence</span><input name="reviewCadence" maxlength="200" required /></label>
+            <label><span>Intervention duration</span><input name="duration" maxlength="120" required /></label>
+            <label><span>Commercial offer reference</span><input name="commercialOfferRef" maxlength="120" required /></label>
+            <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Create governed proposal</button><p class="form-message" data-intervention-form-message></p></div>
+          </form>
+        </section>
+        <section class="advisor-intervention" data-escalation-queue hidden><div><p class="card-kicker">Advisor support queue</p><h2>Respond within the bounded assignment.</h2><p>These requests preserve the existing intervention history and do not grant participant-content access.</p></div><div class="advisor-evidence" data-escalation-list></div><p class="form-message" data-escalation-message></p></section>
       </section>
     </section>
   </main>

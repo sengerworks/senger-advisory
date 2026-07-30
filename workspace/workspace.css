@@ -332,6 +332,57 @@ h2 {
 .diagnostic-context-approved strong { color: #315a38; }
 .diagnostic-context-approved p { margin: 8px 0; }
 .diagnostic-context-approved span { color: var(--ink-soft); font-size: .78rem; }
+.leadership-release-state { margin-top: 22px; padding: 14px 16px; border-radius: 10px; font-size: .8rem; font-weight: 800; }
+.leadership-release-state[data-state="withheld"] { border: 1px solid #d8c7ac; background: #fff9ef; color: #70562e; }
+.leadership-release-state[data-state="ready"] { border: 1px solid #b9d0bc; background: #edf4ec; color: #315a38; }
+.leadership-finding { display: grid; gap: 12px; margin-top: 18px; }
+.leadership-finding article { display: grid; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.leadership-finding p { margin: 0; color: var(--ink-soft); line-height: 1.6; }
+.leadership-finding section { display: grid; gap: 6px; }
+.leadership-finding ul { margin: 0; padding-left: 20px; color: var(--ink-soft); line-height: 1.55; }
+.leadership-intervention-direction { padding-top: 10px; border-top: 1px solid var(--line); color: var(--ink) !important; font-weight: 700; }
+.leadership-validation-form { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
+.leadership-validation-form fieldset { display: grid; gap: 8px; margin: 0; padding: 16px; border: 1px solid var(--line); border-radius: 10px; }
+.leadership-validation-form legend { padding: 0 6px; font-weight: 800; }
+.leadership-validation-form fieldset label { color: var(--ink-soft); font-size: .8rem; }
+.leadership-validation-form .field { display: grid; gap: 7px; }
+.leadership-validation-form textarea { min-height: 92px; padding: 11px 13px; border: 1px solid #d9d4cc; border-radius: 10px; font: inherit; resize: vertical; }
+.leadership-validation-form > .diagnostic-context-confirm,.leadership-validation-form > .advisor-review-actions { grid-column: 1 / -1; }
+.leadership-validation-form .advisor-review-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.client-intervention-proposal { display: grid; gap: 12px; margin-top: 20px; }
+.client-intervention-proposal article { display: grid; gap: 10px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.client-intervention-proposal p { margin: 0; color: var(--ink-soft); line-height: 1.6; }
+.client-intervention-proposal section { display: grid; gap: 6px; }
+.client-intervention-proposal ul { margin: 0; padding-left: 20px; color: var(--ink-soft); line-height: 1.55; }
+.client-intervention-acceptance { display: grid; gap: 14px; margin-top: 18px; padding: 18px; border: 1px solid rgba(164,107,56,.32); border-radius: 12px; background: rgba(164,107,56,.06); }
+.client-intervention-acceptance button { justify-self: start; }
+.capacity-brief-content { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+.capacity-brief-content article { display: grid; gap: 10px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.capacity-brief-content article:first-child { grid-column: 1 / -1; border-color: rgba(164,107,56,.42); background: rgba(164,107,56,.06); }
+.capacity-brief-content p { margin: 0; color: var(--ink-soft); line-height: 1.6; }
+.capacity-brief-content section { display: grid; gap: 6px; }
+.capacity-brief-content ul { margin: 0; padding-left: 20px; color: var(--ink-soft); line-height: 1.55; }
+[data-activate-capacity-brief] { margin-top: 18px; }
+.capacity-evidence-journal { display: grid; gap: 16px; margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
+.capacity-evidence-journal h5 { margin: 4px 0 0; font-size: 1rem; }
+.capacity-evidence-journal form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.capacity-evidence-journal form textarea,.capacity-evidence-journal form input,.capacity-evidence-journal form select { padding: 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+.capacity-evidence-journal form textarea { min-height: 90px; resize: vertical; }
+.capacity-evidence-wide { grid-column: 1 / -1; }
+.capacity-evidence-journal form button { justify-self: start; }
+.capacity-evidence-list { display: grid; gap: 10px; }
+.capacity-evidence-list article { padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.capacity-evidence-list p { margin: 7px 0; color: var(--ink-soft); line-height: 1.55; }
+.capacity-evidence-list small { color: var(--ink-soft); }
+.capacity-review-journal { display: grid; gap: 16px; margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
+.capacity-review-journal h5 { margin: 4px 0 0; font-size: 1rem; }
+.capacity-review-journal form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.capacity-review-journal form textarea,.capacity-review-journal form input,.capacity-review-journal form select { padding: 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+.capacity-review-journal form textarea { min-height: 90px; resize: vertical; }
+.capacity-review-journal form button { justify-self: start; }
+.capacity-review-list { display: grid; gap: 10px; }
+.capacity-review-list article { padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.capacity-review-list p { margin: 7px 0; color: var(--ink-soft); line-height: 1.55; }
 .participant-design-form { display: grid; gap: 20px; margin-top: 24px; }
 .participant-design-form fieldset { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .participant-design-form legend { padding: 0 8px; font-size: .78rem; font-weight: 800; }
@@ -1085,6 +1136,13 @@ h2 {
   .diagnostic-form,.diagnostic-card,.diagnostic-context-form { grid-template-columns: 1fr; }
   .diagnostic-status { justify-items: start; text-align: left; }
   .diagnostic-context-wide { grid-column: auto; }
+  .leadership-validation-form { grid-template-columns: 1fr; }
+  .capacity-brief-content { grid-template-columns: 1fr; }
+  .capacity-brief-content article:first-child { grid-column: auto; }
+  .capacity-evidence-journal form { grid-template-columns: 1fr; }
+  .capacity-evidence-wide { grid-column: auto; }
+  .capacity-review-journal form { grid-template-columns: 1fr; }
+  .leadership-validation-form > .diagnostic-context-confirm,.leadership-validation-form > .advisor-review-actions { grid-column: auto; }
   .participant-slot,.coverage-gap { grid-template-columns: 1fr; }
   .diagnostic-invitation-slot { grid-template-columns: 1fr; }
   .field-wide { grid-column: auto; }

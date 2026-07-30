@@ -25,6 +25,13 @@ products. A customer may begin with the automated route and escalate to an advis
 evidence, risk, or implementation need warrants it. Both routes produce the same client-facing
 Capacity Operating Brief and preserve one organizational record.
 
+Security, privacy, and participant confidentiality are method requirements across both
+routes. Workspace authority never implies access to individual interview content. Identity,
+confidential responses, de-identified evidence, findings, commerce, and intervention records
+remain separate data boundaries with least-privilege access, disclosure review, release
+gates, retention controls, and audit history. The control model and buyer diligence position
+are maintained in `docs/Security-Privacy-and-Confidentiality-Brief.md`.
+
 ## Assessment and diagnostic boundary
 
 The free Organizational Capacity Assessment and the paid Organizational Capacity Diagnostic
@@ -117,6 +124,37 @@ Advisors may tailor the intervention, create or assign learning, document coachi
 implementation activity, and use the same evidence loop to review progress. Product roles
 must distinguish customer administration, facilitation, advisory access, and platform
 operations while maintaining least privilege.
+
+Learning Path items are not generic course assignments. Each item must connect to the accepted
+intervention, name an accountable role, set a due date, and ask how the learning was applied in
+real work. Completion is an implementation record only; it never counts as evidence of operating
+or capacity change unless a separate governed observation supports that conclusion.
+
+The 30/60/90-day Action Path is likewise not a project-management backlog. It sequences the few
+operating commitments necessary to test the intervention hypothesis. Each commitment names an
+accountable role, a leadership decision gate, and the evidence to gather; blocked commitments
+surface as attention signals, while completed commitments remain delivery records rather than
+claims of operating or capacity change.
+
+Guided check-ins ask only the next bounded operating question needed to manage the intervention.
+Open check-ins become attention signals when overdue, and leaders may explicitly escalate a
+response that requires a decision. Check-in responses are contextual implementation records;
+they enter the evidence model only through a separately classified Evidence Journal observation.
+
+The Brief's attention layer is intentionally sparse. It shows only a current blocked commitment,
+overdue or escalated check-in, overdue intervention review, or due reassessment. It does not rank
+people, repeat healthy activity, or manufacture urgency from generic metrics. An empty attention
+layer is a meaningful state: no current governance decision requires leadership action.
+
+Escalation from platform-guided to advisor support is additive, not a new engagement record.
+The sponsor identifies the bounded support need, urgency, current context, and desired outcome.
+The request preserves the existing diagnostic, intervention, evidence, decision, and reassessment
+history; it does not automatically change delivery route or grant access to participant content.
+
+Decision History is a derived chronology of explicit governance events, not a transcript or an
+activity feed. It includes leadership validation, intervention acceptance, formal reviews,
+resolved commitments and check-ins, and advisor-support handling. Participant content is never
+included, and the timeline does not imply that a recorded decision produced an observed outcome.
 
 ## Capacity Operating Brief
 
@@ -216,3 +254,16 @@ Pricing and packaging may evolve independently, but product telemetry should dis
 assessment completion, diagnostic conversion and completion, route selection, intervention
 acceptance, Operating Brief use, action-cycle activation, learning use, escalation, review,
 and reassessment without collecting respondent-level content unnecessarily.
+
+### Payment and entitlement boundary
+
+Hosted checkout is a commercial operation, not an evidence operation. The authenticated client
+sponsor may request checkout for a specific pending entitlement, but a browser success return
+never activates access. Only a raw-body, signature-verified, replay-bounded provider webhook
+may reconcile the checkout reference and activate the matching entitlement. Provider event IDs
+are idempotent, card details remain entirely with the payment provider, and payment records do
+not contain participant identity, interview content, evidence, findings, or intervention notes.
+Diagnostic and intervention access use separate entitlements and separate offer prices. A paid
+diagnostic entitlement permits the diagnostic workflow and intervention proposal design; it
+does not silently purchase the proposed intervention. POC engagements retain one explicit,
+no-charge POC entitlement across the governed proof-of-concept loop.

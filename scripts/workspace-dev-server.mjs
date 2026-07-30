@@ -12,6 +12,24 @@ import workspaceDiagnosticInterview from "../netlify/functions/workspace-diagnos
 import workspaceDiagnosticEvidenceReview from "../netlify/functions/workspace-diagnostic-evidence-review.mjs";
 import workspaceDiagnosticEvidencePreparation from "../netlify/functions/workspace-diagnostic-evidence-preparation.mjs";
 import workspaceDiagnosticAdvisorAssignments from "../netlify/functions/workspace-diagnostic-advisor-assignments.mjs";
+import workspaceDiagnosticSynthesis from "../netlify/functions/workspace-diagnostic-synthesis.mjs";
+import workspaceDiagnosticLeadershipValidation from "../netlify/functions/workspace-diagnostic-leadership-validation.mjs";
+import workspaceDiagnosticIntervention from "../netlify/functions/workspace-diagnostic-intervention.mjs";
+import workspaceDiagnosticInterventionAcceptance from "../netlify/functions/workspace-diagnostic-intervention-acceptance.mjs";
+import workspaceCapacityOperatingBrief from "../netlify/functions/workspace-capacity-operating-brief.mjs";
+import workspaceCapacityBriefEvidence from "../netlify/functions/workspace-capacity-brief-evidence.mjs";
+import workspaceCapacityBriefLearning from "../netlify/functions/workspace-capacity-brief-learning.mjs";
+import workspaceCapacityBriefActionPath from "../netlify/functions/workspace-capacity-brief-action-path.mjs";
+import workspaceCapacityBriefCheckIns from "../netlify/functions/workspace-capacity-brief-check-ins.mjs";
+import workspaceCapacityBriefAttention from "../netlify/functions/workspace-capacity-brief-attention.mjs";
+import workspaceInterventionAdvisorEscalation from "../netlify/functions/workspace-intervention-advisor-escalation.mjs";
+import workspaceAdvisorEscalationQueue from "../netlify/functions/workspace-advisor-escalation-queue.mjs";
+import workspaceCapacityBriefDecisionHistory from "../netlify/functions/workspace-capacity-brief-decision-history.mjs";
+import workspaceCapacityBriefReviews from "../netlify/functions/workspace-capacity-brief-reviews.mjs";
+import workspaceDiagnosticReassessment from "../netlify/functions/workspace-diagnostic-reassessment.mjs";
+import workspaceDiagnosticReassessmentComparison from "../netlify/functions/workspace-diagnostic-reassessment-comparison.mjs";
+import workspaceCommerceCheckout from "../netlify/functions/workspace-commerce-checkout.mjs";
+import stripeCommerceWebhook from "../netlify/functions/stripe-commerce-webhook.mjs";
 import workspaceComparison from "../netlify/functions/workspace-comparison.mjs";
 import workspaceActionCycles from "../netlify/functions/workspace-action-cycles.mjs";
 import workspaceInvitations from "../netlify/functions/workspace-invitations.mjs";
@@ -101,6 +119,24 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/diagnostic-evidence-review",
     "/api/workspace/diagnostic-evidence-preparation",
     "/api/workspace/diagnostic-advisor-assignments",
+    "/api/workspace/diagnostic-synthesis",
+    "/api/workspace/diagnostic-leadership-validation",
+    "/api/workspace/diagnostic-intervention",
+    "/api/workspace/diagnostic-intervention-acceptance",
+    "/api/workspace/capacity-operating-brief",
+    "/api/workspace/capacity-brief-evidence",
+    "/api/workspace/capacity-brief-learning",
+    "/api/workspace/capacity-brief-action-path",
+    "/api/workspace/capacity-brief-check-ins",
+    "/api/workspace/capacity-brief-attention",
+    "/api/workspace/intervention-advisor-escalation",
+    "/api/workspace/advisor-escalation-queue",
+    "/api/workspace/capacity-brief-decision-history",
+    "/api/workspace/capacity-brief-reviews",
+    "/api/workspace/diagnostic-reassessment",
+    "/api/workspace/diagnostic-reassessment-comparison",
+    "/api/workspace/commerce-checkout",
+    "/api/commerce/stripe-webhook",
     "/api/workspace/comparison",
     "/api/workspace/action-cycles",
     "/api/workspace/invitations",
@@ -116,7 +152,11 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
       headers: nodeRequest.headers,
       body: ["GET", "HEAD"].includes(method) ? undefined : await requestBody(nodeRequest)
     });
-    const handler = url.pathname.endsWith("/config")
+    const handler = url.pathname.endsWith("/stripe-webhook")
+      ? stripeCommerceWebhook
+      : url.pathname.endsWith("/commerce-checkout")
+        ? workspaceCommerceCheckout
+      : url.pathname.endsWith("/config")
       ? workspaceConfig
       : url.pathname.endsWith("/diagnostic-context")
         ? workspaceDiagnosticContext
@@ -136,6 +176,38 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceDiagnosticEvidencePreparation
       : url.pathname.endsWith("/diagnostic-advisor-assignments")
         ? workspaceDiagnosticAdvisorAssignments
+      : url.pathname.endsWith("/diagnostic-synthesis")
+        ? workspaceDiagnosticSynthesis
+      : url.pathname.endsWith("/diagnostic-leadership-validation")
+        ? workspaceDiagnosticLeadershipValidation
+      : url.pathname.endsWith("/diagnostic-intervention")
+        ? workspaceDiagnosticIntervention
+      : url.pathname.endsWith("/diagnostic-intervention-acceptance")
+        ? workspaceDiagnosticInterventionAcceptance
+      : url.pathname.endsWith("/capacity-operating-brief")
+        ? workspaceCapacityOperatingBrief
+      : url.pathname.endsWith("/capacity-brief-evidence")
+        ? workspaceCapacityBriefEvidence
+      : url.pathname.endsWith("/capacity-brief-learning")
+        ? workspaceCapacityBriefLearning
+      : url.pathname.endsWith("/capacity-brief-action-path")
+        ? workspaceCapacityBriefActionPath
+      : url.pathname.endsWith("/capacity-brief-check-ins")
+        ? workspaceCapacityBriefCheckIns
+      : url.pathname.endsWith("/capacity-brief-attention")
+        ? workspaceCapacityBriefAttention
+      : url.pathname.endsWith("/intervention-advisor-escalation")
+        ? workspaceInterventionAdvisorEscalation
+      : url.pathname.endsWith("/advisor-escalation-queue")
+        ? workspaceAdvisorEscalationQueue
+      : url.pathname.endsWith("/capacity-brief-decision-history")
+        ? workspaceCapacityBriefDecisionHistory
+      : url.pathname.endsWith("/capacity-brief-reviews")
+        ? workspaceCapacityBriefReviews
+      : url.pathname.endsWith("/diagnostic-reassessment")
+        ? workspaceDiagnosticReassessment
+      : url.pathname.endsWith("/diagnostic-reassessment-comparison")
+        ? workspaceDiagnosticReassessmentComparison
       : url.pathname.endsWith("/diagnostics")
         ? workspaceDiagnostics
       : url.pathname.endsWith("/comparison")

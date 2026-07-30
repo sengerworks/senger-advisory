@@ -124,6 +124,59 @@ constraint hypothesis requires at least two themes, a competing explanation, a d
 blind spot, and an evidence-based confidence statement. The intervention direction remains a
 hypothesis to test rather than a prescription or causal conclusion.
 
+Advisor validation is a distinct gate before client leadership validation. The assigned
+advisor must see confidence bases, supporting and weakening evidence counts, competing
+explanations, blind spots, and the proposed intervention direction. The advisor may approve
+the synthesis for leadership validation or require revision with a recorded rationale.
+Advisor approval does not release the finding to the sponsor and cannot substitute for
+leadership validation.
+
+The initial POC sponsor-release policy uses five completed perspectives as a confidentiality
+floor and requires every assigned perspective to be complete, all disclosure review to be
+resolved, and advisor validation to be approved. This floor limits premature disclosure; it
+does not establish methodological sufficiency. Perspective coverage, contradictions, and
+missing viewpoints remain visible as uncertainty. The sponsor response is reconstructed from
+the governed finding and excludes evidence identifiers, excerpts, participant identity,
+advisor notes, and raw response content.
+
+Leadership validation records resonance, completeness, surprise, missing evidence, material
+objections, and an explicit accept-or-revise decision. Validator identity and response content
+remain in the operational boundary rather than the diagnostic finding. A challenged finding,
+material gap, or material objection cannot be accepted; it returns to protected synthesis
+review. An accepted decision validates the finding but does not itself create or activate an
+intervention.
+
+Intervention design is available only to an actively assigned advisor after leadership has
+validated the finding and an entitlement is active. Every proposal must define objective,
+rationale, scope, operating changes, accountable commitments, learning requirements, review
+cadence, duration, and evidence for delivery, observed operating change, and reassessed
+capacity change. Proposal creation does not constitute commercial acceptance or activation.
+
+The client sponsor receives a minimized intervention proposal containing the validated scope,
+commitments, learning requirements, service route, duration, evidence plan, and commercial
+offer reference. Acceptance requires separate affirmative consent to scope and commercial
+terms plus a server-verified active POC or intervention entitlement. A browser success state
+or active paid-diagnostic entitlement alone cannot activate intervention access.
+
+After intervention acceptance, the client sponsor may activate one versioned Capacity
+Operating Brief. Activation re-verifies the validated finding, accepted intervention, and
+active POC or intervention entitlement. The initial Brief carries the current constraint,
+confidence and uncertainty, accepted intervention, accountable commitments, learning needs,
+three evidence classes, review cadence, and duration into an ongoing client workspace while
+excluding participant identity and confidential evidence references.
+
+The active Brief includes an evidence journal whose entries are classified as intervention
+delivery, observed operating change, or reassessed capacity change. Each entry records a
+bounded observation, source note, and observation time without asserting that the intervention
+caused the result. Entry authorship remains in the audit boundary rather than the shared
+observation payload.
+
+Formal Brief reviews require at least one recorded observation and an evidence assessment.
+Leadership may continue, adjust, escalate, stop, or begin reassessment. Continue, adjust, and
+escalate schedule a future review; adjustment records explicit operating changes; stop closes
+the intervention and Brief; reassessment advances the diagnostic without treating delivery or
+short-term operating movement as proof of capacity change.
+
 ## Diagnostic record, leadership validation, and intervention decision
 
 `diagnostic-decision-engine.js` owns diagnostic-record and intervention-proposal version
@@ -217,6 +270,33 @@ After intervention acceptance, both routes activate the same client-facing Capac
 Brief. It keeps delivery activity, observed operating change, and reassessed capacity change
 separate. Advisor-led work may add governed facilitation controls without creating a second
 client product or evidence model.
+
+## Governed reassessment and comparison
+
+A leadership decision to reassess does not immediately produce a before-and-after result. The
+platform first creates a private reassessment plan that preserves the baseline diagnostic's
+method version, approved 15-question protocol and question-library version, and approved
+perspective-coverage objectives (including explicitly accepted gaps). Those controls are
+server-derived; the sponsor supplies only a target date and planning note.
+
+Comparison remains explicitly unavailable until the planned reassessment has completed the
+qualifying diagnostic workflow. Intervention delivery and observed operating change may inform
+the next decision, but neither is labeled capacity improvement and neither supports a causal
+claim on its own. A later comparison release must verify method, protocol, coverage,
+confidentiality floor, evidence readiness, and completion before showing reassessed change.
+
+Activating an approved plan creates a new, linked diagnostic record. It inherits the baseline
+method and approved protocol, and carries forward the identity-free perspective slots and
+accepted coverage gaps. It does not copy names, invitations, participant accounts, interviews,
+responses, or de-identified evidence. New invitations therefore produce an independently
+collected confidential evidence set while retaining the controls required for comparison.
+
+Comparison release is a governed advisor decision, not an automatic score delta. The platform
+requires the preserved method and protocol, at least five completed reassessment perspectives,
+no pending evidence review, advisor-approved findings, leadership-accepted findings, and theme
+citations from both records. The released client view distinguishes what changed, persisted,
+newly emerged, remains uncertain, and requires leadership attention. It records a bounded
+change assessment but does not attribute causality to the intervention.
 
 ## POC validation
 
