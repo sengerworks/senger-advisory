@@ -155,6 +155,16 @@ Make immediate changes only for S0 issues or clearly reversible S1/S2 defects. F
 prefer evidence across at least two users or organizations before changing the shared method.
 Never weaken a confidentiality control merely to reduce friction.
 
+The platform implements this rule as an append-only change-candidate ledger. The original observed
+problem, operational evidence summary, severity, risk, proposed change, owner, target release,
+validation measure, rollback condition, and governance impacts remain intact. A separate immutable
+decision approves, rejects, or defers the candidate. Only approved candidates may receive validation
+results, and each validation records whether the change was validated, invalidated, or inconclusive,
+whether rollback was triggered, and what happens next. Participant identity, answers, interview
+excerpts, and diagnostic evidence are prohibited from this product-learning record.
+Deferral is non-terminal: it preserves the reason and may later be followed by approval or rejection.
+Approval and rejection are terminal for that candidate.
+
 ## Launch-readiness thresholds
 
 The initial thresholds are hypotheses to calibrate across the first cohort set:

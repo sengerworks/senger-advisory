@@ -107,6 +107,24 @@
           </form>
           <div class="advisor-evidence" data-poc-decision-history></div>
         </section>
+        <section class="advisor-intervention" data-poc-changes hidden>
+          <div><p class="card-kicker">POC change ledger</p><h2>Turn observed friction into governed product learning.</h2><p>Capture operational product evidence only. Do not paste participant answers, interview excerpts, identities, or diagnostic evidence into this ledger.</p></div>
+          <form class="advisor-intervention-form" data-poc-change-form>
+            <label><span>Observed product problem</span><textarea name="observedProblem" minlength="40" maxlength="1500" required></textarea></label>
+            <label><span>Affected role</span><input name="affectedRole" maxlength="120" required /></label>
+            <label><span>Operational evidence summary</span><textarea name="evidenceSummary" minlength="40" maxlength="1500" required></textarea></label>
+            <label><span>Observed frequency</span><input name="frequencySummary" minlength="10" maxlength="500" required /></label>
+            <label><span>Severity</span><select name="severity" required><option>S0</option><option>S1</option><option>S2</option><option>S3</option><option>S4</option></select></label>
+            <label><span>Risk of no change</span><textarea name="riskOfNoChange" minlength="40" maxlength="1000" required></textarea></label>
+            <label><span>Proposed product or method change</span><textarea name="proposedChange" minlength="40" maxlength="1500" required></textarea></label>
+            <label><span>Owner</span><input name="owner" maxlength="120" required /></label><label><span>Target release</span><input name="targetRelease" maxlength="120" required /></label>
+            <label><span>Validation measure</span><textarea name="validationMeasure" minlength="20" maxlength="1000" required></textarea></label>
+            <label><span>Rollback condition</span><textarea name="rollbackCondition" minlength="20" maxlength="1000" required></textarea></label>
+            <fieldset><legend>Governance impacts</legend><label><input type="checkbox" name="governanceImpacts" value="method-version" /> Method version</label><label><input type="checkbox" name="governanceImpacts" value="protocol-version" /> Protocol version</label><label><input type="checkbox" name="governanceImpacts" value="confidentiality-policy" /> Confidentiality policy</label><label><input type="checkbox" name="governanceImpacts" value="data-contract" /> Data contract</label><label><input type="checkbox" name="governanceImpacts" value="migration" /> Migration</label><label><input type="checkbox" name="governanceImpacts" value="training" /> Training</label><label><input type="checkbox" name="governanceImpacts" value="buyer-language" /> Buyer language</label><label><input type="checkbox" name="governanceImpacts" value="pricing" /> Pricing</label></fieldset>
+            <button class="primary-button" type="submit">Create change candidate</button><p class="form-message" data-poc-change-message></p>
+          </form>
+          <div class="advisor-evidence" data-poc-change-list></div>
+        </section>
       </section>
     </section>
   </main>

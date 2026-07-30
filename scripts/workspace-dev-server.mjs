@@ -29,6 +29,7 @@ import workspaceCapacityBriefGuidedPlan from "../netlify/functions/workspace-cap
 import workspacePocFeedback from "../netlify/functions/workspace-poc-feedback.mjs";
 import workspacePocScorecard from "../netlify/functions/workspace-poc-scorecard.mjs";
 import workspacePocCohortDecisions from "../netlify/functions/workspace-poc-cohort-decisions.mjs";
+import workspacePocChangeCandidates from "../netlify/functions/workspace-poc-change-candidates.mjs";
 import workspaceCapacityBriefReviews from "../netlify/functions/workspace-capacity-brief-reviews.mjs";
 import workspaceDiagnosticReassessment from "../netlify/functions/workspace-diagnostic-reassessment.mjs";
 import workspaceDiagnosticReassessmentComparison from "../netlify/functions/workspace-diagnostic-reassessment-comparison.mjs";
@@ -63,6 +64,7 @@ const files = new Map([
   ["/capacity-brief-example.css", { url: new URL("../capacity-brief-example.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/platform-journey.html", { url: new URL("../platform-journey.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/platform-journey.css", { url: new URL("../platform-journey.css", import.meta.url), type: "text/css; charset=utf-8" }],
+  ["/platform-journey.js", { url: new URL("../platform-journey.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/organization-view.html", { url: new URL("../organization-view.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/organization-view.css", { url: new URL("../organization-view.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/organization-view.js", { url: new URL("../organization-view.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
@@ -142,6 +144,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/poc-feedback",
     "/api/workspace/poc-scorecard",
     "/api/workspace/poc-cohort-decisions",
+    "/api/workspace/poc-change-candidates",
     "/api/workspace/capacity-brief-reviews",
     "/api/workspace/diagnostic-reassessment",
     "/api/workspace/diagnostic-reassessment-comparison",
@@ -220,6 +223,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspacePocScorecard
       : url.pathname.endsWith("/poc-cohort-decisions")
         ? workspacePocCohortDecisions
+      : url.pathname.endsWith("/poc-change-candidates")
+        ? workspacePocChangeCandidates
       : url.pathname.endsWith("/capacity-brief-reviews")
         ? workspaceCapacityBriefReviews
       : url.pathname.endsWith("/diagnostic-reassessment")

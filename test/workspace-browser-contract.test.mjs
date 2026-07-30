@@ -270,6 +270,8 @@ test("client sponsor receives only a confidentiality-gated governed finding", as
   assert.match(advisorScript, /workspace\/poc-scorecard/);
   assert.match(advisorHtml, /POC cohort decision/);
   assert.match(advisorScript, /workspace\/poc-cohort-decisions/);
+  assert.match(advisorHtml, /POC change ledger/);
+  assert.match(advisorScript, /workspace\/poc-change-candidates/);
   assert.match(script, /currentClerkContextKey\(\) === clerkContextKey/);
   assert.match(script, /workspaceRenderPromise/);
   assert.match(script, /beginDiagnosticCheckout\(selectedDiagnosticId,"intervention"\)/);

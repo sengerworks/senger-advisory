@@ -77,6 +77,8 @@
   assignment-scoped advisor scorecard without participant feedback text or interview content
 - Preserve advisor-governed POC cohort decisions as immutable product history, with required
   changes, unresolved risks, next hypotheses, and explicit review dates; never infer monetization readiness
+- Trace POC change candidates from observed operational evidence through immutable approval and
+  validation results, with explicit rollback conditions and no participant content in product learning
 
 ## Phase 5 — Capacity Operating Brief and guided intervention
 - Replace the generic dashboard concept with a living executive Capacity Operating Brief

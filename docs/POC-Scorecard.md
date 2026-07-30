@@ -71,6 +71,9 @@ or identity. Use `Not observed` rather than inferring a result from incomplete s
 For each candidate, record observed problem, role, evidence, frequency, severity, proposed change,
 owner, target release, validation measure, rollback condition, and governance/version impact.
 
+Each candidate then receives a separate approve, reject, or defer decision. Approved changes retain
+append-only validation results against the stated measure, including rollback state and next action.
+
 ## Cohort decision
 
 - Continue / Continue with monitored adjustment / Hold / Narrow scope / Ready to monetize

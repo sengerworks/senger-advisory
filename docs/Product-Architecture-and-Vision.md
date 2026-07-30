@@ -281,3 +281,9 @@ monitored-adjustment, hold, narrow-scope, and ready-to-monetize decisions are im
 time-stamped records with rationale, required changes, unresolved risks, and next hypotheses.
 Monetization readiness is never inferred from aggregate metrics alone, and the ledger contains
 no participant identity, feedback text, interview content, or diagnostic evidence text.
+
+Approved product changes are governed through a separate append-only POC change ledger. A candidate
+retains its observed operational problem, severity, risk, proposed change, validation measure,
+rollback condition, and method or platform governance impacts. Approval and validation are distinct
+records; only approved candidates may be validated. This boundary prevents product iteration from
+quietly repurposing confidential participant contributions.
