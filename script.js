@@ -71,9 +71,9 @@ if ("IntersectionObserver" in window) {
       lede: "A local bottleneck becomes delay, rerouting, and friction across the organization."
     },
     resolution: {
-      primary: "Capacity changes",
-      secondary: "how work moves.",
-      lede: "Increase capacity and the same organization moves with greater speed, clarity, and confidence."
+      primary: "Now you can see",
+      secondary: "how the system moves.",
+      lede: "The Capacity Lens makes the forces shaping speed, clarity, and coordination visible."
     }
   };
 
@@ -114,8 +114,8 @@ if ("IntersectionObserver" in window) {
   window.setTimeout(() => {
     if (!resolved) {
       prompt.textContent = coarsePointer
-        ? "Touch and drag through the system to reveal higher capacity."
-        : "Move through the system to reveal higher capacity.";
+        ? "Touch and drag through the system to reveal the Capacity Lens."
+        : "Move through the system to reveal the Capacity Lens.";
       prompt.classList.add("visible");
     }
   }, 4800);

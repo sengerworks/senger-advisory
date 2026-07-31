@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
-  <title id="title">Senger Advisory Organizational Capacity Diagnostic</title>
-  <desc id="description">A branded social preview for the Senger Advisory Organizational Capacity Diagnostic.</desc>
+  <title id="title">Senger Advisory Capacity Lens</title>
+  <desc id="description">A branded social preview for the Senger Advisory Capacity Lens.</desc>
   <rect width="1200" height="630" fill="#f4f0e8"/>
   <rect x="46" y="46" width="1108" height="538" rx="8" fill="#172825"/>
   <path d="M780 158c105 0 190 70 190 157s-85 157-190 157-190-70-190-157 85-157 190-157Z" fill="none" stroke="#a46b38" stroke-width="2" opacity=".65"/>
@@ -8,9 +8,9 @@
   <circle cx="780" cy="315" r="18" fill="#a46b38"/>
   <g font-family="Georgia, 'Times New Roman', serif" fill="#f4f0e8">
     <text x="105" y="142" font-size="33" letter-spacing="1">Senger Advisory</text>
-    <text x="105" y="277" font-size="64">Organizational</text>
-    <text x="105" y="350" font-size="64">Capacity Diagnostic</text>
+    <text x="105" y="277" font-size="64">A New Lens for</text>
+    <text x="105" y="350" font-size="64">Seeing Organizations</text>
   </g>
-  <text x="108" y="435" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#d8d1c3">Turn execution friction into a defensible decision.</text>
+  <text x="108" y="435" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#d8d1c3">See the system beneath the symptoms.</text>
   <line x1="107" y1="493" x2="497" y2="493" stroke="#a46b38" stroke-width="4"/>
 </svg>
