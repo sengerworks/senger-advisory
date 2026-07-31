@@ -47,6 +47,7 @@
       this.dpr = 1;
       this.time = 0;
       this.demand = 0;
+      this.narrativeDemand = 0.34;
       this.lastFrame = 0;
       this.frame = 0;
       this.visible = true;
@@ -84,7 +85,6 @@
         }
       };
       this.motionQuery.addEventListener?.("change", this.onMotionChange);
-      this.bindLensInteraction();
       this.resize();
     }
 
@@ -320,7 +320,7 @@
     }
 
     updateCapacity(delta) {
-      this.demand = this.demandAt(this.time);
+      this.demand = this.narrativeDemand ?? this.demandAt(this.time);
 
       for (const node of this.nodes) {
         if (!node.queue.length) node.averageWait *= Math.exp(-delta * 0.22);
@@ -357,7 +357,6 @@
 
     update(delta) {
       this.time += delta;
-      this.updateLens(delta);
       this.updateCapacity(delta);
 
       for (const particle of this.particles) {
@@ -530,7 +529,6 @@
       context.fillRect(0, 0, this.width, this.height);
 
       this.edges.forEach(edge => this.drawEdge(edge));
-      this.drawLens();
       this.nodes.forEach(node => this.drawNode(node));
       this.nodes.forEach(node => this.drawQueue(node));
       this.particles.forEach(particle => this.drawParticle(particle));
@@ -574,6 +572,11 @@
       };
     }
 
+    setNarrativeStage(stage) {
+      const demandByStage = { intro: 0.34, complexity: 0.56, friction: 0.78, constraint: 1, resolution: 0.44 };
+      if (Object.hasOwn(demandByStage, stage)) this.narrativeDemand = demandByStage[stage];
+    }
+
     start() {
       if (this.frame || this.reducedMotion || !this.visible) return;
       const tick = now => {
@@ -601,12 +604,6 @@
       this.resizeObserver.disconnect();
       this.visibilityObserver.disconnect();
       this.motionQuery.removeEventListener?.("change", this.onMotionChange);
-      this.host.removeEventListener("pointerenter", this.onPointerEnter);
-      this.host.removeEventListener("pointermove", this.onPointerMove);
-      this.host.removeEventListener("pointerleave", this.onPointerLeave);
-      this.host.removeEventListener("pointerdown", this.onPointerDown);
-      this.host.removeEventListener("pointerup", this.onPointerUp);
-      this.host.removeEventListener("pointercancel", this.onPointerUp);
     }
   }
 

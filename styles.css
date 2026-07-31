@@ -299,7 +299,7 @@ h3 {
   box-shadow: var(--shadow-soft);
   isolation: isolate;
   touch-action: pan-y;
-  cursor: crosshair;
+  cursor: default;
 }
 
 .hero-visual::before {

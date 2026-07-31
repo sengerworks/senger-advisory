@@ -39,16 +39,13 @@ if ("IntersectionObserver" in window) {
 (() => {
   const hero = document.querySelector(".hero");
   const copy = hero?.querySelector(".hero-copy");
-  const visual = hero?.querySelector(".hero-visual");
   const canvas = hero?.querySelector("[data-flow-engine]");
   const primary = hero?.querySelector("[data-hero-title-primary]");
   const secondary = hero?.querySelector("[data-hero-title-secondary]");
   const lede = hero?.querySelector("[data-hero-lede]");
-  const prompt = hero?.querySelector("[data-lens-prompt]");
-  if (!hero || !copy || !visual || !canvas || !primary || !secondary || !lede || !prompt) return;
+  if (!hero || !copy || !canvas || !primary || !secondary || !lede) return;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
   const states = {
     intro: {
       primary: "Every growing organization",
@@ -79,9 +76,6 @@ if ("IntersectionObserver" in window) {
 
   let currentState = "intro";
   let changeTimer = 0;
-  let resolved = false;
-  const startedAt = performance.now();
-
   const setState = (name, immediate = false) => {
     if (name === currentState && !immediate) return;
     currentState = name;
@@ -93,48 +87,22 @@ if ("IntersectionObserver" in window) {
       secondary.textContent = state.secondary;
       lede.textContent = state.lede;
       copy.classList.remove("is-changing");
+      canvas.flowEngine?.setNarrativeStage(name);
     }, immediate ? 0 : 260);
   };
 
-  const revealResolution = () => {
-    if (resolved || reducedMotion) return;
-    resolved = true;
-    prompt.classList.remove("visible");
-    setState("resolution");
-  };
-
   if (reducedMotion) {
-    resolved = true;
     setState("resolution", true);
     hero.classList.add("narrative-ready");
     return;
   }
 
   window.setTimeout(() => hero.classList.add("narrative-ready"), 2800);
-  window.setTimeout(() => {
-    if (!resolved) {
-      prompt.textContent = coarsePointer
-        ? "Touch and drag through the system to reveal the Capacity Lens."
-        : "Move through the system to reveal the Capacity Lens.";
-      prompt.classList.add("visible");
-    }
-  }, 4800);
-
-  visual.addEventListener("pointermove", event => {
-    if (event.pointerType !== "touch") revealResolution();
-  }, { passive: true, once: true });
-  visual.addEventListener("pointerdown", revealResolution, { passive: true, once: true });
-
-  const narrativeTimer = window.setInterval(() => {
-    if (resolved || !canvas.flowEngine) {
-      if (resolved) window.clearInterval(narrativeTimer);
-      return;
-    }
-    const elapsed = (performance.now() - startedAt) / 1000;
-    const snapshot = canvas.flowEngine.getSnapshot();
-    const maxPressure = Math.max(...snapshot.nodes.map(node => node.pressure));
-    if (elapsed >= 14 && maxPressure > 0.62) setState("constraint");
-    else if (elapsed >= 13 || (elapsed >= 9 && snapshot.demand > 0.68)) setState("friction");
-    else if (elapsed >= 6) setState("complexity");
-  }, 400);
+  canvas.flowEngine?.setNarrativeStage("intro");
+  [
+    [3500, "complexity"],
+    [7000, "friction"],
+    [10500, "constraint"],
+    [14000, "resolution"]
+  ].forEach(([delay, state]) => window.setTimeout(() => setState(state), delay));
 })();
