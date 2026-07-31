@@ -49,7 +49,6 @@ const ADMINISTRATIVE = new Set([
   "action-cycle:create",
   "action-cycle:update",
   "diagnostic:read",
-  "diagnostic:create",
   "diagnostic:update"
 ]);
 const ALL_MEMBERS = new Set(["workspace:read", "round:read"]);

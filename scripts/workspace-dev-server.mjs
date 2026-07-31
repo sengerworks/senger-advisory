@@ -2,6 +2,9 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
+import platformOperationsOverview from "../netlify/functions/platform-operations-overview.mjs";
+import platformOperationsDiagnostics from "../netlify/functions/platform-operations-diagnostics.mjs";
+import platformOperationsAdvisorAssignments from "../netlify/functions/platform-operations-advisor-assignments.mjs";
 import workspaceDiagnostics from "../netlify/functions/workspace-diagnostics.mjs";
 import workspaceDiagnosticContext from "../netlify/functions/workspace-diagnostic-context.mjs";
 import workspaceDiagnosticParticipants from "../netlify/functions/workspace-diagnostic-participants.mjs";
@@ -55,6 +58,10 @@ const files = new Map([
   ["/workspace/advisor.html", { url: new URL("../workspace/advisor.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/advisor.css", { url: new URL("../workspace/advisor.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/advisor.js", { url: new URL("../workspace/advisor.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/workspace/operations.html", { url: new URL("../workspace/operations.html", import.meta.url), type: "text/html; charset=utf-8" }],
+  ["/workspace/operations.css", { url: new URL("../workspace/operations.css", import.meta.url), type: "text/css; charset=utf-8" }],
+  ["/workspace/operations-assignments.css", { url: new URL("../workspace/operations-assignments.css", import.meta.url), type: "text/css; charset=utf-8" }],
+  ["/workspace/operations.js", { url: new URL("../workspace/operations.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/workspace/presenter-demo.html", { url: new URL("../workspace/presenter-demo.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/presenter-demo.css", { url: new URL("../workspace/presenter-demo.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/presenter-demo.js", { url: new URL("../workspace/presenter-demo.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
@@ -117,6 +124,9 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
 
   if ([
     "/api/workspace/config",
+    "/api/operations/overview",
+    "/api/operations/diagnostics",
+    "/api/operations/advisor-assignments",
     "/api/workspace/diagnostics",
     "/api/workspace/diagnostic-context",
     "/api/workspace/diagnostic-participants",
@@ -165,7 +175,13 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
       headers: nodeRequest.headers,
       body: ["GET", "HEAD"].includes(method) ? undefined : await requestBody(nodeRequest)
     });
-    const handler = url.pathname.endsWith("/stripe-webhook")
+    const handler = url.pathname === "/api/operations/overview"
+      ? platformOperationsOverview
+      : url.pathname === "/api/operations/advisor-assignments"
+        ? platformOperationsAdvisorAssignments
+      : url.pathname === "/api/operations/diagnostics"
+        ? platformOperationsDiagnostics
+      : url.pathname.endsWith("/stripe-webhook")
       ? stripeCommerceWebhook
       : url.pathname.endsWith("/commerce-checkout")
         ? workspaceCommerceCheckout

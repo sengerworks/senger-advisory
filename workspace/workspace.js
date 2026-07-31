@@ -18,11 +18,9 @@ const elements = {
   focusDescription: document.querySelector("[data-focus-description]"),
   primaryAction: document.querySelector("[data-primary-action]"),
   diagnosticPanel: document.querySelector("[data-diagnostic-panel]"),
-  diagnosticForm: document.querySelector("[data-diagnostic-form]"),
   diagnosticMessage: document.querySelector("[data-diagnostic-message]"),
   diagnosticList: document.querySelector("[data-diagnostic-list]"),
   diagnosticEmpty: document.querySelector("[data-diagnostic-empty]"),
-  createDiagnostic: document.querySelector("[data-create-diagnostic]"),
   diagnosticContext: document.querySelector("[data-diagnostic-context]"),
   diagnosticContextForm: document.querySelector("[data-diagnostic-context-form]"),
   diagnosticContextApproved: document.querySelector("[data-diagnostic-context-approved]"),
@@ -1531,30 +1529,6 @@ elements.primaryAction.addEventListener("click", () => {
   }
   elements.collectionPanel.scrollIntoView({ behavior: "smooth", block: "start" });
   elements.collectionForm.elements.label.focus({ preventScroll: true });
-});
-elements.diagnosticForm.addEventListener("submit", async event => {
-  event.preventDefault();
-  if (currentRole !== "org:admin" || !elements.diagnosticForm.reportValidity()) return;
-  elements.createDiagnostic.disabled = true;
-  elements.diagnosticMessage.textContent = "Creating the governed diagnostic record…";
-  delete elements.diagnosticMessage.dataset.tone;
-  try {
-    const values = Object.fromEntries(new FormData(elements.diagnosticForm));
-    const data = await workspaceRequest("/api/workspace/diagnostics", {
-      method: "POST",
-      body: { route: values.route, entitlementType: values.entitlementType }
-    });
-    elements.diagnosticMessage.textContent = data.diagnostic.entitlementStatus === "active"
-      ? "POC diagnostic created with active development access."
-      : "Paid diagnostic created. Access remains pending until payment is confirmed.";
-    elements.diagnosticMessage.dataset.tone = "success";
-    await loadDiagnostics();
-  } catch (error) {
-    elements.diagnosticMessage.textContent = error.message;
-    elements.diagnosticMessage.dataset.tone = "error";
-  } finally {
-    elements.createDiagnostic.disabled = false;
-  }
 });
 async function beginDiagnosticCheckout(diagnosticId,entitlementKind="diagnostic"){elements.diagnosticMessage.textContent="Preparing secure payment checkout…";elements.diagnosticMessage.dataset.tone="";const data=await workspaceRequest("/api/workspace/commerce-checkout",{method:"POST",body:{diagnosticId,entitlementKind}});if(!data.checkout?.checkoutUrl)throw new Error("Secure checkout did not return a destination.");window.location.assign(data.checkout.checkoutUrl);}
 elements.diagnosticList.addEventListener("click", event => {

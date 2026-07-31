@@ -204,6 +204,23 @@ prompts, synthesis, recommended next actions, and escalation signals; advisors r
 additional governed controls for facilitation, contextual interpretation, learning delivery,
 specialist coordination, and intervention review.
 
+## Platform Operations
+
+Senger Advisory operates the platform through a control plane that is distinct from every client
+and advisor experience. Platform operators establish diagnostic engagements, govern entitlement
+type, monitor minimized POC readiness, and maintain product-learning controls. A client sponsor
+does not create their own diagnostic or grant themselves commercial access.
+
+Initial Platform Operations access is an explicit server-side Clerk user allowlist combined with
+an active client-organization context. The active organization fixes the RLS tenant boundary; the
+allowlist supplies platform authority. Neither condition alone is sufficient. The operations view
+may expose aggregate workflow counts and states, but never participant identity, response content,
+evidence excerpts, advisor notes, or individual scores.
+
+The first slice remains one-client-at-a-time. A later platform tenancy layer will allow authorized
+operators to provision and administer multiple client organizations without becoming ordinary
+members of each client workspace.
+
 ## Co-branded partner architecture
 
 Authorized coaches and consultants should be able to sell and deliver the platform within a

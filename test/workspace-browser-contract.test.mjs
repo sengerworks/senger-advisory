@@ -61,12 +61,11 @@ test("workspace browser uses server configuration and minimized session endpoint
 test("workspace keeps assessment collection separate from paid diagnostic engagement", async () => {
   const html = await source("workspace/index.html");
   const script = await source("workspace/workspace.js");
-  assert.match(html, /Paid Organizational Diagnostic/);
+  assert.match(html, /Organizational Capacity Diagnostic · Executive sponsor view/);
   assert.match(html, /This is separate from the lightweight assessment/);
-  assert.match(html, /Automated written diagnostic/);
-  assert.match(html, /Advisor-led diagnostic/);
-  assert.match(html, /POC client · no charge/);
-  assert.match(html, /Paid client · payment pending/);
+  assert.match(html, /Senger Advisory establishes the engagement, route, and entitlement in Platform Operations/);
+  assert.doesNotMatch(html, /data-create-diagnostic/);
+  assert.doesNotMatch(script, /method:\s*"POST"[\s\S]{0,300}\/api\/workspace\/diagnostics/);
   assert.match(script, /Payment and access pending/);
   assert.match(script, /No human review required/);
   assert.match(html, /Approve the Diagnostic Context Brief/);
@@ -86,7 +85,6 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /remains separate from confidential interview content/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-invitations"/);
   assert.match(html, /data-diagnostic-collection-progress/);
-  assert.match(html, /Paid Organizational Diagnostic · POC operating controls · temporary sponsor placement/);
   assert.match(script, /Client sponsor · POC workspace/);
   assert.match(script, /Responses submitted/);
   assert.doesNotMatch(script, /slot\.interviewAnswers|slot\.encryptedResponse/);
@@ -102,6 +100,20 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(script, /currentParticipation\?\.kind === "diagnostic"/);
   assert.match(script, /beforeunload/);
   assert.doesNotMatch(script, /diagnostic\.individualAnswers|diagnostic\.participantIdentity/);
+});
+
+test("Platform Operations is separate, allowlisted, and excludes participant content",async()=>{
+  const html=await source("workspace/operations.html"),script=await source("workspace/operations.js"),server=await source("scripts/workspace-dev-server.mjs"),auth=await source("netlify/lib/platform-operations-auth.mjs");
+  assert.match(html,/Senger Advisory authority/);
+  assert.match(html,/Participant identity, responses, excerpts, and individual scores never appear here/);
+  assert.match(html,/Create diagnostic engagement/);
+  assert.match(script,/\/api\/operations\/overview/);
+  assert.match(script,/\/api\/operations\/diagnostics/);
+  assert.match(auth,/PLATFORM_OPERATOR_USER_IDS/);
+  assert.match(auth,/authority: "platform-operator"/);
+  assert.match(server,/platformOperationsOverview/);
+  assert.match(server,/platformOperationsDiagnostics/);
+  assert.doesNotMatch(script,/participantIdentity|answerText|encrypted_response_payload|individualScores/);
 });
 
 test("participant entry requires a privacy acknowledgement before assessment navigation", async () => {

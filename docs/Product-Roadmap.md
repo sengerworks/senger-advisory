@@ -67,6 +67,9 @@
 - Complete independent penetration testing before broad enterprise availability and pursue SOC 2 when operating maturity warrants it
 
 ## Cross-cutting — POC validation and launch evidence
+- Separate Senger Advisory Platform Operations from the client sponsor workspace with an
+  environment-allowlisted, tenant-bounded POC Control Center; diagnostic creation and entitlement
+  establishment are platform controls, while sponsors retain context and client decisions
 - Run every POC through the paid-product workflow using a no-charge, time-bounded entitlement
 - Collect role-specific feedback at each product gate without mixing participant feedback into diagnostic evidence
 - Use fixed issue severity, change-control, scorecard, and cohort-decision rules

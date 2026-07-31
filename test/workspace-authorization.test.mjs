@@ -21,7 +21,7 @@ test("limits workspace administration to owner and invitation operations to admi
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "action-cycle:create" }), true);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "action-cycle:update" }), true);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "action-cycle:read" }), false);
-  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "diagnostic:create" }), true);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "diagnostic:create" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "diagnostic:read" }), true);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "diagnostic:read" }), false);
 });

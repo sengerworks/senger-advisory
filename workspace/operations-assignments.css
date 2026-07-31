@@ -1,0 +1,39 @@
+.operations-create input,
+.operations-create textarea {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+  padding: 12px;
+}
+
+.operations-create textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.operations-assignment-list {
+  display: grid;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+.operations-assignment {
+  align-items: center;
+  background: var(--paper);
+  border-radius: 12px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr auto;
+  padding: 14px;
+}
+
+.operations-assignment p {
+  color: var(--ink-soft);
+  font-size: .78rem;
+  margin: 4px 0;
+}
+
+@media (max-width: 850px) {
+  .operations-assignment { grid-template-columns: 1fr; }
+}
