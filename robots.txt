@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /workspace/
+Disallow: /.netlify/
 Sitemap: https://sengeradvisory.com/sitemap.xml
