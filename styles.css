@@ -448,6 +448,16 @@ h3 {
   color: var(--ink);
 }
 
+.truth-section p + p {
+  margin-top: 32px;
+  max-width: 820px;
+  font-family: var(--sans);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  line-height: 1.55;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+}
+
 .section {
   padding: clamp(96px, 11vw, 170px) clamp(20px, 5vw, 56px);
 }

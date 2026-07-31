@@ -16,6 +16,12 @@ test("workspace is private-indexed and presents the threshold privacy contract",
   assert.match(html, /Workspace participation is separate from research consent/);
 });
 
+test("local product preview serves the public category homepage", async () => {
+  const server = await readFile(new URL("../scripts/workspace-dev-server.mjs", import.meta.url), "utf8");
+  assert.match(server, /\["\/", \{ url: new URL\("\.\.\/index\.html"/);
+  assert.match(server, /\["\/flow-engine\.js", \{ url: new URL\("\.\.\/flow-engine\.js"/);
+});
+
 test("workspace browser uses server configuration and minimized session endpoints", async () => {
   const script = await source("workspace/workspace.js");
   const server = await source("scripts/workspace-dev-server.mjs");

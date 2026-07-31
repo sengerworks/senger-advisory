@@ -43,6 +43,8 @@ test("homepage identifies the Senger Advisory entity and diagnostic service", as
   assert.match(html, /"@type": "Organization"/);
   assert.match(html, /"@type": "Person"/);
   assert.match(html, /"@type": "WebSite"/);
+  assert.match(html, /"@type": "DefinedTerm"/);
+  assert.match(html, /"name": "Organizational Capacity"/);
   assert.match(html, /"@type": "Service"/);
   assert.match(html, /"name": "Organizational Capacity Diagnostic"/);
 });

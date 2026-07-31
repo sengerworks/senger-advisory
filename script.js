@@ -51,9 +51,9 @@ if ("IntersectionObserver" in window) {
   const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
   const states = {
     intro: {
-      primary: "Growth should",
-      secondary: "accelerate execution.",
-      lede: "More people, ideas, and investment should create momentum."
+      primary: "Every growing organization",
+      secondary: "eventually feels the strain.",
+      lede: "Complexity grows faster than the systems, leadership, and operating rhythms built to carry it."
     },
     complexity: {
       primary: "As organizations grow,",
@@ -71,8 +71,8 @@ if ("IntersectionObserver" in window) {
       lede: "A local bottleneck becomes delay, rerouting, and friction across the organization."
     },
     resolution: {
-      primary: "Now you can see",
-      secondary: "how the system moves.",
+      primary: "That ability has a name:",
+      secondary: "Organizational Capacity.",
       lede: "The Capacity Lens makes the forces shaping speed, clarity, and coordination visible."
     }
   };

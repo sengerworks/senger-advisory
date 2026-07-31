@@ -52,6 +52,7 @@ const origin = `http://localhost:${port}`;
 process.env.CLERK_AUTHORIZED_PARTIES ||= origin;
 
 const files = new Map([
+  ["/", { url: new URL("../index.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/", { url: new URL("../workspace/index.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/workspace.css", { url: new URL("../workspace/workspace.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/workspace.js", { url: new URL("../workspace/workspace.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
@@ -84,6 +85,7 @@ const files = new Map([
   ["/saved-results-crypto.js", { url: new URL("../saved-results-crypto.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/private-results-api.js", { url: new URL("../private-results-api.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/script.js", { url: new URL("../script.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
+  ["/flow-engine.js", { url: new URL("../flow-engine.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/styles.css", { url: new URL("../styles.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/assets/favicon.svg", { url: new URL("../assets/favicon.svg", import.meta.url), type: "image/svg+xml" }]
 ]);
