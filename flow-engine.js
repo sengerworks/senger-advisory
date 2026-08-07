@@ -3,10 +3,10 @@
 
   const TAU = Math.PI * 2;
   const COLORS = {
-    ink: [47, 52, 55],
-    blue: [37, 99, 235],
-    amber: [245, 158, 11],
-    red: [220, 38, 38]
+    ink: [22, 28, 37],
+    blue: [143, 165, 184],
+    amber: [212, 91, 49],
+    red: [159, 63, 34]
   };
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
