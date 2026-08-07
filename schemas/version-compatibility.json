@@ -1,6 +1,6 @@
 {
-  "registryVersion": "1.0.0",
-  "updatedAt": "2026-07-23T12:00:00.000Z",
+  "registryVersion": "2.0.0",
+  "updatedAt": "2026-08-08T00:00:00.000Z",
   "versions": [
     {
       "assessmentVersion": "1.0.0",
@@ -15,6 +15,16 @@
       "compatiblePredecessors": [],
       "comparisonPolicy": "same-version-only",
       "notes": "Initial six-domain assessment, constraint-adjusted scoring hypothesis, and five behaviorally anchored private outcome observations."
+    },
+    {
+      "assessmentVersion": "2.0.0",
+      "resultVersion": "2.0.0",
+      "aggregationVersion": "2.0.0",
+      "contextVersion": "2.0.0",
+      "releasedAt": "2026-08-08T00:00:00.000Z",
+      "compatiblePredecessors": [],
+      "comparisonPolicy": "no-legacy-comparison",
+      "notes": "Capacity Signal Assessment organized around execution demand, friction, Capacity Compensation, and formal-versus-lived operating signals. Produces no Capacity score, mechanism scores, or primary constraint."
     }
   ]
 }

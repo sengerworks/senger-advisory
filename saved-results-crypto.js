@@ -107,7 +107,50 @@ function validateActionCycle(cycle) {
   return ["completed", "stopped"].includes(cycle.status) === (cycle.closedAt !== null);
 }
 
+function isBoundedString(value, minimum, maximum) {
+  return typeof value === "string" && value.length >= minimum && value.length <= maximum;
+}
+
+function validateSignalPattern(pattern) {
+  return hasExactKeys(pattern, ["patternId", "statement", "evidenceLevel", "sourceItemIds"])
+    && isBoundedString(pattern.patternId, 1, 80)
+    && isBoundedString(pattern.statement, 1, 500)
+    && ["emerging", "pronounced"].includes(pattern.evidenceLevel)
+    && Array.isArray(pattern.sourceItemIds)
+    && pattern.sourceItemIds.length >= 1
+    && pattern.sourceItemIds.length <= 5
+    && pattern.sourceItemIds.every(value => isBoundedString(value, 1, 100));
+}
+
+function validateSignalInstance(instance) {
+  const keys = ["resultVersion", "assessmentVersion", "resultId", "completedAt", "context", "executionDemand", "frictionPatterns", "compensationPatterns", "operatingSignals", "questionsRaised", "alternativeExplanations", "boundedFirstAction", "diagnosticNeed", "boundary"];
+  if (!hasExactKeys(instance, keys) || instance.resultVersion !== "2.0.0" || instance.assessmentVersion !== "2.0.0") return false;
+  if (!isUuid(instance.resultId) || !isTimestamp(instance.completedAt)) return false;
+  if (!hasExactKeys(instance.context, ["demandSource", "executionPriority", "timeHorizon", "organizationSize", "respondentRole"])) return false;
+  if (![instance.context.demandSource, instance.context.timeHorizon].every(value => isBoundedString(value, 1, 80))) return false;
+  if (!isBoundedString(instance.context.executionPriority, 40, 500) || !isBoundedString(instance.context.organizationSize, 0, 80) || !isBoundedString(instance.context.respondentRole, 0, 80)) return false;
+  if (!hasExactKeys(instance.executionDemand, ["evidenceLevel", "dimensionsObserved", "sourceItemIds"])) return false;
+  if (!["limited", "emerging", "pronounced"].includes(instance.executionDemand.evidenceLevel)) return false;
+  if (![instance.executionDemand.dimensionsObserved, instance.executionDemand.sourceItemIds].every(values => Array.isArray(values) && values.length <= 10 && values.every(value => isBoundedString(value, 1, 100)))) return false;
+  if (![instance.frictionPatterns, instance.compensationPatterns, instance.operatingSignals].every(patterns => Array.isArray(patterns) && patterns.length <= 3 && patterns.every(validateSignalPattern))) return false;
+  if (![instance.questionsRaised, instance.alternativeExplanations].every(values => Array.isArray(values) && values.length <= 5 && values.every(value => isBoundedString(value, 1, 1000)))) return false;
+  return [instance.boundedFirstAction, instance.diagnosticNeed, instance.boundary].every(value => isBoundedString(value, 1, 2000));
+}
+
+function validateSignalProfile(profile) {
+  const keys = ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "signalInstances"];
+  if (!hasExactKeys(profile, keys) || profile.schemaVersion !== "2.0.0" || !isUuid(profile.profileId)) return false;
+  if (![profile.createdAt, profile.updatedAt, profile.expiresAt].every(isTimestamp)) return false;
+  if (Date.parse(profile.createdAt) > Date.parse(profile.updatedAt) || Date.parse(profile.updatedAt) >= Date.parse(profile.expiresAt)) return false;
+  if (!isBoundedString(profile.displayLabel, 0, 80)) return false;
+  return Array.isArray(profile.signalInstances)
+    && profile.signalInstances.length >= 1
+    && profile.signalInstances.length <= 24
+    && profile.signalInstances.every(validateSignalInstance);
+}
+
 export function validateSavedProfile(profile) {
+  if (profile?.schemaVersion === "2.0.0") return validateSignalProfile(profile);
   const baseKeys = ["schemaVersion", "profileId", "createdAt", "updatedAt", "expiresAt", "displayLabel", "assessmentInstances", "outcomeSnapshots", "changeRecords"];
   const versionKeys = {
     "1.0.0": baseKeys,

@@ -48,29 +48,29 @@ if ("IntersectionObserver" in window) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const states = {
     intro: {
-      primary: "Every growing organization",
-      secondary: "eventually feels the strain.",
-      lede: "Complexity grows faster than the systems, leadership, and operating rhythms built to carry it."
+      primary: "Every organization",
+      secondary: "is asked to carry complexity.",
+      lede: "The question is whether the operating system can carry what execution now requires."
     },
     complexity: {
-      primary: "As organizations grow,",
-      secondary: "complexity compounds.",
-      lede: "More decisions, dependencies, and handoffs create more paths for work to travel."
+      primary: "Strategy, change, and growth",
+      secondary: "alter what must be carried.",
+      lede: "Volume, variety, interdependence, uncertainty, and rate of change reshape the demand."
     },
     friction: {
       primary: "Work starts to wait.",
       secondary: "Execution starts to slow.",
-      lede: "Not because strategy failed. Because capacity did not keep pace."
+      lede: "Not necessarily because strategy failed—but because the operating system no longer fits the demand."
     },
     constraint: {
-      primary: "When capacity constrains,",
-      secondary: "the whole system feels it.",
-      lede: "A local bottleneck becomes delay, rerouting, and friction across the organization."
+      primary: "When the system cannot carry it,",
+      secondary: "people compensate.",
+      lede: "Meetings, escalation, workarounds, and extraordinary effort preserve performance—for a time."
     },
     resolution: {
       primary: "That ability has a name:",
       secondary: "Organizational Capacity.",
-      lede: "The Capacity Lens makes the forces shaping speed, clarity, and coordination visible."
+      lede: "The Capacity Lens shows what the organization must carry, where the system is constrained, and what should change."
     }
   };
 

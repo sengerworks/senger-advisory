@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sengeradvisory.com/schemas/capacity-signal-submission.json",
+  "title": "Minimized Capacity Signal Submission v2",
+  "assessmentVersion": "2.0.0",
+  "aggregationVersion": "2.0.0",
+  "privacyThreshold": 5,
+  "acceptedFields": ["submissionId", "completedAt", "assessmentVersion", "demandLevel", "complexityDimensions", "frictionPatternIds", "compensationPatternIds", "operatingSignalIds"],
+  "prohibitedFields": ["answers", "identity", "email", "executionPriority", "organizationalCapacityScore", "mechanismScores", "primaryConstraint"],
+  "aggregateOutputs": ["demandDistribution", "complexityDimensionPatterns", "frictionPatterns", "compensationPatterns", "operatingSignals"],
+  "crossVersionComparisonAllowed": false
+}

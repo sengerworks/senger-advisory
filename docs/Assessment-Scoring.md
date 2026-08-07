@@ -1,4 +1,6 @@
-# Organizational Capacity Assessment — MVP Scoring v0.1
+# Organizational Capacity Assessment — Legacy v1 Scoring
+
+> **Legacy methodology:** This six-domain model is retained only for existing v1 workspace collections and encrypted v1 profiles. The public assessment now uses the score-free Capacity Signal Assessment v2. V1 results must not be relabeled or compared with v2 results.
 
 ## Purpose
 
