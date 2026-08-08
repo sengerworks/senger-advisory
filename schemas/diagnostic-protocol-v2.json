@@ -1,0 +1,17 @@
+{
+  "protocolVersion": "2.0.0",
+  "questionLibraryVersion": "2.0.0",
+  "minimumQuestions": 12,
+  "maximumQuestions": 18,
+  "availableTemplateCount": 19,
+  "requiredEvidenceLayers": ["complexity-demand", "complexity-classification", "signal-consequence", "mechanism-evidence", "mechanism-interaction", "compensation", "formal-lived", "cross-cutting-condition", "disconfirming-evidence", "capacity-boundary", "intervention-history", "evidence-gap"],
+  "researchEvidenceLayers": ["adaptive-observation"],
+  "governance": {
+    "approvedDiagnosticFrameRequired": true,
+    "sameCoreProtocolForEveryParticipant": true,
+    "frameSpecificSufficiencyRequired": true,
+    "equalMechanismQuestionCountRequired": false,
+    "adaptiveCapacityScoreProduced": false,
+    "adaptiveFollowUpsPerQuestionMaximum": 4
+  }
+}

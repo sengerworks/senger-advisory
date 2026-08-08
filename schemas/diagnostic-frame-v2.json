@@ -1,0 +1,19 @@
+{
+  "frameVersion": "2.0.0",
+  "statusValues": ["draft", "approved"],
+  "complexityDimensions": ["volume", "variety", "interdependence", "uncertainty", "rate-of-change"],
+  "complexityClassifications": ["necessary", "unnecessary", "mixed", "undetermined"],
+  "complexityStates": ["current", "anticipated", "current-and-anticipated"],
+  "confidenceLevels": ["limited", "moderate", "strong"],
+  "evidenceSourceTypes": ["sponsor-discovery", "participant-interview", "survey-instrument", "formal-artifact", "operating-data", "prior-intervention", "leadership-validation"],
+  "participantRange": { "minimum": 5, "maximum": 50 },
+  "requiredSections": ["organizationContext", "executionDemand", "diagnosticQuestion", "leadershipDecision", "complexityProfile", "evidencePlan"],
+  "governance": {
+    "capacityForWhatRequired": true,
+    "necessaryUnnecessaryClassificationIsHypothesis": true,
+    "sponsorClassificationIsFinal": false,
+    "everyMissingComplexityDimensionRequiresAcceptedGap": true,
+    "approvalRequiresExecutionDemandConfirmation": true,
+    "approvalRequiresEvidencePlanAcceptance": true
+  }
+}

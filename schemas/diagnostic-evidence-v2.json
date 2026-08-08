@@ -1,0 +1,17 @@
+{
+  "evidenceModelVersion": "2.0.0",
+  "mechanisms": ["priority-attention", "authority-accountability", "information-sensemaking", "coordination", "resource-capability-deployment"],
+  "evidenceTypes": ["mechanism", "friction", "compensation", "formal-lived", "cross-cutting"],
+  "complexityDimensions": ["volume", "variety", "interdependence", "uncertainty", "rate-of-change"],
+  "confidenceLevels": ["limited", "moderate", "strong"],
+  "perspectivePatterns": ["convergent", "mixed", "minority-signal", "unknown"],
+  "governance": {
+    "leadershipIsMechanism": false,
+    "cultureIsMechanism": false,
+    "technologyIsMechanism": false,
+    "mechanismScoresProduced": false,
+    "approvedDeidentifiedEvidenceRequired": true,
+    "supportingAndWeakeningEvidencePreserved": true,
+    "methodReviewRequiredBeforeSynthesis": true
+  }
+}
