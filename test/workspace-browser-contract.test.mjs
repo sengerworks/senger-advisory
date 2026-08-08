@@ -55,6 +55,9 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(server, /"\/api\/workspace\/diagnostic-participation"/);
   assert.match(server, /import workspaceDiagnosticInterview/);
   assert.match(server, /"\/api\/workspace\/diagnostic-interview"/);
+  assert.match(server, /"\/api\/workspace\/diagnostic-interview-v2"/);
+  assert.match(script, /currentParticipation\.interviewVersion==="2\.0\.0"/);
+  assert.match(script, /\/api\/workspace\/diagnostic-interview-v2/);
   assert.match(server, /"\/api\/workspace\/diagnostic-evidence-review"/);
   assert.match(server, /"\/api\/workspace\/diagnostic-evidence-preparation"/);
   assert.match(server, /"\/api\/workspace\/diagnostic-synthesis"/);
@@ -78,6 +81,7 @@ test("workspace browser uses server configuration and minimized session endpoint
 test("workspace keeps assessment collection separate from paid diagnostic engagement", async () => {
   const html = await source("workspace/index.html");
   const script = await source("workspace/workspace.js");
+  const operationsScript = await source("workspace/operations.js");
   assert.match(html, /Organizational Capacity Diagnostic · Executive sponsor view/);
   assert.match(html, /This is separate from the lightweight assessment/);
   assert.match(html, /Senger Advisory establishes the engagement, route, and entitlement in Platform Operations/);
@@ -106,10 +110,11 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(script, /Responses submitted/);
   assert.doesNotMatch(script, /slot\.interviewAnswers|slot\.encryptedResponse/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-participation"/);
+  assert.match(operationsScript, /\/api\/operations\/diagnostic-v2-activation/);
   assert.match(script, /Accept the diagnostic privacy notice/);
   assert.match(html, /Save private draft/);
   assert.match(html, /Submit diagnostic interview/);
-  assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-interview"/);
+  assert.match(script, /"\/api\/workspace\/diagnostic-interview-v2":"\/api\/workspace\/diagnostic-interview"/);
   assert.match(script, /Your confidential diagnostic interview is complete\./);
   assert.match(script, /Submission confirmed\. No further action is required right now\./);
   assert.match(script, /Saving encrypted draft/);

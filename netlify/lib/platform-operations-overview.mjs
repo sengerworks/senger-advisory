@@ -9,21 +9,28 @@ export async function getPlatformOperationsOverview({ workspaceId }, connectionS
       SELECT d.id,d.delivery_route,d.entitlement_type,d.state,d.human_review_status,d.created_at,d.updated_at,
         e.status AS entitlement_status,
         count(DISTINCT slot.id) FILTER (WHERE slot.clerk_user_id IS NOT NULL AND slot.revoked_at IS NULL)::integer AS assigned,
-        count(DISTINCT interview.id) FILTER (WHERE interview.status IN ('submitted','review-required','evidence-ready'))::integer AS completed,
+        (count(DISTINCT interview.id) FILTER (WHERE interview.status IN ('submitted','review-required','evidence-ready'))
+          + count(DISTINCT interview_v2.id) FILTER (WHERE interview_v2.status='submitted'))::integer AS completed,
         count(DISTINCT evidence.id) FILTER (WHERE evidence.review_status='pending')::integer AS pending_evidence,
         count(DISTINCT assignment.id) FILTER (WHERE assignment.revoked_at IS NULL AND assignment.expires_at > now())::integer AS active_advisors,
         count(DISTINCT feedback.id)::integer AS feedback_count,
         count(DISTINCT candidate.id)::integer AS change_candidates,
-        max(brief.status) AS brief_status
+        max(brief.status) AS brief_status,
+        max(frame.id::text) IS NOT NULL AND max(protocol_v2.id::text) IS NOT NULL AS v2_ready,
+        max(activation.id::text) IS NOT NULL AS v2_active
       FROM app_shared.diagnostics d
       LEFT JOIN app_shared.commercial_entitlements e ON e.workspace_id=d.workspace_id AND e.diagnostic_id=d.id AND e.entitlement_kind IN ('diagnostic','poc')
       LEFT JOIN app_identity.diagnostic_participant_slots slot ON slot.workspace_id=d.workspace_id AND slot.diagnostic_id=d.id
       LEFT JOIN app_private.diagnostic_interviews interview ON interview.workspace_id=slot.workspace_id AND interview.diagnostic_id=slot.diagnostic_id AND interview.participant_slot_id=slot.id
+      LEFT JOIN app_private.diagnostic_interviews_v2 interview_v2 ON interview_v2.workspace_id=slot.workspace_id AND interview_v2.diagnostic_id=slot.diagnostic_id AND interview_v2.participant_slot_id=slot.id
       LEFT JOIN app_private.diagnostic_evidence evidence ON evidence.workspace_id=d.workspace_id AND evidence.diagnostic_id=d.id
       LEFT JOIN app_operations.diagnostic_advisor_assignments assignment ON assignment.workspace_id=d.workspace_id AND assignment.diagnostic_id=d.id
       LEFT JOIN app_operations.poc_checkpoint_feedback feedback ON feedback.workspace_id=d.workspace_id AND feedback.diagnostic_id=d.id
       LEFT JOIN app_operations.poc_change_candidates candidate ON candidate.workspace_id=d.workspace_id AND candidate.diagnostic_id=d.id
       LEFT JOIN app_shared.capacity_operating_briefs brief ON brief.workspace_id=d.workspace_id AND brief.diagnostic_id=d.id
+      LEFT JOIN app_private.diagnostic_frames_v2 frame ON frame.workspace_id=d.workspace_id AND frame.diagnostic_id=d.id AND frame.status='approved'
+      LEFT JOIN app_shared.diagnostic_protocols_v2 protocol_v2 ON protocol_v2.workspace_id=d.workspace_id AND protocol_v2.diagnostic_id=d.id AND protocol_v2.frame_id=frame.id
+      LEFT JOIN app_operations.diagnostic_v2_collection_activations activation ON activation.workspace_id=d.workspace_id AND activation.diagnostic_id=d.id AND activation.deactivated_at IS NULL
       GROUP BY d.workspace_id,d.id,e.status
       ORDER BY d.created_at DESC
       LIMIT 50`);
@@ -40,6 +47,8 @@ export async function getPlatformOperationsOverview({ workspaceId }, connectionS
       feedbackCount: row.feedback_count,
       changeCandidates: row.change_candidates,
       briefStatus: row.brief_status || null,
+      collectionProtocol: row.v2_active ? "2.0.0" : "1.0.0",
+      v2ActivationReady: Boolean(row.v2_ready) && row.assigned === 0,
       createdAt: iso(row.created_at),
       updatedAt: iso(row.updated_at)
     }));

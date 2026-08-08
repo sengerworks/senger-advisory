@@ -274,3 +274,23 @@ test("v2 interview collection is encrypted, tenant-isolated, and leaves v1 stora
   assert.match(migration,/ENABLE ROW LEVEL SECURITY/);assert.match(migration,/FORCE ROW LEVEL SECURITY/);
   assert.doesNotMatch(migration,/ALTER TABLE app_private\.diagnostic_interviews\s/);
 });
+
+test("v2 participant routing requires an explicit auditable activation",async()=>{
+  const migration=await readFile(new URL("../db/migrations/037_diagnostic_v2_collection_activations.sql",import.meta.url),"utf8");
+  assert.match(migration,/CREATE TABLE app_operations\.diagnostic_v2_collection_activations/);
+  assert.match(migration,/activation_note text NOT NULL/);
+  assert.match(migration,/activated_by_clerk_user_id text NOT NULL/);
+  assert.match(migration,/WHERE deactivated_at IS NULL/);
+  assert.match(migration,/REFERENCES app_private\.diagnostic_frames_v2\(workspace_id,diagnostic_id,id\)/);
+  assert.match(migration,/REFERENCES app_shared\.diagnostic_protocols_v2\(workspace_id,diagnostic_id,id\)/);
+  assert.match(migration,/FORCE ROW LEVEL SECURITY/);
+});
+
+test("v2 evidence uses exactly one versioned interview source",async()=>{
+  const migration=await readFile(new URL("../db/migrations/038_diagnostic_v2_evidence_source_bridge.sql",import.meta.url),"utf8");
+  assert.match(migration,/ALTER COLUMN source_interview_id DROP NOT NULL/);
+  assert.match(migration,/REFERENCES app_private\.diagnostic_interviews_v2\(workspace_id,id\)/);
+  assert.match(migration,/num_nonnulls\(source_interview_id,source_interview_v2_id\)=1/);
+  assert.match(migration,/diagnostic_evidence_v2_source_idx/);
+  assert.doesNotMatch(migration,/deidentified_text|encrypted_response_payload/);
+});

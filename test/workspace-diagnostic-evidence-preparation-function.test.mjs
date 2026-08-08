@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createWorkspaceDiagnosticEvidencePreparationHandler } from "../netlify/functions/workspace-diagnostic-evidence-preparation.mjs";
 import { WORKSPACE_ROLES } from "../workspace-authorization.js";
+import { readFile } from "node:fs/promises";
 
 const diagnosticId = "22222222-2222-4222-8222-222222222222";
 const auth = role => async () => ({ ok: true, value: { workspaceId: "11111111-1111-4111-8111-111111111111", userId: "user_advisor", role: role || WORKSPACE_ROLES.facilitator } });
@@ -25,4 +26,12 @@ test("participants, foreign origins, malformed input, and unsupported methods fa
   assert.equal((await handler(request("GET"))).status, 405);
   assert.equal((await handler(request("POST", { diagnosticId, extra: true }))).status, 400);
   assert.equal((await handler(request("POST", { diagnosticId }, "https://attacker.example"))).status, 403);
+});
+
+test("evidence preparation routes only the explicitly activated interview version",async()=>{
+  const implementation=await readFile(new URL("../netlify/lib/workspace-diagnostic-evidence-preparation.mjs",import.meta.url),"utf8");
+  assert.match(implementation,/diagnostic_v2_collection_activations/);
+  assert.match(implementation,/source_interview_v2_id/);
+  assert.match(implementation,/interviewVersion: source\.interviewVersion/);
+  assert.doesNotMatch(implementation,/participant_slot_id|participant_clerk_user_id/);
 });

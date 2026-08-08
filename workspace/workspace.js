@@ -1357,7 +1357,8 @@ async function prepareParticipant() {
 
 async function loadParticipantInterview(diagnosticId) {
   const localAnswers=new Map([...elements.participantInterviewQuestions.querySelectorAll("textarea")].map(input=>[input.name,input.value]));
-  const interview=await workspaceRequest(`/api/workspace/diagnostic-interview?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  const interviewEndpoint=currentParticipation.interviewVersion==="2.0.0"?"/api/workspace/diagnostic-interview-v2":"/api/workspace/diagnostic-interview";
+  const interview=await workspaceRequest(`${interviewEndpoint}?diagnosticId=${encodeURIComponent(diagnosticId)}`);
   const answers=new Map(interview.answers.map(answer=>[answer.questionId,answer.answerText]));
   elements.participantInterviewQuestions.replaceChildren();
   for(const question of interview.questions){const label=document.createElement("label");const number=document.createElement("span");number.textContent=String(question.position).padStart(2,"0");const body=document.createElement("div");const prompt=document.createElement("p");prompt.textContent=question.questionText;const answer=document.createElement("textarea");answer.name=question.questionId;answer.maxLength=6000;answer.required=true;answer.value=localAnswers.has(question.questionId)?localAnswers.get(question.questionId):(answers.get(question.questionId)||"");body.append(prompt,answer);label.append(number,body);elements.participantInterviewQuestions.append(label);}
@@ -1388,7 +1389,8 @@ function interviewPayload(){return{diagnosticId:currentParticipation.diagnosticI
 function saveInterviewDraft(){
   clearTimeout(interviewAutosaveTimer);
   const payload=interviewPayload();
-  interviewSavePromise=interviewSavePromise.then(async()=>{elements.interviewMessage.textContent="Saving encrypted draft…";await workspaceRequest("/api/workspace/diagnostic-interview",{method:"PATCH",body:payload});interviewDirty=false;elements.interviewMessage.textContent="Private draft saved.";}).catch(error=>{elements.interviewMessage.textContent=error.message;elements.interviewMessage.dataset.tone="error";});
+  const interviewEndpoint=currentParticipation.interviewVersion==="2.0.0"?"/api/workspace/diagnostic-interview-v2":"/api/workspace/diagnostic-interview";
+  interviewSavePromise=interviewSavePromise.then(async()=>{elements.interviewMessage.textContent="Saving encrypted draft…";await workspaceRequest(interviewEndpoint,{method:"PATCH",body:payload});interviewDirty=false;elements.interviewMessage.textContent="Private draft saved.";}).catch(error=>{elements.interviewMessage.textContent=error.message;elements.interviewMessage.dataset.tone="error";});
   return interviewSavePromise;
 }
 
@@ -2081,7 +2083,7 @@ elements.beginAssessment.addEventListener("click", async () => {
 });
 elements.participantInterviewQuestions.addEventListener("input",()=>{interviewDirty=true;elements.interviewMessage.textContent="Draft changes not yet saved.";clearTimeout(interviewAutosaveTimer);interviewAutosaveTimer=setTimeout(()=>saveInterviewDraft(),1200);});
 elements.saveInterview.addEventListener("click",async()=>{elements.saveInterview.disabled=true;await saveInterviewDraft();elements.saveInterview.disabled=false;});
-elements.participantInterview.addEventListener("submit",async event=>{event.preventDefault();if(!elements.participantInterview.reportValidity())return;try{clearTimeout(interviewAutosaveTimer);await interviewSavePromise;await workspaceRequest("/api/workspace/diagnostic-interview",{method:"POST",body:interviewPayload()});interviewDirty=false;renderDiagnosticInterviewComplete();}catch(error){elements.interviewMessage.textContent=error.message;elements.interviewMessage.dataset.tone="error";}});
+elements.participantInterview.addEventListener("submit",async event=>{event.preventDefault();if(!elements.participantInterview.reportValidity())return;try{clearTimeout(interviewAutosaveTimer);await interviewSavePromise;const interviewEndpoint=currentParticipation.interviewVersion==="2.0.0"?"/api/workspace/diagnostic-interview-v2":"/api/workspace/diagnostic-interview";await workspaceRequest(interviewEndpoint,{method:"POST",body:interviewPayload()});interviewDirty=false;renderDiagnosticInterviewComplete();}catch(error){elements.interviewMessage.textContent=error.message;elements.interviewMessage.dataset.tone="error";}});
 elements.participantPocFeedback.addEventListener("submit",async event=>{event.preventDefault();if(!currentParticipation?.diagnosticId||!elements.participantPocFeedback.reportValidity())return;const values=Object.fromEntries(new FormData(elements.participantPocFeedback)),button=elements.participantPocFeedback.querySelector("button");button.disabled=true;try{await workspaceRequest("/api/workspace/poc-feedback",{method:"POST",body:{diagnosticId:currentParticipation.diagnosticId,checkpoint:"interview-completion",clarityRating:values.clarityRating,trustRating:values.trustRating,actionabilityRating:null,supportRequired:Boolean(values.supportRequired),purchaseIntent:"not-asked",feedback:values.feedback||null}});elements.participantPocFeedback.hidden=true;elements.participantMessage.textContent="Optional product feedback received without adding your identity or entering it into diagnostic evidence.";}catch(error){elements.participantPocFeedbackMessage.textContent=error.message;button.disabled=false;}});
 window.addEventListener("beforeunload",event=>{if(!interviewDirty)return;event.preventDefault();event.returnValue="";});
 

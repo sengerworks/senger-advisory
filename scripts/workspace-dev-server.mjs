@@ -5,6 +5,7 @@ import workspaceConfig from "../netlify/functions/workspace-config.mjs";
 import platformOperationsOverview from "../netlify/functions/platform-operations-overview.mjs";
 import platformOperationsDiagnostics from "../netlify/functions/platform-operations-diagnostics.mjs";
 import platformOperationsAdvisorAssignments from "../netlify/functions/platform-operations-advisor-assignments.mjs";
+import platformOperationsV2Activation from "../netlify/functions/platform-operations-v2-activation.mjs";
 import workspaceDiagnostics from "../netlify/functions/workspace-diagnostics.mjs";
 import workspaceDiagnosticContext from "../netlify/functions/workspace-diagnostic-context.mjs";
 import workspaceDiagnosticFrameV2 from "../netlify/functions/workspace-diagnostic-frame-v2.mjs";
@@ -14,6 +15,7 @@ import workspaceDiagnosticProtocol from "../netlify/functions/workspace-diagnost
 import workspaceDiagnosticInvitations from "../netlify/functions/workspace-diagnostic-invitations.mjs";
 import workspaceDiagnosticParticipation from "../netlify/functions/workspace-diagnostic-participation.mjs";
 import workspaceDiagnosticInterview from "../netlify/functions/workspace-diagnostic-interview.mjs";
+import workspaceDiagnosticInterviewV2 from "../netlify/functions/workspace-diagnostic-interview-v2.mjs";
 import workspaceDiagnosticEvidenceReview from "../netlify/functions/workspace-diagnostic-evidence-review.mjs";
 import workspaceDiagnosticEvidencePreparation from "../netlify/functions/workspace-diagnostic-evidence-preparation.mjs";
 import workspaceDiagnosticAdvisorAssignments from "../netlify/functions/workspace-diagnostic-advisor-assignments.mjs";
@@ -131,6 +133,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/operations/overview",
     "/api/operations/diagnostics",
     "/api/operations/advisor-assignments",
+    "/api/operations/diagnostic-v2-activation",
     "/api/workspace/diagnostics",
     "/api/workspace/diagnostic-context",
     "/api/workspace/diagnostic-frame-v2",
@@ -140,6 +143,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/diagnostic-invitations",
     "/api/workspace/diagnostic-participation",
     "/api/workspace/diagnostic-interview",
+    "/api/workspace/diagnostic-interview-v2",
     "/api/workspace/diagnostic-evidence-review",
     "/api/workspace/diagnostic-evidence-preparation",
     "/api/workspace/diagnostic-advisor-assignments",
@@ -185,6 +189,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
       ? platformOperationsOverview
       : url.pathname === "/api/operations/advisor-assignments"
         ? platformOperationsAdvisorAssignments
+      : url.pathname === "/api/operations/diagnostic-v2-activation"
+        ? platformOperationsV2Activation
       : url.pathname === "/api/operations/diagnostics"
         ? platformOperationsDiagnostics
       : url.pathname.endsWith("/stripe-webhook")
@@ -209,6 +215,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceDiagnosticParticipation
       : url.pathname.endsWith("/diagnostic-interview")
         ? workspaceDiagnosticInterview
+      : url.pathname.endsWith("/diagnostic-interview-v2")
+        ? workspaceDiagnosticInterviewV2
       : url.pathname.endsWith("/diagnostic-evidence-review")
         ? workspaceDiagnosticEvidenceReview
       : url.pathname.endsWith("/diagnostic-evidence-preparation")
