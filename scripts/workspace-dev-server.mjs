@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
+import workspaceOrganizationBootstrap from "../netlify/functions/workspace-organization-bootstrap.mjs";
 import platformOperationsOverview from "../netlify/functions/platform-operations-overview.mjs";
 import platformOperationsDiagnostics from "../netlify/functions/platform-operations-diagnostics.mjs";
 import platformOperationsAdvisorAssignments from "../netlify/functions/platform-operations-advisor-assignments.mjs";
@@ -130,6 +131,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
 
   if ([
     "/api/workspace/config",
+    "/api/workspace/organization-bootstrap",
     "/api/operations/overview",
     "/api/operations/diagnostics",
     "/api/operations/advisor-assignments",
@@ -199,6 +201,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceCommerceCheckout
       : url.pathname.endsWith("/config")
       ? workspaceConfig
+      : url.pathname.endsWith("/organization-bootstrap")
+        ? workspaceOrganizationBootstrap
       : url.pathname.endsWith("/diagnostic-context")
         ? workspaceDiagnosticContext
       : url.pathname.endsWith("/diagnostic-frame-v2")

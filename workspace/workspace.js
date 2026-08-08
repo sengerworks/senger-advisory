@@ -1415,8 +1415,18 @@ async function ensureActiveOrganization() {
     memberships = response?.data || [];
     totalCount = response?.totalCount ?? memberships.length;
   }
-  if (totalCount !== 1 || memberships.length !== 1) return false;
-  await clerk.setActive({ organization: memberships[0].organization.id });
+  let organization = totalCount === 1 && memberships.length === 1
+    ? memberships[0].organization.id
+    : null;
+  if (!organization) {
+    const response = await fetch("/api/workspace/organization-bootstrap", {
+      credentials: "same-origin",
+      headers: { Accept: "application/json" }
+    });
+    if (!response.ok) return false;
+    organization = (await response.json()).organization;
+  }
+  await clerk.setActive({ organization });
   return Boolean(clerk.organization);
 }
 
