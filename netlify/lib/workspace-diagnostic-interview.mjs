@@ -15,7 +15,7 @@ function key() {
   }
   throw new Error("Diagnostic response encryption is not configured.");
 }
-function encrypt(value) {
+export function encryptDiagnosticResponsePayload(value) {
   const iv=randomBytes(12); const cipher=createCipheriv("aes-256-gcm",key(),iv);
   const content=Buffer.concat([cipher.update(JSON.stringify(value)),cipher.final()]);
   return Buffer.concat([iv,cipher.getAuthTag(),content]);
@@ -47,7 +47,7 @@ export async function getParticipantInterview({workspaceId,userId,diagnosticId},
   if(source.rowCount!==1)throw new DiagnosticInterviewStateError("Accept the diagnostic privacy notice before beginning.");
   let result=await query(`SELECT id,status,encrypted_response_payload,updated_at FROM app_private.diagnostic_interviews WHERE diagnostic_id=$1 AND participant_slot_id=$2`,[diagnosticId,source.rows[0].slot_id]);
   if(!result.rows[0])result=await query(`INSERT INTO app_private.diagnostic_interviews(id,workspace_id,diagnostic_id,participant_slot_id,protocol_id,collection_mode,status,encryption_version,encryption_key_ref,encrypted_response_payload)
-   VALUES($1,$2,$3,$4,$5,'automated-written','in-progress','aes-256-gcm-v1','diagnostic-development-v1',$6) RETURNING id,status,encrypted_response_payload,updated_at`,[randomUUID(),workspaceId,diagnosticId,source.rows[0].slot_id,source.rows[0].protocol_id,encrypt({answers:[]})]);
+   VALUES($1,$2,$3,$4,$5,'automated-written','in-progress','aes-256-gcm-v1','diagnostic-development-v1',$6) RETURNING id,status,encrypted_response_payload,updated_at`,[randomUUID(),workspaceId,diagnosticId,source.rows[0].slot_id,source.rows[0].protocol_id,encryptDiagnosticResponsePayload({answers:[]})]);
   const row=result.rows[0]; return{interviewId:row.id,status:row.status,questions:source.rows[0].governed_questions,answers:row.encrypted_response_payload?decryptDiagnosticResponsePayload(row.encrypted_response_payload).answers:[],updatedAt:new Date(row.updated_at).toISOString()};
  },connectionString);
 }
@@ -55,7 +55,7 @@ export async function saveParticipantInterview({workspaceId,userId,input,submit=
  return withNeonWorkspaceTransaction(workspaceId,async({query})=>{
   const status=submit?"submitted":"in-progress";
   const result=await query(`UPDATE app_private.diagnostic_interviews interview SET encrypted_response_payload=$4,status=$5,submitted_at=CASE WHEN $5='submitted' THEN $6::timestamptz ELSE NULL::timestamptz END,updated_at=$6::timestamptz
-   FROM app_identity.diagnostic_participant_slots slot WHERE interview.workspace_id=$1 AND interview.diagnostic_id=$2 AND interview.participant_slot_id=slot.id AND slot.clerk_user_id=$3 AND interview.status='in-progress' RETURNING interview.id,interview.status,interview.updated_at`,[workspaceId,input.diagnosticId,userId,encrypt({answers:input.answers}),status,now.toISOString()]);
+   FROM app_identity.diagnostic_participant_slots slot WHERE interview.workspace_id=$1 AND interview.diagnostic_id=$2 AND interview.participant_slot_id=slot.id AND slot.clerk_user_id=$3 AND interview.status='in-progress' RETURNING interview.id,interview.status,interview.updated_at`,[workspaceId,input.diagnosticId,userId,encryptDiagnosticResponsePayload({answers:input.answers}),status,now.toISOString()]);
   if(result.rowCount!==1)throw new DiagnosticInterviewStateError("This interview is not available for changes.");
   return{saved:true,submitted:submit,updatedAt:new Date(result.rows[0].updated_at).toISOString()};
  },connectionString);

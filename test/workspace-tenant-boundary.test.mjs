@@ -263,3 +263,14 @@ test("Diagnostic Frame v2 persistence is additive, tenant-isolated, and bound to
   assert.match(migration, /app_identity\.current_workspace_id\(\)/);
   assert.doesNotMatch(migration, /ALTER TABLE app_private\.diagnostic_context_briefs|ALTER TABLE app_shared\.diagnostic_protocols\s/);
 });
+
+test("v2 interview collection is encrypted, tenant-isolated, and leaves v1 storage unchanged", async () => {
+  const migration=await readFile(new URL("../db/migrations/036_diagnostic_interviews_v2.sql",import.meta.url),"utf8");
+  assert.match(migration,/CREATE TABLE app_private\.diagnostic_interviews_v2/);
+  assert.match(migration,/REFERENCES app_shared\.diagnostic_protocols_v2\(workspace_id,diagnostic_id,id\)/);
+  assert.match(migration,/REFERENCES app_identity\.diagnostic_participant_slots\(workspace_id,diagnostic_id,id\)/);
+  assert.match(migration,/encrypted_response_payload bytea/);
+  assert.match(migration,/status = 'withdrawn'.*encrypted_response_payload IS NULL/s);
+  assert.match(migration,/ENABLE ROW LEVEL SECURITY/);assert.match(migration,/FORCE ROW LEVEL SECURITY/);
+  assert.doesNotMatch(migration,/ALTER TABLE app_private\.diagnostic_interviews\s/);
+});

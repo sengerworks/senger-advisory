@@ -1,0 +1,21 @@
+{
+  "interviewVersion": "2.0.0",
+  "status": "parallel-collection-bridge",
+  "collectionModes": ["automated-written", "advisor-live"],
+  "minimumCoreQuestions": 12,
+  "maximumCoreQuestions": 18,
+  "minimumAnswerCharactersAtSubmission": 40,
+  "maximumAnswerCharacters": 6000,
+  "approvedProtocolV2Required": true,
+  "participantNoticeAcceptanceRequired": true,
+  "identityFieldsPermitted": false,
+  "encryptedDraftsRequired": true,
+  "withdrawalDeletesResponseContent": true,
+  "activatesParticipantRoute": false,
+  "governance": {
+    "sameCoreProtocolForEveryParticipant": true,
+    "draftsRemainParticipantScoped": true,
+    "submissionLocksAnswers": true,
+    "v1InterviewsMutated": false
+  }
+}

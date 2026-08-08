@@ -1,6 +1,19 @@
 {
   "registryVersion": "2.0.0",
   "updatedAt": "2026-08-08T00:00:00.000Z",
+  "diagnosticVersions": [
+    {
+      "frameVersion": "2.0.0",
+      "protocolVersion": "2.0.0",
+      "questionLibraryVersion": "2.0.0",
+      "interviewVersion": "2.0.0",
+      "status": "parallel-collection-bridge",
+      "activeParticipantRoute": false,
+      "compatiblePredecessors": [],
+      "migrationPolicy": "no-in-place-v1-conversion",
+      "notes": "Execution-demand-specific Diagnostic Frame, 12–18 question shared protocol, and encrypted participant-scoped interview storage. Live v1 participant collection remains unchanged until activation gates pass."
+    }
+  ],
   "versions": [
     {
       "assessmentVersion": "1.0.0",
