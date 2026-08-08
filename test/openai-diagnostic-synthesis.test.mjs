@@ -34,3 +34,18 @@ test("rejects insufficient, duplicate, and untraceable synthesis evidence", asyn
   const synthesize = createOpenAIDiagnosticSynthesizer({ apiKey: "test", fetchImpl: async () => new Response(JSON.stringify({ status: "completed", output: [{ type: "message", content: [{ type: "output_text", text: JSON.stringify(invalid) }] }] }), { status: 200 }) });
   await assert.rejects(() => synthesize({ diagnosticId, evidence }), DiagnosticSynthesisProviderError);
 });
+
+test("v2 synthesis is bounded to the execution demand and produces mechanism context without scores",async()=>{
+  const v2Draft=structuredClone(draft);
+  for(const theme of v2Draft.themes){theme.mechanismIds=["authority-accountability","information-sensemaking"];theme.evidenceLayerIds=["mechanism-observation","counterevidence"];theme.complexityDimensions=["interdependence","uncertainty"];}
+  Object.assign(v2Draft.hypothesis,{mechanismIds:["authority-accountability","information-sensemaking"],uncertaintyStatement:"The evidence does not yet distinguish authority ambiguity from delayed information across every recurring workflow.",boundaryConditions:["The pattern appears strongest in cross-functional work with non-standard commercial commitments."]});
+  let requestBody;
+  const synthesize=createOpenAIDiagnosticSynthesizer({apiKey:"test",fetchImpl:async(_url,options)=>{requestBody=JSON.parse(options.body);return new Response(JSON.stringify({status:"completed",output:[{type:"message",content:[{type:"output_text",text:JSON.stringify(v2Draft)}]}]}),{status:200});}});
+  const annotated=evidence.map(record=>({...record,evidenceLayerId:"mechanism-observation",mechanismIds:["authority-accountability"]}));
+  const result=await synthesize({diagnosticId,evidence:annotated,methodContext:{methodVersion:"2.0.0",frame:{executionDemand:{commitment:"Protect core delivery while scaling standardized platform revenue."},diagnosticQuestion:"How does the operating system absorb this demand?",leadershipDecision:"Set the commercial exception boundary.",performanceConsequences:["Renewal exposure"],complexityObservations:[]}}});
+  assert.equal(result.methodVersion,"2.0.0");
+  assert.deepEqual(result.hypothesis.mechanismIds,["authority-accountability","information-sensemaking"]);
+  assert.equal(result.methodContext.mechanismScoresProduced,false);
+  assert.match(requestBody.input,/Protect core delivery/);
+  assert.doesNotMatch(JSON.stringify(result),/"(?:mechanismScore|capacityScore)":/);
+});

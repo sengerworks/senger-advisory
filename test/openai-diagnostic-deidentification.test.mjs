@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createOpenAIDiagnosticDeidentifier, DEFAULT_DIAGNOSTIC_DEIDENTIFICATION_MODEL, DiagnosticDeidentificationProviderError } from "../netlify/lib/openai-diagnostic-deidentification.mjs";
+import { createOpenAIDiagnosticDeidentifier, DEFAULT_DIAGNOSTIC_DEIDENTIFICATION_MODEL, DiagnosticDeidentificationProviderError, validateDeidentificationSource } from "../netlify/lib/openai-diagnostic-deidentification.mjs";
 
 const answers = [{ questionId: "q-01", answerText: "A named executive repeatedly reclaimed a routine decision, delaying delivery by two weeks." }];
 const candidate = { sourceQuestionId: "q-01", deidentifiedText: "A senior leader repeatedly reclaimed a routine decision, delaying delivery by approximately two weeks.", redactionCategories: ["person", "role", "date"], disclosureRisk: "medium", transformationNote: "Removed the individual identity, generalized the role, and softened the exact timing." };
@@ -29,4 +29,10 @@ test("fails closed on refusals, duplicate evidence, and provider errors", async 
   await assert.rejects(() => duplicate({ diagnosticId: "d", interviewId: "i", answers }), /duplicate/);
   const failed = createOpenAIDiagnosticDeidentifier({ apiKey: "test", fetchImpl: async () => new Response(JSON.stringify({ error: { message: "secret provider detail" } }), { status: 429 }) });
   await assert.rejects(() => failed({ diagnosticId: "d", interviewId: "i", answers }), error => error instanceof DiagnosticDeidentificationProviderError && !error.message.includes("secret provider detail"));
+});
+
+test("accepts the v2 maximum of eighteen core responses and three governed clarifications",()=>{
+  const source=Array.from({length:21},(_,index)=>({questionId:`q-${index+1}`,answerText:"A sufficiently developed governed response for protected evidence preparation."}));
+  assert.equal(validateDeidentificationSource(source).length,21);
+  assert.throws(()=>validateDeidentificationSource([...source,{questionId:"q-22",answerText:source[0].answerText}]),/twenty-one/);
 });

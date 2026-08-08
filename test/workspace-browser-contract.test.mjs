@@ -118,6 +118,8 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(script, /Your confidential diagnostic interview is complete\./);
   assert.match(script, /Submission confirmed\. No further action is required right now\./);
   assert.match(script, /Saving encrypted draft/);
+  assert.match(script, /Evidence-depth review requested/);
+  assert.match(script, /data-follow-up-answer/);
   assert.match(script, /setTimeout\(\(\)=>saveInterviewDraft\(\),1200\)/);
   assert.match(script, /currentParticipation\?\.kind === "diagnostic"/);
   assert.match(script, /beforeunload/);
@@ -246,6 +248,8 @@ test("advisor console is separate, assignment-scoped, and excludes raw interview
   assert.match(advisor, /evidenceClass:"operating-change"/);
   assert.match(advisor, /evidenceClass:"capacity-change"/);
   assert.doesNotMatch(advisor, /answerText|encrypted_response_payload|sourceInterviewId/);
+  assert.match(advisor, /Mechanisms implicated — not scored/);
+  assert.match(advisor, /Boundary conditions/);
 });
 
 test("client sponsor receives only a confidentiality-gated governed finding", async () => {

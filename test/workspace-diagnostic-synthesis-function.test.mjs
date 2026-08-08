@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createWorkspaceDiagnosticSynthesisHandler } from "../netlify/functions/workspace-diagnostic-synthesis.mjs";
 import { DiagnosticSynthesisStateError } from "../netlify/lib/workspace-diagnostic-synthesis.mjs";
+import { readFile } from "node:fs/promises";
 import { WORKSPACE_ROLES } from "../workspace-authorization.js";
 
 const workspaceId = "11111111-1111-4111-8111-111111111111";
@@ -46,4 +47,13 @@ test("synthesis blocks participants, unfinished review, malformed input, and for
   assert.equal((await unfinished(request("PATCH", { diagnosticId, decision: "approved" }))).status, 400);
   const foreign = new Request(`https://example.com/api/workspace/diagnostic-synthesis?diagnosticId=${diagnosticId}`, { headers: { origin: "https://attacker.example" } });
   assert.equal((await unfinished(foreign)).status, 403);
+});
+
+test("activated v2 synthesis carries only approved frame and de-identified mechanism context",async()=>{
+  const implementation=await readFile(new URL("../netlify/lib/workspace-diagnostic-synthesis.mjs",import.meta.url),"utf8");
+  assert.match(implementation,/diagnostic_v2_collection_activations/);
+  assert.match(implementation,/evidenceLayerId/);
+  assert.match(implementation,/executionDemand/);
+  assert.match(implementation,/mechanismIds/);
+  assert.doesNotMatch(implementation,/participant_slot_id|encrypted_response_payload|clerk_user_id AS participant/);
 });

@@ -4,6 +4,7 @@
   "collectionModes": ["automated-written", "advisor-live"],
   "minimumCoreQuestions": 12,
   "maximumCoreQuestions": 18,
+  "maximumAdaptiveFollowUps": 3,
   "minimumAnswerCharactersAtSubmission": 40,
   "maximumAnswerCharacters": 6000,
   "approvedProtocolV2Required": true,
@@ -16,6 +17,8 @@
     "sameCoreProtocolForEveryParticipant": true,
     "draftsRemainParticipantScoped": true,
     "submissionLocksAnswers": true,
+    "followUpsStoredEncrypted": true,
+    "coreProtocolMutable": false,
     "v1InterviewsMutated": false
   }
 }

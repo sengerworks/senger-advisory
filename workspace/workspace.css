@@ -431,6 +431,9 @@ h2 {
 .participant-interview label div { display: grid; gap: 9px; }
 .participant-interview label p { margin: 0; font-weight: 700; }
 .participant-interview textarea { width: 100%; min-height: 130px; padding: 11px; border: 1px solid #d9d4cc; border-radius: 9px; font: inherit; resize: vertical; }
+.participant-interview .participant-follow-up { border-color: rgba(185,91,39,.45); background: rgba(185,91,39,.06); }
+.participant-interview .participant-follow-up > span { color: var(--orange); }
+.participant-interview .participant-follow-up small { color: var(--ink-soft); font-size: .72rem; font-weight: 700; }
 
 .collection-panel {
   margin-top: 38px;

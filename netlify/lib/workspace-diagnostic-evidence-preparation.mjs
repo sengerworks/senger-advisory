@@ -28,7 +28,9 @@ export async function loadNextSubmittedInterview(
     );
     if (!result.rows[0]) return null;
     const decrypted = decryptDiagnosticResponsePayload(result.rows[0].encrypted_response_payload);
-    return Object.freeze({ interviewId: result.rows[0].id, interviewVersion: result.rows[0].interview_version, answers: decrypted.answers });
+    const followUpById=new Map((decrypted.followUps||[]).map(item=>[item.followUpId,item]));
+    const followUpAnswers=(decrypted.followUpAnswers||[]).map(answer=>{const followUp=followUpById.get(answer.followUpId);if(!followUp)throw new DiagnosticEvidencePreparationStateError("A governed clarification reference is missing.");return{questionId:`${followUp.questionId}.${followUp.promptType}`,answerText:answer.answerText};});
+    return Object.freeze({ interviewId: result.rows[0].id, interviewVersion: result.rows[0].interview_version, answers: Object.freeze([...(decrypted.answers||[]),...followUpAnswers]) });
   }, connectionString);
 }
 

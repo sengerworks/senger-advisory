@@ -45,7 +45,7 @@ function schema(questionIds) {
 }
 
 export function validateDeidentificationSource(answers) {
-  if (!Array.isArray(answers) || answers.length === 0 || answers.length > 15) throw new DiagnosticDeidentificationProviderError("One to fifteen interview answers are required.");
+  if (!Array.isArray(answers) || answers.length === 0 || answers.length > 21) throw new DiagnosticDeidentificationProviderError("One to twenty-one governed interview responses are required.");
   const normalized = answers.map((answer, index) => {
     const sourceQuestionId = String(answer?.questionId || "").trim();
     const answerText = String(answer?.answerText || "").trim();
