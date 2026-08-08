@@ -370,5 +370,6 @@ test("workspace surfaces load Clerk organization memberships before activating t
     assert.match(script, /getOrganizationMemberships/);
     assert.match(script, /totalCount/);
     assert.match(script, /setActive\(\{\s*organization(?::|\s*\})/);
+    assert.doesNotMatch(script, /return Boolean\(clerk\.organization\)/);
   }
 });

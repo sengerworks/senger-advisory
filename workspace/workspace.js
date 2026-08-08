@@ -1427,7 +1427,7 @@ async function ensureActiveOrganization() {
     organization = (await response.json()).organization;
   }
   await clerk.setActive({ organization });
-  return Boolean(clerk.organization);
+  return true;
 }
 
 async function render() {
