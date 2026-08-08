@@ -80,12 +80,16 @@ export async function getLeadershipValidationView({ workspaceId, diagnosticId },
       `SELECT
          count(*) FILTER (WHERE slot.clerk_user_id IS NOT NULL AND slot.revoked_at IS NULL)::integer AS assigned,
          count(*) FILTER (WHERE slot.clerk_user_id IS NOT NULL AND slot.revoked_at IS NULL
-           AND interview.status IN ('submitted', 'review-required', 'evidence-ready'))::integer AS completed
+           AND COALESCE(interview_v2.status, interview.status) IN ('submitted', 'review-required', 'evidence-ready'))::integer AS completed
        FROM app_identity.diagnostic_participant_slots slot
        LEFT JOIN app_private.diagnostic_interviews interview
          ON interview.workspace_id = slot.workspace_id
         AND interview.diagnostic_id = slot.diagnostic_id
         AND interview.participant_slot_id = slot.id
+       LEFT JOIN app_private.diagnostic_interviews_v2 interview_v2
+         ON interview_v2.workspace_id = slot.workspace_id
+        AND interview_v2.diagnostic_id = slot.diagnostic_id
+        AND interview_v2.participant_slot_id = slot.id
        WHERE slot.diagnostic_id = $1`,
       [diagnosticId]
     );
@@ -134,11 +138,14 @@ export async function recordLeadershipValidation({ workspaceId, userId, input, n
       `SELECT
          count(*) FILTER (WHERE slot.clerk_user_id IS NOT NULL AND slot.revoked_at IS NULL)::integer AS assigned,
          count(*) FILTER (WHERE slot.clerk_user_id IS NOT NULL AND slot.revoked_at IS NULL
-           AND interview.status IN ('submitted', 'review-required', 'evidence-ready'))::integer AS completed
+           AND COALESCE(interview_v2.status, interview.status) IN ('submitted', 'review-required', 'evidence-ready'))::integer AS completed
        FROM app_identity.diagnostic_participant_slots slot
        LEFT JOIN app_private.diagnostic_interviews interview
          ON interview.workspace_id = slot.workspace_id AND interview.diagnostic_id = slot.diagnostic_id
         AND interview.participant_slot_id = slot.id
+       LEFT JOIN app_private.diagnostic_interviews_v2 interview_v2
+         ON interview_v2.workspace_id = slot.workspace_id AND interview_v2.diagnostic_id = slot.diagnostic_id
+        AND interview_v2.participant_slot_id = slot.id
        WHERE slot.diagnostic_id = $1`,
       [input.diagnosticId]
     );

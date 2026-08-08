@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { createWorkspaceDiagnosticInvitationsHandler } from "../netlify/functions/workspace-diagnostic-invitations.mjs";
 import {
   DiagnosticInvitationInputError,
@@ -19,6 +20,12 @@ function request(method = "GET", body, query = `?diagnosticId=${diagnosticId}`, 
   return new Request(`https://example.com/api/workspace/diagnostic-invitations${query}`, { method, headers: { origin, ...(body ? { "content-type": "application/json" } : {}) }, body: body ? JSON.stringify(body) : undefined });
 }
 function authentication(role = WORKSPACE_ROLES.owner) { return async () => ({ ok: true, value: { role, workspaceId, userId: "user_owner", organizationId: "org_alpha" } }); }
+
+test("collection progress recognizes the activated Protocol v2 interview", async () => {
+  const source = await readFile(new URL("../netlify/lib/workspace-diagnostic-invitations.mjs", import.meta.url), "utf8");
+  assert.match(source, /diagnostic_interviews_v2/);
+  assert.match(source, /COALESCE\(interview_v2\.status, interview\.status\) AS interview_status/);
+});
 
 test("accepts one normalized email for one approved perspective slot", () => {
   assert.deepEqual(validateDiagnosticInvitationInput(input), { diagnosticId, planSlotId: "slot-1", emailAddress: "participant@example.com" });

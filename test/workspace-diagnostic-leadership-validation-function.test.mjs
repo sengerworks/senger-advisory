@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { createWorkspaceDiagnosticLeadershipValidationHandler } from "../netlify/functions/workspace-diagnostic-leadership-validation.mjs";
 import { LeadershipValidationInputError, validateLeadershipValidationInput } from "../netlify/lib/workspace-diagnostic-leadership-validation.mjs";
 import { WORKSPACE_ROLES } from "../workspace-authorization.js";
@@ -7,6 +8,13 @@ import { WORKSPACE_ROLES } from "../workspace-authorization.js";
 const diagnosticId = "22222222-2222-4222-8222-222222222222";
 const request = (origin = "https://example.com") => new Request(`https://example.com/api/workspace/diagnostic-leadership-validation?diagnosticId=${diagnosticId}`, { headers: { origin } });
 const authenticate = role => async () => ({ ok: true, value: { workspaceId: "11111111-1111-4111-8111-111111111111", userId: "user_test", role } });
+
+test("leadership release counts Protocol v2 interviews without weakening confidentiality", async () => {
+  const source = await readFile(new URL("../netlify/lib/workspace-diagnostic-leadership-validation.mjs", import.meta.url), "utf8");
+  assert.equal((source.match(/diagnostic_interviews_v2/g) || []).length, 2);
+  assert.equal((source.match(/COALESCE\(interview_v2\.status, interview\.status\)/g) || []).length, 2);
+  assert.match(source, /DIAGNOSTIC_CONFIDENTIALITY_FLOOR = 5/);
+});
 
 test("client sponsor receives only the governed confidentiality-gated view", async () => {
   let received;

@@ -195,12 +195,16 @@ export async function listRecordedDiagnosticSlots(workspaceId, diagnosticId, con
     const result = await query(
       `SELECT slot.plan_slot_id, slot.clerk_invitation_id,
               slot.notice_accepted_at IS NOT NULL AS notice_accepted,
-              interview.status AS interview_status
+              COALESCE(interview_v2.status, interview.status) AS interview_status
        FROM app_identity.diagnostic_participant_slots slot
        LEFT JOIN app_private.diagnostic_interviews interview
          ON interview.workspace_id = slot.workspace_id
         AND interview.diagnostic_id = slot.diagnostic_id
         AND interview.participant_slot_id = slot.id
+       LEFT JOIN app_private.diagnostic_interviews_v2 interview_v2
+         ON interview_v2.workspace_id = slot.workspace_id
+        AND interview_v2.diagnostic_id = slot.diagnostic_id
+        AND interview_v2.participant_slot_id = slot.id
        WHERE slot.diagnostic_id = $1 AND slot.revoked_at IS NULL`,
       [diagnosticId]
     );
