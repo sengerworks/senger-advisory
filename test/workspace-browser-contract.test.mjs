@@ -360,3 +360,15 @@ test("guided presenter demo is fictional, resettable, and disconnected from live
   assert.doesNotMatch(script, /fetch\(|workspaceRequest\(|localStorage|sessionStorage/);
   assert.match(server, /"\/workspace\/presenter-demo\.html"/);
 });
+
+test("workspace surfaces load Clerk organization memberships before activating the sole organization", async () => {
+  const workspaceScript = await source("workspace/workspace.js");
+  const operationsScript = await source("workspace/operations.js");
+  const advisorScript = await source("workspace/advisor.js");
+
+  for (const script of [workspaceScript, operationsScript, advisorScript]) {
+    assert.match(script, /getOrganizationMemberships/);
+    assert.match(script, /totalCount/);
+    assert.match(script, /setActive\(\{\s*organization:/);
+  }
+});
