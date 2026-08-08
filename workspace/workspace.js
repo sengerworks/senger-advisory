@@ -1408,8 +1408,14 @@ async function sessionState() {
 
 async function ensureActiveOrganization() {
   if (clerk.organization) return true;
-  const memberships = clerk.user?.organizationMemberships || [];
-  if (memberships.length !== 1) return false;
+  let memberships = clerk.user?.organizationMemberships || [];
+  let totalCount = memberships.length;
+  if (typeof clerk.user?.getOrganizationMemberships === "function") {
+    const response = await clerk.user.getOrganizationMemberships({ pageSize: 2 });
+    memberships = response?.data || [];
+    totalCount = response?.totalCount ?? memberships.length;
+  }
+  if (totalCount !== 1 || memberships.length !== 1) return false;
   await clerk.setActive({ organization: memberships[0].organization.id });
   return Boolean(clerk.organization);
 }
