@@ -16,6 +16,18 @@
 .advisor-review { display: flex; gap: 8px; }
 .advisor-review input { flex: 1; padding: 10px; border: 1px solid var(--line); border-radius: 8px; }
 .advisor-synthesis { margin-top: 26px; padding-top: 26px; border-top: 1px solid var(--line); }
+.advisor-frame { margin: 26px 0; padding: 26px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.advisor-frame h2 { font-size: clamp(1.8rem, 4vw, 3rem); }
+.advisor-frame > div > p:last-child { color: var(--ink-soft); line-height: 1.65; }
+.advisor-intervention-form .wide { grid-column: 1 / -1; }
+.advisor-intervention-form .consent { display: flex; grid-template-columns: auto 1fr; align-items: center; justify-content: flex-start; }
+.advisor-intervention-form .consent input { width: auto; }
+.frame-complexity > p { margin: 0; color: var(--ink-soft); }
+.frame-complexity [data-complexity-rows] { display: grid; gap: 12px; }
+.frame-complexity article { display: grid; grid-template-columns: minmax(130px,.45fr) minmax(160px,.45fr) 1.5fr; gap: 10px; align-items: start; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--ivory); }
+.frame-complexity article strong { padding-top: 10px; text-transform: capitalize; }
+[data-frame-result] article { padding: 18px; border: 1px solid rgba(164,107,56,.45); border-radius: 12px; background: rgba(164,107,56,.06); }
+[data-frame-result] p { color: var(--ink-soft); }
 .advisor-synthesis h2 { font-size: clamp(1.8rem, 4vw, 3rem); }
 [data-synthesis-result] { display: grid; gap: 12px; }
 .synthesis-theme, .synthesis-hypothesis { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
@@ -44,5 +56,5 @@
 .advisor-evidence-plan,.advisor-intervention-submit { grid-column: 1 / -1; }
 .advisor-evidence-plan div { display: grid; grid-template-columns: minmax(150px,.55fr) 1.5fr .7fr; gap: 10px; align-items: center; }
 .advisor-intervention-submit { display: flex; align-items: center; gap: 14px; }
-@media (max-width: 760px) { .advisor-intervention-form { grid-template-columns: 1fr; } .advisor-evidence-plan,.advisor-intervention-submit { grid-column: auto; } .advisor-evidence-plan div { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .advisor-intervention-form { grid-template-columns: 1fr; } .advisor-evidence-plan,.advisor-intervention-submit,.advisor-intervention-form .wide { grid-column: auto; } .advisor-evidence-plan div,.frame-complexity article { grid-template-columns: 1fr; } }
 @media (max-width: 680px) { .advisor-diagnostic, .advisor-review { align-items: stretch; flex-direction: column; } }

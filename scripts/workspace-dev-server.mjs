@@ -7,6 +7,7 @@ import platformOperationsDiagnostics from "../netlify/functions/platform-operati
 import platformOperationsAdvisorAssignments from "../netlify/functions/platform-operations-advisor-assignments.mjs";
 import workspaceDiagnostics from "../netlify/functions/workspace-diagnostics.mjs";
 import workspaceDiagnosticContext from "../netlify/functions/workspace-diagnostic-context.mjs";
+import workspaceDiagnosticFrameV2 from "../netlify/functions/workspace-diagnostic-frame-v2.mjs";
 import workspaceDiagnosticParticipants from "../netlify/functions/workspace-diagnostic-participants.mjs";
 import workspaceDiagnosticProtocol from "../netlify/functions/workspace-diagnostic-protocol.mjs";
 import workspaceDiagnosticInvitations from "../netlify/functions/workspace-diagnostic-invitations.mjs";
@@ -131,6 +132,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/operations/advisor-assignments",
     "/api/workspace/diagnostics",
     "/api/workspace/diagnostic-context",
+    "/api/workspace/diagnostic-frame-v2",
     "/api/workspace/diagnostic-participants",
     "/api/workspace/diagnostic-protocol",
     "/api/workspace/diagnostic-invitations",
@@ -191,6 +193,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
       ? workspaceConfig
       : url.pathname.endsWith("/diagnostic-context")
         ? workspaceDiagnosticContext
+      : url.pathname.endsWith("/diagnostic-frame-v2")
+        ? workspaceDiagnosticFrameV2
       : url.pathname.endsWith("/diagnostic-participants")
         ? workspaceDiagnosticParticipants
       : url.pathname.endsWith("/diagnostic-protocol")

@@ -250,3 +250,16 @@ test("diagnostic advisor evidence review is assignment-scoped and tenant-isolate
   assert.match(migration, /CREATE POLICY diagnostic_advisor_assignment_tenant_policy/);
   assert.match(migration, /ADD COLUMN reviewed_by_clerk_user_id text/);
 });
+
+test("Diagnostic Frame v2 persistence is additive, tenant-isolated, and bound to one diagnostic", async () => {
+  const migration = await readFile(new URL("../db/migrations/035_diagnostic_frame_v2_foundation.sql", import.meta.url), "utf8");
+  assert.match(migration, /CREATE TABLE app_private\.diagnostic_frames_v2/);
+  assert.match(migration, /CREATE TABLE app_shared\.diagnostic_protocols_v2/);
+  assert.match(migration, /CREATE TABLE app_private\.diagnostic_typed_evidence_v2/);
+  assert.match(migration, /UNIQUE \(workspace_id,diagnostic_id\)/);
+  assert.match(migration, /FOREIGN KEY \(workspace_id,diagnostic_id,frame_id\)/);
+  assert.match(migration, /ENABLE ROW LEVEL SECURITY/g);
+  assert.match(migration, /FORCE ROW LEVEL SECURITY/g);
+  assert.match(migration, /app_identity\.current_workspace_id\(\)/);
+  assert.doesNotMatch(migration, /ALTER TABLE app_private\.diagnostic_context_briefs|ALTER TABLE app_shared\.diagnostic_protocols\s/);
+});

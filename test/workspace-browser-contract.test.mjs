@@ -22,6 +22,13 @@ test("local product preview serves the public category homepage", async () => {
   assert.match(server, /\["\/flow-engine\.js", \{ url: new URL\("\.\.\/flow-engine\.js"/);
 });
 
+test("local product preview routes the v2 Diagnostic Frame endpoint", async () => {
+  const server = await source("scripts/workspace-dev-server.mjs");
+  assert.match(server, /workspace-diagnostic-frame-v2\.mjs/);
+  assert.match(server, /\/api\/workspace\/diagnostic-frame-v2/);
+  assert.match(server, /workspaceDiagnosticFrameV2/);
+});
+
 test("workspace browser uses server configuration and minimized session endpoints", async () => {
   const script = await source("workspace/workspace.js");
   const server = await source("scripts/workspace-dev-server.mjs");
@@ -193,8 +200,15 @@ test("advisor console is separate, assignment-scoped, and excludes raw interview
   const html = await readFile(new URL("../workspace/advisor.html", import.meta.url), "utf8");
   const advisor = await readFile(new URL("../workspace/advisor.js", import.meta.url), "utf8");
   assert.match(html, /Advisor Operating Console/);
+  assert.match(html, /Frame and test organizational capacity/);
   assert.match(html, /active, time-bounded advisor assignment/);
   assert.match(advisor, /diagnostic-advisor-assignments/);
+  assert.match(html, /Define capacity for what/);
+  assert.match(html, /Complexity Profile/);
+  assert.match(html, /evidence hypothesis—not a sponsor conclusion/);
+  assert.match(advisor, /diagnostic-frame-v2/);
+  assert.match(advisor, /current-and-anticipated/);
+  assert.match(advisor, /The live v1 diagnostic remains unchanged/);
   assert.match(advisor, /diagnostic-evidence-preparation/);
   assert.match(advisor, /diagnostic-evidence-review/);
   assert.match(advisor, /diagnostic-synthesis/);

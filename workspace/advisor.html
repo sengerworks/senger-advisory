@@ -17,14 +17,52 @@
   <main class="advisor-main">
     <section class="advisor-hero">
       <p class="eyebrow">Separate engagement authority</p>
-      <h1>Review protected organizational evidence.</h1>
-      <p>This console requires an active, time-bounded advisor assignment. It does not expose participant identity, raw answers, or source interviews.</p>
+      <h1>Frame and test organizational capacity.</h1>
+      <p>This console moves from an explicit execution demand through protected evidence to a governed intervention direction. It requires an active, time-bounded advisor assignment and never exposes participant identity, raw answers, or source interviews.</p>
     </section>
     <section class="advisor-surface" data-advisor-surface>
       <p data-advisor-status>Preparing advisor access…</p>
       <div data-advisor-sign-in></div>
       <section data-advisor-console hidden>
         <div class="advisor-assignment" data-advisor-assignment></div>
+        <section class="advisor-frame" data-frame-section>
+          <div>
+            <p class="card-kicker">Diagnostic Frame v2</p>
+            <h2>Define capacity for what.</h2>
+            <p>Translate approved sponsor context into the execution demand, complexity hypothesis, and evidence boundary this diagnostic will test. This private method record does not alter the live v1 diagnostic or release a finding to the client.</p>
+          </div>
+          <div data-frame-result></div>
+          <form class="advisor-intervention-form" data-frame-form hidden>
+            <label class="wide"><span>Organization context</span><textarea name="organizationContext" minlength="40" maxlength="2000" required></textarea></label>
+            <label class="wide"><span>Execution commitment</span><textarea name="commitment" minlength="40" maxlength="1200" required></textarea></label>
+            <label><span>Observable success</span><textarea name="successDefinition" minlength="40" maxlength="1200" required></textarea></label>
+            <label><span>Failure exposure</span><textarea name="failureExposure" minlength="40" maxlength="1200" required></textarea></label>
+            <label><span>Time horizon</span><input name="timeHorizon" minlength="2" maxlength="120" required /></label>
+            <label><span>Leadership decision</span><textarea name="leadershipDecision" minlength="40" maxlength="1000" required></textarea></label>
+            <label class="wide"><span>Diagnostic question</span><textarea name="diagnosticQuestion" minlength="40" maxlength="1000" required></textarea></label>
+            <label><span>Performance consequences <small>One per line</small></span><textarea name="performanceConsequences" required></textarea></label>
+            <label><span>Out of scope <small>One per line</small></span><textarea name="outOfScope"></textarea></label>
+            <label class="wide"><span>Known sensitivities</span><textarea name="knownSensitivities" maxlength="1200"></textarea></label>
+            <fieldset class="wide frame-complexity"><legend>Complexity Profile</legend>
+              <p>Classify each dimension as an evidence hypothesis—not a sponsor conclusion.</p>
+              <div data-complexity-rows></div>
+            </fieldset>
+            <fieldset><legend>Additional evidence</legend>
+              <label><input type="checkbox" name="sourceTypes" value="formal-artifact" /> Formal artifacts</label>
+              <label><input type="checkbox" name="sourceTypes" value="operating-data" checked /> Operating data</label>
+              <label><input type="checkbox" name="sourceTypes" value="prior-intervention" /> Prior interventions</label>
+              <label><input type="checkbox" name="sourceTypes" value="leadership-validation" checked /> Leadership validation</label>
+            </fieldset>
+            <fieldset><legend>Evidence requests</legend>
+              <label><span>Formal artifacts <small>One per line</small></span><textarea name="formalArtifactsRequested"></textarea></label>
+              <label><span>Operating data <small>One per line</small></span><textarea name="operatingDataRequested"></textarea></label>
+            </fieldset>
+            <label class="wide"><span>Approval note</span><textarea name="approvalNote" minlength="20" maxlength="800" required></textarea></label>
+            <label class="wide consent"><input type="checkbox" name="confirmedExecutionDemand" required /> I confirm the execution demand and leadership decision.</label>
+            <label class="wide consent"><input type="checkbox" name="acceptedEvidencePlan" required /> I accept the evidence plan, including five initial cross-functional perspective slots.</label>
+            <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve Diagnostic Frame v2</button><p class="form-message" data-frame-message></p></div>
+          </form>
+        </section>
         <button class="primary-button" type="button" data-prepare-evidence>Prepare next submitted interview</button>
         <p class="form-message" data-preparation-message></p>
         <div class="advisor-progress" data-evidence-progress></div>
