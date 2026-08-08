@@ -63,6 +63,21 @@
             <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve Diagnostic Frame v2</button><p class="form-message" data-frame-message></p></div>
           </form>
         </section>
+        <section class="advisor-frame" data-protocol-v2-section>
+          <div>
+            <p class="card-kicker">Evidence Protocol v2</p>
+            <h2>Turn the frame into a shared inquiry.</h2>
+            <p>Review the frame-specific core questions every participant will receive. Context may clarify the inquiry, but it cannot change the governed evidence objective or create leading conclusions.</p>
+          </div>
+          <div data-protocol-v2-result></div>
+          <form class="advisor-protocol-v2" data-protocol-v2-form hidden>
+            <div class="advisor-progress" data-protocol-v2-coverage></div>
+            <div class="protocol-v2-questions" data-protocol-v2-questions></div>
+            <label><span>Approval note</span><textarea name="approvalNote" minlength="20" maxlength="800" required>Approved as an evidence-sufficient shared protocol for the framed execution demand.</textarea></label>
+            <label class="consent"><input type="checkbox" name="acceptedResearchLimitations" required /> I acknowledge that Adaptive Capacity remains a research observation and does not produce a score.</label>
+            <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve Evidence Protocol v2</button><p class="form-message" data-protocol-v2-message></p></div>
+          </form>
+        </section>
         <button class="primary-button" type="button" data-prepare-evidence>Prepare next submitted interview</button>
         <p class="form-message" data-preparation-message></p>
         <div class="advisor-progress" data-evidence-progress></div>

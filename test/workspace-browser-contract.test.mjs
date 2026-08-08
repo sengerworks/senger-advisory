@@ -41,6 +41,10 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(server, /"\/api\/workspace\/diagnostics"/);
   assert.match(server, /import workspaceDiagnosticContext/);
   assert.match(server, /"\/api\/workspace\/diagnostic-context"/);
+  assert.match(server, /workspace-diagnostic-frame-v2\.mjs/);
+  assert.match(server, /"\/api\/workspace\/diagnostic-frame-v2"/);
+  assert.match(server, /workspace-diagnostic-protocol-v2\.mjs/);
+  assert.match(server, /"\/api\/workspace\/diagnostic-protocol-v2"/);
   assert.match(server, /import workspaceDiagnosticParticipants/);
   assert.match(server, /"\/api\/workspace\/diagnostic-participants"/);
   assert.match(server, /import workspaceDiagnosticProtocol/);
@@ -209,6 +213,12 @@ test("advisor console is separate, assignment-scoped, and excludes raw interview
   assert.match(advisor, /diagnostic-frame-v2/);
   assert.match(advisor, /current-and-anticipated/);
   assert.match(advisor, /The live v1 diagnostic remains unchanged/);
+  assert.match(html, /Evidence Protocol v2/);
+  assert.match(html, /shared inquiry/);
+  assert.match(html, /Adaptive Capacity remains a research observation/);
+  assert.match(advisor, /diagnostic-protocol-v2/);
+  assert.match(advisor, /evidenceLayerId/);
+  assert.match(advisor, /Participant collection remains on v1/);
   assert.match(advisor, /diagnostic-evidence-preparation/);
   assert.match(advisor, /diagnostic-evidence-review/);
   assert.match(advisor, /diagnostic-synthesis/);
