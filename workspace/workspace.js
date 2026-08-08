@@ -817,10 +817,12 @@ function setInvitationMessage(message = "", tone = null) {
 }
 
 async function workspaceRequest(path, options = {}) {
+  const token = await clerk?.session?.getToken();
   const response = await fetch(path, {
     credentials: "same-origin",
     headers: {
       Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.body === undefined ? {} : { "Content-Type": "application/json" })
     },
     ...options,
@@ -1397,9 +1399,13 @@ function saveInterviewDraft(){
 }
 
 async function sessionState() {
+  const token = await clerk?.session?.getToken();
   const response = await fetch("/api/workspace/session", {
     credentials: "same-origin",
-    headers: { Accept: "application/json" }
+    headers: {
+      Accept: "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    }
   });
   if (response.status === 401 || response.status === 403) return null;
   if (!response.ok) throw new Error("The workspace service is temporarily unavailable.");
@@ -1419,9 +1425,13 @@ async function ensureActiveOrganization() {
     ? memberships[0].organization.id
     : null;
   if (!organization) {
+    const token = await clerk?.session?.getToken();
     const response = await fetch("/api/workspace/organization-bootstrap", {
       credentials: "same-origin",
-      headers: { Accept: "application/json" }
+      headers: {
+        Accept: "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      }
     });
     if (!response.ok) return false;
     organization = (await response.json()).organization;
