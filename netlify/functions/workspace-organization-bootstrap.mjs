@@ -37,19 +37,29 @@ export function createWorkspaceOrganizationBootstrapHandler({
 
     try {
       const authenticated = await authenticate(request);
-      if (!authenticated) return json(401, { error: "Workspace access unavailable." });
+      if (!authenticated) {
+        console.info("Workspace organization bootstrap stage: unauthenticated");
+        return json(401, { error: "Workspace access unavailable." });
+      }
       const response = await authenticated.clerkClient.users.getOrganizationMembershipList({
         userId: authenticated.userId,
         limit: 2
       });
       const memberships = response?.data || [];
       if (response?.totalCount !== 1 || memberships.length !== 1) {
+        console.info("Workspace organization bootstrap stage: membership-count-unavailable");
         return json(403, { error: "One active organization membership is required." });
       }
       const organizationId = memberships[0].organization?.id;
-      if (!organizationId || !(await resolveWorkspace(organizationId))) {
+      if (!organizationId) {
+        console.info("Workspace organization bootstrap stage: membership-organization-unavailable");
         return json(403, { error: "Workspace access unavailable." });
       }
+      if (!(await resolveWorkspace(organizationId))) {
+        console.info("Workspace organization bootstrap stage: workspace-unmapped");
+        return json(403, { error: "Workspace access unavailable." });
+      }
+      console.info("Workspace organization bootstrap stage: ready");
       return json(200, { organization: organizationId });
     } catch (error) {
       console.error("Workspace organization bootstrap failed", error instanceof Error ? error.message : "Unknown error");
