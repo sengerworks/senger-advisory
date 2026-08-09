@@ -74,7 +74,7 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(script, /workspaceRequest\("\/api\/workspace\/invitations"/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/participation"/);
   assert.match(script, /\/api\/workspace\/results\?roundId=/);
-  assert.doesNotMatch(script, /CLERK_SECRET_KEY|NEON_DATABASE_URL|workspaceId|organizationId|userId/);
+  assert.doesNotMatch(script, /CLERK_SECRET_KEY|NEON_DATABASE_URL|workspaceId|userId/);
   assert.match(script, /This local workspace server is out of date/);
 });
 
@@ -371,6 +371,8 @@ test("workspace surfaces load Clerk organization memberships before activating t
     assert.match(script, /totalCount/);
     assert.match(script, /session\?\.getToken\(\)/);
     assert.match(script, /Authorization/);
+    assert.match(script, /organizationId/);
+    assert.match(script, /clearCache\(\)/);
     assert.match(script, /setActive\(\{\s*organization(?::|\s*\})/);
     assert.doesNotMatch(script, /return Boolean\(clerk\.organization\)/);
   }
