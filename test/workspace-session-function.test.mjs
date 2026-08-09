@@ -42,7 +42,9 @@ test("authorizes only the exact Senger Advisory Netlify preview origin", () => {
   const configured = ["http://localhost:8888", "https://sengeradvisory.com"];
   assert.deepEqual(
     authorizedPartiesForRequest(
-      new Request("https://deploy-preview-2--senger-advisory.netlify.app/api/workspace/session"),
+      new Request("https://sengeradvisory.com/api/workspace/session", {
+        headers: { referer: "https://deploy-preview-2--senger-advisory.netlify.app/workspace/" }
+      }),
       configured
     ),
     [...configured, "https://deploy-preview-2--senger-advisory.netlify.app"]
