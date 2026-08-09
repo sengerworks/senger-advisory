@@ -226,30 +226,34 @@
             </div>
             <form class="participant-design-form" data-participant-design-form>
               <input type="hidden" name="diagnosticId" />
-              <fieldset><legend>Organizational levels to cover</legend>
-                <label><input type="checkbox" name="leadershipLevels" value="enterprise" /> Enterprise</label>
-                <label><input type="checkbox" name="leadershipLevels" value="functional" /> Functional</label>
-                <label><input type="checkbox" name="leadershipLevels" value="operational" /> Operational</label>
-                <label><input type="checkbox" name="leadershipLevels" value="frontline" /> Frontline</label>
+              <section class="participant-design-stage" aria-labelledby="coverage-intent-title">
+                <div class="participant-stage-heading"><span>1</span><div><strong id="coverage-intent-title">Choose what must be represented</strong><p>Select only the vantage points needed to understand the issue and the decision at hand.</p></div></div>
+              <fieldset><legend>Which levels of the organization need a voice?</legend>
+                <label><input type="checkbox" name="leadershipLevels" value="enterprise" /> Executive / enterprise</label>
+                <label><input type="checkbox" name="leadershipLevels" value="functional" /> Functional leadership</label>
+                <label><input type="checkbox" name="leadershipLevels" value="operational" /> Managers / operations</label>
+                <label><input type="checkbox" name="leadershipLevels" value="frontline" /> Individual contributors / frontline</label>
               </fieldset>
-              <fieldset><legend>Execution proximity to cover</legend>
-                <label><input type="checkbox" name="executionProximities" value="strategy" /> Strategy</label>
-                <label><input type="checkbox" name="executionProximities" value="coordination" /> Coordination</label>
-                <label><input type="checkbox" name="executionProximities" value="delivery" /> Delivery</label>
+              <fieldset><legend>Where in the flow of work do you need visibility?</legend>
+                <label><input type="checkbox" name="executionProximities" value="strategy" /> Setting direction</label>
+                <label><input type="checkbox" name="executionProximities" value="coordination" /> Coordinating across teams</label>
+                <label><input type="checkbox" name="executionProximities" value="delivery" /> Doing the work</label>
               </fieldset>
-              <fieldset class="participant-functional"><legend>Functional lenses to cover</legend>
+              <fieldset class="participant-functional"><legend>Which parts of the organization must be represented?</legend>
                 <label><input type="checkbox" name="functionalLenses" value="executive-leadership" /> Executive leadership</label>
                 <label><input type="checkbox" name="functionalLenses" value="operations" /> Operations</label>
                 <label><input type="checkbox" name="functionalLenses" value="people" /> People</label>
                 <label><input type="checkbox" name="functionalLenses" value="finance" /> Finance</label>
-                <label><input type="checkbox" name="functionalLenses" value="commercial" /> Commercial</label>
+                <label><input type="checkbox" name="functionalLenses" value="commercial" /> Sales / commercial</label>
                 <label><input type="checkbox" name="functionalLenses" value="product-service" /> Product / service</label>
                 <label><input type="checkbox" name="functionalLenses" value="technology" /> Technology</label>
                 <label><input type="checkbox" name="functionalLenses" value="frontline-delivery" /> Frontline delivery</label>
-                <label><input type="checkbox" name="functionalLenses" value="other" /> Other</label>
+                <label><input type="checkbox" name="functionalLenses" value="other" /> Another relevant function</label>
               </fieldset>
+              </section>
+              <section class="participant-design-stage" aria-labelledby="perspective-plan-title">
               <div class="participant-slots-heading">
-                <div><strong>Perspective slots</strong><span>Choose 5–10 participants for the POC. Identity is added only after this plan is approved. The sponsor is separate and is not counted.</span></div>
+                <div class="participant-stage-heading"><span>2</span><div><strong id="perspective-plan-title">Plan the perspectives</strong><p>Describe each viewpoint now. Identity is added only after this plan is approved; names and email addresses come later, after the diagnostic protocol is approved.</p></div></div>
                 <button class="secondary-button" type="button" data-add-participant-slot>Add perspective slot</button>
               </div>
               <div class="participant-capacity" aria-label="POC and full diagnostic participant capacity">
@@ -257,8 +261,13 @@
                 <div data-participant-capacity-track><i data-poc-capacity></i><i class="participant-capacity-locked" data-participant-capacity-locked></i></div>
                 <small data-participant-capacity-note>Five is the required minimum. Participants 6–10 are optional. Full diagnostics support up to 50.</small>
               </div>
-              <p class="participant-guidance">Choose the people who experience the issue—not simply the easiest people to invite. Participants may be executives, managers, individual contributors, peers, or cross-functional colleagues anywhere inside the organization.</p>
+              <div class="participant-readiness" data-participant-readiness data-state="minimum"><strong>Minimum cohort reached</strong><span>You may approve five perspectives or add more only when they deepen coverage.</span></div>
+              <p class="participant-guidance"><strong>Choose for insight, not convenience.</strong> Include people who experience the issue from materially different positions. Participants may be executives, managers, individual contributors, peers, or cross-functional colleagues anywhere inside the organization.</p>
+              <div class="participant-slot-labels" aria-hidden="true"><span>Perspective</span><span>Organizational level</span><span>Relationship to the work</span><span>Functional view</span><span></span></div>
               <div class="participant-slots" data-participant-slots></div>
+              </section>
+              <section class="participant-design-stage" aria-labelledby="participant-approval-title">
+              <div class="participant-stage-heading"><span>3</span><div><strong id="participant-approval-title">Review coverage and approve</strong><p>The platform will identify any viewpoint you selected above but did not include in the planned cohort.</p></div></div>
               <div class="coverage-gaps" data-coverage-gaps hidden>
                 <strong>Uncovered objectives</strong>
                 <p>Add a perspective slot, remove the objective, or explicitly accept each limitation with a reason.</p>
@@ -273,6 +282,7 @@
                 <button class="primary-button" type="submit" data-approve-participant-plan>Review coverage</button>
                 <p class="form-message" role="status" aria-live="polite" data-participant-design-message></p>
               </div>
+              </section>
             </form>
           </section>
 

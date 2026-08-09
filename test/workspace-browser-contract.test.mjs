@@ -107,6 +107,11 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /requires at least five participants and allows no more than ten/);
   assert.match(html, /Five is\s+enough to proceed/);
   assert.match(html, /Participants 6–10 are optional/);
+  assert.match(html, /Choose what must be represented/);
+  assert.match(html, /Plan the perspectives/);
+  assert.match(html, /Choose for insight, not convenience/);
+  assert.match(html, /Review coverage and approve/);
+  assert.match(script, /Minimum cohort reached/);
   assert.match(html, /Identity is added only after this plan is approved/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-participants"/);
   assert.match(script, /Coverage gaps need a design change or an explicit acceptance reason/);

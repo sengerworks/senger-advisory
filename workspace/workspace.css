@@ -400,6 +400,12 @@ h2 {
 .capacity-review-list article { padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
 .capacity-review-list p { margin: 7px 0; color: var(--ink-soft); line-height: 1.55; }
 .participant-design-form { display: grid; gap: 20px; margin-top: 24px; }
+.participant-design-stage { display: grid; gap: 16px; padding: clamp(20px,3vw,28px); border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.72); }
+.participant-stage-heading { display: flex; align-items: start; gap: 12px; }
+.participant-stage-heading > span { display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: #fff; font-size: .72rem; font-weight: 800; }
+.participant-stage-heading > div { display: grid; gap: 4px; }
+.participant-stage-heading strong { font-size: .9rem; }
+.participant-stage-heading p { margin: 0; color: var(--ink-soft); font-size: .76rem; line-height: 1.5; }
 .participant-design-form fieldset { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .participant-design-form legend { padding: 0 8px; font-size: .78rem; font-weight: 800; }
 .participant-design-form fieldset label { color: var(--ink-soft); font-size: .78rem; }
@@ -411,7 +417,12 @@ h2 {
 .participant-capacity > div { display: grid; grid-template-columns: 20% 80%; height: 8px; overflow: hidden; border-radius: 999px; background: #ddd7cf; }
 .participant-capacity i { display: block; background: var(--bronze); transform-origin: left; }
 .participant-capacity-locked { background: repeating-linear-gradient(135deg,#cbc5bc 0,#cbc5bc 6px,#ddd7cf 6px,#ddd7cf 12px) !important; }
-.participant-guidance { margin: 0; padding: 12px 14px; border-left: 3px solid var(--bronze); color: var(--ink-soft); background: rgba(183,91,39,.06); }
+.participant-readiness { display: flex; justify-content: space-between; gap: 16px; padding: 12px 14px; border-radius: 10px; background: #edf4ec; color: #315a38; font-size: .76rem; }
+.participant-readiness[data-state="incomplete"] { background: #fff4e7; color: #7b4a1c; }
+.participant-readiness[data-state="full"] { background: #f1ece5; color: var(--bronze-dark); }
+.participant-readiness span { color: inherit; }
+.participant-guidance { margin: 0; padding: 12px 14px; border-left: 3px solid var(--bronze); color: var(--ink-soft); background: rgba(183,91,39,.06); font-size: .78rem; line-height: 1.5; }
+.participant-slot-labels { display: grid; grid-template-columns: 36px repeat(3,1fr) auto; gap: 10px; padding: 0 12px; color: var(--ink-soft); font-size: .66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
 .participant-slots { display: grid; gap: 10px; }
 .participant-slot { display: grid; grid-template-columns: 36px repeat(3, 1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .participant-slot > span { color: var(--bronze-dark); font-size: .72rem; font-weight: 800; }
@@ -1171,6 +1182,8 @@ h2 {
   .capacity-review-journal form { grid-template-columns: 1fr; }
   .leadership-validation-form > .diagnostic-context-confirm,.leadership-validation-form > .advisor-review-actions { grid-column: auto; }
   .participant-slot,.coverage-gap { grid-template-columns: 1fr; }
+  .participant-slot-labels { display: none; }
+  .participant-slots-heading,.participant-readiness { align-items: stretch; flex-direction: column; }
   .diagnostic-invitation-slot { grid-template-columns: 1fr; }
   .field-wide { grid-column: auto; }
   .form-actions { align-items: stretch; flex-direction: column; }
