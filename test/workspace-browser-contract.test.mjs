@@ -377,3 +377,13 @@ test("workspace surfaces load Clerk organization memberships before activating t
     assert.doesNotMatch(script, /return Boolean\(clerk\.organization\)/);
   }
 });
+
+test("Platform Operations switches only through verified Clerk organization memberships", async () => {
+  const html = await source("workspace/operations.html");
+  const script = await source("workspace/operations.js");
+  assert.match(html, /data-organization-select/);
+  assert.match(script, /getOrganizationMemberships\(\{pageSize:100\}\)/);
+  assert.match(script, /Switching the active client organization/);
+  assert.match(script, /setActive\(\{organization\}\)/);
+  assert.match(script, /session\?\.clearCache\(\)/);
+});

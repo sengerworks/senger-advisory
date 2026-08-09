@@ -4,7 +4,11 @@
 
 Platform Operations is the Senger Advisory control plane for establishing diagnostic engagements and monitoring POC readiness. It is separate from the client sponsor workspace, assigned-advisor console, and participant contribution experience.
 
-The first implementation is intentionally tenant-bounded: the operator selects an active Clerk client organization, and every query runs inside that organization's Neon RLS transaction. Cross-client portfolio administration is a later platform-tenancy milestone.
+The first implementation is intentionally tenant-bounded: the operator selects an active Clerk
+client organization from verified memberships, refreshes the organization-scoped session, and
+every query runs inside that organization's Neon RLS transaction. Switching organizations never
+creates a cross-client data response. Cross-client portfolio administration is a later
+platform-tenancy milestone.
 
 ## Authority
 

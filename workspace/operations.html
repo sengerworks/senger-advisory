@@ -25,7 +25,13 @@
       <p class="operations-status" data-operations-status>Preparing Platform Operations…</p>
       <div data-operations-sign-in></div>
       <div data-operations-console hidden>
-        <header class="operations-workspace"><div><p class="card-kicker">Active client organization</p><h2 data-workspace-label>Client workspace</h2></div><span data-workspace-status></span></header>
+        <header class="operations-workspace">
+          <div><p class="card-kicker">Active client organization</p><h2 data-workspace-label>Client workspace</h2></div>
+          <div class="operations-workspace-controls">
+            <label>Switch client organization<select data-organization-select aria-label="Switch active client organization"></select></label>
+            <span data-workspace-status></span>
+          </div>
+        </header>
         <section class="operations-summary" data-operations-summary></section>
         <section class="operations-create">
           <div><p class="card-kicker">POC enrollment</p><h2>Create the client workspace and invite its sponsor.</h2><p>This creates one isolated client organization, a no-charge POC diagnostic, and a 30-day executive-sponsor invitation. The sponsor begins with the six-question context brief.</p></div>
