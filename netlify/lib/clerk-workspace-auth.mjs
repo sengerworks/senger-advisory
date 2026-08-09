@@ -24,17 +24,26 @@ export function configuredAuthorizedParties(
   return parties;
 }
 
+export function authorizedPartiesForRequest(request, configured = configuredAuthorizedParties()) {
+  const origin = new URL(request.url).origin;
+  const hostname = new URL(origin).hostname;
+  const isSengerAdvisoryPreview = /^(?:deploy-preview-\d+|[a-f0-9]+)--senger-advisory\.netlify\.app$/.test(hostname);
+  return isSengerAdvisoryPreview && !configured.includes(origin)
+    ? [...configured, origin]
+    : configured;
+}
+
 export async function authenticateWorkspaceRequest(
   request,
   {
     clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }),
-    authorizedParties = configuredAuthorizedParties(),
+    authorizedParties = null,
     resolveWorkspaceId = resolveNeonWorkspaceId
   } = {}
 ) {
   const requestState = await clerkClient.authenticateRequest(request, {
     acceptsToken: "session_token",
-    authorizedParties,
+    authorizedParties: authorizedParties || authorizedPartiesForRequest(request),
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY
   });
   if (!requestState.isAuthenticated) {

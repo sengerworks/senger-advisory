@@ -1,5 +1,5 @@
 import { createClerkClient } from "@clerk/backend";
-import { configuredAuthorizedParties } from "../lib/clerk-workspace-auth.mjs";
+import { authorizedPartiesForRequest } from "../lib/clerk-workspace-auth.mjs";
 import { resolveNeonWorkspaceId } from "../lib/neon-workspace-database.mjs";
 
 const headers = {
@@ -16,7 +16,7 @@ async function authenticateUser(request) {
   const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
   const requestState = await clerkClient.authenticateRequest(request, {
     acceptsToken: "session_token",
-    authorizedParties: configuredAuthorizedParties(),
+    authorizedParties: authorizedPartiesForRequest(request),
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY
   });
   if (!requestState.isAuthenticated) return null;
