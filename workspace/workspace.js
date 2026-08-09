@@ -438,10 +438,14 @@ function updateParticipantCapacity() {
   elements.participantCapacityTrack.style.gridTemplateColumns = isPoc ? "20% 80%" : "100% 0";
   elements.participantCapacityLocked.hidden = !isPoc;
   elements.participantCapacityNote.textContent = isPoc
-    ? "Slots 11–50 become available when the organization activates a full diagnostic."
-    : "The full diagnostic supports up to 50 internal participant perspectives.";
+    ? "Five is the required minimum. Participants 6–10 are optional. Full diagnostics support up to 50."
+    : "Five is the required minimum. The full diagnostic supports up to 50 internal participant perspectives.";
   elements.addParticipantSlot.disabled = count >= participantSlotMaximum;
   elements.addParticipantSlot.title = count >= participantSlotMaximum ? (isPoc ? "The POC includes 10 participant perspectives. Full diagnostics support up to 50." : "The full diagnostic supports up to 50 participant perspectives.") : "";
+  elements.participantSlots.querySelectorAll(".participant-slot button").forEach(button => {
+    button.disabled = count <= 5;
+    button.title = count <= 5 ? "Five participants are required." : "Remove this perspective slot";
+  });
 }
 
 function participantSelect(name, options) {
@@ -543,7 +547,7 @@ async function openParticipantDesign(diagnosticId) {
     elements.participantDesignForm.elements.diagnosticId.value = diagnosticId;
     elements.participantSlots.replaceChildren();
     participantSlotCount = 0;
-    addParticipantSlot(); addParticipantSlot(); addParticipantSlot();
+    addParticipantSlot(); addParticipantSlot(); addParticipantSlot(); addParticipantSlot(); addParticipantSlot();
     showCoverageGaps([]);
   }
   elements.participantDesign.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1789,8 +1793,8 @@ elements.participantDesignForm.addEventListener("submit", async event => {
     elements.participantDesignMessage.dataset.tone = "error";
     return;
   }
-  if (!draft.participantSlots.length) {
-    elements.participantDesignMessage.textContent = "Add at least one identity-free perspective slot.";
+  if (draft.participantSlots.length < 5) {
+    elements.participantDesignMessage.textContent = "Add at least five identity-free perspective slots.";
     elements.participantDesignMessage.dataset.tone = "error";
     return;
   }
