@@ -30,7 +30,13 @@ Directions**, then stops. Detailed intervention design, commercial acceptance, d
 
 - Use three to five POC organizations before declaring launch readiness.
 - Prefer variation in size, operating model, diagnostic route, and presenting constraint.
-- Each organization names one accountable sponsor and five to fifty approved perspectives.
+- Each organization names one accountable sponsor and five to ten approved participant
+  perspectives. The sponsor supplies framing context and does not consume a participant slot.
+- Participant selection is not limited to leaders or the sponsor's reporting line. Executives,
+  managers, individual contributors, peers, and cross-functional colleagues may participate when
+  their work gives them relevant proximity to the diagnostic question.
+- The platform visibly distinguishes the POC ceiling from the full diagnostic's capacity of up to
+  fifty participants.
 - The sponsor agrees to complete leadership validation and a final debrief. Intervention delivery
   is explicitly outside the POC and is not required to validate the diagnostic product.
 - Senger Advisory records the delivery route, participant-plan rationale, accepted coverage

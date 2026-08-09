@@ -41,11 +41,20 @@ test("approves identity-free participant coverage and rejects unresolved gaps", 
   assert.equal(validated.participantSlots.length, 3);
   assert.equal(validated.participantSlots.some(slot => "email" in slot || "name" in slot), false);
   assert.equal(workspaceDiagnosticParticipantPolicy.fixedParticipantMinimum, null);
+  assert.equal(workspaceDiagnosticParticipantPolicy.pocParticipantMaximum, 10);
+  assert.equal(workspaceDiagnosticParticipantPolicy.fullDiagnosticParticipantMaximum, 50);
+  assert.equal(workspaceDiagnosticParticipantPolicy.sponsorCountsAsParticipant, false);
   assert.equal(workspaceDiagnosticParticipantPolicy.participantIdentityStoredInPlan, false);
   assert.throws(() => validateDiagnosticParticipantPlan({
     ...input,
     participantSlots: [input.participantSlots[0]]
   }), DiagnosticParticipantInputError);
+});
+
+test("the governed participant-plan contract supports no more than fifty perspectives", () => {
+  const slot = input.participantSlots[0];
+  const participantSlots = Array.from({ length: 51 }, (_, index) => ({ ...slot, slotId: `slot-${index + 1}` }));
+  assert.throws(() => validateDiagnosticParticipantPlan({ ...input, participantSlots }), /at most 50 slots/);
 });
 
 test("documented gap acceptance allows a deliberately bounded plan", () => {

@@ -390,6 +390,12 @@ h2 {
 .participant-slots-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
 .participant-slots-heading div { display: grid; gap: 4px; }
 .participant-slots-heading span { color: var(--ink-soft); font-size: .76rem; }
+.participant-capacity { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.72); }
+.participant-capacity strong,.participant-capacity small { color: var(--ink-soft); }
+.participant-capacity > div { display: grid; grid-template-columns: 20% 80%; height: 8px; overflow: hidden; border-radius: 999px; background: #ddd7cf; }
+.participant-capacity i { display: block; background: var(--bronze); transform-origin: left; }
+.participant-capacity-locked { background: repeating-linear-gradient(135deg,#cbc5bc 0,#cbc5bc 6px,#ddd7cf 6px,#ddd7cf 12px) !important; }
+.participant-guidance { margin: 0; padding: 12px 14px; border-left: 3px solid var(--bronze); color: var(--ink-soft); background: rgba(183,91,39,.06); }
 .participant-slots { display: grid; gap: 10px; }
 .participant-slot { display: grid; grid-template-columns: 36px repeat(3, 1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .participant-slot > span { color: var(--bronze-dark); font-size: .72rem; font-weight: 800; }

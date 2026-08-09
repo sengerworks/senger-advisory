@@ -49,6 +49,10 @@
   common question protocol, confidential responses, de-identification, synthesis, confidence,
   reporting, and intervention recommendation
 - Add perspective-coverage guidance and sponsor-bias safeguards to participant selection
+- Enforce the POC cohort boundary of ten internal participants while showing the full diagnostic's
+  fifty-participant capacity
+- Add a future External Perspective Protocol for customers, vendors, contractors, board members,
+  and other outside stakeholders with separate consent and interpretation controls
 - Build confidential asynchronous guided diagnostic interviews with adaptive written
   follow-ups for the automated route
 - Support live interview, recording, transcript, de-identification, and human-review workflows
