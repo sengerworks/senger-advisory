@@ -62,11 +62,12 @@ export function createWorkspaceDiagnosticInvitationsHandler({
               })
             };
           });
+        const sponsorSlots = planSlots.map(({ collectionStatus, ...slot }) => slot);
         return json(200, {
           diagnosticState: readiness.diagnosticState,
           canInvite: readiness.canInvite,
           progress: summarizeDiagnosticCollection(planSlots),
-          planSlots
+          planSlots: sponsorSlots
         });
       }
 

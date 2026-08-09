@@ -67,6 +67,7 @@ const elements = {
   diagnosticCollectionProgress: document.querySelector("[data-diagnostic-collection-progress]"),
   diagnosticInvitationSlots: document.querySelector("[data-diagnostic-invitation-slots]"),
   diagnosticInvitationMessage: document.querySelector("[data-diagnostic-invitation-message]"),
+  invitationReadiness: document.querySelector("[data-invitation-readiness]"),
   leadershipValidation: document.querySelector("[data-leadership-validation]"),
   leadershipReleaseState: document.querySelector("[data-leadership-release-state]"),
   leadershipFinding: document.querySelector("[data-leadership-finding]"),
@@ -610,10 +611,10 @@ async function loadDiagnosticInvitations(diagnosticId) {
   const data = await workspaceRequest(`/api/workspace/diagnostic-invitations?diagnosticId=${encodeURIComponent(diagnosticId)}`);
   elements.diagnosticCollectionProgress.replaceChildren();
   const progressLabels = [
-    [data.progress.submitted, "Submitted"],
-    [data.progress.inProgress, "In progress"],
-    [data.progress.invited, "Invited"],
-    [data.progress.total, "Approved slots"]
+    [data.progress.submitted, "Completed perspectives"],
+    [data.progress.inProgress, "Active interviews"],
+    [data.progress.invited, "Invitations sent"],
+    [data.progress.total, "Planned perspectives"]
   ];
   for (const [value, label] of progressLabels) {
     const item = document.createElement("div");
@@ -624,6 +625,16 @@ async function loadDiagnosticInvitations(diagnosticId) {
     item.append(count, caption);
     elements.diagnosticCollectionProgress.append(item);
   }
+  elements.invitationReadiness.replaceChildren();
+  const readinessTitle = document.createElement("strong");
+  const readinessCopy = document.createElement("span");
+  const remaining = data.progress.remaining;
+  readinessTitle.textContent = remaining ? `${remaining} perspective${remaining === 1 ? "" : "s"} still need an invitation` : "All planned perspectives have been invited";
+  readinessCopy.textContent = remaining
+    ? "Collection can begin as invitations are accepted. Shared findings remain withheld until at least five confidential interviews are complete."
+    : "Collection is underway. Progress appears only in aggregate, and findings remain withheld until the confidentiality threshold is met.";
+  elements.invitationReadiness.dataset.state = remaining ? "incomplete" : "ready";
+  elements.invitationReadiness.append(readinessTitle, readinessCopy);
   elements.diagnosticInvitationSlots.replaceChildren();
   for (const slot of data.planSlots) {
     const card = document.createElement("article");
@@ -636,9 +647,9 @@ async function loadDiagnosticInvitations(diagnosticId) {
     copy.append(title, perspective);
     if (slot.invitation) {
       const status = document.createElement("span");
-      const statusLabels = { invited: "Invitation sent", joined: "Invitation accepted", started: "Interview started", "in-progress": "Interview in progress", submitted: "Responses submitted" };
-      status.textContent = `${slot.invitation.emailAddress} · ${statusLabels[slot.collectionStatus] || slot.collectionStatus}`;
-      status.dataset.collectionStatus = slot.collectionStatus;
+      const invitationAccepted = slot.invitation.status === "accepted";
+      status.textContent = `${slot.invitation.emailAddress} · ${invitationAccepted ? "Invitation accepted" : "Invitation sent"}`;
+      status.dataset.invitationStatus = invitationAccepted ? "accepted" : "sent";
       card.append(copy, status);
     } else if (data.canInvite) {
       const form = document.createElement("form");
