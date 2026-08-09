@@ -3,6 +3,16 @@
 This is the operating sequence for a real Organizational Capacity Platform proof of concept. It
 uses the same governed workflow as a paid diagnostic; only the commercial entitlement is no-charge.
 
+## Canonical production destination
+
+- Give sponsors and participants only `https://sengeradvisory.com/poc` as the reusable entry link.
+- That short address resolves to the private client workspace at
+  `https://sengeradvisory.com/workspace/`; invitation acceptance and authentication return there as
+  well.
+- Never send a localhost, Netlify deploy-preview, Clerk-hosted, Advisor Console, or Platform
+  Operations URL to a client participant.
+- The destination is deliberately absent from public navigation and excluded from search indexing.
+
 ## Before the sponsor enters
 
 - Confirm the client has one Clerk organization and one accountable executive sponsor.

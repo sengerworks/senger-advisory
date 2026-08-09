@@ -224,6 +224,9 @@ test("workspace has a route-only Clerk CSP and authentication return fallback", 
   assert.match(config, /https:\/\/\*\.clerk\.accounts\.dev/);
   assert.match(config, /https:\/\/challenges\.cloudflare\.com/);
   assert.match(config, /from = "\/workspace\/\*"\s+to = "\/workspace\/index\.html"\s+status = 200/);
+  assert.match(config, /https:\/\/clerk\.sengeradvisory\.com/);
+  assert.match(config, /https:\/\/accounts\.sengeradvisory\.com/);
+  assert.match(config, /from = "\/poc"\s+to = "\/workspace\/"\s+status = 302/);
 });
 
 test("workspace remains excluded from search crawling", async () => {
