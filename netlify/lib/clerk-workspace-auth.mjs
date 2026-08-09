@@ -37,7 +37,14 @@ export async function authenticateWorkspaceRequest(
     authorizedParties,
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY
   });
-  if (!requestState.isAuthenticated) return { ok: false, status: 401, reason: "sign-in" };
+  if (!requestState.isAuthenticated) {
+    const clerkReason = String(requestState.reason || "sign-in")
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, "-")
+      .slice(0, 80);
+    console.info(`Workspace authentication stage: ${clerkReason}`);
+    return { ok: false, status: 401, reason: `clerk-${clerkReason}` };
+  }
 
   const auth = requestState.toAuth();
   if (!auth.orgId) return { ok: false, status: 403, reason: "organization-context" };

@@ -67,6 +67,17 @@ test("rejects signed-out, personal-account, unknown-role, and unmapped sessions"
     resolveWorkspaceId: async () => null
   });
   assert.deepEqual(unmapped, { ok: false, status: 403, reason: "workspace-mapping" });
+
+  const signedOut = await authenticateWorkspaceRequest(request(), {
+    ...baseOptions,
+    clerkClient: {
+      authenticateRequest: async () => ({
+        isAuthenticated: false,
+        reason: "token-invalid"
+      })
+    }
+  });
+  assert.deepEqual(signedOut, { ok: false, status: 401, reason: "clerk-token-invalid" });
 });
 
 test("returns minimized session state for an authorized mapped workspace", async () => {
