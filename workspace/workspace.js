@@ -47,6 +47,7 @@ const elements = {
   participantCapacityTrack: document.querySelector("[data-participant-capacity-track]"),
   participantCapacityLocked: document.querySelector("[data-participant-capacity-locked]"),
   participantCapacityNote: document.querySelector("[data-participant-capacity-note]"),
+  participantReadiness: document.querySelector("[data-participant-readiness]"),
   pocCapacity: document.querySelector("[data-poc-capacity]"),
   coverageGaps: document.querySelector("[data-coverage-gaps]"),
   coverageGapList: document.querySelector("[data-coverage-gap-list]"),
@@ -448,6 +449,17 @@ function updateParticipantCapacity() {
   elements.participantCapacityNote.textContent = isPoc
     ? "Five is the required minimum. Participants 6–10 are optional. Full diagnostics support up to 50."
     : "Five is the required minimum. The full diagnostic supports up to 50 internal participant perspectives.";
+  const readinessTitle = elements.participantReadiness.querySelector("strong");
+  const readinessDetail = elements.participantReadiness.querySelector("span");
+  elements.participantReadiness.dataset.state = count < 5 ? "incomplete" : count === 5 ? "minimum" : count === participantSlotMaximum ? "full" : "expanded";
+  readinessTitle.textContent = count < 5 ? "More perspectives required" : count === 5 ? "Minimum cohort reached" : count === participantSlotMaximum ? `${isPoc ? "POC" : "Diagnostic"} cohort at capacity` : "Coverage expanded";
+  readinessDetail.textContent = count < 5
+    ? `${5 - count} more perspective${5 - count === 1 ? " is" : "s are"} required before approval.`
+    : count === 5
+      ? "You may approve five perspectives or add more only when they deepen coverage."
+      : count === participantSlotMaximum
+        ? `All ${participantSlotMaximum} available ${isPoc ? "POC " : ""}perspective slots are planned.`
+        : `${count - 5} optional perspective${count - 5 === 1 ? " has" : "s have"} been added to deepen coverage.`;
   elements.addParticipantSlot.disabled = count >= participantSlotMaximum;
   elements.addParticipantSlot.title = count >= participantSlotMaximum ? (isPoc ? "The POC includes 10 participant perspectives. Full diagnostics support up to 50." : "The full diagnostic supports up to 50 participant perspectives.") : "";
   elements.participantSlots.querySelectorAll(".participant-slot button").forEach(button => {
@@ -475,6 +487,10 @@ function addParticipantSlot(values = {}) {
   const leadership = participantSelect("leadershipLevel", participantOptions.leadershipLevel);
   const proximity = participantSelect("executionProximity", participantOptions.executionProximity);
   const functional = participantSelect("functionalLens", participantOptions.functionalLens);
+  const slotNumber = elements.participantSlots.children.length + 1;
+  leadership.setAttribute("aria-label", `Perspective ${slotNumber} organizational level`);
+  proximity.setAttribute("aria-label", `Perspective ${slotNumber} relationship to the work`);
+  functional.setAttribute("aria-label", `Perspective ${slotNumber} functional view`);
   leadership.value = values.leadershipLevel || "";
   proximity.value = values.executionProximity || "";
   functional.value = values.functionalLens || "";
