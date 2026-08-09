@@ -96,6 +96,9 @@ export async function approveWorkspaceDiagnosticParticipantPlan(
     if (!diagnostic.context_id || diagnostic.state !== "participant-design") {
       throw new DiagnosticParticipantStateError("Approve the Context Brief before participant design.");
     }
+    if (input.participantSlots.length < 5) {
+      throw new DiagnosticParticipantStateError("At least five participant perspectives are required to protect confidentiality.");
+    }
     if (diagnostic.entitlement_type === "poc" && input.participantSlots.length > 10) {
       throw new DiagnosticParticipantStateError("The POC includes up to 10 participant perspectives. Activate a full diagnostic to include up to 50.");
     }
@@ -151,6 +154,7 @@ export const workspaceDiagnosticParticipantPolicy = Object.freeze({
   executionProximities: diagnosticDiscovery.executionProximities,
   functionalLenses: diagnosticDiscovery.functionalLenses,
   fixedParticipantMinimum: null,
+  confidentialityParticipantMinimum: 5,
   pocParticipantMaximum: 10,
   fullDiagnosticParticipantMaximum: 50,
   sponsorCountsAsParticipant: false,

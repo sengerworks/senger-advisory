@@ -41,6 +41,7 @@ test("approves identity-free participant coverage and rejects unresolved gaps", 
   assert.equal(validated.participantSlots.length, 3);
   assert.equal(validated.participantSlots.some(slot => "email" in slot || "name" in slot), false);
   assert.equal(workspaceDiagnosticParticipantPolicy.fixedParticipantMinimum, null);
+  assert.equal(workspaceDiagnosticParticipantPolicy.confidentialityParticipantMinimum, 5);
   assert.equal(workspaceDiagnosticParticipantPolicy.pocParticipantMaximum, 10);
   assert.equal(workspaceDiagnosticParticipantPolicy.fullDiagnosticParticipantMaximum, 50);
   assert.equal(workspaceDiagnosticParticipantPolicy.sponsorCountsAsParticipant, false);
