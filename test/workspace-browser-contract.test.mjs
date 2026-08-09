@@ -90,6 +90,11 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(script, /Payment and access pending/);
   assert.match(script, /No human review required/);
   assert.match(html, /Approve the Diagnostic Context Brief/);
+  assert.match(html, /What is happening in the organization now/);
+  assert.match(html, /What must the organization accomplish next/);
+  assert.match(html, /What made this important enough to examine now/);
+  assert.match(html, /What specific decision should better organizational evidence help you make/);
+  assert.match(html, /what changed, persisted, or became more complicated/i);
   assert.match(html, /not a predetermined diagnosis/);
   assert.match(html, /One per line, up to twelve/);
   assert.match(script, /Participant design is now the next governed step/);
