@@ -107,6 +107,10 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-invitations"/);
   assert.match(html, /data-diagnostic-collection-progress/);
   assert.match(script, /Client sponsor · POC workspace/);
+  assert.match(script, /Frame the decision this diagnostic must inform/);
+  assert.match(script, /Begin diagnostic discovery/);
+  assert.match(script, /if \(diagnostics\.length\)/);
+  assert.match(script, /if \(currentOwnerDiagnostic\)/);
   assert.match(script, /Responses submitted/);
   assert.doesNotMatch(script, /slot\.interviewAnswers|slot\.encryptedResponse/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-participation"/);
