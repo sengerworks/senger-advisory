@@ -1429,7 +1429,7 @@ function showWorkspaceAccessIssue(reason) {
   };
   const message = messages[reason] || ["Workspace access is not ready yet.", "Ask the Senger Advisory platform administrator to verify your access."];
   title.textContent = message[0];
-  detail.textContent = message[1];
+  detail.textContent = `${message[1]}${reason.startsWith("clerk-") ? ` Access reference: ${reason}.` : ""}`;
 }
 
 async function ensureActiveOrganization() {
