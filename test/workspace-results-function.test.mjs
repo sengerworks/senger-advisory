@@ -61,7 +61,7 @@ test("returns only the aggregate profile after the repository establishes the th
     primaryConstraintIds: ["leadership"]
   };
   const handler = createWorkspaceResultsHandler({
-    authenticate: authentication(WORKSPACE_ROLES.facilitator),
+    authenticate: authentication(WORKSPACE_ROLES.owner),
     getResults: async () => ({
       round: { id: roundId, label: "Test Baseline", status: "open" },
       result: aggregate

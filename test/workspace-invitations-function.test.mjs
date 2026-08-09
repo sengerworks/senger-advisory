@@ -50,7 +50,7 @@ function invitation(status = "pending") {
     id: invitationId,
     emailAddress: "participant@example.com",
     status,
-    role: "org:participant",
+    role: "org:member",
     createdAt: Date.parse("2026-08-01T00:00:00.000Z"),
     expiresAt: Date.parse("2026-08-15T00:00:00.000Z"),
     privateMetadata: { collectionRoundId: roundId }
@@ -103,7 +103,7 @@ test("Clerk gateway fixes the participant role, redirect, expiry, and private ro
     redirectOrigin: "https://preview.example.com"
   });
   assert.equal(created.emailAddress, "participant@example.com");
-  assert.equal(createParams.role, "org:participant");
+  assert.equal(createParams.role, "org:member");
   assert.equal(createParams.redirectUrl, "https://preview.example.com/workspace/");
   assert.deepEqual(createParams.privateMetadata, { collectionRoundId: roundId });
   assert.ok(createParams.expiresInDays >= 1 && createParams.expiresInDays <= 30);

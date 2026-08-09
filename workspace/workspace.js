@@ -308,14 +308,6 @@ function roleContent(role) {
       action: "Set up a collection round"
     };
   }
-  if (role === "org:facilitator") {
-    return {
-      label: "Client facilitator",
-      title: "The workspace is ready to facilitate.",
-      description: "You will manage invitations and collection progress without access to any individual response.",
-      action: "Facilitation tools coming next"
-    };
-  }
   return {
     label: "Invited participant",
     title: "Contribute your private perspective.",
@@ -1660,7 +1652,7 @@ async function render() {
   elements.diagnosticPanel.hidden = true;
   elements.participantPanel.hidden = true;
   if (session.role === "org:admin") await prepareOwnerCollection();
-  if (session.role === "org:participant") await prepareParticipant();
+  if (session.role === "org:member") await prepareParticipant();
   showState("readyState");
 }
 
@@ -1707,7 +1699,7 @@ elements.retry.addEventListener("click", () => initialize());
 elements.refresh.addEventListener("click", () => refreshWorkspace().catch(() => showError("The workspace could not refresh your session.")));
 elements.signOut.addEventListener("click", () => clerk?.signOut({ redirectUrl: workspaceReturnUrl() }));
 elements.primaryAction.addEventListener("click", () => {
-  if (currentRole === "org:participant") {
+  if (currentRole === "org:member") {
     elements.participantPanel.scrollIntoView({ behavior: "smooth", block: "start" });
     if (!elements.participantNotice.hidden) {
       elements.participantAcknowledgement.focus({ preventScroll: true });
@@ -2242,7 +2234,7 @@ elements.participantAcknowledgement.addEventListener("change", event => {
 });
 elements.beginAssessment.addEventListener("click", async () => {
   if (
-    currentRole !== "org:participant"
+    currentRole !== "org:member"
     || !currentParticipation
     || (currentParticipation.kind === "assessment" && currentParticipation.state !== "ready")
     || (currentParticipation.kind === "assessment" && currentParticipation.submitted)

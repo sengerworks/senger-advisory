@@ -1,7 +1,6 @@
 export const WORKSPACE_ROLES = Object.freeze({
   owner: "org:admin",
-  facilitator: "org:facilitator",
-  participant: "org:participant"
+  participant: "org:member"
 });
 
 export const PRODUCT_ROLE_BOUNDARY = Object.freeze({
@@ -32,7 +31,7 @@ export const PRODUCT_ROLE_BOUNDARY = Object.freeze({
   })
 });
 
-const ALL_ROLES = new Set(Object.values(WORKSPACE_ROLES));
+const ALL_ROLES = new Set(Object.values(WORKSPACE_ROLES).filter(Boolean));
 const OWNER_ONLY = new Set(["workspace:update", "workspace:delete", "audit:read"]);
 const ADMINISTRATIVE = new Set([
   "invitation:list",

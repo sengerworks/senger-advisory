@@ -4,7 +4,7 @@ import { withNeonWorkspaceTransaction } from "./neon-workspace-database.mjs";
 import { validateDiagnosticContextId } from "./workspace-diagnostic-context.mjs";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PARTICIPANT_ROLE = "org:participant";
+const PARTICIPANT_ROLE = "org:member";
 
 export class DiagnosticInvitationInputError extends Error {}
 export class DiagnosticInvitationStateError extends Error {}
@@ -44,7 +44,7 @@ export function diagnosticInvitationProviderError(error) {
     return new DiagnosticInvitationStateError("That email already has a pending diagnostic invitation. Use the existing invitation or revoke it in Clerk before trying again.");
   }
   if (/role|permission/.test(detail)) {
-    return new DiagnosticInvitationStateError("Clerk rejected the participant role. Confirm that org:participant remains enabled for the development organization.");
+    return new DiagnosticInvitationStateError("Clerk rejected the participant role. Confirm that the standard Clerk member role is enabled for the organization.");
   }
   if (/redirect|url/.test(detail)) {
     return new DiagnosticInvitationStateError("Clerk rejected the local return address. Confirm that http://localhost:8888 is allowed in the development Clerk instance.");

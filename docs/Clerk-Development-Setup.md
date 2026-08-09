@@ -12,17 +12,17 @@ The Clerk development instance for Senger Advisory Organizational Capacity is co
 - Verified Domains disabled; and
 - one manually provisioned `Senger Advisory Development` Organization.
 
-The application has three Organization roles:
+The pre-launch application uses Clerk's two standard Organization roles:
 
 | Product role | Clerk role | Clerk system permissions |
 | --- | --- | --- |
 | Owner | `org:admin` | Built-in creator permissions |
-| Facilitator | `org:facilitator` | Manage members; Read members |
-| Participant | `org:participant` | None |
+| Participant | `org:member` | Standard membership; the application exposes no member directory |
 
-`org:participant` is the new-member default in the Default Role Set. Clerk's built-in
-`org:member` role has been deleted so it cannot accidentally expose the Organization member
-directory to a participant.
+Client Facilitator access is deferred until after POC validation. Senger Platform Admin and
+Assigned Advisor access are governed by application-level assignments rather than client
+Organization roles. The workspace does not mount Clerk's general Organization Profile or
+Member List components and provides no participant-facing member-list endpoint.
 
 The first development Owner invitation has been accepted. A real email sign-in, active
 Organization session, server-side session verification, workspace resolution, and role-aware
@@ -44,7 +44,7 @@ unconfigured and untouched.
 1. verifies a Clerk session token;
 2. restricts the token's authorized party to configured application origins;
 3. requires an active Organization;
-4. permits only the three canonical Organization roles;
+4. permits only the two POC Organization roles;
 5. resolves the Organization to an internal workspace; and
 6. fails closed for signed-out, personal-account, unknown-role, and unmapped sessions.
 
@@ -56,5 +56,5 @@ not return provider IDs, internal workspace IDs, user IDs, member lists, or priv
 - Keep the isolated `/workspace/` browser application and Clerk UI bundle version pinned.
 - Follow `Netlify-Deploy-Preview-Setup.md` to configure explicit preview-only variables and
   verify the same Owner session in a Deploy Preview.
-- Keep the production Clerk instance inactive until the full pilot flow and security review
-  pass.
+- Use standard Clerk roles during POC validation; revisit enhanced B2B roles only after the
+  client-facilitator use case and commercial demand are proven.

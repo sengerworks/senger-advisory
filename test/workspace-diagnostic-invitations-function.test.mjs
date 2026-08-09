@@ -36,7 +36,7 @@ test("accepts one normalized email for one approved perspective slot", () => {
 test("translates provider failures without exposing provider payloads", () => {
   assert.match(diagnosticInvitationProviderError({ message: "membership already exists" }).message, /already belongs/);
   assert.match(diagnosticInvitationProviderError({ errors: [{ code: "duplicate_invitation" }] }).message, /pending diagnostic invitation/);
-  assert.match(diagnosticInvitationProviderError({ errors: [{ code: "invalid_role" }] }).message, /org:participant/);
+  assert.match(diagnosticInvitationProviderError({ errors: [{ code: "invalid_role" }] }).message, /standard Clerk member role/);
   assert.equal(diagnosticInvitationProviderError({ message: "Bad Request" }), null);
 });
 

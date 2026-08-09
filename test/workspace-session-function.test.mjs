@@ -67,7 +67,7 @@ test("rejects signed-out, personal-account, unknown-role, and unmapped sessions"
   for (const auth of [
     null,
     { userId: "user_1", orgId: null, orgRole: null },
-    { userId: "user_1", orgId: "org_alpha", orgRole: "org:member" }
+    { userId: "user_1", orgId: "org_alpha", orgRole: "org:viewer" }
   ]) {
     const result = await authenticateWorkspaceRequest(request(), {
       ...baseOptions,
@@ -106,7 +106,7 @@ test("returns minimized session state for an authorized mapped workspace", async
     authenticate: async () => ({
       ok: true,
       value: {
-        role: WORKSPACE_ROLES.facilitator,
+        role: WORKSPACE_ROLES.owner,
         workspaceId: "11111111-1111-4111-8111-111111111111"
       }
     })
@@ -116,7 +116,7 @@ test("returns minimized session state for an authorized mapped workspace", async
   assert.deepEqual(await response.json(), {
     authenticated: true,
     workspaceReady: true,
-    role: WORKSPACE_ROLES.facilitator
+    role: WORKSPACE_ROLES.owner
   });
 });
 

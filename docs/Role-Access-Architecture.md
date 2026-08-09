@@ -16,10 +16,12 @@ diagnostic response content.
 
 ## POC bridge
 
-The development Clerk organization currently has `org:admin`, `org:facilitator`, and
-`org:participant`. For end-to-end POC testing, `org:admin` temporarily exposes diagnostic
-discovery, participant design, and protocol approval. In the final model, `org:admin` maps to
-Client Sponsor and those method controls move to the Senger/Advisor operating console.
+The POC uses Clerk's standard `org:admin` role for the Client Sponsor and `org:member` for
+Participants. Client Facilitator access is deferred until the post-POC role architecture is
+validated. Senger Platform Admin and Assigned Advisor access remain application-governed and
+are never inferred from a client Organization role. For end-to-end POC testing, `org:admin`
+temporarily exposes diagnostic discovery, participant design, and protocol approval. In the
+final model, those method controls move to the Senger/Advisor operating console.
 
 This bridge must not be expanded into a permanent super-admin design.
 
@@ -33,3 +35,4 @@ This bridge must not be expanded into a permanent super-admin design.
 - Interview content remains private; de-identification and disclosure review occur before
   evidence enters advisor synthesis.
 - Co-branded partners receive the same scoped advisor model and cannot browse across clients.
+- The application exposes no participant directory or general Clerk Organization Profile.

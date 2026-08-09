@@ -7,11 +7,12 @@
       "clerkSystemPermissions": ["org:sys_memberships:manage", "org:sys_memberships:read", "org:sys_profile:delete"]
     },
     "facilitator": {
-      "providerRole": "org:facilitator",
-      "clerkSystemPermissions": ["org:sys_memberships:manage", "org:sys_memberships:read"]
+      "providerRole": null,
+      "availability": "deferred-until-post-POC",
+      "clerkSystemPermissions": []
     },
     "participant": {
-      "providerRole": "org:participant",
+      "providerRole": "org:member",
       "clerkSystemPermissions": []
     }
   },

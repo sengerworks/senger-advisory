@@ -2,7 +2,7 @@ import { createClerkClient } from "@clerk/backend";
 import { WORKSPACE_ROLES } from "../../workspace-authorization.js";
 import { resolveNeonWorkspaceId } from "./neon-workspace-database.mjs";
 
-const allowedRoles = new Set(Object.values(WORKSPACE_ROLES));
+const allowedRoles = new Set(Object.values(WORKSPACE_ROLES).filter(Boolean));
 
 export function configuredAuthorizedParties(
   value = process.env.CLERK_AUTHORIZED_PARTIES,

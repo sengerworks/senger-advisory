@@ -10,19 +10,19 @@ test("separates client workspace roles from platform and advisor assignments", (
   assert.equal(PRODUCT_ROLE_BOUNDARY.platformAdmin.responseContentAccess, false);
 });
 
-test("limits workspace administration to owner and invitation operations to administrators", () => {
+test("limits POC workspace administration to the client sponsor", () => {
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "workspace:delete" }), true);
-  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "workspace:delete" }), false);
-  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "invitation:create" }), true);
-  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "round:open" }), true);
+  assert.equal(authorizeWorkspaceAction({ role: "org:facilitator", action: "workspace:delete" }), false);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "invitation:create" }), true);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "round:open" }), true);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "invitation:list" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "round:update" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "completion:read" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "action-cycle:create" }), true);
-  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "action-cycle:update" }), true);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "action-cycle:update" }), true);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "action-cycle:read" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "diagnostic:create" }), false);
-  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.facilitator, action: "diagnostic:read" }), true);
+  assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "diagnostic:read" }), true);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.participant, action: "diagnostic:read" }), false);
 });
 
@@ -44,6 +44,6 @@ test("reveals organizational aggregates to members only after the threshold is m
 });
 
 test("fails closed for unknown roles and actions", () => {
-  assert.equal(authorizeWorkspaceAction({ role: "org:member", action: "workspace:read" }), false);
+  assert.equal(authorizeWorkspaceAction({ role: "org:viewer", action: "workspace:read" }), false);
   assert.equal(authorizeWorkspaceAction({ role: WORKSPACE_ROLES.owner, action: "submission:list" }), false);
 });

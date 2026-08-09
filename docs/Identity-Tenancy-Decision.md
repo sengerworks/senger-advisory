@@ -21,15 +21,16 @@ focused security review.
 The product is inherently organization-based. Clerk provides active-organization context,
 organization invitations, passwordless authentication options, session management, and
 server-verifiable roles rather than requiring Senger Advisory to build credential and account
-security. The first two custom production roles are currently available without the enhanced
-B2B add-on, which fits the required facilitator and participant roles alongside the built-in
-administrator role.
+security. During pre-launch POCs, the product uses Clerk's standard roles so commercial
+validation does not require the enhanced B2B add-on.
 
-Use three client-organization provider roles for the POC:
+Use two client-organization provider roles for the POC:
 
 - `org:admin` → Client Sponsor (the sponsoring executive or designated internal lead);
-- `org:facilitator` → Client Facilitator; and
-- `org:participant` → product Participant.
+- `org:member` → product Participant.
+
+Client Facilitator is deferred until post-POC validation. If validated, it may be introduced
+through a paid provider role or a bounded application assignment.
 
 These are not platform-level roles. Senger Platform Admin and Assigned Advisor access must
 not be represented as a standing client-organization administrator. They require separate
@@ -40,10 +41,8 @@ During the POC, `org:admin` temporarily exposes discovery, participant-design, a
 controls so the end-to-end method can be tested. Those controls are a development bridge,
 not the final Client Sponsor permission contract.
 
-The custom Participant role receives no Clerk system permission to read members. This is
-necessary because Clerk's default Member role can read other organization members. The
-application must not expose Clerk's general Organization Profile or Member List components to
-participants.
+The application does not expose Clerk's general Organization Profile or Member List components
+or a participant-facing member-directory endpoint.
 
 ### Neon Postgres
 
@@ -216,7 +215,7 @@ and private recovery-link experience retain their current minimal dependency sur
   isolation test are complete. Clerk development configuration remains.
 - Clerk development Organizations, canonical roles, session authorization boundary, and
   provider-to-workspace mapping are complete. The browser sign-in flow remains.
-- Configure `org:facilitator` and `org:participant` with the specified system permissions.
+- Configure the standard `org:admin` sponsor and `org:member` participant roles.
 - Add an isolated bundled workspace application.
 - Add a Netlify auth-check function using `authorizedParties`.
 - Map one Clerk organization to one Neon workspace.

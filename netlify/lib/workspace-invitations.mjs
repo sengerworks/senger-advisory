@@ -2,7 +2,7 @@ import { createClerkClient } from "@clerk/backend";
 import { requireWorkspaceId } from "../../workspace-tenant-boundary.js";
 import { withNeonWorkspaceTransaction } from "./neon-workspace-database.mjs";
 
-const PARTICIPANT_ROLE = "org:participant";
+const PARTICIPANT_ROLE = "org:member";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const INVITATION_ID_PATTERN = /^orginv_[A-Za-z0-9]+$/;
 
