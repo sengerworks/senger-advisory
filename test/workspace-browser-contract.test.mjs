@@ -231,6 +231,25 @@ test("workspace remains excluded from search crawling", async () => {
   assert.match(robots, /Disallow: \/workspace\//);
 });
 
+test("every POC role surface inherits the published Senger Advisory brand system", async () => {
+  const [workspace, advisor, operations, presenter] = await Promise.all([
+    "workspace/workspace.css",
+    "workspace/advisor.css",
+    "workspace/operations.css",
+    "workspace/presenter-demo.css"
+  ].map(source));
+  assert.match(workspace, /--midnight: #111c2e/);
+  assert.match(workspace, /--ink: #161c25/);
+  assert.match(workspace, /--paper: #fffdf8/);
+  assert.match(workspace, /--orange: #d45b31/);
+  assert.match(workspace, /border-bottom: 4px solid var\(--orange\)/);
+  assert.match(workspace, /font-family: Arial, "Helvetica Neue", sans-serif/);
+  assert.match(advisor, /font-family: var\(--serif\)/);
+  for (const stylesheet of [workspace, advisor, operations, presenter]) {
+    assert.doesNotMatch(stylesheet, /#a46b38|#70451f|#1c1c1c|#676767/);
+  }
+});
+
 test("advisor console is separate, assignment-scoped, and excludes raw interview fields", async () => {
   const html = await readFile(new URL("../workspace/advisor.html", import.meta.url), "utf8");
   const advisor = await readFile(new URL("../workspace/advisor.js", import.meta.url), "utf8");

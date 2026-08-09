@@ -1615,9 +1615,9 @@ async function render() {
         signUpFallbackRedirectUrl: returnUrl,
         appearance: {
           variables: {
-            colorPrimary: "#1c1c1c",
-            colorText: "#1c1c1c",
-            colorBackground: "#ffffff",
+            colorPrimary: "#d45b31",
+            colorText: "#161c25",
+            colorBackground: "#fffdf8",
             borderRadius: "14px",
             fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
           }

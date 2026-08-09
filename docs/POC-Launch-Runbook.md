@@ -12,8 +12,8 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
 - Confirm migrations through `038_diagnostic_v2_evidence_source_bridge.sql` are applied and the real
   Postgres RLS test passes.
 - Establish the POC record in Platform Operations and assign the advisor for a bounded period.
-- Agree on the leadership decision, target completion date, five-to-fifty participant range, and
-  stop conditions before invitations are sent.
+- Agree on the leadership decision, target completion date, five-to-ten POC participant range, and
+  stop conditions before invitations are sent. The paid full diagnostic may support up to fifty.
 
 ## Golden path
 
@@ -59,6 +59,9 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
 - Open `http://localhost:8888/workspace/advisor.html` and confirm frame, protocol, evidence review,
   synthesis, intervention, POC scorecard, and change-control access.
 - Complete one disposable five-participant rehearsal before inviting the client cohort.
+- Confirm the public site, sponsor workspace, participant experience, Advisor Console, Platform
+  Operations, and guided demo use the same approved color, typography, wordmark, spacing, control,
+  and responsive-design system.
 
 The detailed measurement and decision rules remain in `POC-Operating-Protocol.md` and
 `POC-Scorecard.md`.
