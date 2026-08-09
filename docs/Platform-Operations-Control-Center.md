@@ -10,6 +10,11 @@ every query runs inside that organization's Neon RLS transaction. Switching orga
 creates a cross-client data response. Cross-client portfolio administration is a later
 platform-tenancy milestone.
 
+POC client enrollment uses a browser-generated request ID backed by a tenant-scoped provisioning
+receipt. A retry reconciles the Clerk organization, Neon workspace mapping, diagnostic, and sponsor
+invitation before creating anything new. The receipt stores an input fingerprint and external
+record IDs, not the sponsor email or participant content.
+
 ## Authority
 
 Access requires both:
