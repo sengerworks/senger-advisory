@@ -27,6 +27,14 @@ const elements = {
   diagnosticContextSummary: document.querySelector("[data-diagnostic-context-summary]"),
   diagnosticContextMessage: document.querySelector("[data-diagnostic-context-message]"),
   approveDiagnosticContext: document.querySelector("[data-approve-diagnostic-context]"),
+  contextSteps: [...document.querySelectorAll("[data-context-step]")],
+  contextReview: document.querySelector("[data-context-review]"),
+  contextReviewList: document.querySelector("[data-context-review-list]"),
+  contextProgressLabel: document.querySelector("[data-context-progress-label]"),
+  contextProgressName: document.querySelector("[data-context-progress-name]"),
+  contextProgressBar: document.querySelector("[data-context-progress-bar]"),
+  contextBack: document.querySelector("[data-context-back]"),
+  contextNext: document.querySelector("[data-context-next]"),
   closeDiagnosticContext: document.querySelector("[data-close-diagnostic-context]"),
   participantDesign: document.querySelector("[data-participant-design]"),
   participantDesignForm: document.querySelector("[data-participant-design-form]"),
@@ -810,6 +818,60 @@ function diagnosticList(value) {
   return String(value || "").split(/\n+/).map(item => item.trim()).filter(Boolean);
 }
 
+const diagnosticContextStepNames = [
+  "What is happening now?",
+  "What matters most?",
+  "What is at risk?",
+  "What decision must this inform?",
+  "What has changed or already been tried?",
+  "What should we handle carefully?"
+];
+let diagnosticContextStep = 0;
+
+function renderDiagnosticContextReview() {
+  const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
+  const summaries = [
+    ["What is happening now?", [values.organizationContext, values.triggeringConcern].filter(Boolean).join("\n\n")],
+    ["What matters most?", values.strategicPriority],
+    ["What is at risk?", values.decisionsAtRisk],
+    ["Decision to inform", values.decisionNeeded],
+    ["Recent changes", values.recentChanges || "No recent changes added."],
+    ["What has already been tried", values.priorInterventions || "No prior interventions added."],
+    ["Handle carefully", values.knownSensitivities || "No additional sensitivities added."]
+  ];
+  elements.contextReviewList.replaceChildren(...summaries.map(([label, value]) => {
+    const card = document.createElement("article");
+    const title = document.createElement("strong");
+    const content = document.createElement("p");
+    title.textContent = label;
+    content.textContent = value;
+    card.append(title, content);
+    return card;
+  }));
+}
+
+function showDiagnosticContextStep(step = 0) {
+  diagnosticContextStep = Math.max(0, Math.min(step, elements.contextSteps.length));
+  const reviewing = diagnosticContextStep === elements.contextSteps.length;
+  elements.contextSteps.forEach((section, index) => { section.hidden = index !== diagnosticContextStep; });
+  elements.contextReview.hidden = !reviewing;
+  if (reviewing) renderDiagnosticContextReview();
+  elements.contextProgressLabel.textContent = reviewing ? "Review and approve" : `Question ${diagnosticContextStep + 1} of ${elements.contextSteps.length}`;
+  elements.contextProgressName.textContent = reviewing ? "Confirm the bounded starting point" : diagnosticContextStepNames[diagnosticContextStep];
+  elements.contextProgressBar.style.width = `${reviewing ? 100 : ((diagnosticContextStep + 1) / elements.contextSteps.length) * 100}%`;
+  elements.contextBack.hidden = diagnosticContextStep === 0;
+  elements.contextNext.hidden = reviewing;
+  elements.approveDiagnosticContext.hidden = !reviewing;
+  elements.diagnosticContextMessage.textContent = "";
+  delete elements.diagnosticContextMessage.dataset.tone;
+}
+
+function validateDiagnosticContextStep() {
+  const fields = elements.contextSteps[diagnosticContextStep]?.querySelectorAll("input, select, textarea") || [];
+  for (const field of fields) if (!field.reportValidity()) return false;
+  return true;
+}
+
 async function openDiagnosticContext(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
   elements.diagnosticContext.hidden = false;
@@ -825,6 +887,7 @@ async function openDiagnosticContext(diagnosticId) {
   } else {
     elements.diagnosticContextForm.reset();
     elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
+    showDiagnosticContextStep(0);
   }
   elements.diagnosticContext.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -1748,6 +1811,11 @@ elements.closeProtocolReview.addEventListener("click", () => {
   elements.protocolReview.hidden = true;
 });
 elements.addParticipantSlot.addEventListener("click", () => addParticipantSlot());
+elements.contextNext.addEventListener("click", () => {
+  if (!validateDiagnosticContextStep()) return;
+  showDiagnosticContextStep(diagnosticContextStep + 1);
+});
+elements.contextBack.addEventListener("click", () => showDiagnosticContextStep(diagnosticContextStep - 1));
 elements.diagnosticContextForm.addEventListener("submit", async event => {
   event.preventDefault();
   if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.diagnosticContextForm.reportValidity()) return;

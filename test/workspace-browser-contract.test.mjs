@@ -95,6 +95,11 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /What is happening that made you look into this now/);
   assert.match(html, /What decision do you need this diagnostic to help you make/);
   assert.match(html, /What have you already tried\? What happened/);
+  assert.match(html, /Question 1 of 6/);
+  assert.match(html, /What is at risk\?/);
+  assert.match(html, /Review before approval/);
+  assert.match(script, /showDiagnosticContextStep/);
+  assert.match(script, /renderDiagnosticContextReview/);
   assert.match(html, /not a predetermined diagnosis/);
   assert.match(html, /One per line, up to twelve/);
   assert.match(script, /Participant design is now the next governed step/);
