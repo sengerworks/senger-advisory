@@ -817,7 +817,7 @@ function setInvitationMessage(message = "", tone = null) {
 }
 
 async function workspaceRequest(path, options = {}) {
-  const token = await clerk?.session?.getToken();
+  const token = await clerk?.session?.getToken({ organizationId: clerk?.organization?.id });
   const response = await fetch(path, {
     credentials: "same-origin",
     headers: {
@@ -1399,7 +1399,10 @@ function saveInterviewDraft(){
 }
 
 async function sessionState() {
-  const token = await clerk?.session?.getToken();
+  const token = await clerk?.session?.getToken({
+    organizationId: clerk?.organization?.id,
+    skipCache: true
+  });
   const response = await fetch("/api/workspace/session", {
     credentials: "same-origin",
     headers: {
@@ -1437,6 +1440,7 @@ async function ensureActiveOrganization() {
     organization = (await response.json()).organization;
   }
   await clerk.setActive({ organization });
+  clerk.session?.clearCache();
   return true;
 }
 
