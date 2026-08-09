@@ -28,6 +28,13 @@ test("requires explicit valid Clerk authorized parties", () => {
   );
   assert.throws(() => configuredAuthorizedParties(""), /explicit comma-separated origins/);
   assert.throws(() => configuredAuthorizedParties("sengeradvisory.com"), /explicit comma-separated origins/);
+  assert.deepEqual(
+    configuredAuthorizedParties(
+      "https://sengeradvisory.com",
+      ["https://deploy-preview-2--senger-advisory.netlify.app", "https://sengeradvisory.com"]
+    ),
+    ["https://sengeradvisory.com", "https://deploy-preview-2--senger-advisory.netlify.app"]
+  );
 });
 
 test("rejects signed-out, personal-account, unknown-role, and unmapped sessions", async () => {

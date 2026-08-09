@@ -4,11 +4,14 @@ import { resolveNeonWorkspaceId } from "./neon-workspace-database.mjs";
 
 const allowedRoles = new Set(Object.values(WORKSPACE_ROLES));
 
-export function configuredAuthorizedParties(value = process.env.CLERK_AUTHORIZED_PARTIES) {
-  const parties = String(value || "")
-    .split(",")
-    .map((party) => party.trim())
-    .filter(Boolean);
+export function configuredAuthorizedParties(
+  value = process.env.CLERK_AUTHORIZED_PARTIES,
+  deploymentOrigins = [process.env.DEPLOY_PRIME_URL, process.env.URL]
+) {
+  const parties = [...String(value || "").split(","), ...deploymentOrigins]
+    .map((party) => String(party || "").trim())
+    .filter(Boolean)
+    .filter((party, index, values) => values.indexOf(party) === index);
   if (parties.length === 0 || parties.some((party) => {
     try {
       return new URL(party).origin !== party;
