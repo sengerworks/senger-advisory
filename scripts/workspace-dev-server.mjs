@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import workspaceConfig from "../netlify/functions/workspace-config.mjs";
 import workspaceOrganizationBootstrap from "../netlify/functions/workspace-organization-bootstrap.mjs";
 import platformOperationsOverview from "../netlify/functions/platform-operations-overview.mjs";
+import platformOperationsClientProvisioning from "../netlify/functions/platform-operations-client-provisioning.mjs";
 import platformOperationsDiagnostics from "../netlify/functions/platform-operations-diagnostics.mjs";
 import platformOperationsAdvisorAssignments from "../netlify/functions/platform-operations-advisor-assignments.mjs";
 import platformOperationsV2Activation from "../netlify/functions/platform-operations-v2-activation.mjs";
@@ -133,6 +134,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/config",
     "/api/workspace/organization-bootstrap",
     "/api/operations/overview",
+    "/api/operations/client-provisioning",
     "/api/operations/diagnostics",
     "/api/operations/advisor-assignments",
     "/api/operations/diagnostic-v2-activation",
@@ -189,6 +191,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     });
     const handler = url.pathname === "/api/operations/overview"
       ? platformOperationsOverview
+      : url.pathname === "/api/operations/client-provisioning"
+        ? platformOperationsClientProvisioning
       : url.pathname === "/api/operations/advisor-assignments"
         ? platformOperationsAdvisorAssignments
       : url.pathname === "/api/operations/diagnostic-v2-activation"
