@@ -4,9 +4,10 @@ import {readFile} from "node:fs/promises";
 
 const read=name=>readFile(new URL(`../docs/${name}`,import.meta.url),"utf8");
 
-test("POC protocol governs the complete product and change loop",async()=>{
+test("POC protocol governs one diagnostic cycle and preserves the paid intervention boundary",async()=>{
   const protocol=await read("POC-Operating-Protocol.md");
-  for(const requirement of ["not a demo","Confidential participation","Evidence preparation and synthesis","Leadership validation and intervention","Operate, review, and reassess","S0 — Safety or confidentiality","Change-control rule","Launch-readiness thresholds","Ready to monetize"])assert.match(protocol,new RegExp(requirement));
+  for(const requirement of ["not a demo","Confidential participation","Evidence preparation and synthesis","Leadership validation and Intervention Directions","paid activation","S0 — Safety or confidentiality","Change-control rule","Launch-readiness thresholds","Ready to monetize"])assert.match(protocol,new RegExp(requirement));
+  assert.doesNotMatch(protocol,/### 6\. Operate, review, and reassess/);
   assert.match(protocol,/zero unresolved S0 issues/);
   assert.match(protocol,/willingness to pay/i);
   assert.match(protocol,/Never weaken a confidentiality control/);

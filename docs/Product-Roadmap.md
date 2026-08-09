@@ -70,13 +70,14 @@
 - Separate Senger Advisory Platform Operations from the client sponsor workspace with an
   environment-allowlisted, tenant-bounded POC Control Center; diagnostic creation and entitlement
   establishment are platform controls, while sponsors retain context and client decisions
-- Run every POC through the paid-product workflow using a no-charge, time-bounded entitlement
+- Run every POC through one complete diagnostic cycle using a no-charge, time-bounded entitlement;
+  release the governed finding and Intervention Directions, then stop before paid intervention design
 - Collect role-specific feedback at each product gate without mixing participant feedback into diagnostic evidence
 - Use fixed issue severity, change-control, scorecard, and cohort-decision rules
 - Require explicit methodological, trust, completion, actionability, operating-effort, and willingness-to-pay evidence before monetized launch
 - Capture role-bounded POC checkpoint feedback without respondent identity, interview linkage,
   participant-level sponsor visibility, or entry into diagnostic evidence
-- Aggregate POC completion, trust, method, intervention, support, and commercial signals into an
+- Aggregate POC completion, trust, method, Intervention Direction, support, and commercial signals into an
   assignment-scoped advisor scorecard without participant feedback text or interview content
 - Preserve advisor-governed POC cohort decisions as immutable product history, with required
   changes, unresolved risks, next hypotheses, and explicit review dates; never infer monetization readiness
@@ -115,7 +116,7 @@
 - Govern automated recommendations as testable hypotheses rather than prescriptions or causal
   conclusions
 - Activate separate diagnostic and intervention entitlements only through verified hosted-checkout
-  webhooks; retain explicit no-charge POC entitlements without treating browser returns as payment
+  webhooks; a no-charge POC entitlement cannot activate intervention design, delivery, or reassessment
 
 ## Phase 6 — Co-branded partner platform
 - Add a platform → partner → client-organization tenancy hierarchy with strict cross-client

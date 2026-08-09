@@ -52,3 +52,16 @@ test("Protocol v2 completion reaches progress, sponsor release, and POC reportin
     assert.match(source, /COALESCE\(interview_v2\.status,\s*interview\.status\)/);
   }
 });
+
+test("POC ends at governed Intervention Directions before paid delivery", async () => {
+  const [leadership, intervention, acceptance] = await Promise.all([
+    read("../netlify/lib/workspace-diagnostic-leadership-validation.mjs"),
+    read("../netlify/lib/workspace-diagnostic-intervention.mjs"),
+    read("../netlify/lib/workspace-diagnostic-intervention-acceptance.mjs")
+  ]);
+  assert.match(leadership, /pocBoundary:[\s\S]*intervention-directions/);
+  assert.match(intervention, /POC concludes with governed Intervention Directions/);
+  assert.match(intervention, /Detailed intervention design requires paid activation/);
+  assert.match(acceptance, /entitlement_kind === "intervention"/);
+  assert.doesNotMatch(acceptance, /\["poc", "intervention"\]/);
+});

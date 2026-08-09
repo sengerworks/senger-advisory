@@ -12,7 +12,7 @@ or identity. Use `Not observed` rather than inferring a result from incomplete s
 - POC start and target close:
 - Decision the diagnostic must inform:
 - Proposed paid diagnostic price tested:
-- Proposed intervention offer tested:
+- Proposed paid intervention activation tested:
 
 ## Participation and trust
 
@@ -37,17 +37,15 @@ or identity. Use `Not observed` rather than inferring a result from incomplete s
 - Revision cycles before release:
 - Manual synthesis or method intervention required:
 
-## Leadership and intervention value
+## Leadership and Intervention Direction value
 
 - Sponsor actionability rating (1–5):
 - Leadership decision changed, clarified, or confirmed:
-- Intervention route selected:
-- Intervention accepted? Yes / No
-- Capacity Operating Brief activated? Yes / No
-- 30/60/90 plan reviewed? Yes / No
-- Formal intervention review completed? Yes / No
-- Sponsor distinguishes delivery, operating change, and capacity change? Yes / No
-- Advisor escalation requested? Yes / No
+- Intervention Directions relevant and evidence-linked? Yes / No / Not observed
+- Priorities and sequencing clear? Yes / No / Not observed
+- Paid activation boundary understood? Yes / No
+- Preferred paid route: platform-guided / advisor-led / uncertain
+- Detailed intervention design or delivery provided during POC? Must be No
 
 ## Commercial evidence
 

@@ -60,9 +60,10 @@ export async function createDiagnosticIntervention({ workspaceId, userId, input,
       [input.diagnosticId]
     );
     if (!access.rows[0]) throw new DiagnosticInterventionStateError("Active diagnostic access is required before intervention design.");
-    let entitlementId = access.rows[0].id;
-    if (access.rows[0].entitlement_kind !== "poc") {
-      const interventionEntitlement = await query(
+    if (access.rows[0].entitlement_kind === "poc") {
+      throw new DiagnosticInterventionStateError("The POC concludes with governed Intervention Directions. Detailed intervention design requires paid activation.");
+    }
+    const interventionEntitlement = await query(
         `INSERT INTO app_shared.commercial_entitlements
           (workspace_id,diagnostic_id,entitlement_kind,offer_ref,status,created_at,updated_at)
          VALUES ($1,$2,'intervention',$3,'pending',$4::timestamptz,$4::timestamptz)
@@ -72,9 +73,8 @@ export async function createDiagnosticIntervention({ workspaceId, userId, input,
          RETURNING id`,
         [workspaceId,input.diagnosticId,input.proposal.commercialOfferRef,now.toISOString()]
       );
-      if (!interventionEntitlement.rows[0]) throw new DiagnosticInterventionStateError("The intervention entitlement is no longer available for proposal.");
-      entitlementId = interventionEntitlement.rows[0].id;
-    }
+    if (!interventionEntitlement.rows[0]) throw new DiagnosticInterventionStateError("The intervention entitlement is no longer available for proposal.");
+    const entitlementId = interventionEntitlement.rows[0].id;
     const proposal = { ...input.proposal, diagnosticRecordId: finding.rows[0].id };
     let inserted;
     try {

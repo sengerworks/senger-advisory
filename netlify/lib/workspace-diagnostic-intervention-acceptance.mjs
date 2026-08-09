@@ -46,7 +46,7 @@ export async function getInterventionAcceptance({ workspaceId, diagnosticId }, c
     );
     if (!result.rows[0]) return Object.freeze({ state: "blocked", reason: "intervention-proposal" });
     const row = result.rows[0];
-    const canAccept = row.entitlement_status === "active" && ["poc", "intervention"].includes(row.entitlement_kind);
+    const canAccept = row.entitlement_status === "active" && row.entitlement_kind === "intervention";
     return Object.freeze({ state: row.status === "proposed" ? "review" : "accepted", canAccept, paymentRequired: row.status === "proposed" && !canAccept, intervention: safeProposal(row) });
   }, connectionString);
 }
@@ -63,7 +63,7 @@ export async function acceptDiagnosticIntervention({ workspaceId, userId, input,
     );
     const row = result.rows[0];
     if (!row || row.status !== "proposed") throw new InterventionAcceptanceStateError("No proposed intervention is available for acceptance.");
-    if (row.entitlement_status !== "active" || !["poc", "intervention"].includes(row.entitlement_kind)) throw new InterventionAcceptanceStateError("Payment and intervention access must be verified before acceptance.");
+    if (row.entitlement_status !== "active" || row.entitlement_kind !== "intervention") throw new InterventionAcceptanceStateError("Payment and intervention access must be verified before acceptance.");
     await query(`UPDATE app_shared.diagnostic_interventions SET status = 'accepted', accepted_at = $2::timestamptz, updated_at = $2::timestamptz WHERE id = $1`, [row.id, now.toISOString()]);
     await query(`UPDATE app_shared.diagnostics SET state = 'intervention-accepted', updated_at = $2::timestamptz WHERE id = $1`, [input.diagnosticId, now.toISOString()]);
     await query(
@@ -74,4 +74,3 @@ export async function acceptDiagnosticIntervention({ workspaceId, userId, input,
     return Object.freeze({ interventionId: row.id, status: "accepted", acceptedAt: now.toISOString() });
   }, connectionString);
 }
-

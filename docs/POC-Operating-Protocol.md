@@ -2,14 +2,16 @@
 
 ## Purpose
 
-The proof of concept validates whether the Organizational Capacity Platform can run the
-governed diagnostic and intervention loop with real organizational context, real participants,
-and real operating constraints. It is not a demo, free consulting engagement, or promise that
-the initial method and workflow are production-final.
+The proof of concept validates whether the Organizational Capacity Platform can run one complete,
+governed diagnostic cycle with real organizational context and real participants. It is not a demo,
+free consulting engagement, intervention-delivery engagement, or promise that the initial
+method and workflow are production-final.
 
-Every POC uses the same product route available to a paid client. A no-charge POC entitlement
-replaces payment; it does not bypass confidentiality, evidence review, leadership validation,
-intervention acceptance, or reassessment gates.
+Every POC uses the same diagnostic method available to a paid client. A no-charge POC entitlement
+replaces diagnostic payment; it does not bypass confidentiality, evidence review, advisor review,
+or leadership validation. The POC releases the governed finding and prioritized **Intervention
+Directions**, then stops. Detailed intervention design, commercial acceptance, delivery,
+30/60/90-day operating support, and reassessment require separate paid activation.
 
 ## Questions the POC must answer
 
@@ -19,20 +21,18 @@ intervention acceptance, or reassessment gates.
 4. Does synthesis identify a defensible organizational constraint, uncertainty, and competing
    explanations that expert review considers faithful to the evidence?
 5. Does the governed finding help leadership make a better intervention decision?
-6. Can the accepted intervention become a usable 30/60/90-day operating rhythm?
-7. Does the Capacity Operating Brief help leaders focus on decisions and evidence rather than
-   activity reporting?
-8. Can reassessment distinguish change, persistence, new constraints, and remaining uncertainty?
-9. Would the sponsor pay for the diagnostic and, separately, the intervention experience?
+6. Do the Intervention Directions explain what should change, why it fits the evidence, and what
+   paid intervention design would need to resolve without giving away delivery?
+7. Would the sponsor pay for the diagnostic and, separately, activate paid intervention design
+   and delivery?
 
 ## Cohort and scope
 
 - Use three to five POC organizations before declaring launch readiness.
 - Prefer variation in size, operating model, diagnostic route, and presenting constraint.
 - Each organization names one accountable sponsor and five to fifty approved perspectives.
-- The sponsor agrees to complete leadership validation, intervention selection, at least one
-  formal review, and a debrief. A POC that stops before those gates remains useful operational
-  evidence but cannot validate the complete product loop.
+- The sponsor agrees to complete leadership validation and a final debrief. Intervention delivery
+  is explicitly outside the POC and is not required to validate the diagnostic product.
 - Senger Advisory records the delivery route, participant-plan rationale, accepted coverage
   gaps, timeline, and any manual assistance required.
 
@@ -73,25 +73,19 @@ advisor's independent judgment before release.
 Exit gate: the advisor approves the synthesis as faithful to the protected evidence, with
 uncertainty preserved, and leadership receives only the governed organizational finding.
 
-### 5. Leadership validation and intervention
+### 5. Leadership validation and Intervention Directions
 
-Leadership accepts the finding or requests revision, reviews the complete intervention proposal,
-and explicitly accepts the commercial scope. Activate the Capacity Operating Brief and review
-the generated 30/60/90 Action Path, Learning Path, check-ins, evidence plan, and escalation route.
+Leadership accepts the finding or requests revision, then reviews the prioritized Intervention
+Directions: the evidence-linked course of action, intended outcome, sequencing logic, uncertainty,
+and the risks of inaction. The output may identify capabilities or design questions the paid
+intervention must address, but it does not include a detailed implementation plan, training
+content, coaching, facilitation, specialist sourcing, operating cadence, or reassessment.
 
 Exit gate: leadership can explain the diagnosed constraint, why it is believed, what remains
-uncertain, what it decided to do, and what evidence would change its mind.
+uncertain, and why the Intervention Directions are relevant. The platform clearly identifies the
+paid activation boundary.
 
-### 6. Operate, review, and reassess
-
-Run the agreed intervention long enough to capture delivery observations and early operating
-change. Conduct at least one governed review. When timing permits, complete the linked
-reassessment using the preserved method, protocol, coverage rules, and confidentiality gates.
-
-Exit gate: the Brief distinguishes delivery, operating change, and reassessed capacity change;
-the sponsor can make an evidence-informed continue, adjust, escalate, stop, or reassess decision.
-
-### 7. Debrief and commercial decision
+### 6. Debrief and commercial decision
 
 Conduct separate sponsor, participant, advisor, and internal operating debriefs. Record what
 worked, where trust or comprehension broke down, what required manual intervention, and what the
@@ -111,9 +105,7 @@ Collect feedback at the moment of use, not only in a final retrospective:
 | Interview completion | Participant | Effort, question clarity, psychological safety, technical issues |
 | Evidence review | Advisor | De-identification quality, traceability, missing evidence |
 | Finding release | Sponsor and advisor | Fidelity, surprise, uncertainty, actionability |
-| Intervention acceptance | Sponsor | Scope clarity, value, route fit, willingness to pay |
-| Brief review | Sponsor and advisor | Attention quality, decision usefulness, administrative burden |
-| Reassessment | Sponsor and advisor | Comparability, learning value, causal-overreach risk |
+| Intervention Directions | Sponsor and advisor | Relevance, prioritization, value, route fit, willingness to pay |
 | Final debrief | All roles separately | Trust, value, failure points, recommendation likelihood |
 
 Do not collect participant-identifiable feedback inside diagnostic evidence. Participant product
@@ -175,10 +167,10 @@ The initial thresholds are hypotheses to calibrate across the first cohort set:
 - at least 80% of completers say the confidentiality model was clear enough to answer candidly;
 - at least 80% of completed interviews require no staff recovery or technical intervention;
 - advisor fidelity rating of at least 4/5 for the governed synthesis in every launch-candidate POC;
-- sponsor actionability rating of at least 4/5 for the governed finding and accepted intervention;
+- sponsor actionability rating of at least 4/5 for the governed finding and Intervention Directions;
 - every released theme is traceable to approved de-identified evidence;
-- every intervention names an owner, decision gate, review cadence, and evidence plan;
-- sponsors can correctly distinguish activity, operating change, and capacity change;
+- every Intervention Direction is linked to the finding and states intended outcome, rationale,
+  sequencing, uncertainty, and risk of inaction without including paid delivery assets;
 - at least two sponsors indicate credible willingness to pay at the proposed diagnostic price;
 - at least one sponsor indicates credible willingness to continue into paid intervention access;
 - median manual support is low enough to support the intended automated-route economics.
