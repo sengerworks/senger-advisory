@@ -65,12 +65,28 @@ test("administrators list plan slots and create a diagnostic-specific invitation
   });
   const listed = await handler(request());
   assert.equal(listed.status, 200);
-  assert.equal((await listed.json()).planSlots[0].invitation, null);
+  const listedBody = await listed.json();
+  assert.equal(listedBody.planSlots[0].invitation, null);
+  assert.equal("collectionStatus" in listedBody.planSlots[0], false);
   const response = await handler(request("POST", input, ""));
   assert.equal(response.status, 201);
   assert.equal(created.organizationId, "org_alpha");
   assert.equal(created.planSlotId, "slot-1");
   assert.equal(recorded.planSlot.functionalLens, "executive-leadership");
+});
+
+test("sponsor receives aggregate progress without identity-linked interview status", async () => {
+  const accepted = { id: "orginv_accepted", emailAddress: "participant@example.com", status: "accepted" };
+  const handler = createWorkspaceDiagnosticInvitationsHandler({
+    authenticate: authentication(),
+    getReadiness: async () => ({ diagnosticId, diagnosticState: "collection", canInvite: true, planSlots: [planSlot] }),
+    listSlots: async () => [{ planSlotId: "slot-1", invitationId: accepted.id, noticeAccepted: true, interviewStatus: "submitted" }],
+    gateway: { list: async () => [accepted] }
+  });
+  const body = await (await handler(request())).json();
+  assert.equal(body.progress.submitted, 1);
+  assert.equal(body.planSlots[0].invitation.emailAddress, "participant@example.com");
+  assert.equal("collectionStatus" in body.planSlots[0], false);
 });
 
 test("participants, foreign origins, unknown slots, and duplicate invitations fail closed", async () => {

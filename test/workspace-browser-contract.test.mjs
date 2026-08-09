@@ -119,8 +119,9 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Every participant receives this same contextualized core protocol/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-protocol"/);
   assert.match(script, /Validating coverage and approving the common protocol/);
-  assert.match(html, /Assign approved perspective slots/);
-  assert.match(html, /remains separate from confidential interview content/);
+  assert.match(html, /Invite the approved perspectives/);
+  assert.match(html, /Who started, who submitted/);
+  assert.doesNotMatch(script, /slot\.collectionStatus/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-invitations"/);
   assert.match(html, /data-diagnostic-collection-progress/);
   assert.match(script, /Client sponsor · POC workspace/);
@@ -128,7 +129,7 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(script, /Begin diagnostic discovery/);
   assert.match(script, /if \(diagnostics\.length\)/);
   assert.match(script, /if \(currentOwnerDiagnostic\)/);
-  assert.match(script, /Responses submitted/);
+  assert.match(script, /Completed perspectives/);
   assert.doesNotMatch(script, /slot\.interviewAnswers|slot\.encryptedResponse/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-participation"/);
   assert.match(operationsScript, /\/api\/operations\/diagnostic-v2-activation/);
