@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { createWorkspaceSessionHandler } from "../netlify/functions/workspace-session.mjs";
 import {
   authenticateWorkspaceRequest,
+  authorizedPartiesForRequest,
   configuredAuthorizedParties
 } from "../netlify/lib/clerk-workspace-auth.mjs";
 import { WORKSPACE_ROLES } from "../workspace-authorization.js";
@@ -34,6 +35,24 @@ test("requires explicit valid Clerk authorized parties", () => {
       ["https://deploy-preview-2--senger-advisory.netlify.app", "https://sengeradvisory.com"]
     ),
     ["https://sengeradvisory.com", "https://deploy-preview-2--senger-advisory.netlify.app"]
+  );
+});
+
+test("authorizes only the exact Senger Advisory Netlify preview origin", () => {
+  const configured = ["http://localhost:8888", "https://sengeradvisory.com"];
+  assert.deepEqual(
+    authorizedPartiesForRequest(
+      new Request("https://deploy-preview-2--senger-advisory.netlify.app/api/workspace/session"),
+      configured
+    ),
+    [...configured, "https://deploy-preview-2--senger-advisory.netlify.app"]
+  );
+  assert.deepEqual(
+    authorizedPartiesForRequest(
+      new Request("https://deploy-preview-2--other-site.netlify.app/api/workspace/session"),
+      configured
+    ),
+    configured
   );
 });
 
