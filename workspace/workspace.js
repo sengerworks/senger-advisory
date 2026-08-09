@@ -825,7 +825,7 @@ async function openDiagnosticContext(diagnosticId) {
   elements.diagnosticContext.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-let workspaceDiagnosticMethodVersion = "1.0.0";
+let workspaceDiagnosticMethodVersion = "1.0.0",currentOwnerDiagnostic=null;
 async function loadDiagnostics() {
   const data = await workspaceRequest("/api/workspace/diagnostics");
   workspaceDiagnosticMethodVersion = data.policy.methodVersion;
@@ -1281,7 +1281,20 @@ async function loadInvitations(roundId) {
 
 async function prepareOwnerCollection() {
   elements.diagnosticPanel.hidden = false;
-  await loadDiagnostics();
+  const diagnostics = await loadDiagnostics();
+  if (diagnostics.length) {
+    currentOwnerDiagnostic = diagnostics[0];
+    elements.collectionPanel.hidden = true;
+    elements.focusTitle.textContent = new Set(["draft", "discovery"]).has(currentOwnerDiagnostic.state)
+      ? "Frame the decision this diagnostic must inform."
+      : "Continue the Organizational Capacity Diagnostic.";
+    elements.focusDescription.textContent = "Begin with the six-question sponsor context, then design the internal perspectives needed to see how the organization actually works.";
+    elements.primaryAction.textContent = new Set(["draft", "discovery"]).has(currentOwnerDiagnostic.state)
+      ? "Begin diagnostic discovery"
+      : "Continue diagnostic";
+    return;
+  }
+  currentOwnerDiagnostic = null;
   elements.collectionPanel.hidden = false;
   const today = localDateValue();
   const opensInput = elements.collectionForm.elements.opensAt;
@@ -1603,6 +1616,10 @@ elements.primaryAction.addEventListener("click", () => {
     return;
   }
   if (currentRole !== "org:admin") return;
+  if (currentOwnerDiagnostic) {
+    elements.diagnosticList.querySelector(`[data-diagnostic-id="${currentOwnerDiagnostic.id}"]`)?.click();
+    return;
+  }
   if (!elements.invitationPanel.hidden) {
     elements.invitationPanel.scrollIntoView({ behavior: "smooth", block: "start" });
     elements.invitationForm.elements.emailAddress.focus({ preventScroll: true });
