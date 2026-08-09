@@ -131,7 +131,7 @@ export function createParticipantPlan(values, options = {}) {
   if (!Array.isArray(values.participantSlots) || values.participantSlots.length === 0) {
     throw new Error("Add at least one participant slot to the proposed plan.");
   }
-  if (values.participantSlots.length > 30) throw new Error("A participant plan can contain at most 30 slots.");
+  if (values.participantSlots.length > 50) throw new Error("A participant plan can contain at most 50 slots.");
   const slots = values.participantSlots.map(participantSlot);
   if (new Set(slots.map((slot) => slot.slotId)).size !== slots.length) throw new Error("Participant slot IDs must be unique.");
   const createdAt = nowIso(options.now);

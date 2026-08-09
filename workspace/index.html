@@ -180,7 +180,7 @@
             </div>
             <form class="participant-design-form" data-participant-design-form>
               <input type="hidden" name="diagnosticId" />
-              <fieldset><legend>Leadership levels to cover</legend>
+              <fieldset><legend>Organizational levels to cover</legend>
                 <label><input type="checkbox" name="leadershipLevels" value="enterprise" /> Enterprise</label>
                 <label><input type="checkbox" name="leadershipLevels" value="functional" /> Functional</label>
                 <label><input type="checkbox" name="leadershipLevels" value="operational" /> Operational</label>
@@ -203,9 +203,15 @@
                 <label><input type="checkbox" name="functionalLenses" value="other" /> Other</label>
               </fieldset>
               <div class="participant-slots-heading">
-                <div><strong>Perspective slots</strong><span>Identity is added only after this plan is approved.</span></div>
+                <div><strong>Perspective slots</strong><span>Identity is added only after this plan is approved. POC: up to 10 participants · Full diagnostic: up to 50. The sponsor is not counted.</span></div>
                 <button class="secondary-button" type="button" data-add-participant-slot>Add perspective slot</button>
               </div>
+              <div class="participant-capacity" aria-label="POC and full diagnostic participant capacity">
+                <strong data-participant-capacity-label><span data-participant-capacity-count>3</span> of 10 POC perspectives planned</strong>
+                <div data-participant-capacity-track><i data-poc-capacity></i><i class="participant-capacity-locked" data-participant-capacity-locked></i></div>
+                <small data-participant-capacity-note>Slots 11–50 become available when the organization activates a full diagnostic.</small>
+              </div>
+              <p class="participant-guidance">Choose the people who experience the issue—not simply the easiest people to invite. Participants may be executives, managers, individual contributors, peers, or cross-functional colleagues anywhere inside the organization.</p>
               <div class="participant-slots" data-participant-slots></div>
               <div class="coverage-gaps" data-coverage-gaps hidden>
                 <strong>Uncovered objectives</strong>

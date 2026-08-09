@@ -34,6 +34,12 @@ const elements = {
   participantPlanSummary: document.querySelector("[data-participant-plan-summary]"),
   participantDesignMessage: document.querySelector("[data-participant-design-message]"),
   participantSlots: document.querySelector("[data-participant-slots]"),
+  participantCapacityCount: document.querySelector("[data-participant-capacity-count]"),
+  participantCapacityLabel: document.querySelector("[data-participant-capacity-label]"),
+  participantCapacityTrack: document.querySelector("[data-participant-capacity-track]"),
+  participantCapacityLocked: document.querySelector("[data-participant-capacity-locked]"),
+  participantCapacityNote: document.querySelector("[data-participant-capacity-note]"),
+  pocCapacity: document.querySelector("[data-poc-capacity]"),
   coverageGaps: document.querySelector("[data-coverage-gaps]"),
   coverageGapList: document.querySelector("[data-coverage-gap-list]"),
   addParticipantSlot: document.querySelector("[data-add-participant-slot]"),
@@ -357,6 +363,7 @@ const diagnosticStateLabels = {
 };
 
 function renderDiagnostics(diagnostics) {
+  diagnosticsById = new Map(diagnostics.map(diagnostic => [diagnostic.id, diagnostic]));
   elements.diagnosticList.replaceChildren();
   for (const diagnostic of diagnostics) {
     const card = document.createElement("article");
@@ -414,10 +421,28 @@ function renderDiagnostics(diagnostics) {
 }
 
 const participantOptions = {
-  leadershipLevel: [["enterprise", "Enterprise"], ["functional", "Functional"], ["operational", "Operational"], ["frontline", "Frontline"]],
+  leadershipLevel: [["enterprise", "Executive / enterprise"], ["functional", "Functional leader"], ["operational", "Manager / operational"], ["frontline", "Individual contributor / frontline"]],
   executionProximity: [["strategy", "Strategy"], ["coordination", "Coordination"], ["delivery", "Delivery"]],
   functionalLens: [["executive-leadership", "Executive leadership"], ["operations", "Operations"], ["people", "People"], ["finance", "Finance"], ["commercial", "Commercial"], ["product-service", "Product / service"], ["technology", "Technology"], ["frontline-delivery", "Frontline delivery"], ["other", "Other"]]
 };
+
+let diagnosticsById = new Map();
+let participantSlotMaximum = 10;
+
+function updateParticipantCapacity() {
+  const count = elements.participantSlots.children.length;
+  const isPoc = participantSlotMaximum === 10;
+  elements.participantCapacityCount.textContent = count;
+  elements.participantCapacityLabel.lastChild.textContent = ` of ${participantSlotMaximum} ${isPoc ? "POC" : "full diagnostic"} perspectives planned`;
+  elements.pocCapacity.style.transform = `scaleX(${Math.min(count, participantSlotMaximum) / participantSlotMaximum})`;
+  elements.participantCapacityTrack.style.gridTemplateColumns = isPoc ? "20% 80%" : "100% 0";
+  elements.participantCapacityLocked.hidden = !isPoc;
+  elements.participantCapacityNote.textContent = isPoc
+    ? "Slots 11–50 become available when the organization activates a full diagnostic."
+    : "The full diagnostic supports up to 50 internal participant perspectives.";
+  elements.addParticipantSlot.disabled = count >= participantSlotMaximum;
+  elements.addParticipantSlot.title = count >= participantSlotMaximum ? (isPoc ? "The POC includes 10 participant perspectives. Full diagnostics support up to 50." : "The full diagnostic supports up to 50 participant perspectives.") : "";
+}
 
 function participantSelect(name, options) {
   const select = document.createElement("select");
@@ -444,9 +469,10 @@ function addParticipantSlot(values = {}) {
   const remove = document.createElement("button");
   remove.type = "button";
   remove.textContent = "Remove";
-  remove.addEventListener("click", () => row.remove());
+  remove.addEventListener("click", () => { row.remove(); updateParticipantCapacity(); });
   row.append(number, leadership, proximity, functional, remove);
   elements.participantSlots.append(row);
+  updateParticipantCapacity();
 }
 
 function checkedValues(name) {
@@ -501,6 +527,7 @@ function showCoverageGaps(gaps) {
 
 async function openParticipantDesign(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
+  participantSlotMaximum = diagnosticsById.get(diagnosticId)?.entitlementType === "poc" ? 10 : 50;
   elements.diagnosticContext.hidden = true;
   elements.participantDesign.hidden = false;
   elements.participantDesignMessage.textContent = "Loading perspective design…";

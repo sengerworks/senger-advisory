@@ -71,6 +71,18 @@ protocol is administered to every participant in the same diagnostic. Participan
 should seek sufficient perspective coverage rather than rely only on the sponsor's closest or
 most aligned colleagues.
 
+The POC separates one accountable sponsor from a cohort of up to ten internal participant
+perspectives. Full diagnostics support up to fifty participants. Eligibility is based on evidence
+proximity rather than title or reporting line: executives, managers, individual contributors,
+peers, and cross-functional colleagues may all contribute. The platform should make concentration
+and missing-perspective risk visible before invitation approval.
+
+**Future-state — External Perspective Protocol:** customers, vendors, contractors, board members,
+and other outside stakeholders may eventually contribute through a separately governed protocol.
+That protocol must define distinct consent, confidentiality, comparability, disclosure-review,
+retention, and interpretation rules; external participants are not enabled through the internal
+employee invitation flow.
+
 The automated route should initially use a confidential, asynchronous guided diagnostic
 interview: structured written questions with adaptive follow-ups for ambiguity,
 contradictions, and missing examples. The advisor-led route uses live interviews and skilled

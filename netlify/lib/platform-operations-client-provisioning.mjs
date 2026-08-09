@@ -23,7 +23,8 @@ export async function provisionPocClient({ operatorUserId, input, redirectOrigin
   const organization = await clerkClient.organizations.createOrganization({
     name: input.organizationName,
     createdBy: operatorUserId,
-    maxAllowedMemberships: 52,
+    // Operator + sponsor + ten POC participants. Full-diagnostic activation expands this limit.
+    maxAllowedMemberships: 12,
     privateMetadata: { product: "organizational-capacity", access: "poc" }
   });
   const workspaceId = randomUUID();

@@ -83,7 +83,7 @@ export async function approveWorkspaceDiagnosticParticipantPlan(
 ) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const diagnosticResult = await query(
-      `SELECT diagnostic.id, diagnostic.state, context.id AS context_id
+      `SELECT diagnostic.id, diagnostic.state, diagnostic.entitlement_type, context.id AS context_id
        FROM app_shared.diagnostics diagnostic
        LEFT JOIN app_private.diagnostic_context_briefs context
          ON context.workspace_id = diagnostic.workspace_id AND context.diagnostic_id = diagnostic.id
@@ -95,6 +95,9 @@ export async function approveWorkspaceDiagnosticParticipantPlan(
     if (!diagnostic) throw new DiagnosticParticipantStateError("That diagnostic is not available in this workspace.");
     if (!diagnostic.context_id || diagnostic.state !== "participant-design") {
       throw new DiagnosticParticipantStateError("Approve the Context Brief before participant design.");
+    }
+    if (diagnostic.entitlement_type === "poc" && input.participantSlots.length > 10) {
+      throw new DiagnosticParticipantStateError("The POC includes up to 10 participant perspectives. Activate a full diagnostic to include up to 50.");
     }
 
     let plan = createParticipantPlan({
@@ -148,5 +151,9 @@ export const workspaceDiagnosticParticipantPolicy = Object.freeze({
   executionProximities: diagnosticDiscovery.executionProximities,
   functionalLenses: diagnosticDiscovery.functionalLenses,
   fixedParticipantMinimum: null,
+  pocParticipantMaximum: 10,
+  fullDiagnosticParticipantMaximum: 50,
+  sponsorCountsAsParticipant: false,
+  eligibleParticipantBoundary: "internal-organization",
   participantIdentityStoredInPlan: false
 });
