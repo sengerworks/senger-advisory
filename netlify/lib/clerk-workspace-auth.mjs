@@ -25,12 +25,22 @@ export function configuredAuthorizedParties(
 }
 
 export function authorizedPartiesForRequest(request, configured = configuredAuthorizedParties()) {
-  const origin = new URL(request.url).origin;
-  const hostname = new URL(origin).hostname;
-  const isSengerAdvisoryPreview = /^(?:deploy-preview-\d+|[a-f0-9]+)--senger-advisory\.netlify\.app$/.test(hostname);
-  return isSengerAdvisoryPreview && !configured.includes(origin)
-    ? [...configured, origin]
-    : configured;
+  const candidates = [
+    new URL(request.url).origin,
+    request.headers.get("origin"),
+    request.headers.get("referer")
+  ].flatMap(value => {
+    try {
+      return value ? [new URL(value).origin] : [];
+    } catch {
+      return [];
+    }
+  });
+  return candidates.reduce((parties, origin) => {
+    const hostname = new URL(origin).hostname;
+    const isSengerAdvisoryPreview = /^(?:deploy-preview-\d+|[a-f0-9]+)--senger-advisory\.netlify\.app$/.test(hostname);
+    return isSengerAdvisoryPreview && !parties.includes(origin) ? [...parties, origin] : parties;
+  }, configured);
 }
 
 export async function authenticateWorkspaceRequest(
