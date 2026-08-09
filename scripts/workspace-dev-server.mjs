@@ -68,6 +68,7 @@ const files = new Map([
   ["/workspace/operations.html", { url: new URL("../workspace/operations.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/operations.css", { url: new URL("../workspace/operations.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/operations-assignments.css", { url: new URL("../workspace/operations-assignments.css", import.meta.url), type: "text/css; charset=utf-8" }],
+  ["/workspace/operations-enrollment.css", { url: new URL("../workspace/operations-enrollment.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/operations.js", { url: new URL("../workspace/operations.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/workspace/presenter-demo.html", { url: new URL("../workspace/presenter-demo.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/presenter-demo.css", { url: new URL("../workspace/presenter-demo.css", import.meta.url), type: "text/css; charset=utf-8" }],

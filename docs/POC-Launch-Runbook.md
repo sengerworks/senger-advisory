@@ -15,6 +15,7 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
 
 ## Before the sponsor enters
 
+- Complete the confirmation and provisioning sequence in `POC-Client-Enrollment-Protocol.md`.
 - Confirm the client has one Clerk organization and one accountable executive sponsor.
 - Confirm the sponsor is an organization administrator and Senger Advisory is environment-allowlisted
   for Platform Operations.

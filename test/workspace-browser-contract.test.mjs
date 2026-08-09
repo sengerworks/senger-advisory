@@ -162,6 +162,21 @@ test("Platform Operations is separate, allowlisted, and excludes participant con
   assert.doesNotMatch(script,/participantIdentity|answerText|encrypted_response_payload|individualScores/);
 });
 
+test("Platform Operations requires complete POC enrollment confirmation", async () => {
+  const [html, script, enrollment] = await Promise.all([
+    source("workspace/operations.html"),
+    source("workspace/operations.js"),
+    source("netlify/lib/platform-operations-client-provisioning.mjs")
+  ]);
+  assert.match(html, /five-to-ten participant range/);
+  assert.match(html, /scopeConfirmed/);
+  assert.match(html, /privacyBriefConfirmed/);
+  assert.match(script, /formData\.has\("scopeConfirmed"\)/);
+  assert.match(script, /formData\.has\("privacyBriefConfirmed"\)/);
+  assert.match(enrollment, /value\.scopeConfirmed !== true/);
+  assert.match(enrollment, /value\.privacyBriefConfirmed !== true/);
+});
+
 test("participant entry requires a privacy acknowledgement before assessment navigation", async () => {
   const html = await source("workspace/index.html");
   const script = await source("workspace/workspace.js");

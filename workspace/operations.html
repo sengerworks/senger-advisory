@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="workspace.css" />
   <link rel="stylesheet" href="operations.css" />
   <link rel="stylesheet" href="operations-assignments.css" />
+  <link rel="stylesheet" href="operations-enrollment.css" />
 </head>
 <body>
   <header class="workspace-header">
@@ -34,11 +35,13 @@
         </header>
         <section class="operations-summary" data-operations-summary></section>
         <section class="operations-create">
-          <div><p class="card-kicker">POC enrollment</p><h2>Create the client workspace and invite its sponsor.</h2><p>This creates one isolated client organization, a no-charge POC diagnostic, and a 30-day executive-sponsor invitation. The sponsor begins with the six-question context brief.</p></div>
+          <div><p class="card-kicker">POC enrollment</p><h2>Create the client workspace and invite its sponsor.</h2><p>This creates one isolated client organization, a no-charge POC diagnostic, and a 30-day executive-sponsor invitation. The sponsor begins with the six-question context brief.</p><ul class="operations-readiness"><li>One accountable sponsor has confirmed participation.</li><li>The sponsor understands the five-to-ten participant POC range.</li><li>The confidentiality model and POC stop at Intervention Directions have been explained.</li><li>A target completion window and final debrief have been agreed outside the diagnostic record.</li></ul></div>
           <form data-client-provisioning-form>
             <label>Organization name<input name="organizationName" minlength="2" maxlength="120" placeholder="Acme Company" required /></label>
             <label>Executive sponsor email<input name="sponsorEmail" type="email" maxlength="254" placeholder="adam@example.com" required /></label>
             <label>Diagnostic route<select name="route" required><option value="automated">Automated written diagnostic</option><option value="advisor-led">Advisor-led diagnostic</option></select></label>
+            <label class="operations-confirmation"><input name="scopeConfirmed" type="checkbox" required /><span>The sponsor has confirmed the POC scope, five-to-ten participant range, target window, and final debrief.</span></label>
+            <label class="operations-confirmation"><input name="privacyBriefConfirmed" type="checkbox" required /><span>The sponsor has received the confidentiality brief and understands that the POC ends at Intervention Directions.</span></label>
             <button class="primary-button" type="submit">Create POC and invite sponsor</button>
           </form>
           <p class="form-message" data-client-provisioning-message></p>

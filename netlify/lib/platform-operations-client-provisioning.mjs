@@ -6,19 +6,21 @@ import { createWorkspaceDiagnostic } from "./workspace-diagnostics.mjs";
 export class ClientProvisioningInputError extends Error {}
 
 export function validateClientProvisioning(value) {
-  if (!value || typeof value !== "object" || Array.isArray(value) || Object.keys(value).sort().join(",") !== "organizationName,provisioningRequestId,route,sponsorEmail") throw new ClientProvisioningInputError("Submit the organization, sponsor, diagnostic route, and provisioning request.");
+  if (!value || typeof value !== "object" || Array.isArray(value) || Object.keys(value).sort().join(",") !== "organizationName,privacyBriefConfirmed,provisioningRequestId,route,scopeConfirmed,sponsorEmail") throw new ClientProvisioningInputError("Submit the complete POC enrollment confirmation.");
   const organizationName = String(value.organizationName || "").trim();
   const sponsorEmail = String(value.sponsorEmail || "").trim().toLowerCase();
   if (organizationName.length < 2 || organizationName.length > 120) throw new ClientProvisioningInputError("Organization name must be 2 to 120 characters.");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sponsorEmail) || sponsorEmail.length > 254) throw new ClientProvisioningInputError("Enter a valid sponsor email address.");
   if (!["automated", "advisor-led"].includes(value.route)) throw new ClientProvisioningInputError("Choose a valid diagnostic route.");
+  if (value.scopeConfirmed !== true) throw new ClientProvisioningInputError("Confirm the POC scope, participant range, target window, and final debrief before enrollment.");
+  if (value.privacyBriefConfirmed !== true) throw new ClientProvisioningInputError("Confirm the sponsor received the confidentiality brief and paid-boundary explanation.");
   const provisioningRequestId = String(value.provisioningRequestId || "");
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(provisioningRequestId)) throw new ClientProvisioningInputError("Start a valid client provisioning request.");
-  return Object.freeze({ organizationName, sponsorEmail, route: value.route, provisioningRequestId });
+  return Object.freeze({ organizationName, sponsorEmail, route: value.route, scopeConfirmed: true, privacyBriefConfirmed: true, provisioningRequestId });
 }
 
 function inputDigest(input) {
-  return createHash("sha256").update(JSON.stringify([input.organizationName, input.sponsorEmail, input.route])).digest("hex");
+  return createHash("sha256").update(JSON.stringify([input.organizationName, input.sponsorEmail, input.route, input.scopeConfirmed, input.privacyBriefConfirmed])).digest("hex");
 }
 
 async function beginReceipt(sourceWorkspaceId, operatorUserId, input, connectionString) {
