@@ -28,6 +28,16 @@
         <header class="operations-workspace"><div><p class="card-kicker">Active client organization</p><h2 data-workspace-label>Client workspace</h2></div><span data-workspace-status></span></header>
         <section class="operations-summary" data-operations-summary></section>
         <section class="operations-create">
+          <div><p class="card-kicker">POC enrollment</p><h2>Create the client workspace and invite its sponsor.</h2><p>This creates one isolated client organization, a no-charge POC diagnostic, and a 30-day executive-sponsor invitation. The sponsor begins with the six-question context brief.</p></div>
+          <form data-client-provisioning-form>
+            <label>Organization name<input name="organizationName" minlength="2" maxlength="120" placeholder="Acme Company" required /></label>
+            <label>Executive sponsor email<input name="sponsorEmail" type="email" maxlength="254" placeholder="adam@example.com" required /></label>
+            <label>Diagnostic route<select name="route" required><option value="automated">Automated written diagnostic</option><option value="advisor-led">Advisor-led diagnostic</option></select></label>
+            <button class="primary-button" type="submit">Create POC and invite sponsor</button>
+          </form>
+          <p class="form-message" data-client-provisioning-message></p>
+        </section>
+        <section class="operations-create">
           <div><p class="card-kicker">Engagement control</p><h2>Establish a governed diagnostic record.</h2><p>This creates the route and commercial entitlement. The executive sponsor begins with the six-question context brief in their client workspace.</p></div>
           <form data-diagnostic-form>
             <label>Delivery route<select name="route" required><option value="automated">Automated written diagnostic</option><option value="advisor-led">Advisor-led diagnostic</option></select></label>
@@ -41,7 +51,7 @@
           <form data-advisor-assignment-form>
             <label>Diagnostic<select name="diagnosticId" data-assignment-diagnostic required></select></label>
             <label>Advisor Clerk user ID<input name="advisorClerkUserId" pattern="user_[A-Za-z0-9]+" placeholder="user_…" required /></label>
-            <label>Purpose<textarea name="purpose" minlength="20" maxlength="500" required>Protected evidence review, synthesis validation, and intervention design.</textarea></label>
+            <label>Purpose<textarea name="purpose" minlength="20" maxlength="500" required>Protected evidence review, synthesis validation, and Intervention Direction review.</textarea></label>
             <label>Duration<select name="durationDays"><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option></select></label>
             <button class="primary-button" type="submit">Assign advisor</button>
           </form>
