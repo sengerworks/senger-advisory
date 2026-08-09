@@ -184,6 +184,10 @@ const elements = {
   interviewMessage: document.querySelector("[data-interview-message]")
 };
 
+elements.pocSupportForm = document.querySelector("[data-poc-support-form]");
+elements.pocSupportMessage = document.querySelector("[data-poc-support-message]");
+elements.supportCaseReference = document.querySelector("[data-support-case-reference]");
+
 let clerk = null;
 let signInMounted = false;
 let currentRole = null;
@@ -1696,6 +1700,7 @@ async function initialize() {
 }
 
 elements.retry.addEventListener("click", () => initialize());
+elements.pocSupportForm.addEventListener("submit",async event=>{event.preventDefault();if(!elements.pocSupportForm.reportValidity())return;const button=elements.pocSupportForm.querySelector("button[type=submit]"),caseReference=`POC-${crypto.randomUUID().slice(0,8).toUpperCase()}`;elements.supportCaseReference.value=caseReference;button.disabled=true;elements.pocSupportMessage.textContent="Sending your support request…";try{const response=await fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(new FormData(elements.pocSupportForm)).toString()});if(!response.ok)throw new Error();elements.pocSupportForm.reset();elements.pocSupportMessage.textContent=`Support request received. Keep this reference: ${caseReference}.`; }catch{elements.pocSupportMessage.textContent="We could not send the request. Please retry, or use the Connect page on sengeradvisory.com.";}finally{button.disabled=false;}});
 elements.refresh.addEventListener("click", () => refreshWorkspace().catch(() => showError("The workspace could not refresh your session.")));
 elements.signOut.addEventListener("click", () => clerk?.signOut({ redirectUrl: workspaceReturnUrl() }));
 elements.primaryAction.addEventListener("click", () => {

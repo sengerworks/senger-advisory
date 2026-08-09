@@ -8,6 +8,7 @@
   <meta name="description" content="A private Organizational Capacity workspace for invited participants and facilitators." />
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="workspace.css" />
+  <link rel="stylesheet" href="workspace-support.css" />
 </head>
 <body>
   <a class="skip-link" href="#workspace-main">Skip to workspace</a>
@@ -707,6 +708,27 @@
           </article>
         </div>
       </div>
+    </section>
+
+    <section class="poc-support" aria-labelledby="poc-support-title">
+      <div>
+        <p class="state-label">POC support</p>
+        <h2 id="poc-support-title">Need help completing the workspace?</h2>
+        <p>Use this only for access, invitation, saving, submission, or workflow problems. Do not include diagnostic answers, interview excerpts, participant names, or other confidential content.</p>
+      </div>
+      <form name="poc-operating-support" method="POST" data-netlify="true" netlify-honeypot="company-website" data-poc-support-form>
+        <input type="hidden" name="form-name" value="poc-operating-support" />
+        <input type="hidden" name="caseReference" data-support-case-reference />
+        <p class="support-honeypot"><label>Leave this field empty <input name="company-website" tabindex="-1" autocomplete="off" /></label></p>
+        <label><span>Your email</span><input type="email" name="email" autocomplete="email" required /></label>
+        <label><span>Organization</span><input name="organization" maxlength="120" autocomplete="organization" /></label>
+        <label><span>Your role</span><select name="role" required><option value="">Choose</option><option value="sponsor">Sponsor</option><option value="participant">Participant</option><option value="advisor">Advisor</option></select></label>
+        <label><span>Issue</span><select name="issueType" required><option value="">Choose</option><option value="access">Sign-in or access</option><option value="invitation">Invitation</option><option value="draft">Draft or saving</option><option value="submission">Submission</option><option value="workflow">Unclear next step</option><option value="privacy">Privacy or confidentiality question</option><option value="other">Other technical issue</option></select></label>
+        <label><span>Urgency</span><select name="urgency" required><option value="standard">Standard</option><option value="blocked">Blocked from continuing</option><option value="confidentiality">Possible confidentiality concern</option></select></label>
+        <label class="support-detail"><span>What happened?</span><textarea name="description" minlength="20" maxlength="1200" required placeholder="Describe the screen, action, and error message—without including diagnostic content."></textarea></label>
+        <button class="secondary-button" type="submit">Send support request</button>
+        <p class="form-message" role="status" aria-live="polite" data-poc-support-message></p>
+      </form>
     </section>
   </main>
 

@@ -249,6 +249,23 @@ test("workspace remains excluded from search crawling", async () => {
   assert.match(robots, /Disallow: \/workspace\//);
 });
 
+test("workspace provides identity-separated POC operating support", async () => {
+  const [html, script, playbook] = await Promise.all([
+    source("workspace/index.html"),
+    source("workspace/workspace.js"),
+    source("docs/POC-Operating-Support-Playbook.md")
+  ]);
+  assert.match(html, /name="poc-operating-support"/);
+  assert.match(html, /Do not include diagnostic answers, interview excerpts, participant names/);
+  assert.match(html, /Possible confidentiality concern/);
+  assert.match(script, /POC-\$\{crypto\.randomUUID/);
+  assert.match(script, /application\/x-www-form-urlencoded/);
+  assert.match(script, /Support request received\. Keep this reference/);
+  assert.match(playbook, /S0 — confidentiality or tenant safety/);
+  assert.match(playbook, /Do not ask for passwords, authentication codes, recovery links, API keys, or encryption keys/);
+  assert.match(playbook, /support records are operational product data, not diagnostic evidence/i);
+});
+
 test("every POC role surface inherits the published Senger Advisory brand system", async () => {
   const [workspace, advisor, operations, presenter] = await Promise.all([
     "workspace/workspace.css",

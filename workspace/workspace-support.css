@@ -1,0 +1,25 @@
+.poc-support {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: clamp(24px, 5vw, 56px);
+  margin-top: 28px;
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--ivory);
+}
+
+.poc-support h2 { margin: 6px 0 12px; font-family: var(--serif); font-size: clamp(1.8rem, 3vw, 2.7rem); }
+.poc-support > div > p:last-child { color: var(--ink-soft); line-height: 1.65; }
+.poc-support form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.poc-support label { display: grid; gap: 7px; font-size: .78rem; font-weight: 700; }
+.poc-support input,.poc-support select,.poc-support textarea { width: 100%; padding: 11px; border: 1px solid var(--line); border-radius: 9px; background: #fff; font: inherit; }
+.poc-support textarea { min-height: 110px; resize: vertical; }
+.poc-support .support-detail,.poc-support button,.poc-support .form-message { grid-column: 1 / -1; }
+.poc-support button { justify-self: start; }
+.support-honeypot { position: absolute; left: -10000px; }
+
+@media (max-width: 760px) {
+  .poc-support,.poc-support form { grid-template-columns: 1fr; }
+  .poc-support .support-detail,.poc-support button,.poc-support .form-message { grid-column: auto; }
+}
