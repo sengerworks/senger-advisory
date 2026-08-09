@@ -37,15 +37,14 @@ export async function authenticateWorkspaceRequest(
     authorizedParties,
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY
   });
-  if (!requestState.isAuthenticated) return { ok: false, status: 401 };
+  if (!requestState.isAuthenticated) return { ok: false, status: 401, reason: "sign-in" };
 
   const auth = requestState.toAuth();
-  if (!auth.orgId || !allowedRoles.has(auth.orgRole)) {
-    return { ok: false, status: 403 };
-  }
+  if (!auth.orgId) return { ok: false, status: 403, reason: "organization-context" };
+  if (!allowedRoles.has(auth.orgRole)) return { ok: false, status: 403, reason: "organization-role" };
 
   const workspaceId = await resolveWorkspaceId(auth.orgId);
-  if (!workspaceId) return { ok: false, status: 403 };
+  if (!workspaceId) return { ok: false, status: 403, reason: "workspace-mapping" };
 
   return {
     ok: true,
