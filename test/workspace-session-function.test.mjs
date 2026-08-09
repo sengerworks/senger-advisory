@@ -66,7 +66,7 @@ test("rejects signed-out, personal-account, unknown-role, and unmapped sessions"
     },
     resolveWorkspaceId: async () => null
   });
-  assert.deepEqual(unmapped, { ok: false, status: 403 });
+  assert.deepEqual(unmapped, { ok: false, status: 403, reason: "workspace-mapping" });
 });
 
 test("returns minimized session state for an authorized mapped workspace", async () => {
@@ -90,7 +90,7 @@ test("returns minimized session state for an authorized mapped workspace", async
 
 test("workspace session endpoint rejects methods, cross-origin requests, and auth failures", async () => {
   const handler = createWorkspaceSessionHandler({
-    authenticate: async () => ({ ok: false, status: 401 })
+    authenticate: async () => ({ ok: false, status: 401, reason: "sign-in" })
   });
   assert.equal((await handler(request("POST"))).status, 405);
   assert.equal((await handler(request("GET", "https://attacker.example"))).status, 403);

@@ -25,7 +25,10 @@ export function createWorkspaceSessionHandler({
       const result = await authenticate(request);
       if (!result.ok) {
         console.info(`Workspace session stage: unavailable-${result.status}`);
-        return json(result.status, { error: "Workspace access unavailable." });
+        return json(result.status, {
+          error: "Workspace access unavailable.",
+          reason: result.reason || "access-policy"
+        });
       }
       console.info("Workspace session stage: ready");
       return json(200, {

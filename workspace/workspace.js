@@ -1410,9 +1410,26 @@ async function sessionState() {
       ...(token ? { Authorization: `Bearer ${token}` } : {})
     }
   });
-  if (response.status === 401 || response.status === 403) return null;
+  if (response.status === 401 || response.status === 403) {
+    const payload = await response.json().catch(() => ({}));
+    return { denied: true, reason: payload.reason || "access-policy" };
+  }
   if (!response.ok) throw new Error("The workspace service is temporarily unavailable.");
   return response.json();
+}
+
+function showWorkspaceAccessIssue(reason) {
+  const title = elements.membershipState.querySelector("h2");
+  const detail = elements.membershipState.querySelector("p:last-of-type");
+  const messages = {
+    "sign-in": ["We couldn’t verify this sign-in.", "Sign out, sign back in, and try the workspace again."],
+    "organization-context": ["Your organization is not active yet.", "Select or activate the organization associated with this workspace, then check again."],
+    "organization-role": ["Your organization role is not assigned for this workspace.", "Ask the Senger Advisory platform administrator to confirm your workspace role."],
+    "workspace-mapping": ["This organization has not been connected to a workspace.", "Ask the Senger Advisory platform administrator to complete workspace provisioning."]
+  };
+  const message = messages[reason] || ["Workspace access is not ready yet.", "Ask the Senger Advisory platform administrator to verify your access."];
+  title.textContent = message[0];
+  detail.textContent = message[1];
 }
 
 async function ensureActiveOrganization() {
@@ -1484,7 +1501,8 @@ async function render() {
   }
 
   const session = await sessionState();
-  if (!session) {
+  if (session.denied) {
+    showWorkspaceAccessIssue(session.reason);
     showState("membershipState");
     return;
   }
