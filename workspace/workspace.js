@@ -1597,17 +1597,22 @@ async function ensureActiveOrganization() {
   return true;
 }
 
+function workspaceReturnUrl() {
+  return new URL("/workspace/", window.location.origin).href;
+}
+
 async function render() {
   if (!clerk.user) {
     elements.account.hidden = true;
     showState("signInState");
     if (!signInMounted) {
+      const returnUrl = workspaceReturnUrl();
       clerk.mountSignIn(elements.signInMount, {
         routing: "hash",
-        forceRedirectUrl: "/workspace/",
-        fallbackRedirectUrl: "/workspace/",
-        signUpForceRedirectUrl: "/workspace/",
-        signUpFallbackRedirectUrl: "/workspace/",
+        forceRedirectUrl: returnUrl,
+        fallbackRedirectUrl: returnUrl,
+        signUpForceRedirectUrl: returnUrl,
+        signUpFallbackRedirectUrl: returnUrl,
         appearance: {
           variables: {
             colorPrimary: "#1c1c1c",
@@ -1700,7 +1705,7 @@ async function initialize() {
 
 elements.retry.addEventListener("click", () => initialize());
 elements.refresh.addEventListener("click", () => refreshWorkspace().catch(() => showError("The workspace could not refresh your session.")));
-elements.signOut.addEventListener("click", () => clerk?.signOut({ redirectUrl: "/workspace/" }));
+elements.signOut.addEventListener("click", () => clerk?.signOut({ redirectUrl: workspaceReturnUrl() }));
 elements.primaryAction.addEventListener("click", () => {
   if (currentRole === "org:participant") {
     elements.participantPanel.scrollIntoView({ behavior: "smooth", block: "start" });

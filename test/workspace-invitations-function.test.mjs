@@ -109,6 +109,14 @@ test("Clerk gateway fixes the participant role, redirect, expiry, and private ro
   assert.ok(createParams.expiresInDays >= 1 && createParams.expiresInDays <= 30);
 });
 
+test("invitation redirect is absolute so Clerk cannot resolve it on the Account Portal host", async () => {
+  let createParams;
+  const gateway = createClerkInvitationGateway({ organizations: { createOrganizationInvitation: async params => { createParams = params; return invitation(); } } });
+  await gateway.create({ organizationId, inviterUserId: "user_owner", round: openRound, emailAddress: "participant@example.com", redirectOrigin: "http://localhost:8888" });
+  assert.equal(createParams.redirectUrl, "http://localhost:8888/workspace/");
+  assert.match(createParams.redirectUrl, /^https?:\/\//);
+});
+
 test("lists invitation counts, sends one invitation, and records a content-free event", async () => {
   const events = [];
   const gateway = {

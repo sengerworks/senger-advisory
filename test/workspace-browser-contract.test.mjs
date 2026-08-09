@@ -211,8 +211,10 @@ test("owner collection setup presents dates and the fixed privacy threshold", as
 
 test("workspace authentication always returns to the workspace route", async () => {
   const script = await source("workspace/workspace.js");
-  assert.match(script, /forceRedirectUrl:\s*"\/workspace\/"/);
-  assert.match(script, /signUpForceRedirectUrl:\s*"\/workspace\/"/);
+  assert.match(script, /new URL\("\/workspace\/", window\.location\.origin\)\.href/);
+  assert.match(script, /forceRedirectUrl:\s*returnUrl/);
+  assert.match(script, /signUpForceRedirectUrl:\s*returnUrl/);
+  assert.match(script, /signUpFallbackRedirectUrl:\s*returnUrl/);
   assert.doesNotMatch(script, /afterSignInUrl|afterSignUpUrl/);
 });
 
