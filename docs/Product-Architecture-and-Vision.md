@@ -265,7 +265,7 @@ whether the operating system changed—not when it merely produces a polished sc
 - **Entry:** a free, lightweight assessment that demonstrates the intelligence of the model,
   creates immediate value, and reveals why a deeper diagnostic may be warranted.
 - **Diagnostic:** a paid automated or advisor-led organizational investigation that produces
-  the evidence-backed constraint hypothesis and recommended intervention.
+  the evidence-backed constraint hypothesis and prioritized Intervention Directions.
 - **Scale:** recurring platform access to the Capacity Operating Brief, guided intervention,
   learning, check-ins, organizational evidence, decisions, and reassessment.
 - **Premium:** advisor-led diagnostic, intervention design, coaching, L&D sourcing, custom
@@ -287,9 +287,11 @@ may reconcile the checkout reference and activate the matching entitlement. Prov
 are idempotent, card details remain entirely with the payment provider, and payment records do
 not contain participant identity, interview content, evidence, findings, or intervention notes.
 Diagnostic and intervention access use separate entitlements and separate offer prices. A paid
-diagnostic entitlement permits the diagnostic workflow and intervention proposal design; it
-does not silently purchase the proposed intervention. POC engagements retain one explicit,
-no-charge POC entitlement across the governed proof-of-concept loop.
+diagnostic entitlement permits the diagnostic workflow and Intervention Directions; it does not
+silently purchase detailed intervention design or delivery. POC engagements retain one explicit,
+no-charge entitlement for a single governed diagnostic cycle. The POC ends after leadership sees
+the governed finding and Intervention Directions. Detailed intervention design, acceptance,
+delivery, the Capacity Operating Brief operating loop, and reassessment require paid activation.
 
 ### POC product-decision governance
 

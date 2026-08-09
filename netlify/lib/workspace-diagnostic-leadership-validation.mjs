@@ -68,8 +68,12 @@ function safeFinding(row) {
 export async function getLeadershipValidationView({ workspaceId, diagnosticId }, connectionString) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const findingResult = await query(
-      `SELECT id, record_payload, confidence, status, advisor_review_status
-       FROM app_shared.diagnostic_findings WHERE diagnostic_id = $1 LIMIT 1`,
+      `SELECT finding.id, finding.record_payload, finding.confidence, finding.status,
+              finding.advisor_review_status, diagnostic.entitlement_type
+       FROM app_shared.diagnostic_findings finding
+       JOIN app_shared.diagnostics diagnostic
+         ON diagnostic.workspace_id = finding.workspace_id AND diagnostic.id = finding.diagnostic_id
+       WHERE finding.diagnostic_id = $1 LIMIT 1`,
       [diagnosticId]
     );
     const finding = findingResult.rows[0];
@@ -120,6 +124,10 @@ export async function getLeadershipValidationView({ workspaceId, diagnosticId },
       state: "ready",
       confidentiality: Object.freeze({ completed, identityProtected: true, rawResponsesExcluded: true }),
       finding: safeFinding(finding),
+      engagement: Object.freeze({
+        entitlementType: finding.entitlement_type,
+        pocBoundary: finding.entitlement_type === "poc" ? "intervention-directions" : null
+      }),
       validation
     });
   }, connectionString);

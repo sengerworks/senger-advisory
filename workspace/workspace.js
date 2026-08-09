@@ -690,7 +690,7 @@ async function openLeadershipValidation(diagnosticId) {
   basis.textContent = `Confidence basis: ${data.finding.hypothesis.confidenceBasis}`;
   const direction = document.createElement("p");
   direction.className = "leadership-intervention-direction";
-  direction.textContent = `Intervention direction: ${data.finding.hypothesis.interventionDirection}`;
+  direction.textContent = `Intervention Direction: ${data.finding.hypothesis.interventionDirection}`;
   hypothesis.append(heading, statement, basis,
     leadershipList("Competing explanations", data.finding.hypothesis.competingExplanations.map(item => `${item.statement} Evidence needed: ${item.evidenceNeeded}`)),
     leadershipList("Blind spots and limitations", data.finding.hypothesis.blindSpots), direction);
@@ -710,7 +710,9 @@ async function openLeadershipValidation(diagnosticId) {
   elements.leadershipValidationForm.hidden = Boolean(data.validation);
   elements.leadershipValidationMessage.textContent = data.validation
     ? data.validation.decision === "accepted"
-      ? "Leadership accepted this finding. Intervention design is the next governed gate."
+      ? data.engagement?.pocBoundary === "intervention-directions"
+        ? "POC complete. The governed finding and Intervention Directions are ready for the final debrief. Detailed intervention design, delivery, and reassessment require paid activation."
+        : "Leadership accepted this finding. Paid intervention design is the next governed gate."
       : "Leadership requested revision. The finding has returned to protected synthesis review."
     : "This is an organizational finding for leadership validation—not participant-level reporting or a final causal conclusion.";
   elements.leadershipValidation.scrollIntoView({ behavior: "smooth", block: "start" });
