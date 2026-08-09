@@ -39,10 +39,28 @@ export async function getDiagnosticIntervention({ workspaceId, userId, diagnosti
     await requireAdvisorAssignment(query, { diagnosticId, userId, now });
     const finding = await query(`SELECT id, status, record_payload FROM app_shared.diagnostic_findings WHERE diagnostic_id = $1 LIMIT 1`, [diagnosticId]);
     if (!finding.rows[0] || finding.rows[0].status !== "validated") return Object.freeze({ state: "blocked", reason: "leadership-validation" });
+    const access = await query(
+      `SELECT entitlement_kind FROM app_shared.commercial_entitlements
+       WHERE diagnostic_id = $1 AND status = 'active' AND entitlement_kind IN ('diagnostic','poc')
+       ORDER BY CASE entitlement_kind WHEN 'poc' THEN 0 ELSE 1 END LIMIT 1`,
+      [diagnosticId]
+    );
+    const publicFinding = Object.freeze({
+      statement: finding.rows[0].record_payload.hypothesis.statement,
+      interventionDirection: finding.rows[0].record_payload.hypothesis.interventionDirection
+    });
+    if (access.rows[0]?.entitlement_kind === "poc") {
+      return Object.freeze({
+        state: "poc-complete",
+        finding: publicFinding,
+        pocBoundary: "intervention-directions",
+        nextStep: "paid-activation"
+      });
+    }
     const result = await query(`SELECT id, proposal_version, service_route, proposal_payload, status, created_at FROM app_shared.diagnostic_interventions WHERE diagnostic_id = $1 LIMIT 1`, [diagnosticId]);
     return Object.freeze({
       state: result.rows[0] ? "proposed" : "ready",
-      finding: Object.freeze({ statement: finding.rows[0].record_payload.hypothesis.statement, interventionDirection: finding.rows[0].record_payload.hypothesis.interventionDirection }),
+      finding: publicFinding,
       intervention: publicProposal(result.rows[0])
     });
   }, connectionString);

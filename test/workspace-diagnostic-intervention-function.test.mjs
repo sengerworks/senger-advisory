@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createWorkspaceDiagnosticInterventionHandler } from "../netlify/functions/workspace-diagnostic-intervention.mjs";
 import { DiagnosticInterventionInputError, validateInterventionInput } from "../netlify/lib/workspace-diagnostic-intervention.mjs";
+import { readFile } from "node:fs/promises";
 import { WORKSPACE_ROLES } from "../workspace-authorization.js";
 
 const diagnosticId = "22222222-2222-4222-8222-222222222222";
@@ -32,3 +33,10 @@ test("intervention design blocks participants, malformed input, foreign origins,
   assert.equal((await handler(request("DELETE"))).status, 405);
 });
 
+test("POC readiness returns Intervention Directions without exposing paid intervention design", async () => {
+  const implementation = await readFile(new URL("../netlify/lib/workspace-diagnostic-intervention.mjs", import.meta.url), "utf8");
+  assert.match(implementation, /entitlement_kind === "poc"/);
+  assert.match(implementation, /state: "poc-complete"/);
+  assert.match(implementation, /pocBoundary: "intervention-directions"/);
+  assert.match(implementation, /nextStep: "paid-activation"/);
+});

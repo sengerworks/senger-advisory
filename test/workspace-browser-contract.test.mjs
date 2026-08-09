@@ -290,6 +290,11 @@ test("advisor console is separate, assignment-scoped, and excludes raw interview
   assert.match(html, /Observed operating change/);
   assert.match(html, /Reassessed capacity change/);
   assert.match(html, /Create governed proposal/);
+  assert.match(html, /data-advisor-sign-out/);
+  assert.match(advisor, /POC boundary reached/);
+  assert.match(advisor, /Detailed design, delivery, and reassessment begin only after paid activation/);
+  assert.match(advisor, /forceRedirectUrl:"\/workspace\/advisor\.html"/);
+  assert.match(advisor, /clerk\?\.signOut/);
   assert.match(advisor, /evidenceClass:"delivery"/);
   assert.match(advisor, /evidenceClass:"operating-change"/);
   assert.match(advisor, /evidenceClass:"capacity-change"/);
