@@ -110,6 +110,10 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Choose what must be represented/);
   assert.match(html, /Build a cohort that can reveal the system/);
   assert.match(html, /Your goal is not a representative sample/);
+  assert.match(html, /This perspective matters because they can see or experience something the others cannot/);
+  assert.match(html, /Illustration—not a required formula/);
+  assert.match(html, /a manager coordinating handoffs/);
+  assert.doesNotMatch(html, /<span>Perspective<\/span><span>Organizational level/);
   assert.match(html, /Review coverage and approve/);
   assert.match(script, /Minimum cohort reached/);
   assert.match(html, /You will add names and email addresses only after the protocol is approved/);

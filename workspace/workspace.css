@@ -447,6 +447,18 @@ h2 {
 .workspace-stage-perspectives .ready-state { padding: 0; }
 .workspace-stage-perspectives .diagnostic-panel { margin: 0; padding: 0; border: 0; background: transparent; }
 .workspace-stage-perspectives [data-participant-design] { max-width: 1040px; margin: 0 auto; padding: clamp(26px,4vw,48px); border-radius: 21px; background: linear-gradient(135deg,#fff 0%,#faf5ef 100%); box-shadow: 0 18px 55px rgba(10,25,48,.09); }
+.perspective-method-guide { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; padding: clamp(22px,3vw,30px); border-radius: 14px; background: var(--midnight); color: #fff; }
+.perspective-method-guide h5 { margin: 0 0 9px; font-family: var(--serif); font-size: 1.45rem; font-weight: 500; }
+.perspective-method-guide p { margin: 0; color: rgba(255,255,255,.72); font-size: .8rem; line-height: 1.6; }
+.perspective-method-guide .card-kicker { margin-bottom: 8px; color: #e1a278; }
+.perspective-selection-test { padding: 16px; border: 1px solid rgba(255,255,255,.18); border-radius: 11px; background: rgba(255,255,255,.07); }
+.perspective-selection-test strong,.perspective-selection-test span { display: block; }
+.perspective-selection-test p { margin: 7px 0; color: #fff; }
+.perspective-selection-test span { color: rgba(255,255,255,.62); font-size: .72rem; line-height: 1.5; }
+.perspective-example { grid-column: 1 / -1; padding-top: 17px; border-top: 1px solid rgba(255,255,255,.16); }
+.perspective-example > p { margin-top: 5px; }
+.perspective-example ul { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; counter-reset: example; }
+.perspective-example li { padding: 11px; border-radius: 8px; background: rgba(255,255,255,.07); color: rgba(255,255,255,.76); font-size: .7rem; line-height: 1.45; }
 .participant-design-stage { display: grid; gap: 16px; padding: clamp(20px,3vw,28px); border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.72); }
 .participant-stage-heading { display: flex; align-items: start; gap: 12px; }
 .participant-stage-heading > span { display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: #fff; font-size: .72rem; font-weight: 800; }
@@ -473,9 +485,9 @@ h2 {
 .participant-readiness[data-state="full"] { background: #f1ece5; color: var(--bronze-dark); }
 .participant-readiness span { color: inherit; }
 .participant-guidance { margin: 0; padding: 12px 14px; border-left: 3px solid var(--bronze); color: var(--ink-soft); background: rgba(183,91,39,.06); font-size: .78rem; line-height: 1.5; }
-.participant-slot-labels { display: grid; grid-template-columns: 36px repeat(3,1fr) auto; gap: 10px; padding: 0 12px; color: var(--ink-soft); font-size: .66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.participant-slot-labels { display: grid; grid-template-columns: 44px repeat(3,minmax(0,1fr)) 34px; gap: 10px; padding: 0 12px; color: var(--ink-soft); font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
 .participant-slots { display: grid; gap: 10px; }
-.participant-slot { display: grid; grid-template-columns: 36px repeat(3, 1fr) auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.participant-slot { display: grid; grid-template-columns: 44px repeat(3,minmax(0,1fr)) 34px; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .participant-slot > span { color: var(--bronze-dark); font-size: .72rem; font-weight: 800; }
 .participant-slot select { width: 100%; min-height: 42px; padding: 8px; border: 1px solid #d9d4cc; border-radius: 8px; background: #fff; color: var(--ink); }
 .participant-slot button { border: 0; background: transparent; color: var(--ink-soft); cursor: pointer; }
@@ -1240,6 +1252,9 @@ h2 {
   .capacity-review-journal form { grid-template-columns: 1fr; }
   .leadership-validation-form > .diagnostic-context-confirm,.leadership-validation-form > .advisor-review-actions { grid-column: auto; }
   .participant-slot,.coverage-gap { grid-template-columns: 1fr; }
+  .perspective-method-guide { grid-template-columns: 1fr; }
+  .perspective-example { grid-column: auto; }
+  .perspective-example ul { grid-template-columns: 1fr; }
   .perspective-design-brief { grid-template-columns: 1fr; }
   .participant-slot-labels { display: none; }
   .participant-slots-heading,.participant-readiness { align-items: stretch; flex-direction: column; }
