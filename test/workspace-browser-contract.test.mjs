@@ -297,6 +297,8 @@ test("every POC role surface inherits the published Senger Advisory brand system
   assert.match(workspace, /--orange: #d45b31/);
   assert.match(workspace, /border-bottom: 4px solid var\(--orange\)/);
   assert.match(workspace, /font-family: Arial, "Helvetica Neue", sans-serif/);
+  assert.match(workspace, /\.operations-links\s*\{[\s\S]*?gap:\s*18px/);
+  assert.match(workspace, /\.operations-links a\s*\{[\s\S]*?font-weight:\s*700/);
   assert.match(advisor, /font-family: var\(--serif\)/);
   for (const stylesheet of [workspace, advisor, operations, presenter]) {
     assert.doesNotMatch(stylesheet, /#a46b38|#70451f|#1c1c1c|#676767/);

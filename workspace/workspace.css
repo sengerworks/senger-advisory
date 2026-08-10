@@ -91,6 +91,18 @@ button { font: inherit; }
   font-size: .82rem;
 }
 
+.operations-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.operations-links a {
+  color: inherit;
+  font-size: .78rem;
+  font-weight: 700;
+}
+
 .text-button {
   padding: 0;
   border: 0;
@@ -1173,6 +1185,7 @@ h2 {
 
 @media (max-width: 760px) {
   .workspace-account [data-account-label] { display: none; }
+  .operations-links a { display: none; }
   .sign-in-state { grid-template-columns: 1fr; padding: 32px 22px; }
   .clerk-panel { min-height: 360px; }
   .ready-heading { display: block; }
