@@ -1,0 +1,27 @@
+.capacity-orientation {
+  margin: 24px 0;
+  padding: 20px;
+  border: 1px solid rgba(212, 91, 49, .34);
+  border-radius: 16px;
+  background: rgba(212, 91, 49, .045);
+}
+
+.capacity-orientation summary { cursor: pointer; color: var(--midnight); font-weight: 800; }
+.capacity-orientation[open] summary { margin-bottom: 18px; }
+.orientation-definition { display: grid; grid-template-columns: minmax(160px, .35fr) 1fr; gap: 18px; padding: 16px; border-radius: 12px; background: #fff; }
+.orientation-definition p { margin: 0; color: var(--ink-soft); line-height: 1.55; }
+.orientation-language { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+.orientation-language div,.capacity-lenses article { padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+.orientation-language span { display: block; margin-top: 6px; color: var(--ink-soft); font-size: .78rem; line-height: 1.5; }
+.capacity-lenses { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 18px; }
+.capacity-lenses article p { margin: 7px 0 0; color: var(--ink-soft); font-size: .76rem; line-height: 1.5; }
+.orientation-boundary { margin: 16px 0 0; color: var(--ink-soft); font-size: .78rem; font-weight: 700; }
+.participant-orientation { margin-bottom: 16px; padding: 16px; border: 1px solid rgba(212, 91, 49, .34); border-radius: 12px; background: rgba(212, 91, 49, .045); }
+.participant-orientation p { margin: 0 0 10px; line-height: 1.55; }
+.participant-orientation small { display: block; margin-top: 12px; color: var(--ink-soft); line-height: 1.5; }
+.participant-lenses { display: flex; flex-wrap: wrap; gap: 7px; }
+.participant-lenses span { padding: 7px 9px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-size: .7rem; font-weight: 800; }
+.participant-terms-link { margin: 12px 0; font-size: .76rem; font-weight: 700; }
+
+@media (max-width: 900px) { .capacity-lenses { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 700px) { .orientation-definition,.orientation-language,.capacity-lenses { grid-template-columns: 1fr; } }

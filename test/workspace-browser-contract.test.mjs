@@ -186,6 +186,24 @@ test("participant entry requires a privacy acknowledgement before assessment nav
   assert.match(script, /workspaceRound/);
 });
 
+test("POC opening explains the Capacity Lens before versioned participant terms", async () => {
+  const [html, script, participation, privacy] = await Promise.all([
+    source("workspace/index.html"),
+    source("workspace/workspace.js"),
+    source("netlify/lib/workspace-diagnostic-participation.mjs"),
+    source("privacy.html")
+  ]);
+  for (const phrase of ["Organizational capacity", "Constraint", "Friction", "Capacity Compensation", "Priority &amp; Attention", "Authority &amp; Accountability", "Information &amp; Sensemaking", "Coordination", "Resource &amp; Capability Deployment"]) assert.match(html, new RegExp(phrase));
+  assert.match(html, /inquiry lenses—not scores or predetermined explanations/);
+  assert.match(html, /Participation is voluntary/);
+  assert.match(html, /processed by the platform and AI to assist synthesis/);
+  assert.match(html, /never your raw answers, attributed excerpts, or an individual score/);
+  assert.match(script, /agree to the diagnostic participation and confidentiality terms/);
+  assert.match(participation, /DIAGNOSTIC_NOTICE_VERSION = "2\.0\.0"/);
+  assert.match(privacy, /id="diagnostic-participation"/);
+  assert.match(privacy, /AI output does not release a finding without governed human review/);
+});
+
 test("workspace assessment submits aggregate scores without individual answers or identity", async () => {
   const html = await source("assessment.html");
   const script = await source("assessment.js");

@@ -76,3 +76,4 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
 
 The detailed measurement and decision rules remain in `POC-Operating-Protocol.md` and
 `POC-Scorecard.md`. Active-cohort support follows `POC-Operating-Support-Playbook.md`.
+The versioned opening language follows `POC-Orientation-and-Participant-Terms.md`.

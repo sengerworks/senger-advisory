@@ -9,6 +9,7 @@
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="workspace.css" />
   <link rel="stylesheet" href="workspace-support.css" />
+  <link rel="stylesheet" href="workspace-orientation.css" />
 </head>
 <body>
   <a class="skip-link" href="#workspace-main">Skip to workspace</a>
@@ -109,6 +110,13 @@
             </div>
             <span class="diagnostic-method">Method 1.0</span>
           </div>
+          <details class="capacity-orientation" open>
+            <summary>Before discovery: the Capacity Lens</summary>
+            <div class="orientation-definition"><strong>Organizational capacity</strong><p>An organization’s ability to carry its current complexity and commitments without disproportionate friction or unsustainable effort.</p></div>
+            <div class="orientation-language"><div><strong>Constraint</strong><span>A condition that disproportionately limits execution.</span></div><div><strong>Friction</strong><span>Observable drag as decisions, information, resources, or work move through the organization.</span></div><div><strong>Capacity Compensation</strong><span>Heroics, escalation, meetings, workarounds, or manual coordination that preserve performance while concealing strain.</span></div></div>
+            <div class="capacity-lenses" aria-label="Five Capacity Lens areas"><article><strong>Priority &amp; Attention</strong><p>What receives focus, protection, and senior attention in practice.</p></article><article><strong>Authority &amp; Accountability</strong><p>Who can decide, who owns outcomes, and how follow-through occurs.</p></article><article><strong>Information &amp; Sensemaking</strong><p>How reality moves, is interpreted, and informs decisions.</p></article><article><strong>Coordination</strong><p>How dependencies, handoffs, and competing demands are resolved.</p></article><article><strong>Resource &amp; Capability Deployment</strong><p>How time, talent, tools, and capability are placed against priorities.</p></article></div>
+            <p class="orientation-boundary">These are inquiry lenses—not scores or predetermined explanations. The diagnostic tests what is actually shaping execution.</p>
+          </details>
           <p class="form-message" role="status" aria-live="polite" data-diagnostic-message></p>
           <div class="diagnostic-list" data-diagnostic-list></div>
           <p class="diagnostic-empty" data-diagnostic-empty>No diagnostic engagement has been started.</p>
@@ -665,11 +673,27 @@
           <p data-participant-dates></p>
           <div class="participant-notice" data-participant-notice>
             <h4>Before you begin</h4>
-            <ul>
+            <ul data-assessment-notice>
               <li>Your individual answers and scores are never shown to the Owner or Facilitator.</li>
               <li>Only aggregate organizational results can appear, and only after five valid submissions.</li>
               <li>Your workspace participation does not enroll you in research or anonymous evidence sharing.</li>
             </ul>
+            <div class="participant-orientation" data-diagnostic-orientation hidden>
+              <p><strong>Organizational capacity</strong> is the organization’s ability to carry its complexity and commitments without disproportionate friction or unsustainable effort.</p>
+              <p>A <strong>constraint</strong> disproportionately limits execution. <strong>Friction</strong> is the drag visible as work moves. <strong>Capacity Compensation</strong> is the heroics, escalation, meetings, or workarounds that keep performance moving while concealing strain.</p>
+              <div class="participant-lenses"><span>Priority &amp; Attention</span><span>Authority &amp; Accountability</span><span>Information &amp; Sensemaking</span><span>Coordination</span><span>Resource &amp; Capability Deployment</span></div>
+              <small>These lenses help organize inquiry. They do not tell you what answer to give or assume that any particular constraint exists.</small>
+            </div>
+            <ul data-diagnostic-terms hidden>
+              <li>Participation is voluntary and is intended to understand the organizational system—not evaluate individual performance.</li>
+              <li>Your account confirms your assigned perspective. Invitation, acceptance, and completion status are operational records; your answers are stored separately.</li>
+              <li>The sponsor may see participation status, but never your raw answers, attributed excerpts, or an individual score.</li>
+              <li>Organizational findings remain withheld until at least five participants complete and all confidentiality and review gates are satisfied.</li>
+              <li>Approved de-identified evidence may be processed by the platform and AI to assist synthesis. Sensitive or potentially identifying material requires human review before use.</li>
+              <li>The POC may inform a governed organizational finding and Intervention Directions. It does not provide individual employment, legal, or clinical advice.</li>
+              <li>Optional POC feedback and technical-support records remain separate from diagnostic evidence.</li>
+            </ul>
+            <p class="participant-terms-link" data-diagnostic-terms-link hidden><a href="../privacy.html#diagnostic-participation" target="_blank" rel="noopener">Read the diagnostic participation privacy summary</a></p>
             <label>
               <input type="checkbox" data-participant-acknowledgement />
               <span>I understand how my workspace assessment will be used.</span>

@@ -174,6 +174,10 @@ const elements = {
   participantDates: document.querySelector("[data-participant-dates]"),
   participantNotice: document.querySelector("[data-participant-notice]"),
   participantAcknowledgement: document.querySelector("[data-participant-acknowledgement]"),
+  assessmentNotice: document.querySelector("[data-assessment-notice]"),
+  diagnosticOrientation: document.querySelector("[data-diagnostic-orientation]"),
+  diagnosticTerms: document.querySelector("[data-diagnostic-terms]"),
+  diagnosticTermsLink: document.querySelector("[data-diagnostic-terms-link]"),
   participantMessage: document.querySelector("[data-participant-message]"),
   beginAssessment: document.querySelector("[data-begin-assessment]"),
   participantInterview: document.querySelector("[data-participant-interview]"),
@@ -1428,11 +1432,11 @@ async function prepareParticipant() {
       : "Review diagnostic privacy";
     elements.participantRound.textContent = "Organizational Capacity Diagnostic";
     elements.participantDates.textContent = `${diagnosticParticipation.route === "automated" ? "Automated written" : "Advisor-led"} route · Common protocol ${diagnosticParticipation.protocol?.version || "1.0"}`;
-    const noticeItems = elements.participantNotice.querySelectorAll("li");
-    noticeItems[0].textContent = "Your interview responses are confidential and are never shown to the sponsor as an attributed record.";
-    noticeItems[1].textContent = "De-identified evidence may be synthesized across the approved participant group.";
-    noticeItems[2].textContent = "Sensitive or potentially identifying evidence is held for human review before synthesis.";
-    elements.participantNotice.querySelector("label span").textContent = "I understand how my diagnostic interview will be used and protected.";
+    elements.assessmentNotice.hidden=true;
+    elements.diagnosticOrientation.hidden=false;
+    elements.diagnosticTerms.hidden=false;
+    elements.diagnosticTermsLink.hidden=false;
+    elements.participantNotice.querySelector("label span").textContent = "I have reviewed the Capacity Lens orientation and agree to the diagnostic participation and confidentiality terms.";
     elements.participantNotice.hidden = diagnosticParticipation.noticeAccepted;
     elements.participantAcknowledgement.checked = diagnosticParticipation.noticeAccepted;
     elements.beginAssessment.textContent = diagnosticParticipation.noticeAccepted
@@ -1446,6 +1450,10 @@ async function prepareParticipant() {
     return;
   }
   currentParticipation = { ...(await workspaceRequest("/api/workspace/participation")), kind: "assessment" };
+  elements.assessmentNotice.hidden=false;
+  elements.diagnosticOrientation.hidden=true;
+  elements.diagnosticTerms.hidden=true;
+  elements.diagnosticTermsLink.hidden=true;
   elements.participantPanel.hidden = false;
   elements.primaryAction.disabled = false;
   if (currentParticipation.state === "unavailable") {

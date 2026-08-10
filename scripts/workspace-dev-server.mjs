@@ -62,6 +62,7 @@ const files = new Map([
   ["/workspace/", { url: new URL("../workspace/index.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/workspace.css", { url: new URL("../workspace/workspace.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/workspace-support.css", { url: new URL("../workspace/workspace-support.css", import.meta.url), type: "text/css; charset=utf-8" }],
+  ["/workspace/workspace-orientation.css", { url: new URL("../workspace/workspace-orientation.css", import.meta.url), type: "text/css; charset=utf-8" }],
   ["/workspace/workspace.js", { url: new URL("../workspace/workspace.js", import.meta.url), type: "text/javascript; charset=utf-8" }],
   ["/workspace/advisor.html", { url: new URL("../workspace/advisor.html", import.meta.url), type: "text/html; charset=utf-8" }],
   ["/workspace/advisor.css", { url: new URL("../workspace/advisor.css", import.meta.url), type: "text/css; charset=utf-8" }],

@@ -1,7 +1,7 @@
 import { withNeonWorkspaceTransaction } from "./neon-workspace-database.mjs";
 import { validateDiagnosticContextId } from "./workspace-diagnostic-context.mjs";
 
-export const DIAGNOSTIC_NOTICE_VERSION = "1.0.0";
+export const DIAGNOSTIC_NOTICE_VERSION = "2.0.0";
 export class DiagnosticParticipationInputError extends Error {}
 export class DiagnosticParticipationStateError extends Error {}
 
