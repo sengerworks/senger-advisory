@@ -1605,17 +1605,24 @@ h3 {
 
 .signal-context {
   display: grid;
-  gap: 28px;
-  padding: clamp(22px, 4vw, 42px);
+  gap: clamp(24px, 4vw, 38px);
+  padding: clamp(26px, 4vw, 46px);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: #fff;
 }
 
+.signal-context > .report-section-heading {
+  max-width: 760px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--line);
+}
+
 .signal-context-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(330px, .75fr);
+  gap: clamp(24px, 4vw, 42px);
+  align-items: stretch;
 }
 
 .signal-context-grid label {
@@ -1627,21 +1634,76 @@ h3 {
   letter-spacing: .04em;
 }
 
+.signal-field-title {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1.55rem, 2.5vw, 2.15rem);
+  font-weight: 500;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+}
+
+.signal-context-selects {
+  display: grid;
+  gap: 15px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--ivory);
+}
+
+.signal-context-selects > p {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 2px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--line);
+}
+
+.signal-context-selects > p strong { color: var(--ink); font-size: .92rem; }
+.signal-context-selects > p span { color: var(--ink-soft); font-size: .75rem; line-height: 1.5; }
+.signal-context-selects label > span { display: flex; justify-content: space-between; gap: 10px; }
+.signal-context-selects small { color: var(--orange-dark); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; }
+
 .signal-context-grid select,
 .signal-context-grid textarea {
   width: 100%;
-  padding: 13px 14px;
+  padding: 14px 16px;
   border: 1px solid #d9d4cc;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #fff;
   color: var(--ink);
   font: inherit;
   font-weight: 500;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
-.signal-context-grid textarea { resize: vertical; line-height: 1.55; }
-.signal-priority-field { grid-column: 1 / -1; }
-.signal-priority-field > span { color: var(--ink-soft); font-size: .72rem; font-weight: 500; letter-spacing: 0; }
+.signal-context-grid select {
+  min-height: 52px;
+  padding-right: 42px;
+  appearance: none;
+  background-color: #fff;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
+  background-position: calc(100% - 19px) 22px, calc(100% - 14px) 22px;
+  background-repeat: no-repeat;
+  background-size: 5px 5px, 5px 5px;
+  cursor: pointer;
+}
+
+.signal-context-grid select:hover,
+.signal-context-grid textarea:hover { border-color: #aaa49a; }
+
+.signal-context-grid select:focus,
+.signal-context-grid textarea:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(212, 91, 49, .1);
+  outline: 0;
+}
+
+.signal-context-grid textarea { min-height: 218px; resize: vertical; line-height: 1.6; }
+.signal-context-grid textarea::placeholder { color: #7b828b; }
+.signal-priority-field { align-content: start; padding: 4px 0; }
+.signal-priority-field > span:not(.signal-field-title) { max-width: 600px; color: var(--ink-soft); font-size: .78rem; font-weight: 500; letter-spacing: 0; line-height: 1.5; }
 
 .signal-question-panel {
   min-width: 0;
@@ -1717,10 +1779,15 @@ h3 {
 .signal-pattern-columns article p, .signal-empty { margin: 5px 0 0; color: var(--ink-soft); font-size: .88rem; line-height: 1.5; }
 .capacity-signal-results .diagnostic-boundary ul { margin: 0 0 20px; padding-left: 22px; color: var(--ink-soft); line-height: 1.65; }
 
-@media (max-width: 760px) {
-  .signal-context-grid, .signal-pattern-columns { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .signal-context-grid { grid-template-columns: 1fr; }
   .signal-priority-field { grid-column: auto; }
+}
+
+@media (max-width: 760px) {
+  .signal-pattern-columns { grid-template-columns: 1fr; }
   .signal-level { grid-template-columns: 1fr; }
+  .signal-context-selects { padding: 18px; }
 }
 
 .assessment-question {

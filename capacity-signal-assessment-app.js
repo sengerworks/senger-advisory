@@ -60,21 +60,24 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
         <section class="signal-context" data-signal-context>
           <div class="report-section-heading"><p class="eyebrow">Capacity for what?</p><h2>Begin with the execution demand.</h2><p>Capacity is relational. The result only becomes meaningful when it is anchored to what the organization must accomplish.</p></div>
           <div class="signal-context-grid">
-            <label>What is changing the demand?
-              <select name="demandSource" required>
-                <option value="">Select</option><option value="growth-scale">Growth or scale</option><option value="strategic-ambition">Strategic ambition</option><option value="organizational-change">Organizational change</option><option value="technology-ai">Technology or AI</option><option value="acquisition-reorganization">Acquisition or reorganization</option><option value="regulation-environment">Regulation or external environment</option><option value="operating-model-complexity">Operating-model complexity</option><option value="other">Another source</option>
-              </select>
-            </label>
-            <label>Time horizon
-              <select name="timeHorizon" required><option value="">Select</option><option value="now">Now</option><option value="next-90-days">Next 90 days</option><option value="next-12-months">Next 12 months</option><option value="beyond-12-months">Beyond 12 months</option></select>
-            </label>
-            <label>Organization size · Optional
-              <select name="organizationSize"><option value="">Select</option><option>Fewer than 25 people</option><option>25–49 people</option><option>50–149 people</option><option>150–399 people</option><option>400 or more people</option></select>
-            </label>
-            <label>Your perspective · Optional
-              <select name="respondentRole"><option value="">Select</option><option>CEO or founder</option><option>Executive leader</option><option>Functional leader</option><option>People or operations leader</option><option>Advisor or board member</option></select>
-            </label>
-            <label class="signal-priority-field">What must the organization execute?<span>Describe one consequential priority, change, or outcome in 40–500 characters.</span><textarea name="executionPriority" minlength="40" maxlength="500" rows="4" required></textarea></label>
+            <label class="signal-priority-field"><span class="signal-field-title">What must the organization execute?</span><span>Describe one consequential priority, change, or outcome. Focus on what must become true—not every issue surrounding it.</span><textarea name="executionPriority" minlength="40" maxlength="500" rows="6" required placeholder="For example: Integrate a newly acquired business without disrupting customer delivery or losing critical talent."></textarea></label>
+            <div class="signal-context-selects">
+              <p><strong>Define the demand</strong><span>Two selections are required. The others simply sharpen the context.</span></p>
+              <label><span>What is changing the demand?</span>
+                <select name="demandSource" required>
+                  <option value="">Choose driver</option><option value="growth-scale">Growth or scale</option><option value="strategic-ambition">Strategic ambition</option><option value="organizational-change">Organizational change</option><option value="technology-ai">Technology or AI</option><option value="acquisition-reorganization">Acquisition or reorganization</option><option value="regulation-environment">Regulation or external environment</option><option value="operating-model-complexity">Operating-model complexity</option><option value="other">Another source</option>
+                </select>
+              </label>
+              <label><span>Time horizon</span>
+                <select name="timeHorizon" required><option value="">Choose horizon</option><option value="now">Now</option><option value="next-90-days">Next 90 days</option><option value="next-12-months">Next 12 months</option><option value="beyond-12-months">Beyond 12 months</option></select>
+              </label>
+              <label><span>Organization size <small>Optional</small></span>
+                <select name="organizationSize"><option value="">Choose size</option><option>Fewer than 25 people</option><option>25–49 people</option><option>50–149 people</option><option>150–399 people</option><option>400 or more people</option></select>
+              </label>
+              <label><span>Your perspective <small>Optional</small></span>
+                <select name="respondentRole"><option value="">Choose perspective</option><option>CEO or founder</option><option>Executive leader</option><option>Functional leader</option><option>People or operations leader</option><option>Advisor or board member</option></select>
+              </label>
+            </div>
           </div>
         </section>
 

@@ -14,6 +14,16 @@ test("public assessment loads v2 while preserving explicit legacy entry paths", 
   assert.match(app, /parameters\.has\("workspaceRound"\)/);
   assert.match(app, /#recovery=v1\./);
   assert.match(app, /Capacity Signal Brief—not a score or diagnosis/);
+  assert.match(app, /signal-priority-field/);
+  assert.match(app, /signal-context-selects/);
+  assert.match(app, /Focus on what must become true/);
+  assert.match(html, /capacity-signal-v4/);
+});
+
+test("local preview serves the same Capacity Signal Assessment assets as the published site", async () => {
+  const server = await source("scripts/workspace-dev-server.mjs");
+  assert.match(server, /\/capacity-signal-assessment-app\.js/);
+  assert.match(server, /\/capacity-signal-assessment-engine\.js/);
 });
 
 test("public Capacity Signal Brief exposes uncertainty without scorecard output", async () => {
