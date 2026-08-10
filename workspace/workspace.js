@@ -559,6 +559,10 @@ async function openParticipantDesign(diagnosticId) {
   participantSlotMaximum = diagnosticsById.get(diagnosticId)?.entitlementType === "poc" ? 10 : 50;
   elements.diagnosticContext.hidden = true;
   elements.participantDesign.hidden = false;
+  if (diagnosticsById.get(diagnosticId)?.entitlementType === "poc") {
+    elements.sponsorPocFeedback.hidden = false;
+    elements.sponsorPocFeedbackForm.elements.checkpoint.value = "sponsor-setup";
+  }
   elements.participantDesignMessage.textContent = "Loading perspective design…";
   const data = await workspaceRequest(`/api/workspace/diagnostic-participants?diagnosticId=${encodeURIComponent(diagnosticId)}`);
   elements.participantDesignMessage.textContent = "";
@@ -733,6 +737,7 @@ async function openLeadershipValidation(diagnosticId) {
   elements.leadershipFinding.replaceChildren();
   elements.leadershipValidationMessage.textContent = "Checking collection and confidentiality gates…";
   const data = await workspaceRequest(`/api/workspace/diagnostic-leadership-validation?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  elements.sponsorPocFeedback.hidden = true;
   if (data.state !== "ready") {
     const reason = data.reason === "advisor-validation"
       ? "The protected synthesis still requires advisor approval."
@@ -773,6 +778,10 @@ async function openLeadershipValidation(diagnosticId) {
     elements.leadershipFinding.append(card);
   }
   elements.leadershipFinding.hidden = false;
+  if (data.engagement?.pocBoundary === "intervention-directions") {
+    elements.sponsorPocFeedback.hidden = false;
+    elements.sponsorPocFeedbackForm.elements.checkpoint.value = data.validation?.decision === "accepted" ? "final-debrief" : "finding-release";
+  }
   elements.leadershipValidationForm.hidden = Boolean(data.validation);
   elements.leadershipValidationMessage.textContent = data.validation
     ? data.validation.decision === "accepted"
@@ -819,7 +828,7 @@ async function openInterventionAcceptance(diagnosticId) {
 }
 
 function renderCapacityBrief(brief){elements.capacityBriefContent.replaceChildren();const focus=document.createElement("article");const focusTitle=document.createElement("strong");focusTitle.textContent="Current diagnosed constraint";const constraint=document.createElement("p");constraint.textContent=brief.currentFocus.constraint;const confidence=document.createElement("p");confidence.textContent=`${brief.currentFocus.confidence} confidence · ${brief.currentFocus.confidenceBasis}`;focus.append(focusTitle,constraint,confidence);const intervention=document.createElement("article");const interventionTitle=document.createElement("strong");interventionTitle.textContent=brief.intervention.objective;const detail=document.createElement("p");detail.textContent=`${brief.intervention.serviceRoute} · ${brief.intervention.duration} · ${brief.intervention.reviewCadence}`;intervention.append(interventionTitle,detail,leadershipList("Operating changes",brief.intervention.operatingChanges),leadershipList("Accountable commitments",brief.intervention.commitments.map(item=>`${item.ownerRole}: ${item.action} · ${item.timing}`)),leadershipList("Evidence plan",brief.intervention.evidencePlan.map(item=>`${item.evidenceClass}: ${item.measure} · ${item.observationCadence}`)));const uncertainty=document.createElement("article");const uncertaintyTitle=document.createElement("strong");uncertaintyTitle.textContent="Uncertainty kept visible";uncertainty.append(uncertaintyTitle,leadershipList("Competing explanations",brief.uncertainty.competingExplanations.map(item=>item.statement)),leadershipList("Blind spots",brief.uncertainty.blindSpots));elements.capacityBriefContent.append(focus,intervention,uncertainty);}
-async function loadGuidedPlan(){const data=await workspaceRequest(`/api/workspace/capacity-brief-guided-plan?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);elements.guidedPlan.hidden=data.state!=="active"||data.plan.status==="configured";elements.sponsorPocFeedback.hidden=data.state!=="active";elements.generateGuidedPlan.hidden=data.plan.status==="configured";elements.guidedPlanMessage.textContent=data.plan.status==="configured"?`${data.plan.actionItems} action commitments, ${data.plan.learningItems} learning items, and ${data.plan.checkIns} check-ins are configured.`:"No operating records exist yet. Generate a reviewable first draft from the accepted intervention.";}
+async function loadGuidedPlan(){const data=await workspaceRequest(`/api/workspace/capacity-brief-guided-plan?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`);elements.guidedPlan.hidden=data.state!=="active"||data.plan.status==="configured";elements.generateGuidedPlan.hidden=data.plan.status==="configured";elements.guidedPlanMessage.textContent=data.plan.status==="configured"?`${data.plan.actionItems} action commitments, ${data.plan.learningItems} learning items, and ${data.plan.checkIns} check-ins are configured.`:"No operating records exist yet. Generate a reviewable first draft from the accepted intervention.";}
 function renderCapacityAttention(data){elements.capacityBriefAttention.hidden=data.state!=="active";if(data.state!=="active")return;elements.capacityAttentionList.replaceChildren();elements.capacityAttentionHeading.textContent=data.items.length?`${data.summary.total} item${data.summary.total===1?"":"s"} require leadership attention.`:"No current leadership decision requires attention.";for(const item of data.items){const card=document.createElement("article"),title=document.createElement("strong"),summary=document.createElement("p"),decision=document.createElement("p");title.textContent=`${item.priority} priority · ${item.title}`;summary.textContent=item.summary;decision.textContent=`Decision needed: ${item.decisionNeeded||"Review the item and establish the next accountable action."}`;card.append(title,summary,decision);if(item.dueAt){const due=document.createElement("small");due.textContent=`Due ${formattedDate(item.dueAt)}`;card.append(due);}elements.capacityAttentionList.append(card);}}
 async function loadCapacityAttention(){renderCapacityAttention(await workspaceRequest(`/api/workspace/capacity-brief-attention?diagnosticId=${encodeURIComponent(selectedDiagnosticId)}`));}
 function renderAdvisorEscalations(data){elements.advisorEscalation.hidden=data.state!=="active";if(data.state!=="active")return;elements.advisorEscalationList.replaceChildren();for(const item of data.requests){const card=document.createElement("article"),title=document.createElement("strong"),context=document.createElement("p"),outcome=document.createElement("p");title.textContent=`${item.supportType} · ${item.urgency} · ${item.status}`;context.textContent=item.context;outcome.textContent=`Desired outcome: ${item.desiredOutcome}`;card.append(title,context,outcome);elements.advisorEscalationList.append(card);}const active=data.requests.some(x=>["requested","contacted"].includes(x.status));elements.advisorEscalationForm.hidden=active;elements.advisorEscalationMessage.textContent=active?"Advisor support has been requested. The existing diagnostic and intervention history remain unchanged.":"Use this only when the platform-guided route needs targeted human judgment or delivery support.";}
@@ -1786,6 +1795,7 @@ elements.diagnosticList.addEventListener("click", event => {
 elements.closeLeadershipValidation.addEventListener("click", () => {
   selectedDiagnosticId = null;
   elements.leadershipValidation.hidden = true;
+  elements.sponsorPocFeedback.hidden = true;
 });
 elements.closeInterventionAcceptance.addEventListener("click",()=>{selectedDiagnosticId=null;elements.interventionAcceptance.hidden=true;});
 elements.closeCapacityBrief.addEventListener("click",()=>{selectedDiagnosticId=null;elements.capacityBrief.hidden=true;});

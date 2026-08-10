@@ -47,7 +47,8 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
 10. **Operating Brief:** the accepted intervention becomes the shared Capacity Operating Brief with
     owners, action path, learning path, evidence plan, check-ins, review cadence, and escalation route.
 11. **POC learning:** capture checkpoint feedback separately from diagnostic evidence, complete the
-    aggregate scorecard, and record change candidates and the cohort decision.
+   aggregate scorecard, and record change candidates and the cohort decision. Follow the active
+   checkpoint and closeout sequence in `POC-Learning-Protocol.md`.
 
 ## Stop conditions
 

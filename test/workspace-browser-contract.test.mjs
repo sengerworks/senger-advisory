@@ -415,7 +415,11 @@ test("client sponsor receives only a confidentiality-gated governed finding", as
   assert.match(script, /capacity-brief-decision-history/);
   assert.match(html, /Platform-guided setup/);
   assert.match(script, /capacity-brief-guided-plan/);
-  assert.match(html, /POC checkpoint/);
+  assert.match(html, /POC learning checkpoint/);
+  assert.match(html, /value="sponsor-setup"/);
+  assert.match(html, /value="finding-release"/);
+  assert.match(html, /value="final-debrief"/);
+  assert.doesNotMatch(script, /sponsorPocFeedback\.hidden=data\.state!=="active"/);
   assert.match(html, /Optional product feedback/);
   assert.match(script, /workspace\/poc-feedback/);
   assert.match(advisorHtml, /POC scorecard/);
