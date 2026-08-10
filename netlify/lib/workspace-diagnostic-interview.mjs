@@ -27,7 +27,7 @@ export function decryptDiagnosticResponsePayload(value) {
 }
 export function validateInterviewAnswers(value,{submit=false}={}){
   if(!value||typeof value!=="object"||Object.keys(value).sort().join(",")!=="answers,diagnosticId")throw new DiagnosticInterviewInputError("Enter the diagnostic interview answers.");
-  if(!Array.isArray(value.answers)||value.answers.length>15)throw new DiagnosticInterviewInputError("The interview supports fifteen core answers.");
+  if(!Array.isArray(value.answers)||value.answers.length>18)throw new DiagnosticInterviewInputError("The interview supports eighteen core answers.");
   const answers=value.answers.map((answer,index)=>{
     if(!answer||Object.keys(answer).sort().join(",")!=="answerText,questionId")throw new DiagnosticInterviewInputError(`Answer ${index+1} is invalid.`);
     const answerText=String(answer.answerText||"").trim();
@@ -36,7 +36,7 @@ export function validateInterviewAnswers(value,{submit=false}={}){
     return{questionId:String(answer.questionId),answerText};
   });
   if(new Set(answers.map(a=>a.questionId)).size!==answers.length)throw new DiagnosticInterviewInputError("Each question can be answered once.");
-  if(submit&&answers.length!==15)throw new DiagnosticInterviewInputError("Answer all fifteen questions before submission.");
+  if(submit&&answers.length!==18)throw new DiagnosticInterviewInputError("Answer all eighteen questions before submission.");
   return{diagnosticId:String(value.diagnosticId),answers};
 }
 export async function getParticipantInterview({workspaceId,userId,diagnosticId},connectionString){

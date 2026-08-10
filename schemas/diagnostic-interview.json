@@ -4,7 +4,7 @@
   "status": "architecture-contract",
   "collectionModes": ["automated-written", "advisor-transcript"],
   "participantNoticeAcceptanceRequired": true,
-  "requiredCoreAnswers": 15,
+  "requiredCoreAnswers": 18,
   "minimumCoreAnswerCharactersAtSubmission": 40,
   "maximumCoreAnswerCharacters": 6000,
   "maximumFollowUpAnswerCharacters": 4000,

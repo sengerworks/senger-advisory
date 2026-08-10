@@ -29,17 +29,17 @@ function protocolValues(ids = recommendedProtocolTemplateIds) {
   };
 }
 
-test("compiles exactly fifteen governed questions with complete domain and evidence coverage", () => {
+test("compiles exactly eighteen governed questions with complete domain and evidence coverage", () => {
   const protocol = createDiagnosticProtocol(protocolValues(), { now, id: "protocol-1" });
-  assert.equal(protocol.questions.length, 15);
+  assert.equal(protocol.questions.length, 18);
   assert.equal(new Set(protocol.questions.map((question) => question.domainId)).size, 6);
   assert.equal(new Set(protocol.questions.map((question) => question.evidenceObjectiveId)).size, 6);
   assert.equal(protocol.status, "draft");
 });
 
 test("rejects ungoverned, duplicated, incomplete, and unsupported protocol content", () => {
-  assert.throws(() => createDiagnosticProtocol(protocolValues(recommendedProtocolTemplateIds.slice(0, 14)), { now }), /exactly 15/);
-  const duplicate = [...recommendedProtocolTemplateIds.slice(0, 14), recommendedProtocolTemplateIds[0]];
+  assert.throws(() => createDiagnosticProtocol(protocolValues(recommendedProtocolTemplateIds.slice(0, 17)), { now }), /exactly 18/);
+  const duplicate = [...recommendedProtocolTemplateIds.slice(0, 17), recommendedProtocolTemplateIds[0]];
   assert.throws(() => createDiagnosticProtocol(protocolValues(duplicate), { now }), /unique/);
   const ungoverned = protocolValues();
   ungoverned.questions[0] = { templateId: "ai-invented", questionText: "Why is leadership failing?", contextualizationNote: "" };

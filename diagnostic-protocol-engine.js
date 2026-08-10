@@ -4,7 +4,7 @@ import {
 } from "./diagnostic-question-library.js";
 
 const PROTOCOL_VERSION = "1.0.0";
-const REQUIRED_QUESTION_COUNT = 15;
+const REQUIRED_QUESTION_COUNT = 18;
 const templateById = new Map(diagnosticQuestionTemplates.map((template) => [template.id, template]));
 
 const FOLLOW_UPS = Object.freeze({

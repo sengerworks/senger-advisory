@@ -11,7 +11,7 @@ The v2 collection bridge connects an approved Diagnostic Frame and Evidence Prot
 - Participant identity remains outside the encrypted response payload.
 - Drafts and final answers are encrypted at rest.
 - Submission requires one sufficiently developed answer for every approved core question.
-- The protocol may contain 12–18 questions; no fixed 15-question assumption remains.
+- The common protocol contains exactly 18 questions; the prior variable-length and 15-question assumptions are retired.
 - Answers cannot introduce question IDs outside the approved protocol.
 - Submission locks the interview against further participant changes.
 - Withdrawal deletes encrypted response content and records only the withdrawal state and time.

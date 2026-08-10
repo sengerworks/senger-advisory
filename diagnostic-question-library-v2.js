@@ -38,7 +38,7 @@ export const diagnosticQuestionLibraryV2 = Object.freeze({
   mechanisms: Object.freeze(["priority-attention", "authority-accountability", "information-sensemaking", "coordination", "resource-capability-deployment"]),
   requiredEvidenceLayers: Object.freeze(["complexity-demand", "complexity-classification", "signal-consequence", "mechanism-evidence", "mechanism-interaction", "compensation", "formal-lived", "cross-cutting-condition", "disconfirming-evidence", "capacity-boundary", "intervention-history", "evidence-gap"]),
   researchEvidenceLayers: Object.freeze(["adaptive-observation"]),
-  minimumQuestions: 12,
+  minimumQuestions: 18,
   maximumQuestions: 18,
   equalMechanismQuestionCountRequired: false
 });

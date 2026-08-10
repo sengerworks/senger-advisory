@@ -31,12 +31,15 @@ export const recommendedProtocolTemplateIds = Object.freeze([
   "meeting-value",
   "follow-through",
   "cross-functional-handoff",
+  "tradeoff-clarity",
   "technology-workflow",
   "information-flow",
   "constructive-candor",
+  "accountability-pattern",
   "change-absorption",
   "counterexample",
-  "prior-intervention"
+  "prior-intervention",
+  "future-constraint"
 ]);
 
 export const diagnosticQuestionLibrary = Object.freeze({

@@ -77,7 +77,7 @@ Sponsors may review relevance and sensitivity but cannot rewrite the protocol to
 result. Protocol changes require a version and an audit event.
 
 `diagnostic-question-library.js` owns question-library version `1.0.0` and begins with 18
-governed templates. `diagnostic-protocol-engine.js` compiles exactly 15 unique core questions
+governed templates. `diagnostic-protocol-engine.js` compiles exactly 18 unique core questions
 for one diagnostic and requires coverage of all six capacity domains and six evidence
 objectives: operating examples, recurring patterns, consequences, enabling conditions,
 disconfirming evidence, and intervention history.
@@ -275,7 +275,7 @@ client product or evidence model.
 
 A leadership decision to reassess does not immediately produce a before-and-after result. The
 platform first creates a private reassessment plan that preserves the baseline diagnostic's
-method version, approved 15-question protocol and question-library version, and approved
+method version, approved 18-question protocol and question-library version, and approved
 perspective-coverage objectives (including explicitly accepted gaps). Those controls are
 server-derived; the sponsor supplies only a target date and planning note.
 

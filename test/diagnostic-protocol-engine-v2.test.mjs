@@ -15,7 +15,7 @@ function values(ids = recommendedDiagnosticTemplateIdsV2) {
   };
 }
 
-test("compiles a variable-length, evidence-layer-complete protocol without equal mechanism quotas", () => {
+test("compiles an eighteen-question evidence-layer-complete protocol without equal mechanism quotas", () => {
   const protocol = createDiagnosticProtocolV2(values(), frame, { now, id: "protocol-1" });
   const readiness = evaluateDiagnosticProtocolV2(protocol, frame);
   assert.equal(protocol.questions.length, 18);
@@ -29,7 +29,7 @@ test("binds protocol creation to an approved matching Diagnostic Frame", () => {
 });
 
 test("blocks approval when required evidence layers are absent", () => {
-  const ids = recommendedDiagnosticTemplateIdsV2.filter(id => id !== "capacity-compensation");
+  const ids = recommendedDiagnosticTemplateIdsV2.map(id => id === "capacity-compensation" ? "future-demand" : id);
   const protocol = createDiagnosticProtocolV2(values(ids), frame, { now, id: "protocol-1" });
   assert.deepEqual(evaluateDiagnosticProtocolV2(protocol, frame).missingEvidenceLayers, ["compensation"]);
   assert.throws(() => approveDiagnosticProtocolV2(protocol, frame, { approvalNote: "Method review is otherwise complete.", acceptedResearchLimitations: true }, { now }), /required-evidence-layers-missing/);

@@ -1,7 +1,7 @@
 {
   "questionLibraryVersion": "1.0.0",
   "status": "architecture-contract",
-  "requiredCoreQuestionCount": 15,
+  "requiredCoreQuestionCount": 18,
   "availableTemplateCount": 18,
   "requiredDomainCoverage": ["leadership", "decisions", "rhythm", "alignment", "technology", "culture"],
   "requiredEvidenceObjectiveCoverage": [

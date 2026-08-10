@@ -95,11 +95,11 @@ test("stores core and governed follow-up answers without changing the common pro
   assert.equal(protocol.questions[0].questionText, templateById.get("strategy-translation").question);
 });
 
-test("requires all fifteen sufficiently developed core answers before submission", () => {
+test("requires all eighteen sufficiently developed core answers before submission", () => {
   const protocol = approvedProtocol();
   let interview = interviewWithAnswers(protocol);
-  interview.coreAnswers = interview.coreAnswers.slice(0, 14);
-  assert.throws(() => submitDiagnosticInterview(interview, protocol, { now }), /q-15/);
+  interview.coreAnswers = interview.coreAnswers.slice(0, 17);
+  assert.throws(() => submitDiagnosticInterview(interview, protocol, { now }), /q-18/);
   interview = interviewWithAnswers(protocol);
   interview.coreAnswers[0] = { ...interview.coreAnswers[0], answerText: "Too short." };
   assert.throws(() => submitDiagnosticInterview(interview, protocol, { now }), /q-01/);
@@ -112,7 +112,7 @@ test("passes strong evidence and requests clarification when depth is insufficie
   const submitted = submitDiagnosticInterview(interviewWithAnswers(protocol), protocol, { now });
   const passed = evaluateInterviewEvidence(submitted, evaluations(protocol), { now, id: "review-1" });
   assert.equal(passed.status, "passed");
-  const shallow = evaluations(protocol, Object.fromEntries(protocol.questions.slice(0, 10).map((question) => [question.questionId, {
+  const shallow = evaluations(protocol, Object.fromEntries(protocol.questions.slice(0, 11).map((question) => [question.questionId, {
     specificity: "general",
     pattern: "unclear",
     consequenceObserved: false,

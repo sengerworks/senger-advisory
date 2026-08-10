@@ -119,7 +119,7 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /You will add names and email addresses only after the protocol is approved/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-participants"/);
   assert.match(script, /Coverage gaps need a design change or an explicit acceptance reason/);
-  assert.match(html, /Review the 15-question protocol/);
+  assert.match(html, /Review the 18-question protocol/);
   assert.match(html, /Every participant receives this same contextualized core protocol/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-protocol"/);
   assert.match(script, /Validating coverage and approving the common protocol/);
@@ -521,7 +521,7 @@ test("guided presenter demo is fictional, resettable, and disconnected from live
   assert.match(script, /Separate from this controlled demo/);
   assert.doesNotMatch(script, /pressure test|Pressure Test/);
   assert.match(script, /Your confidential diagnostic interview is complete/);
-  assert.match(script, /Question 6 of 15/);
+  assert.match(script, /Question 6 of 18/);
   assert.doesNotMatch(script, /fetch\(|workspaceRequest\(|localStorage|sessionStorage/);
   assert.match(server, /"\/workspace\/presenter-demo\.html"/);
 });

@@ -46,7 +46,7 @@ function authentication(role = WORKSPACE_ROLES.owner) {
 }
 
 test("compiles a cautious contextualized protocol without changing governed coverage", () => {
-  assert.equal(draft.questions.length, 15);
+  assert.equal(draft.questions.length, 18);
   assert.match(draft.questions[0].questionText, /approved strategic priority/i);
   assert.equal(new Set(draft.questions.map(question => question.domainId)).size, 6);
   assert.equal(new Set(draft.questions.map(question => question.evidenceObjectiveId)).size, 6);
@@ -55,7 +55,7 @@ test("compiles a cautious contextualized protocol without changing governed cove
 
 test("approval requires all governed questions and an explicit note", () => {
   const validated = validateWorkspaceDiagnosticProtocolApproval(approval, source);
-  assert.equal(validated.questions.length, 15);
+  assert.equal(validated.questions.length, 18);
   assert.throws(() => validateWorkspaceDiagnosticProtocolApproval({ ...approval, approvalNote: "" }, source), DiagnosticProtocolInputError);
   assert.throws(() => validateWorkspaceDiagnosticProtocolApproval({ ...approval, questions: approval.questions.slice(1) }, source), DiagnosticProtocolInputError);
 });
@@ -74,7 +74,7 @@ test("administrators retrieve and approve the protocol in their workspace", asyn
   });
   const response = await handler(request());
   assert.equal(response.status, 200);
-  assert.equal((await response.json()).draft.questions.length, 15);
+  assert.equal((await response.json()).draft.questions.length, 18);
   assert.equal((await handler(request("POST", approval, ""))).status, 201);
   assert.equal(approved.actorUserId, "user_owner");
 });
