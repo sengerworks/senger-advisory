@@ -134,11 +134,42 @@
 - Define Senger Advisory attribution, methodology/version control, data ownership, retention,
   and partner quality standards
 
+## Phase 7 — Organizational Capacity Intelligence System
+- Build the long-horizon intelligence layer around a governed operating sequence:
+  execution demand → operating mechanisms → observed friction → Capacity Compensation →
+  intervention → observed operating change → reassessed capacity
+- Treat structured, de-identified, longitudinal evidence—not transcripts, quotations, or raw
+  participant responses—as the foundation of the data moat
+- Preserve comparable context metadata for organization size, industry, growth stage, operating
+  model, execution demand, time horizon, and relevant complexity conditions
+- Create an intervention-intelligence model that learns which Intervention Directions and
+  operating changes appear effective, ineffective, or condition-dependent for comparable constraints
+- Develop pattern-based early-warning capabilities only after sufficient multi-organization and
+  longitudinal evidence exists; clearly separate descriptive patterns, predictive estimates, and
+  causal claims
+- Introduce governed peer-pattern and trajectory views that never expose another client,
+  participant, small segment, or reconstructable organizational record
+- Require explicit, separable consent and documented permitted use for cross-client product
+  learning, benchmarking, model evaluation, and predictive research
+- Add dataset-quality controls for method version, missingness, selection effects, intervention
+  fidelity, outcome definition, confidence, drift, and minimum comparison cohorts
+- Establish human review, model cards, evaluation thresholds, uncertainty communication, and
+  challenge pathways before predictive outputs can inform executive decisions
+- Explore decision-intelligence use cases such as acquisition absorption, AI adoption readiness,
+  scaling demands, transformation capacity, and the likely next operating constraint
+- Enable governed partner, portfolio, and enterprise intelligence products only after direct-client
+  evidence quality, confidentiality, and intervention-learning standards are proven
+
 ## Final-product destination
-The Organizational Capacity Platform becomes a co-brandable operating system that moves a
+The Organizational Capacity Platform becomes a co-brandable operating and intelligence system that moves a
 customer from a free capacity signal to a paid diagnosis, appropriately scaled intervention,
 and verified learning. Automated and advisor-led routes use one governed diagnostic method
 and produce the same client-facing Capacity Operating Brief. The platform keeps one versioned
-diagnostic, privacy, evidence, action-cycle, decision, and reassessment foundation. The
+diagnostic, privacy, evidence, action-cycle, decision, and reassessment foundation. Over time,
+that foundation supports an Organizational Capacity Intelligence System that helps leaders
+understand whether their organization can carry what strategy demands, what may constrain it
+next, and which operating changes have produced credible improvement under comparable conditions.
+Predictive and cross-client intelligence remain downstream of explicit consent, sufficient evidence,
+confidentiality protection, and demonstrated model validity. The
 canonical architecture and commercial model are documented in
 `docs/Product-Architecture-and-Vision.md`.
