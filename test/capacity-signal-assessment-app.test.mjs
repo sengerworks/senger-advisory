@@ -17,7 +17,7 @@ test("public assessment loads v2 while preserving explicit legacy entry paths", 
   assert.match(app, /signal-priority-field/);
   assert.match(app, /signal-context-selects/);
   assert.match(app, /Focus on what must become true/);
-  assert.match(html, /capacity-signal-v5/);
+  assert.match(html, /capacity-signal-v6/);
 });
 
 test("local preview serves the same Capacity Signal Assessment assets as the published site", async () => {

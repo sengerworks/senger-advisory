@@ -4,6 +4,8 @@ export const CAPACITY_SIGNAL_RESULT_VERSION = "2.0.0";
 const RESPONSE_VALUES = new Set([1, 2, 3, 4, 5]);
 const DEMAND_SOURCES = new Set([
   "growth-scale",
+  "customer-retention-experience",
+  "performance-recovery",
   "strategic-ambition",
   "organizational-change",
   "technology-ai",

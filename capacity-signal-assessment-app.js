@@ -1,7 +1,7 @@
 import {
   capacitySignalQuestionnaire,
   createCapacitySignalAssessment
-} from "./capacity-signal-assessment-engine.js";
+} from "./capacity-signal-assessment-engine.js?v=capacity-signal-v6";
 import { encryptSavedProfile } from "./saved-results-crypto.js?v=capacity-signal-v2";
 import { createPrivateResult, privateResultsEnvironment } from "./private-results-api.js";
 
@@ -65,7 +65,7 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
               <div class="signal-context-selects-heading"><h3>Define the demand</h3><p>Two selections are required. The others simply sharpen the context.</p></div>
               <label><span>What is changing the demand?</span>
                 <select name="demandSource" required>
-                  <option value="">Choose driver</option><option value="growth-scale">Growth or scale</option><option value="strategic-ambition">Strategic ambition</option><option value="organizational-change">Organizational change</option><option value="technology-ai">Technology or AI</option><option value="acquisition-reorganization">Acquisition or reorganization</option><option value="regulation-environment">Regulation or external environment</option><option value="operating-model-complexity">Operating-model complexity</option><option value="other">Another source</option>
+                  <option value="">Choose driver</option><option value="growth-scale">Growth or scale</option><option value="customer-retention-experience">Customer retention or experience</option><option value="performance-recovery">Performance recovery</option><option value="strategic-ambition">Strategic ambition</option><option value="organizational-change">Organizational change</option><option value="technology-ai">Technology or AI</option><option value="acquisition-reorganization">Acquisition or reorganization</option><option value="regulation-environment">Regulation or external environment</option><option value="operating-model-complexity">Operating-model complexity</option><option value="other">Another source</option>
                 </select>
               </label>
               <label><span>Time horizon</span>

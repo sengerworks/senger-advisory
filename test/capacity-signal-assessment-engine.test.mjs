@@ -84,6 +84,14 @@ test("rejects incomplete responses and unsupported context", () => {
   assert.throws(() => createCapacitySignalAssessment(extra), /unsupported fields/);
 });
 
+test("accepts focused customer-retention and performance-recovery demand drivers", () => {
+  for (const demandSource of ["customer-retention-experience", "performance-recovery"]) {
+    const values = input();
+    values.context.demandSource = demandSource;
+    assert.equal(createCapacitySignalAssessment(values).context.demandSource, demandSource);
+  }
+});
+
 test("policy forbids the conventional assessment outputs", () => {
   assert.equal(capacitySignalAssessmentPolicy.capacityScoreProduced, false);
   assert.equal(capacitySignalAssessmentPolicy.mechanismScoresProduced, false);
