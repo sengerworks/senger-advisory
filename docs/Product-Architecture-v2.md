@@ -316,10 +316,11 @@ The Assessment should gather a small amount of evidence across four lenses:
 The Capacity Signal Brief includes:
 
 - the execution demand selected by the respondent;
-- likely friction patterns;
-- visible or latent compensation patterns;
+- the demand driver, time horizon, and a bounded statement of why that context matters;
+- a qualified possible operating pattern connecting likely friction, visible or latent compensation, and formal-versus-lived system drift without claiming causality;
 - questions the evidence raises about the operating system;
 - plausible alternative explanations;
+- balanced decision risk covering both premature action and prolonged inaction;
 - a lightweight action that does not depend on causal certainty;
 - what the Diagnostic would need to investigate;
 - a clear statement of the Assessment’s limits.
@@ -331,6 +332,8 @@ It should not include:
 - a definitive primary constraint;
 - a prescriptive service recommendation;
 - claims about the entire organization from one respondent.
+
+The executive narrative should follow **Demand → Emerging pattern → Decision risk → Disciplined next move** and remain compact enough to function as a two-page printed brief.
 
 ### Multi-perspective use
 

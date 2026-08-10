@@ -17,7 +17,7 @@ test("public assessment loads v2 while preserving explicit legacy entry paths", 
   assert.match(app, /signal-priority-field/);
   assert.match(app, /signal-context-selects/);
   assert.match(app, /Focus on what must become true/);
-  assert.match(html, /capacity-signal-v6/);
+  assert.match(html, /capacity-signal-v7/);
 });
 
 test("local preview serves the same Capacity Signal Assessment assets as the published site", async () => {
@@ -30,6 +30,10 @@ test("public Capacity Signal Brief exposes uncertainty without scorecard output"
   const app = await source("capacity-signal-assessment-app.js");
   assert.match(app, /Similar signals can have different causes/);
   assert.match(app, /They are not five independent scores/);
+  assert.match(app, /Possible operating pattern/);
+  assert.match(app, /plausible sequence—not a causal conclusion/);
+  assert.match(app, /Decision risk/);
+  assert.match(app, /The Assessment identifies where to look/);
   assert.match(app, /does not measure Organizational Capacity/);
   assert.doesNotMatch(app, /data-overall-score|domain-score-track|primaryConstraintIds/);
 });
@@ -42,6 +46,9 @@ test("private saved v2 brief is no-indexed and remains separate from legacy resu
   ]);
   assert.match(html, /noindex,nofollow,noarchive/);
   assert.match(html, /not individual answers/);
+  assert.match(html, /Possible operating pattern/);
+  assert.match(html, /Decision risk/);
+  assert.match(html, /capacity-signal-v3/);
   assert.match(script, /schemaVersion !== "2\.0\.0"/);
   assert.match(robots, /Disallow: \/saved-capacity-signal\.html/);
 });

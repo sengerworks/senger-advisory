@@ -6,6 +6,19 @@ import { encryptSavedProfile } from "./saved-results-crypto.js?v=capacity-signal
 import { createPrivateResult, privateResultsEnvironment } from "./private-results-api.js";
 
 (() => {
+  const demandSourceCopy = {
+    "growth-scale": ["Growth or scale", "Growth is increasing the volume and complexity the organization must carry without losing execution quality."],
+    "customer-retention-experience": ["Customer retention or experience", "Customer pressure raises the urgency of improving execution without creating additional disruption for the people delivering it."],
+    "performance-recovery": ["Performance recovery", "A deteriorating result increases the urgency of restoring execution while distinguishing symptoms from the underlying operating condition."],
+    "strategic-ambition": ["Strategic ambition", "The organization is being asked to translate a consequential ambition into coordinated execution."],
+    "organizational-change": ["Organizational change", "Change is increasing the load on the operating system while roles, routines, and expectations are shifting."],
+    "technology-ai": ["Technology or AI", "Technology change is creating new execution demands across decisions, workflows, capabilities, and adoption."],
+    "acquisition-reorganization": ["Acquisition or reorganization", "Structural change is increasing interdependence while authority, information, and coordination are being reconfigured."],
+    "regulation-environment": ["Regulation or external environment", "External conditions are increasing the speed, precision, or resilience required from the organization."],
+    "operating-model-complexity": ["Operating-model complexity", "The operating model must carry greater interdependence without allowing coordination cost to overwhelm execution."],
+    other: ["Another source", "A consequential change is increasing what the organization must be able to carry."]
+  };
+  const timeHorizonCopy = { now: "Now", "next-90-days": "Next 90 days", "next-12-months": "Next 12 months", "beyond-12-months": "Beyond 12 months" };
   const parameters = new URLSearchParams(location.search);
   if (parameters.has("workspaceRound") || location.hash.startsWith("#recovery=v1.")) return;
 
@@ -88,17 +101,19 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
 
       <section class="assessment-results capacity-signal-results" data-signal-results hidden tabindex="-1">
         <div class="report-masthead"><span>Senger Advisory</span><div><strong>Capacity Signal Brief</strong><span data-signal-report-date></span></div></div>
-        <div class="signal-result-hero"><p class="eyebrow">Capacity for what?</p><h2 data-signal-priority></h2><p data-signal-context-summary></p></div>
+        <div class="signal-result-hero"><p class="eyebrow">Capacity for what?</p><h2 data-signal-priority></h2></div>
+        <div class="signal-execution-context"><div><span>Demand driver</span><strong data-signal-driver></strong></div><div><span>Time horizon</span><strong data-signal-horizon></strong></div><p data-signal-driver-meaning></p></div>
         <div class="signal-level" data-signal-demand-level></div>
 
-        <section class="report-section"><div class="report-section-heading"><p class="eyebrow">What may be happening</p><h3>Signals visible from your perspective.</h3><p>These patterns describe what may be occurring. They do not identify the cause.</p></div><div class="signal-pattern-columns"><div><h4>Friction</h4><div data-signal-friction></div></div><div><h4>Capacity Compensation</h4><div data-signal-compensation></div></div><div><h4>Formal versus lived system</h4><div data-signal-operating></div></div></div></section>
+        <section class="report-section"><div class="report-section-heading"><p class="eyebrow">Possible operating pattern</p><h3>How the visible signals may connect.</h3><p>This is a plausible sequence—not a causal conclusion.</p></div><div class="signal-pattern-columns signal-operating-pathway"><div><span class="signal-pathway-label">01 · Friction</span><h4>Execution absorbs drag</h4><div data-signal-friction></div></div><div><span class="signal-pathway-label">02 · Workarounds</span><h4>People preserve performance</h4><div data-signal-compensation></div></div><div><span class="signal-pathway-label">03 · System drift</span><h4>The lived system diverges</h4><div data-signal-operating></div></div></div></section>
 
         <section class="report-section"><div class="report-section-heading"><p class="eyebrow">Questions the evidence raises</p><h3>Where the operating system needs investigation.</h3><p>The five mechanisms organize inquiry. They are not five independent scores.</p></div><ol class="leadership-questions" data-signal-questions-raised></ol></section>
 
         <section class="report-section diagnostic-boundary"><div class="report-section-heading"><p class="eyebrow">Competing explanations</p><h3>Similar signals can have different causes.</h3></div><ul data-signal-alternatives></ul><p data-signal-boundary></p></section>
 
+        <section class="report-section signal-decision-risk"><div class="report-section-heading"><p class="eyebrow">Decision risk</p><h3>Move deliberately—not passively.</h3></div><div><article><span>Acting too quickly</span><p data-signal-risk-act></p></article><article><span>Waiting too long</span><p data-signal-risk-wait></p></article></div></section>
         <section class="report-section next-step-section"><div class="report-section-heading"><p class="eyebrow">Bounded first action</p><h3>Observe before prescribing.</h3></div><p data-signal-action></p></section>
-        <section class="report-section"><div class="report-section-heading"><p class="eyebrow">What the Diagnostic adds</p><h3>Move from a signal to a defensible organizational finding.</h3></div><p data-signal-diagnostic-need></p></section>
+        <section class="report-section signal-diagnostic-close"><div class="report-section-heading"><p class="eyebrow">What the Diagnostic adds</p><h3>Move from a signal to a defensible organizational finding.</h3></div><p><strong>The Assessment identifies where to look. The Diagnostic determines what is actually constraining execution and which intervention is warranted.</strong></p><p data-signal-diagnostic-need></p></section>
 
         <section class="private-save-panel" aria-labelledby="signal-save-title">
           <div class="report-section-heading"><p class="eyebrow">Private Saved Brief</p><h3 id="signal-save-title">Keep this brief without creating an account.</h3><p>The brief is encrypted in this browser before storage. Senger Advisory receives only ciphertext and cannot recover the brief or recovery link.</p></div>
@@ -116,7 +131,7 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
   const app = main.querySelector("[data-capacity-signal-app]");
   const form = app.querySelector("[data-signal-form]");
   const elements = Object.fromEntries([
-    "context", "question-panel", "lens-title", "lens-description", "questions", "error", "previous", "next", "results", "report-date", "priority", "context-summary", "demand-level", "friction", "compensation", "operating", "questions-raised", "alternatives", "boundary", "action", "diagnostic-need", "retake", "print", "progress-label", "progress-name", "progress-bar", "save-ack", "save", "save-status", "save-result", "save-link", "copy", "open"
+    "context", "question-panel", "lens-title", "lens-description", "questions", "error", "previous", "next", "results", "report-date", "priority", "driver", "horizon", "driver-meaning", "demand-level", "friction", "compensation", "operating", "questions-raised", "alternatives", "boundary", "risk-act", "risk-wait", "action", "diagnostic-need", "retake", "print", "progress-label", "progress-name", "progress-bar", "save-ack", "save", "save-status", "save-result", "save-link", "copy", "open"
   ].map(name => [name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase()), app.querySelector(`[data-signal-${name}]`)]));
   const responses = {};
   let step = -1;
@@ -188,7 +203,10 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
     elements.results.hidden = false;
     elements.reportDate.textContent = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(new Date(result.completedAt));
     elements.priority.textContent = result.context.executionPriority;
-    elements.contextSummary.textContent = `${result.context.demandSource.replaceAll("-", " ")} · ${result.context.timeHorizon.replaceAll("-", " ")}`;
+    const driverCopy = demandSourceCopy[result.context.demandSource] || demandSourceCopy.other;
+    elements.driver.textContent = driverCopy[0];
+    elements.horizon.textContent = timeHorizonCopy[result.context.timeHorizon] || result.context.timeHorizon.replaceAll("-", " ");
+    elements.driverMeaning.textContent = driverCopy[1];
     elements.demandLevel.innerHTML = `<span>Execution-demand signal</span><strong>${escapeHtml(result.executionDemand.evidenceLevel)}</strong><p>${result.executionDemand.dimensionsObserved.length ? `Pronounced change appears in ${escapeHtml(result.executionDemand.dimensionsObserved.join(", ").replaceAll("-", " "))}.` : "No individual complexity dimension was consistently pronounced from this perspective."}</p>`;
     elements.friction.innerHTML = patternMarkup(result.frictionPatterns, "No pronounced friction pattern surfaced from this perspective.");
     elements.compensation.innerHTML = patternMarkup(result.compensationPatterns, "No pronounced compensation pattern surfaced from this perspective.");
@@ -196,6 +214,8 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
     elements.questionsRaised.innerHTML = (result.questionsRaised.length ? result.questionsRaised : ["What evidence would show whether the operating system can carry the stated execution demand as complexity changes?"]).map(question => `<li>${escapeHtml(question)}</li>`).join("");
     elements.alternatives.innerHTML = (result.alternativeExplanations.length ? result.alternativeExplanations : ["The presenting concern may not be an Organizational Capacity problem, or the available evidence may be insufficient."]).map(explanation => `<li>${escapeHtml(explanation)}</li>`).join("");
     elements.boundary.textContent = result.boundary;
+    elements.riskAct.textContent = "Treating the visible pattern as the cause may reinforce the workarounds already carrying execution or shift pressure elsewhere in the system.";
+    elements.riskWait.textContent = "If these signals persist, coordination demands and reliance on a small number of people may continue to increase.";
     elements.action.textContent = result.boundedFirstAction;
     elements.diagnosticNeed.textContent = result.diagnosticNeed;
     elements.results.focus({ preventScroll: true });

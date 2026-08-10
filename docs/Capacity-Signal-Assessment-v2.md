@@ -17,7 +17,7 @@ The 18 items then move through four evidence lenses:
 3. Capacity Compensation
 4. Formal and lived operating-system signals
 
-The brief reports demand dimensions that appear pronounced, friction and compensation patterns, formal-versus-lived signals, operating-system questions, competing explanations, one bounded observation action, and what the Diagnostic would need to investigate.
+The brief follows an executive narrative of **Demand → Emerging pattern → Decision risk → Disciplined next move**. It reports the execution context, demand dimensions that appear pronounced, a qualified friction-to-compensation-to-system-drift pathway, operating-system questions, competing explanations, balanced decision risk, one bounded observation action, and what the Diagnostic would need to investigate. The pathway is explicitly plausible rather than causal.
 
 ## Explicit non-outputs
 
