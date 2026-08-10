@@ -204,6 +204,20 @@ test("POC opening explains the Capacity Lens before versioned participant terms"
   assert.match(privacy, /AI output does not release a finding without governed human review/);
 });
 
+test("sponsor workspace explains the full diagnostic journey before the current task", async () => {
+  const html = await readFile(new URL("../workspace/index.html", import.meta.url), "utf8");
+  const script = await readFile(new URL("../workspace/workspace.js", import.meta.url), "utf8");
+
+  assert.match(html, /data-sponsor-guide/);
+  assert.match(html, /Know the process before you begin/);
+  assert.match(html, /Start with the Sponsor Context Brief/);
+  assert.match(html, /Identify 5–10 people|Choose the perspectives/);
+  assert.match(html, /results remain hidden until at least five people respond/i);
+  assert.match(html, /href="#poc-support"/);
+  assert.ok(html.indexOf("data-sponsor-guide") < html.indexOf("id=\"current-focus\""));
+  assert.match(script, /sponsorGuide\.hidden = session\.role !== "org:admin"/);
+});
+
 test("workspace assessment submits aggregate scores without individual answers or identity", async () => {
   const html = await source("assessment.html");
   const script = await source("assessment.js");

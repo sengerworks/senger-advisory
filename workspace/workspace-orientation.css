@@ -6,6 +6,50 @@
   background: rgba(212, 91, 49, .045);
 }
 
+.sponsor-guide {
+  margin-bottom: 30px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 91, 49, .26);
+  border-radius: 21px;
+  background: #fff;
+  box-shadow: 0 18px 55px rgba(10, 25, 48, .08);
+}
+
+.sponsor-guide-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(230px, .5fr);
+  gap: 30px;
+  padding: clamp(26px, 4vw, 44px);
+  background: linear-gradient(135deg, var(--midnight) 0%, #152d4d 100%);
+  color: #fff;
+}
+.sponsor-guide-intro h3 { max-width: 680px; margin: 0 0 12px; font-family: var(--serif); font-size: clamp(1.9rem, 3.5vw, 3rem); font-weight: 500; letter-spacing: -.04em; }
+.sponsor-guide-intro p { max-width: 720px; margin: 0; color: rgba(255,255,255,.72); line-height: 1.65; }
+.sponsor-guide-intro .card-kicker { margin-bottom: 10px; color: #e1a278; }
+.sponsor-help-link { align-self: center; padding: 18px; border: 1px solid rgba(255,255,255,.2); border-radius: 14px; background: rgba(255,255,255,.07); color: #fff; text-decoration: none; }
+.sponsor-help-link strong,.sponsor-help-link span { display: block; }
+.sponsor-help-link span { margin-top: 6px; color: rgba(255,255,255,.66); font-size: .76rem; line-height: 1.5; }
+.sponsor-help-link:hover { border-color: #e1a278; background: rgba(255,255,255,.11); }
+.sponsor-learn { display: grid; grid-template-columns: minmax(230px,.7fr) 1.3fr; gap: 30px; padding: 30px clamp(26px,4vw,44px); border-bottom: 1px solid var(--line); background: #faf7f2; }
+.sponsor-learn h4 { margin: 0 0 10px; font-family: var(--serif); font-size: 1.5rem; font-weight: 600; }
+.sponsor-learn p { margin: 0; color: var(--ink-soft); line-height: 1.6; }
+.sponsor-learn dl { display: grid; gap: 9px; margin: 0; }
+.sponsor-learn dl div { display: grid; grid-template-columns: 145px 1fr; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.sponsor-learn dl div:last-child { border: 0; }
+.sponsor-learn dt { color: var(--midnight); font-weight: 800; }
+.sponsor-learn dd { margin: 0; color: var(--ink-soft); font-size: .78rem; line-height: 1.5; }
+.sponsor-journey { display: grid; grid-template-columns: repeat(2,1fr); gap: 0; padding: 18px clamp(26px,4vw,44px); }
+.sponsor-journey article { display: grid; grid-template-columns: 34px 1fr; gap: 12px; padding: 18px 16px; border-bottom: 1px solid var(--line); }
+.sponsor-journey article:nth-last-child(-n+2) { border-bottom: 0; }
+.sponsor-journey article > span { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: rgba(212,91,49,.1); color: var(--bronze-dark); font-size: .72rem; font-weight: 900; }
+.sponsor-journey strong { color: var(--midnight); }
+.sponsor-journey p { margin: 5px 0 0; color: var(--ink-soft); font-size: .78rem; line-height: 1.5; }
+.sponsor-guide-start { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px clamp(26px,4vw,44px); background: #f3eee7; }
+.sponsor-guide-start span,.sponsor-guide-start strong { display: block; }
+.sponsor-guide-start span { color: var(--ink-soft); font-size: .72rem; }
+.sponsor-guide-start strong { margin-top: 3px; color: var(--midnight); }
+.sponsor-guide-start .primary-button { text-decoration: none; }
+
 .capacity-orientation summary { cursor: pointer; color: var(--midnight); font-weight: 800; }
 .capacity-orientation[open] summary { margin-bottom: 18px; }
 .orientation-definition { display: grid; grid-template-columns: minmax(160px, .35fr) 1fr; gap: 18px; padding: 16px; border-radius: 12px; background: #fff; }
@@ -24,4 +68,10 @@
 .participant-terms-link { margin: 12px 0; font-size: .76rem; font-weight: 700; }
 
 @media (max-width: 900px) { .capacity-lenses { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 700px) { .orientation-definition,.orientation-language,.capacity-lenses { grid-template-columns: 1fr; } }
+@media (max-width: 700px) {
+  .orientation-definition,.orientation-language,.capacity-lenses,.sponsor-guide-intro,.sponsor-learn,.sponsor-journey { grid-template-columns: 1fr; }
+  .sponsor-learn dl div { grid-template-columns: 1fr; gap: 4px; }
+  .sponsor-journey article:nth-last-child(2) { border-bottom: 1px solid var(--line); }
+  .sponsor-guide-start { align-items: stretch; flex-direction: column; }
+  .sponsor-guide-start .primary-button { text-align: center; }
+}

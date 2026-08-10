@@ -84,7 +84,52 @@
           <span class="secure-state">Private &amp; threshold-protected</span>
         </div>
 
-        <div class="focus-card">
+        <section class="sponsor-guide" aria-labelledby="sponsor-guide-title" data-sponsor-guide hidden>
+          <div class="sponsor-guide-intro">
+            <div>
+              <p class="card-kicker">Learn · Your diagnostic journey</p>
+              <h3 id="sponsor-guide-title">Know the process before you begin.</h3>
+              <p>
+                The Organizational Capacity Diagnostic helps you see what is shaping execution
+                before deciding what to change. You will frame the organizational moment, choose
+                the perspectives needed to understand it, and invite confidential participation.
+              </p>
+            </div>
+            <a class="sponsor-help-link" href="#poc-support">
+              <strong>Need assistance at any point?</strong>
+              <span>Use the support form at the bottom of this page.</span>
+            </a>
+          </div>
+
+          <div class="sponsor-learn" aria-labelledby="sponsor-learn-title">
+            <div>
+              <p class="card-kicker">A short sponsor brief</p>
+              <h4 id="sponsor-learn-title">What the diagnostic is looking for</h4>
+              <p><strong>Organizational capacity</strong> is the organization’s ability to carry its commitments and complexity without disproportionate friction or unsustainable effort.</p>
+            </div>
+            <dl>
+              <div><dt>Constraint</dt><dd>A condition that disproportionately limits execution.</dd></div>
+              <div><dt>Friction</dt><dd>The visible drag as decisions, information, resources, or work move.</dd></div>
+              <div><dt>Capacity compensation</dt><dd>The heroics, escalation, meetings, and workarounds that keep performance moving while concealing strain.</dd></div>
+            </dl>
+          </div>
+
+          <div class="sponsor-journey" aria-label="Sponsor diagnostic process">
+            <article><span>1</span><div><strong>Frame the moment</strong><p>Answer six focused questions and approve the Sponsor Context Brief.</p></div></article>
+            <article><span>2</span><div><strong>Choose the perspectives</strong><p>Identify 5–10 people whose vantage points will provide depth—not just convenience.</p></div></article>
+            <article><span>3</span><div><strong>Approve the protocol</strong><p>Review the common questions created from the approved context.</p></div></article>
+            <article><span>4</span><div><strong>Send invitations</strong><p>Invite participants into their private, de-identified interview experience.</p></div></article>
+            <article><span>5</span><div><strong>Follow participation</strong><p>See progress, never individual answers. Shared results remain hidden until at least five people respond.</p></div></article>
+            <article><span>6</span><div><strong>Review the finding</strong><p>Receive the governed organizational finding and potential Intervention Directions. The POC ends before delivery begins.</p></div></article>
+          </div>
+
+          <div class="sponsor-guide-start">
+            <div><span>Ready to begin?</span><strong>Start with the Sponsor Context Brief.</strong></div>
+            <a class="primary-button" href="#current-focus">Go to your current step</a>
+          </div>
+        </section>
+
+        <div class="focus-card" id="current-focus">
           <p class="card-kicker">Current focus</p>
           <h3 data-focus-title>Prepare the first collection round.</h3>
           <p data-focus-description>
@@ -110,8 +155,8 @@
             </div>
             <span class="diagnostic-method">Method 1.0</span>
           </div>
-          <details class="capacity-orientation" open>
-            <summary>Before discovery: the Capacity Lens</summary>
+          <details class="capacity-orientation" id="capacity-language">
+            <summary>Reference: Capacity Lens terms and five areas of inquiry</summary>
             <div class="orientation-definition"><strong>Organizational capacity</strong><p>An organization’s ability to carry its current complexity and commitments without disproportionate friction or unsustainable effort.</p></div>
             <div class="orientation-language"><div><strong>Constraint</strong><span>A condition that disproportionately limits execution.</span></div><div><strong>Friction</strong><span>Observable drag as decisions, information, resources, or work move through the organization.</span></div><div><strong>Capacity Compensation</strong><span>Heroics, escalation, meetings, workarounds, or manual coordination that preserve performance while concealing strain.</span></div></div>
             <div class="capacity-lenses" aria-label="Five Capacity Lens areas"><article><strong>Priority &amp; Attention</strong><p>What receives focus, protection, and senior attention in practice.</p></article><article><strong>Authority &amp; Accountability</strong><p>Who can decide, who owns outcomes, and how follow-through occurs.</p></article><article><strong>Information &amp; Sensemaking</strong><p>How reality moves, is interpreted, and informs decisions.</p></article><article><strong>Coordination</strong><p>How dependencies, handoffs, and competing demands are resolved.</p></article><article><strong>Resource &amp; Capability Deployment</strong><p>How time, talent, tools, and capability are placed against priorities.</p></article></div>
@@ -746,7 +791,7 @@
       </div>
     </section>
 
-    <section class="poc-support" aria-labelledby="poc-support-title">
+    <section class="poc-support" id="poc-support" aria-labelledby="poc-support-title">
       <div>
         <p class="state-label">POC support</p>
         <h2 id="poc-support-title">Need help completing the workspace?</h2>

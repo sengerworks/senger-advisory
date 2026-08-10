@@ -9,6 +9,7 @@ const elements = {
   membershipState: document.querySelector("[data-membership-state]"),
   refresh: document.querySelector("[data-refresh]"),
   readyState: document.querySelector("[data-ready-state]"),
+  sponsorGuide: document.querySelector("[data-sponsor-guide]"),
   account: document.querySelector("[data-account]"),
   accountLabel: document.querySelector("[data-account-label]"),
   signOut: document.querySelector("[data-sign-out]"),
@@ -1669,6 +1670,7 @@ async function render() {
   elements.focusDescription.textContent = content.description;
   elements.primaryAction.textContent = content.action;
   elements.primaryAction.disabled = session.role !== "org:admin";
+  elements.sponsorGuide.hidden = session.role !== "org:admin";
   elements.collectionPanel.hidden = true;
   elements.diagnosticPanel.hidden = true;
   elements.participantPanel.hidden = true;
