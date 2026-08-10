@@ -555,8 +555,20 @@ function showCoverageGaps(gaps) {
   elements.approveParticipantPlan.textContent = gaps.length ? "Approve documented plan" : "Approve participant design";
 }
 
+function setPerspectiveStage(active) {
+  document.body.classList.toggle("workspace-stage-perspectives", active);
+  if (active) {
+    history.replaceState(null, "", "#perspective-design");
+    document.title = "Perspective Design | Organizational Capacity Workspace";
+    return;
+  }
+  if (location.hash === "#perspective-design") history.replaceState(null, "", location.pathname + location.search);
+  document.title = "Organizational Capacity Workspace | Senger Advisory";
+}
+
 async function openParticipantDesign(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
+  setPerspectiveStage(true);
   participantSlotMaximum = diagnosticsById.get(diagnosticId)?.entitlementType === "poc" ? 10 : 50;
   elements.diagnosticContext.hidden = true;
   elements.participantDesign.hidden = false;
@@ -1854,6 +1866,8 @@ elements.closeDiagnosticContext.addEventListener("click", () => {
 elements.closeParticipantDesign.addEventListener("click", () => {
   selectedDiagnosticId = null;
   elements.participantDesign.hidden = true;
+  setPerspectiveStage(false);
+  elements.diagnosticPanel.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 elements.closeProtocolReview.addEventListener("click", () => {
   selectedDiagnosticId = null;

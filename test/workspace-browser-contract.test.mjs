@@ -108,11 +108,11 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Five is\s+enough to proceed/);
   assert.match(html, /Participants 6–10 are optional/);
   assert.match(html, /Choose what must be represented/);
-  assert.match(html, /Plan the perspectives/);
-  assert.match(html, /Choose for insight, not convenience/);
+  assert.match(html, /Build a cohort that can reveal the system/);
+  assert.match(html, /Your goal is not a representative sample/);
   assert.match(html, /Review coverage and approve/);
   assert.match(script, /Minimum cohort reached/);
-  assert.match(html, /Identity is added only after this plan is approved/);
+  assert.match(html, /You will add names and email addresses only after the protocol is approved/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-participants"/);
   assert.match(script, /Coverage gaps need a design change or an explicit acceptance reason/);
   assert.match(html, /Review the 15-question protocol/);
@@ -229,6 +229,22 @@ test("every sponsor context response uses a specific question and neutral reflec
   assert.doesNotMatch(contextForm, /<h5>What matters most\?<\/h5>/);
   assert.doesNotMatch(contextForm, /<h5>What is at risk\?<\/h5>/);
   assert.match(contextForm, /<h5>What is most important for the organization to accomplish\?<\/h5>[\s\S]*?<span class="visually-hidden">/);
+});
+
+test("perspective design becomes a focused sponsor stage with selection guidance", async () => {
+  const html = await readFile(new URL("../workspace/index.html", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../workspace/workspace.css", import.meta.url), "utf8");
+  const script = await readFile(new URL("../workspace/workspace.js", import.meta.url), "utf8");
+
+  assert.match(html, /Build a cohort that can reveal the system/);
+  assert.match(html, /Start with the work/);
+  assert.match(html, /Look for contrast/);
+  assert.match(html, /Plan roles before names/);
+  assert.match(html, /Your goal is not a representative sample/);
+  assert.match(html, /Back to workspace/);
+  assert.match(styles, /workspace-stage-perspectives \.workspace-introduction/);
+  assert.match(script, /setPerspectiveStage\(true\)/);
+  assert.match(script, /#perspective-design/);
 });
 
 test("workspace assessment submits aggregate scores without individual answers or identity", async () => {

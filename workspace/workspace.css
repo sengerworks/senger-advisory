@@ -431,6 +431,22 @@ h2 {
 .capacity-review-list article { padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
 .capacity-review-list p { margin: 7px 0; color: var(--ink-soft); line-height: 1.55; }
 .participant-design-form { display: grid; gap: 20px; margin-top: 24px; }
+.workspace-stage-perspectives .workspace-introduction,
+.workspace-stage-perspectives .ready-heading,
+.workspace-stage-perspectives .sponsor-guide,
+.workspace-stage-perspectives .focus-card,
+.workspace-stage-perspectives .diagnostic-heading,
+.workspace-stage-perspectives .capacity-orientation,
+.workspace-stage-perspectives [data-diagnostic-message],
+.workspace-stage-perspectives .diagnostic-list,
+.workspace-stage-perspectives .diagnostic-empty,
+.workspace-stage-perspectives [data-sponsor-poc-feedback],
+.workspace-stage-perspectives .workspace-principles { display: none !important; }
+.workspace-stage-perspectives .workspace-main { padding-top: clamp(28px,5vw,58px); }
+.workspace-stage-perspectives .workspace-surface { border: 0; box-shadow: none; background: transparent; }
+.workspace-stage-perspectives .ready-state { padding: 0; }
+.workspace-stage-perspectives .diagnostic-panel { margin: 0; padding: 0; border: 0; background: transparent; }
+.workspace-stage-perspectives [data-participant-design] { max-width: 1040px; margin: 0 auto; padding: clamp(26px,4vw,48px); border-radius: 21px; background: linear-gradient(135deg,#fff 0%,#faf5ef 100%); box-shadow: 0 18px 55px rgba(10,25,48,.09); }
 .participant-design-stage { display: grid; gap: 16px; padding: clamp(20px,3vw,28px); border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.72); }
 .participant-stage-heading { display: flex; align-items: start; gap: 12px; }
 .participant-stage-heading > span { display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: #fff; font-size: .72rem; font-weight: 800; }
@@ -443,6 +459,10 @@ h2 {
 .participant-slots-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
 .participant-slots-heading div { display: grid; gap: 4px; }
 .participant-slots-heading span { color: var(--ink-soft); font-size: .76rem; }
+.perspective-design-brief { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.perspective-design-brief article { padding: 15px; border: 1px solid rgba(212,91,49,.2); border-radius: 11px; background: #fbf6f0; }
+.perspective-design-brief strong { color: var(--midnight); font-size: .78rem; }
+.perspective-design-brief p { margin: 6px 0 0; color: var(--ink-soft); font-size: .74rem; line-height: 1.5; }
 .participant-capacity { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.72); }
 .participant-capacity strong,.participant-capacity small { color: var(--ink-soft); }
 .participant-capacity > div { display: grid; grid-template-columns: 20% 80%; height: 8px; overflow: hidden; border-radius: 999px; background: #ddd7cf; }
@@ -1220,6 +1240,7 @@ h2 {
   .capacity-review-journal form { grid-template-columns: 1fr; }
   .leadership-validation-form > .diagnostic-context-confirm,.leadership-validation-form > .advisor-review-actions { grid-column: auto; }
   .participant-slot,.coverage-gap { grid-template-columns: 1fr; }
+  .perspective-design-brief { grid-template-columns: 1fr; }
   .participant-slot-labels { display: none; }
   .participant-slots-heading,.participant-readiness { align-items: stretch; flex-direction: column; }
   .diagnostic-invitation-slot { grid-template-columns: 1fr; }
