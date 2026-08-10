@@ -218,6 +218,16 @@ test("sponsor workspace explains the full diagnostic journey before the current 
   assert.match(script, /sponsorGuide\.hidden = session\.role !== "org:admin"/);
 });
 
+test("every sponsor context response uses a specific question and neutral reflective prompt", async () => {
+  const html = await readFile(new URL("../workspace/index.html", import.meta.url), "utf8");
+  const contextForm = html.match(/<form class="diagnostic-context-form"[\s\S]*?<\/form>/)?.[0] || "";
+  const textareas = [...contextForm.matchAll(/<textarea\b([^>]*)>/g)];
+
+  assert.ok(textareas.length >= 8);
+  assert.doesNotMatch(contextForm, /<span>Your answer<\/span>/);
+  for (const [, attributes] of textareas) assert.match(attributes, /placeholder="[^"]+"/);
+});
+
 test("workspace assessment submits aggregate scores without individual answers or identity", async () => {
   const html = await source("assessment.html");
   const script = await source("assessment.js");

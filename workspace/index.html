@@ -205,46 +205,46 @@
                     <option value="people-operations">People / operations</option><option value="board-advisor">Board / advisor</option>
                   </select></label>
                 </div>
-                <label class="field"><span>What should we know about your organization right now?</span><textarea name="organizationContext" maxlength="1500" required></textarea></label>
-                <label class="field"><span>What is happening that made you look into this now?</span><textarea name="triggeringConcern" maxlength="1500" required></textarea></label>
+                <label class="field"><span>What should we know about your organization right now?</span><textarea name="organizationContext" maxlength="1500" placeholder="What would help someone unfamiliar with the organization understand it today?" required></textarea></label>
+                <label class="field"><span>What is happening that made you look into this now?</span><textarea name="triggeringConcern" maxlength="1500" placeholder="Think about the moment, change, or concern that made this feel important now." required></textarea></label>
               </section>
               <section class="context-step" data-context-step hidden>
                 <p class="card-kicker">Clarify the priority</p>
                 <h5>What matters most?</h5>
                 <p>What is most important for the organization to accomplish?</p>
-                <label class="field"><span>Your answer</span><textarea name="strategicPriority" maxlength="1000" required></textarea></label>
+                <label class="field"><span>What is most important for the organization to accomplish?</span><textarea name="strategicPriority" maxlength="1000" placeholder="If the organization could accomplish one consequential thing, what would it be?" required></textarea></label>
               </section>
               <section class="context-step" data-context-step hidden>
                 <p class="card-kicker">Name the stakes</p>
                 <h5>What is at risk?</h5>
                 <p>What could be affected if this does not improve?</p>
-                <label class="field"><span>Your answer</span><textarea name="decisionsAtRisk" maxlength="1000" required></textarea></label>
+                <label class="field"><span>What could be affected if this does not improve?</span><textarea name="decisionsAtRisk" maxlength="1000" placeholder="Consider the outcomes, commitments, people, or decisions that could be affected." required></textarea></label>
               </section>
               <section class="context-step" data-context-step hidden>
                 <p class="card-kicker">Focus the diagnostic</p>
                 <h5>What decision must this inform?</h5>
                 <p>What decision do you need this diagnostic to help you make?</p>
-                <label class="field"><span>Your answer</span><textarea name="decisionNeeded" maxlength="1000" required></textarea></label>
+                <label class="field"><span>What decision do you need this diagnostic to help you make?</span><textarea name="decisionNeeded" maxlength="1000" placeholder="What choice or course of action should the findings help leadership evaluate?" required></textarea></label>
               </section>
               <section class="context-step" data-context-step hidden>
                 <p class="card-kicker">Learn from recent experience</p>
                 <h5>What has changed or already been tried?</h5>
                 <p>Help us distinguish recent movement from patterns that have persisted.</p>
-                <label class="field"><span>What has changed recently? <small>One per line, up to twelve</small></span><textarea name="recentChanges" maxlength="4800"></textarea></label>
-                <label class="field"><span>What have you already tried? What happened? <small>One per line, up to twelve</small></span><textarea name="priorInterventions" maxlength="4800"></textarea></label>
+                <label class="field"><span>What has changed recently? <small>One per line, up to twelve</small></span><textarea name="recentChanges" maxlength="4800" placeholder="What has shifted in the organization or its environment?"></textarea></label>
+                <label class="field"><span>What have you already tried? What happened? <small>One per line, up to twelve</small></span><textarea name="priorInterventions" maxlength="4800" placeholder="Think about previous efforts, what changed, and what persisted."></textarea></label>
               </section>
               <section class="context-step" data-context-step hidden>
                 <p class="card-kicker">Protect what matters</p>
                 <h5>What should we handle carefully?</h5>
                 <p>What should we be careful or thoughtful about?</p>
-                <label class="field"><span>Your answer</span><textarea name="knownSensitivities" maxlength="1000"></textarea></label>
+                <label class="field"><span>What should we be careful or thoughtful about?</span><textarea name="knownSensitivities" maxlength="1000" placeholder="Consider relationships, history, language, or circumstances that may require care."></textarea></label>
               </section>
               <section class="context-step context-review" data-context-review hidden>
                 <p class="card-kicker">Review before approval</p>
                 <h5>Does this accurately frame the moment?</h5>
                 <p>Review the context that will guide participant design. It establishes a starting point—not a predetermined finding.</p>
                 <div class="context-review-list" data-context-review-list></div>
-                <label class="field"><span>Anything else we should keep in mind? <small>Optional</small></span><textarea name="approvalNote" maxlength="500"></textarea></label>
+                <label class="field"><span>Anything else we should keep in mind? <small>Optional</small></span><textarea name="approvalNote" maxlength="500" placeholder="Add only what would help us interpret this context responsibly."></textarea></label>
                 <label class="diagnostic-context-confirm">
                   <input type="checkbox" name="approved" required />
                   <span>I approve this context as the bounded starting point—not a predetermined diagnosis.</span>
