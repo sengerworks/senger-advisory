@@ -96,7 +96,7 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /What decision do you need this diagnostic to help you make/);
   assert.match(html, /What have you already tried\? What happened/);
   assert.match(html, /Question 1 of 6/);
-  assert.match(html, /What is at risk\?/);
+  assert.match(html, /What could be affected if this does not improve\?/);
   assert.match(html, /Review before approval/);
   assert.match(script, /showDiagnosticContextStep/);
   assert.match(script, /renderDiagnosticContextReview/);
@@ -226,6 +226,9 @@ test("every sponsor context response uses a specific question and neutral reflec
   assert.ok(textareas.length >= 8);
   assert.doesNotMatch(contextForm, /<span>Your answer<\/span>/);
   for (const [, attributes] of textareas) assert.match(attributes, /placeholder="[^"]+"/);
+  assert.doesNotMatch(contextForm, /<h5>What matters most\?<\/h5>/);
+  assert.doesNotMatch(contextForm, /<h5>What is at risk\?<\/h5>/);
+  assert.match(contextForm, /<h5>What is most important for the organization to accomplish\?<\/h5>[\s\S]*?<span class="visually-hidden">/);
 });
 
 test("workspace assessment submits aggregate scores without individual answers or identity", async () => {
