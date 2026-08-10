@@ -9,6 +9,7 @@
   "scripts": {
     "test": "node --test",
     "test:poc-readiness": "node --test test/poc-golden-path-contract.test.mjs test/workspace-diagnostic-invitations-function.test.mjs test/workspace-diagnostic-interview-v2-function.test.mjs test/workspace-diagnostic-evidence-preparation-function.test.mjs test/workspace-diagnostic-evidence-review-function.test.mjs test/workspace-diagnostic-synthesis-function.test.mjs test/workspace-diagnostic-leadership-validation-function.test.mjs test/workspace-diagnostic-intervention-function.test.mjs test/workspace-diagnostic-intervention-acceptance-function.test.mjs test/workspace-poc-scorecard-v2-contract.test.mjs",
+    "test:poc-rehearsal": "node --test test/poc-five-participant-dress-rehearsal.test.mjs test/poc-golden-path-contract.test.mjs",
     "dev:workspace": "node --env-file=.env scripts/workspace-dev-server.mjs",
     "db:migrate": "node --env-file=.env scripts/apply-workspace-migrations.mjs",
     "db:link-development-workspace": "node --env-file=.env scripts/link-development-workspace.mjs",

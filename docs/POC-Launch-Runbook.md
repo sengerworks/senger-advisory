@@ -70,7 +70,9 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
   confirmation, and the absence of sponsor-visible response content.
 - Open `http://localhost:8888/workspace/advisor.html` and confirm frame, protocol, evidence review,
   synthesis, intervention, POC scorecard, and change-control access.
-- Complete one disposable five-participant rehearsal before inviting the client cohort.
+- Complete one disposable five-participant rehearsal before inviting the client cohort. The repeatable
+  rehearsal and its latest result are defined in `test/poc-five-participant-dress-rehearsal.test.mjs`
+  and recorded in `POC-Dress-Rehearsal-Record.md`.
 - Confirm the public site, sponsor workspace, participant experience, Advisor Console, Platform
   Operations, and guided demo use the same approved color, typography, wordmark, spacing, control,
   and responsive-design system.
