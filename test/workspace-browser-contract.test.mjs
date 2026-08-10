@@ -251,6 +251,17 @@ test("perspective design becomes a focused sponsor stage with selection guidance
   assert.match(script, /#perspective-design/);
 });
 
+test("sponsor protocol review forbids direct editing and requires governed question decisions", async () => {
+  const html = await readFile(new URL("../workspace/index.html", import.meta.url), "utf8");
+  const script = await readFile(new URL("../workspace/workspace.js", import.meta.url), "utf8");
+  assert.match(html, /You cannot directly edit,\s+add,\s+remove/);
+  assert.match(script, /dataApproveProtocolQuestion|approveProtocolQuestion|approve-protocol-question/i);
+  assert.match(script, /unnecessary-sensitivity/);
+  assert.match(script, /reframe-question/);
+  assert.match(script, /questionReviews/);
+  assert.doesNotMatch(script, /row\.querySelector\("textarea"\)\.value/);
+});
+
 test("workspace assessment submits aggregate scores without individual answers or identity", async () => {
   const html = await source("assessment.html");
   const script = await source("assessment.js");

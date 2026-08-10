@@ -502,9 +502,14 @@ h2 {
 .protocol-question-list { display: grid; gap: 12px; }
 .protocol-question { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .protocol-question > span { color: var(--bronze-dark); font-size: .72rem; font-weight: 800; }
-.protocol-question label { display: grid; gap: 7px; }
-.protocol-question textarea { width: 100%; min-height: 92px; padding: 11px 13px; border: 1px solid #d9d4cc; border-radius: 9px; color: var(--ink); font: inherit; resize: vertical; }
+.protocol-question > div { display: grid; gap: 8px; }
+.protocol-question p { margin: 0; color: var(--ink); line-height: 1.55; }
 .protocol-question small { color: var(--ink-soft); font-size: .7rem; }
+.protocol-question-actions { display: grid; grid-template-columns: auto minmax(190px,1fr) auto; gap: 9px; align-items: center; padding-top: 10px; border-top: 1px solid var(--line); }
+.protocol-question-actions select { min-height: 42px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+.protocol-question-state { grid-column: 1 / -1; color: var(--ink-soft); font-size: .7rem; }
+.protocol-question[data-review-state="approved"] { border-color: rgba(49,90,56,.36); background: #fbfdfb; }
+.protocol-question[data-review-state="revised"] { border-color: rgba(212,91,49,.34); }
 .diagnostic-invitation-panel { display: grid; gap: 16px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
 .diagnostic-invitation-panel h5 { margin: 3px 0 0; font-family: var(--serif); font-size: 1.45rem; font-weight: 500; }
 .diagnostic-role-note { padding: 12px 14px; border-left: 3px solid var(--bronze); background: #fff8ed; color: var(--ink-soft); font-size: .76rem; }
@@ -1252,6 +1257,9 @@ h2 {
   .capacity-review-journal form { grid-template-columns: 1fr; }
   .leadership-validation-form > .diagnostic-context-confirm,.leadership-validation-form > .advisor-review-actions { grid-column: auto; }
   .participant-slot,.coverage-gap { grid-template-columns: 1fr; }
+  .protocol-question { grid-template-columns: 1fr; }
+  .protocol-question-actions { grid-template-columns: 1fr; }
+  .protocol-question-state { grid-column: auto; }
   .perspective-method-guide { grid-template-columns: 1fr; }
   .perspective-example { grid-column: auto; }
   .perspective-example ul { grid-template-columns: 1fr; }

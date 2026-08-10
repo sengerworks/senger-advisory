@@ -205,6 +205,7 @@ let selectedRoundId = null;
 let currentParticipation = null;
 let currentNonrespondents = [];
 let selectedDiagnosticId = null;
+let protocolQuestionReviews = new Map();
 let participantSlotCount = 0;
 let interviewAutosaveTimer = null;
 let interviewDirty = false;
@@ -597,6 +598,7 @@ async function openParticipantDesign(diagnosticId) {
 
 function renderProtocolQuestions(questions) {
   elements.protocolQuestionList.replaceChildren();
+  protocolQuestionReviews = new Map();
   for (const question of questions) {
     const row = document.createElement("div");
     row.className = "protocol-question";
@@ -604,17 +606,38 @@ function renderProtocolQuestions(questions) {
     row.dataset.contextualizationNote = question.contextualizationNote;
     const number = document.createElement("span");
     number.textContent = String(question.position || elements.protocolQuestionList.children.length + 1).padStart(2, "0");
-    const label = document.createElement("label");
-    const textarea = document.createElement("textarea");
-    textarea.maxLength = 500;
-    textarea.required = true;
-    textarea.value = question.questionText;
+    const content = document.createElement("div");
+    const prompt = document.createElement("p");
+    prompt.textContent = question.questionText;
+    prompt.dataset.protocolQuestionText = "";
     const governance = document.createElement("small");
     governance.textContent = `${question.domainId} · ${question.evidenceObjectiveId} · governed template ${question.templateId}`;
-    label.append(textarea, governance);
-    row.append(number, label);
+    const actions = document.createElement("div");
+    actions.className = "protocol-question-actions";
+    const approve = document.createElement("button");
+    approve.type = "button"; approve.className = "secondary-button"; approve.dataset.approveProtocolQuestion = ""; approve.textContent = "Approve question";
+    const select = document.createElement("select");
+    select.dataset.protocolRevisionReason = "";
+    select.setAttribute("aria-label", `Reason to challenge question ${question.position}`);
+    select.innerHTML = `<option value="">Reason to request a revision</option><option value="unnecessary-sensitivity">Unnecessarily sensitive language</option><option value="organizational-terminology">Terminology does not fit</option><option value="unclear-or-complex">Unclear or overly complex</option><option value="factually-inaccurate-premise">Factually inaccurate premise</option><option value="not-applicable-across-perspectives">May not apply across perspectives</option><option value="identity-or-disclosure-risk">Identity or disclosure concern</option><option value="duplicative-wording">Appears duplicative</option>`;
+    const revise = document.createElement("button");
+    revise.type = "button"; revise.className = "text-button"; revise.dataset.reframeProtocolQuestion = ""; revise.textContent = "Ask AI to reframe";
+    const state = document.createElement("span");
+    state.className = "protocol-question-state"; state.dataset.protocolQuestionState = ""; state.textContent = "Awaiting your review";
+    actions.append(approve, select, revise, state);
+    content.append(prompt, governance, actions);
+    row.append(number, content);
     elements.protocolQuestionList.append(row);
+    protocolQuestionReviews.set(question.templateId, { templateId: question.templateId, originalQuestion: question.questionText, revisions: [], status: "pending", contextualizationNote: question.contextualizationNote });
   }
+  updateProtocolApprovalReadiness();
+}
+
+function updateProtocolApprovalReadiness() {
+  const reviews = [...protocolQuestionReviews.values()];
+  const approved = reviews.length > 0 && reviews.every(review => review.status === "approved");
+  elements.approveProtocol.disabled = !approved;
+  elements.protocolMessage.textContent = approved ? "All questions are approved. The common protocol is ready for final approval." : `${reviews.filter(review => review.status === "approved").length} of ${reviews.length} questions approved.`;
 }
 
 function perspectiveLabel(slot) {
@@ -706,7 +729,6 @@ async function openProtocolReview(diagnosticId) {
   elements.protocolApproved.hidden = !approved;
   elements.diagnosticInvitationPanel.hidden = !approved;
   renderProtocolQuestions(protocol.questions);
-  elements.protocolQuestionList.querySelectorAll("textarea").forEach(textarea => { textarea.disabled = approved; });
   elements.protocolCoverage.replaceChildren(
     ...[
       `${data.policy.requiredQuestionCount} common questions`,
@@ -1974,11 +1996,12 @@ elements.participantDesignForm.addEventListener("submit", async event => {
 elements.protocolReviewForm.addEventListener("submit", async event => {
   event.preventDefault();
   if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.protocolReviewForm.reportValidity()) return;
-  const questions = [...elements.protocolQuestionList.children].map(row => ({
-    templateId: row.dataset.templateId,
-    questionText: row.querySelector("textarea").value,
-    contextualizationNote: row.dataset.contextualizationNote
-  }));
+  const reviews = [...protocolQuestionReviews.values()];
+  if (!reviews.length || reviews.some(review => review.status !== "approved")) {
+    elements.protocolMessage.textContent = "Approve or resolve every question before approving the protocol.";
+    return;
+  }
+  const questions = reviews.map(review => ({ templateId: review.templateId, questionText: review.revisions.at(-1)?.questionText || review.originalQuestion, contextualizationNote: review.contextualizationNote }));
   elements.approveProtocol.disabled = true;
   elements.protocolMessage.textContent = "Validating coverage and approving the common protocol…";
   delete elements.protocolMessage.dataset.tone;
@@ -1988,6 +2011,7 @@ elements.protocolReviewForm.addEventListener("submit", async event => {
       body: {
         diagnosticId: selectedDiagnosticId,
         questions,
+        questionReviews: reviews.map(({ templateId, originalQuestion, revisions, status }) => ({ templateId, originalQuestion, revisions, status })),
         approvalNote: elements.protocolReviewForm.elements.approvalNote.value
       }
     });
@@ -1998,6 +2022,38 @@ elements.protocolReviewForm.addEventListener("submit", async event => {
   } finally {
     elements.approveProtocol.disabled = false;
   }
+});
+elements.protocolQuestionList.addEventListener("click", async event => {
+  const row = event.target.closest("[data-template-id]");
+  if (!row) return;
+  const review = protocolQuestionReviews.get(row.dataset.templateId);
+  if (!review) return;
+  if (event.target.closest("[data-approve-protocol-question]")) {
+    review.status = "approved";
+    row.dataset.reviewState = "approved";
+    row.querySelector("[data-protocol-question-state]").textContent = "Approved";
+    updateProtocolApprovalReadiness();
+    return;
+  }
+  const button = event.target.closest("[data-reframe-protocol-question]");
+  if (!button) return;
+  const reason = row.querySelector("[data-protocol-revision-reason]").value;
+  if (!reason) { row.querySelector("[data-protocol-question-state]").textContent = "Choose why this question needs revision."; return; }
+  if (review.revisions.length >= 3) { row.querySelector("[data-protocol-question-state]").textContent = "Revision limit reached. Contact Senger Advisory for review."; return; }
+  button.disabled = true;
+  row.querySelector("[data-protocol-question-state]").textContent = "Creating a governed reframing…";
+  try {
+    const currentQuestion = review.revisions.at(-1)?.questionText || review.originalQuestion;
+    const data = await workspaceRequest("/api/workspace/diagnostic-protocol", { method: "POST", body: { action: "reframe-question", diagnosticId: selectedDiagnosticId, templateId: review.templateId, currentQuestion, reason } });
+    review.revisions.push({ reason, questionText: data.revision.questionText, token: data.revision.token });
+    review.status = "pending";
+    row.dataset.reviewState = "revised";
+    row.querySelector("[data-protocol-question-text]").textContent = data.revision.questionText;
+    row.querySelector("[data-protocol-question-state]").textContent = "Reframed—review and approve this version.";
+    updateProtocolApprovalReadiness();
+  } catch (error) {
+    row.querySelector("[data-protocol-question-state]").textContent = error.message;
+  } finally { button.disabled = false; }
 });
 elements.diagnosticInvitationSlots.addEventListener("submit", async event => {
   event.preventDefault();

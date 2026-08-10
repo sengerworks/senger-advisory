@@ -30,6 +30,7 @@ const approval = {
     questionText: question.questionText,
     contextualizationNote: question.contextualizationNote
   })),
+  questionReviews: draft.questions.map(question => ({ templateId: question.templateId, originalQuestion: question.questionText, revisions: [], status: "approved" })),
   approvalNote: "Reviewed for neutrality, coverage, and relevance to the approved context."
 };
 
@@ -76,6 +77,26 @@ test("administrators retrieve and approve the protocol in their workspace", asyn
   assert.equal((await response.json()).draft.questions.length, 15);
   assert.equal((await handler(request("POST", approval, ""))).status, 201);
   assert.equal(approved.actorUserId, "user_owner");
+});
+
+test("sponsors can request only a bounded AI reframing of a governed question", async () => {
+  const previousKey = process.env.DIAGNOSTIC_RESPONSE_ENCRYPTION_KEY;
+  process.env.DIAGNOSTIC_RESPONSE_ENCRYPTION_KEY = "test-only-governed-revision-signing-key-123456789";
+  let received;
+  const handler = createWorkspaceDiagnosticProtocolHandler({
+    authenticate: authentication(),
+    getProtocol: async () => ({ protocol: null, draft }),
+    reframeQuestion: async value => { received = value; return "How does this priority change as it moves from direction into day-to-day work?"; }
+  });
+  const input = { action: "reframe-question", diagnosticId, templateId: draft.questions[0].templateId, currentQuestion: draft.questions[0].questionText, reason: "unnecessary-sensitivity" };
+  const response = await handler(request("POST", input, ""));
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.revision.reason, "unnecessary-sensitivity");
+  assert.ok(payload.revision.token);
+  assert.equal(received.evidenceObjectiveId, draft.questions[0].evidenceObjectiveId);
+  assert.equal((await handler(request("POST", { ...input, reason: "make-it-nicer" }, ""))).status, 400);
+  if (previousKey === undefined) delete process.env.DIAGNOSTIC_RESPONSE_ENCRYPTION_KEY; else process.env.DIAGNOSTIC_RESPONSE_ENCRYPTION_KEY = previousKey;
 });
 
 test("participants, foreign origins, invalid IDs, and lifecycle conflicts fail closed", async () => {
