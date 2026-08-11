@@ -23,6 +23,9 @@ function boundedContext(value, maximum = 180) {
 }
 
 function contextualQuestion(template, context) {
+  const scopeCue = context.diagnosticScopeName
+    ? `Use ${boundedContext(context.diagnosticScopeName, 120)} as the system being examined; include cross-boundary work where it affects execution.\n\n`
+    : "";
   const cues = {
     "strategy-translation": `Keep this approved strategic priority in view: ${boundedContext(context.strategicPriority)}\n\n`,
     "decision-example": `Keep this leadership decision in view: ${boundedContext(context.decisionNeeded)}\n\n`,
@@ -33,7 +36,7 @@ function contextualQuestion(template, context) {
       ? `Consider what has already been tried: ${boundedContext(context.priorInterventions.join("; "))}\n\n`
       : ""
   };
-  return `${cues[template.id] || ""}${template.question}`;
+  return `${scopeCue}${cues[template.id] || ""}${template.question}`;
 }
 
 export function compileWorkspaceDiagnosticProtocol({ diagnosticId, contextBriefId, participantPlanId, context }) {

@@ -889,19 +889,23 @@ function diagnosticList(value) {
   return String(value || "").split(/\n+/).map(item => item.trim()).filter(Boolean);
 }
 
-const diagnosticContextStepNames = [
-  "What is happening now?",
-  "What matters most?",
-  "What is at risk?",
-  "What decision must this inform?",
-  "What has changed or already been tried?",
-  "What should we handle carefully?"
+const diagnosticContextSteps = [
+  { label: "Orientation 1 of 2", name: "Define your vantage point" },
+  { label: "Orientation 2 of 2", name: "Define the system being examined" },
+  { label: "Question 1 of 6", name: "What is happening now?" },
+  { label: "Question 2 of 6", name: "What matters most?" },
+  { label: "Question 3 of 6", name: "What is at risk?" },
+  { label: "Question 4 of 6", name: "What decision must this inform?" },
+  { label: "Question 5 of 6", name: "What has changed or already been tried?" },
+  { label: "Question 6 of 6", name: "What should we handle carefully?" }
 ];
 let diagnosticContextStep = 0;
 
 function renderDiagnosticContextReview() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
   const summaries = [
+    ["Your vantage point", `${values.sponsorRoleTitle} · ${values.sponsorOrganizationalLevel} · ${values.sponsorFunction}\n${values.sponsorResponsibility}\nGuidance Session: ${new Date(values.guidanceSessionScheduledFor).toLocaleString()}`],
+    ["System being examined", `${values.diagnosticScopeName} · ${values.diagnosticScopeType}\nInside the inquiry: ${values.diagnosticScopeBoundary}\nBoundary dependencies: ${values.crossBoundaryDependencies}`],
     ["What is happening now?", [values.organizationContext, values.triggeringConcern].filter(Boolean).join("\n\n")],
     ["What matters most?", values.strategicPriority],
     ["What is at risk?", values.decisionsAtRisk],
@@ -927,8 +931,8 @@ function showDiagnosticContextStep(step = 0) {
   elements.contextSteps.forEach((section, index) => { section.hidden = index !== diagnosticContextStep; });
   elements.contextReview.hidden = !reviewing;
   if (reviewing) renderDiagnosticContextReview();
-  elements.contextProgressLabel.textContent = reviewing ? "Review and approve" : `Question ${diagnosticContextStep + 1} of ${elements.contextSteps.length}`;
-  elements.contextProgressName.textContent = reviewing ? "Confirm the bounded starting point" : diagnosticContextStepNames[diagnosticContextStep];
+  elements.contextProgressLabel.textContent = reviewing ? "Review and approve" : diagnosticContextSteps[diagnosticContextStep].label;
+  elements.contextProgressName.textContent = reviewing ? "Confirm the bounded starting point" : diagnosticContextSteps[diagnosticContextStep].name;
   elements.contextProgressBar.style.width = `${reviewing ? 100 : ((diagnosticContextStep + 1) / elements.contextSteps.length) * 100}%`;
   elements.contextBack.hidden = diagnosticContextStep === 0;
   elements.contextNext.hidden = reviewing;
@@ -954,7 +958,7 @@ async function openDiagnosticContext(diagnosticId) {
   elements.diagnosticContextForm.hidden = approved;
   elements.diagnosticContextApproved.hidden = !approved;
   if (approved) {
-    elements.diagnosticContextSummary.textContent = `${data.context.triggeringConcern} Decision to inform: ${data.context.decisionNeeded}`;
+    elements.diagnosticContextSummary.textContent = `${data.context.diagnosticScopeName} · ${data.context.diagnosticScopeType}. ${data.context.triggeringConcern} Decision to inform: ${data.context.decisionNeeded}`;
   } else {
     elements.diagnosticContextForm.reset();
     elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
@@ -1915,6 +1919,16 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
         diagnosticId: selectedDiagnosticId,
         organizationSizeBand: values.organizationSizeBand,
         sponsorPerspective: values.sponsorPerspective,
+        sponsorRoleTitle: values.sponsorRoleTitle,
+        sponsorOrganizationalLevel: values.sponsorOrganizationalLevel,
+        sponsorFunction: values.sponsorFunction,
+        sponsorResponsibility: values.sponsorResponsibility,
+        diagnosticScopeType: values.diagnosticScopeType,
+        diagnosticScopeName: values.diagnosticScopeName,
+        diagnosticScopeBoundary: values.diagnosticScopeBoundary,
+        crossBoundaryDependencies: values.crossBoundaryDependencies,
+        guidanceSessionScheduledFor: new Date(values.guidanceSessionScheduledFor).toISOString(),
+        guidanceSessionAcknowledged: elements.diagnosticContextForm.elements.guidanceSessionAcknowledged.checked,
         organizationContext: values.organizationContext,
         strategicPriority: values.strategicPriority,
         triggeringConcern: values.triggeringConcern,

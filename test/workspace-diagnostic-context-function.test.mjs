@@ -16,6 +16,16 @@ const input = {
   diagnosticId,
   organizationSizeBand: "50-149",
   sponsorPerspective: "founder-ceo",
+  sponsorRoleTitle: "Founder and CEO",
+  sponsorOrganizationalLevel: "enterprise",
+  sponsorFunction: "enterprise-leadership",
+  sponsorResponsibility: "Enterprise strategy, operating performance, and leadership decisions.",
+  diagnosticScopeType: "cross-functional-system",
+  diagnosticScopeName: "Market-entry execution system",
+  diagnosticScopeBoundary: "The commercial, operating, and delivery work required to enter the second market.",
+  crossBoundaryDependencies: "Founder decisions, sales commitments, delivery staffing, and client escalation.",
+  guidanceSessionScheduledFor: "2026-08-12T16:00:00.000Z",
+  guidanceSessionAcknowledged: true,
   organizationContext: "A growing services firm is adding a second operating layer.",
   strategicPriority: "Scale delivery without making every decision dependent on the founders.",
   triggeringConcern: "Client work slows when decisions cross functional boundaries.",
@@ -42,7 +52,8 @@ test("validates a bounded explicitly approved diagnostic context", () => {
   const validated = validateDiagnosticContextInput(input);
   assert.equal(validated.diagnosticId, diagnosticId);
   assert.deepEqual(validated.recentChanges, ["Added two functional leaders"]);
-  assert.equal(workspaceDiagnosticDiscoveryPolicy.discoveryVersion, "1.0.0");
+  assert.equal(workspaceDiagnosticDiscoveryPolicy.discoveryVersion, "1.1.0");
+  assert.equal(workspaceDiagnosticDiscoveryPolicy.diagnosticScopeTypes.includes("function"), true);
   assert.equal(validateDiagnosticContextId(diagnosticId), diagnosticId);
   assert.throws(() => validateDiagnosticContextId("not-a-diagnostic"), DiagnosticContextInputError);
   assert.throws(() => validateDiagnosticContextInput({ ...input, finding: "The answer" }), DiagnosticContextInputError);

@@ -16,6 +16,7 @@ const source = {
   contextBriefId: "33333333-3333-4333-8333-333333333333",
   participantPlanId: "44444444-4444-4444-8444-444444444444",
   context: {
+    diagnosticScopeName: "Market-entry execution system",
     strategicPriority: "Scale delivery without making every decision dependent on the founders.",
     decisionNeeded: "Determine which operating constraint leadership should address first.",
     recentChanges: ["Added two functional leaders"],
@@ -48,6 +49,7 @@ function authentication(role = WORKSPACE_ROLES.owner) {
 test("compiles a cautious contextualized protocol without changing governed coverage", () => {
   assert.equal(draft.questions.length, 18);
   assert.match(draft.questions[0].questionText, /approved strategic priority/i);
+  assert.match(draft.questions[0].questionText, /Market-entry execution system/);
   assert.equal(new Set(draft.questions.map(question => question.domainId)).size, 6);
   assert.equal(new Set(draft.questions.map(question => question.evidenceObjectiveId)).size, 6);
   assert.equal(workspaceDiagnosticProtocolPolicy.sameCoreProtocolForEveryParticipant, true);

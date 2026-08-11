@@ -18,6 +18,16 @@ const contextValues = {
   diagnosticId,
   organizationSizeBand: "50-149",
   sponsorPerspective: "founder-ceo",
+  sponsorRoleTitle: "Founder and CEO",
+  sponsorOrganizationalLevel: "enterprise",
+  sponsorFunction: "enterprise-leadership",
+  sponsorResponsibility: "Enterprise strategy, operating performance, and leadership decisions.",
+  diagnosticScopeType: "enterprise",
+  diagnosticScopeName: "The enterprise operating system",
+  diagnosticScopeBoundary: "All functions responsible for entering and serving the second market.",
+  crossBoundaryDependencies: "Commercial commitments, delivery capacity, and founder decision rights.",
+  guidanceSessionScheduledFor: "2026-07-29T11:00:00.000Z",
+  guidanceSessionAcknowledged: true,
   organizationContext: "A growing services organization is adding a second market.",
   strategicPriority: "Enter the second market without slowing current delivery.",
   triggeringConcern: "Routine decisions increasingly return to the founders.",
@@ -44,6 +54,7 @@ test("creates and explicitly approves a bounded Diagnostic Context Brief", () =>
   const brief = createDiagnosticContextBrief(contextValues, { now, id: "brief-1" });
   assert.equal(brief.status, "draft");
   assert.equal(brief.sponsorPerspective, "founder-ceo");
+  assert.equal(brief.diagnosticScopeType, "enterprise");
   const approved = approveDiagnosticContextBrief(brief, { approvalNote: "Sponsor confirmed the context." }, { now });
   assert.equal(approved.status, "approved");
   assert.equal(approved.approvedAt, now.toISOString());
@@ -53,6 +64,8 @@ test("creates and explicitly approves a bounded Diagnostic Context Brief", () =>
 test("rejects unsupported context fields and unbounded sponsor content", () => {
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, sponsorEmail: "sponsor@example.com" }, { now }), /unsupported fields/);
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, triggeringConcern: "" }, { now }), /Triggering concern/);
+  assert.throws(() => createDiagnosticContextBrief({ ...contextValues, diagnosticScopeBoundary: "" }, { now }), /scope boundary/i);
+  assert.throws(() => createDiagnosticContextBrief({ ...contextValues, guidanceSessionAcknowledged: false }, { now }), /Guidance Session/);
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, recentChanges: Array(13).fill("Change") }, { now }), /at most 12/);
 });
 

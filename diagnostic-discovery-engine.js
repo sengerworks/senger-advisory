@@ -1,7 +1,10 @@
-const DISCOVERY_VERSION = "1.0.0";
+const DISCOVERY_VERSION = "1.1.0";
 
 const ORGANIZATION_SIZE_BANDS = new Set(["under-25", "25-49", "50-149", "150-399", "400-plus"]);
 const SPONSOR_PERSPECTIVES = new Set(["founder-ceo", "executive", "functional-leader", "people-operations", "board-advisor"]);
+const SPONSOR_ORGANIZATIONAL_LEVELS = new Set(["enterprise", "functional", "operational", "frontline"]);
+const SPONSOR_FUNCTIONS = new Set(["enterprise-leadership", "sales", "marketing", "operations", "people", "finance", "product-service", "technology", "other"]);
+const DIAGNOSTIC_SCOPE_TYPES = new Set(["enterprise", "business-unit", "function", "leadership-layer", "cross-functional-system"]);
 const LEADERSHIP_LEVELS = new Set(["enterprise", "functional", "operational", "frontline"]);
 const EXECUTION_PROXIMITIES = new Set(["strategy", "coordination", "delivery"]);
 const FUNCTIONAL_LENSES = new Set([
@@ -35,6 +38,17 @@ function optionalText(value, name, maximum) {
   return text;
 }
 
+function requiredTimestamp(value, name) {
+  const date = new Date(String(value || ""));
+  if (!Number.isFinite(date.getTime())) throw new Error(`${name} is required.`);
+  return date.toISOString();
+}
+
+function requiredConfirmation(value, message) {
+  if (value !== true) throw new Error(message);
+  return true;
+}
+
 function exactKeys(value, allowed, name) {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${name} is required.`);
   const unexpected = Object.keys(value).filter((key) => !allowed.has(key));
@@ -65,6 +79,16 @@ export function createDiagnosticContextBrief(values, options = {}) {
     "diagnosticId",
     "organizationSizeBand",
     "sponsorPerspective",
+    "sponsorRoleTitle",
+    "sponsorOrganizationalLevel",
+    "sponsorFunction",
+    "sponsorResponsibility",
+    "diagnosticScopeType",
+    "diagnosticScopeName",
+    "diagnosticScopeBoundary",
+    "crossBoundaryDependencies",
+    "guidanceSessionScheduledFor",
+    "guidanceSessionAcknowledged",
     "organizationContext",
     "strategicPriority",
     "triggeringConcern",
@@ -83,6 +107,19 @@ export function createDiagnosticContextBrief(values, options = {}) {
     status: "draft",
     organizationSizeBand: enumValue(values.organizationSizeBand, ORGANIZATION_SIZE_BANDS, "Select a valid organization size."),
     sponsorPerspective: enumValue(values.sponsorPerspective, SPONSOR_PERSPECTIVES, "Select a valid sponsor perspective."),
+    sponsorRoleTitle: requiredText(values.sponsorRoleTitle, "Sponsor role title", 120),
+    sponsorOrganizationalLevel: enumValue(values.sponsorOrganizationalLevel, SPONSOR_ORGANIZATIONAL_LEVELS, "Select a valid organizational level."),
+    sponsorFunction: enumValue(values.sponsorFunction, SPONSOR_FUNCTIONS, "Select a valid sponsor function."),
+    sponsorResponsibility: requiredText(values.sponsorResponsibility, "Sponsor responsibility", 500),
+    diagnosticScopeType: enumValue(values.diagnosticScopeType, DIAGNOSTIC_SCOPE_TYPES, "Select a valid diagnostic scope."),
+    diagnosticScopeName: requiredText(values.diagnosticScopeName, "Diagnostic scope name", 160),
+    diagnosticScopeBoundary: requiredText(values.diagnosticScopeBoundary, "Diagnostic scope boundary", 800),
+    crossBoundaryDependencies: requiredText(values.crossBoundaryDependencies, "Cross-boundary dependencies", 800),
+    guidanceSessionScheduledFor: requiredTimestamp(values.guidanceSessionScheduledFor, "Guidance Session date"),
+    guidanceSessionAcknowledged: requiredConfirmation(
+      values.guidanceSessionAcknowledged,
+      "Confirm the required Guidance Session before approving the context."
+    ),
     organizationContext: requiredText(values.organizationContext, "Organization context", 1500),
     strategicPriority: requiredText(values.strategicPriority, "Strategic priority", 1000),
     triggeringConcern: requiredText(values.triggeringConcern, "Triggering concern", 1500),
@@ -213,6 +250,9 @@ export const diagnosticDiscovery = Object.freeze({
   version: DISCOVERY_VERSION,
   organizationSizeBands: Object.freeze([...ORGANIZATION_SIZE_BANDS]),
   sponsorPerspectives: Object.freeze([...SPONSOR_PERSPECTIVES]),
+  sponsorOrganizationalLevels: Object.freeze([...SPONSOR_ORGANIZATIONAL_LEVELS]),
+  sponsorFunctions: Object.freeze([...SPONSOR_FUNCTIONS]),
+  diagnosticScopeTypes: Object.freeze([...DIAGNOSTIC_SCOPE_TYPES]),
   leadershipLevels: Object.freeze([...LEADERSHIP_LEVELS]),
   executionProximities: Object.freeze([...EXECUTION_PROXIMITIES]),
   functionalLenses: Object.freeze([...FUNCTIONAL_LENSES])

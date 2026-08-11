@@ -350,7 +350,7 @@ h2 {
 .diagnostic-context-heading h4 { margin: 0 0 8px; font-family: var(--serif); font-size: 1.55rem; font-weight: 500; }
 .diagnostic-context-heading p { max-width: 720px; margin: 0; color: var(--ink-soft); font-size: .84rem; }
 .diagnostic-context-form { display: grid; gap: 18px; max-width: 820px; margin: 24px auto 0; }
-.diagnostic-context-form textarea,.diagnostic-context-form select { width: 100%; min-height: 48px; padding: 11px 13px; border: 1px solid #d9d4cc; border-radius: 10px; background: #fff; color: var(--ink); font: inherit; }
+.diagnostic-context-form textarea,.diagnostic-context-form select,.diagnostic-context-form input:not([type="checkbox"]) { width: 100%; min-height: 48px; padding: 11px 13px; border: 1px solid #d9d4cc; border-radius: 10px; background: #fff; color: var(--ink); font: inherit; }
 .diagnostic-context-form textarea { min-height: 150px; resize: vertical; }
 .diagnostic-context-form textarea::placeholder { color: #817b73; font-size: .82rem; font-style: italic; line-height: 1.55; opacity: 1; }
 .diagnostic-context-form .field > span { display: flex; justify-content: space-between; gap: 12px; }
@@ -365,6 +365,11 @@ h2 {
 .context-step > p:not(.card-kicker) { max-width: 620px; margin: -8px 0 4px; color: var(--ink-soft); line-height: 1.6; }
 .context-step .field { display: grid; gap: 8px; color: var(--ink); font-size: .82rem; font-weight: 800; }
 .context-field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.context-scope-note { display: grid; gap: 5px; padding: 15px 17px; border-left: 3px solid var(--bronze); border-radius: 0 9px 9px 0; background: var(--paper); color: var(--ink-soft); font-size: .78rem; line-height: 1.55; }
+.context-scope-note strong { color: var(--ink); font-size: .76rem; }
+.context-session-gate { display: grid; gap: 13px; padding: 17px; border: 1px solid rgba(212, 91, 49, .24); border-radius: 11px; background: rgba(212, 91, 49, .045); }
+.context-session-gate > div { display: grid; gap: 4px; color: var(--ink-soft); font-size: .76rem; line-height: 1.5; }
+.context-session-gate > div strong { color: var(--ink); font-size: .8rem; }
 .context-navigation { display: flex; justify-content: flex-end; gap: 12px; }
 .context-navigation [data-context-back] { margin-right: auto; }
 .context-review-list { display: grid; gap: 10px; }

@@ -1,5 +1,21 @@
 # Product Roadmap v0.1
 
+## Stewarded POC material-evolution delivery
+
+- **Phase 1 — Operating model: Complete.** Three-session journey, roles, scope, confidentiality,
+  dual outputs, release governance, evidence language, and target states are locked in
+  `docs/Stewarded-POC-Operating-Model.md`.
+- **Phase 2 — Sponsor orientation and diagnostic scoping: Complete.** Discovery version 1.1.0
+  captures the sponsor's role, organizational level, function, accountability, the system being
+  examined, its boundary and dependencies, and a required Guidance Session arrangement before the
+  six-question Context Brief can be approved.
+- **Phase 3 — Perspective and protocol governance: Next.** Use the approved scope to guide cohort
+  composition, coverage, the common 18-question protocol, controlled reframing, and steward approval.
+- **Phase 4 — OneCal scheduling gates: Planned.** Replace manual session confirmation with the
+  governed Guidance, Design, and Revelation booking experience.
+- **Phases 5–10: Planned.** Steward command center; dual synthesis outputs; release and revelation;
+  evidence-informed intervention engine; private steward walkthrough; and five-client POC readiness.
+
 ## Release 0.5 — Public launch candidate
 - Public site structure
 - Organizational Capacity Model page

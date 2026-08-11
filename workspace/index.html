@@ -186,25 +186,65 @@
             <form class="diagnostic-context-form" data-diagnostic-context-form>
               <input type="hidden" name="diagnosticId" />
               <div class="context-progress" aria-label="Diagnostic context progress">
-                <div><strong data-context-progress-label>Question 1 of 6</strong><span data-context-progress-name>What is happening now?</span></div>
+                <div><strong data-context-progress-label>Orientation 1 of 2</strong><span data-context-progress-name>Define your vantage point</span></div>
                 <div class="context-progress-track" aria-hidden="true"><span data-context-progress-bar></span></div>
               </div>
               <section class="context-step" data-context-step>
-                <p class="card-kicker">Start with the present</p>
-                <h5>What is happening now?</h5>
-                <p>Give us enough context to understand the organization and why this matters now.</p>
+                <p class="card-kicker">Begin with your vantage point</p>
+                <h5>Help us understand what you lead.</h5>
+                <p>Your role shapes the context you can see. It does not give your perspective more weight than anyone else's.</p>
                 <div class="context-field-pair">
-                  <label class="field"><span>Organization size</span><select name="organizationSizeBand" required>
-                    <option value="">Select size</option><option value="under-25">Under 25</option>
-                    <option value="25-49">25–49</option><option value="50-149">50–149</option>
-                    <option value="150-399">150–399</option><option value="400-plus">400+</option>
+                  <label class="field"><span>Your role or title</span><input name="sponsorRoleTitle" maxlength="120" placeholder="For example: President of Business Development" required /></label>
+                  <label class="field"><span>Your organizational level</span><select name="sponsorOrganizationalLevel" required>
+                    <option value="">Select level</option><option value="enterprise">Enterprise / executive</option>
+                    <option value="functional">Functional leader</option><option value="operational">Operational leader / manager</option>
+                    <option value="frontline">Frontline / individual contributor</option>
                   </select></label>
-                  <label class="field"><span>Your perspective</span><select name="sponsorPerspective" required>
+                  <label class="field"><span>Your primary function</span><select name="sponsorFunction" required>
+                    <option value="">Select function</option><option value="enterprise-leadership">Enterprise leadership</option>
+                    <option value="sales">Sales</option><option value="marketing">Marketing</option>
+                    <option value="operations">Operations</option><option value="people">People / HR</option>
+                    <option value="finance">Finance</option><option value="product-service">Product / service delivery</option>
+                    <option value="technology">Technology</option><option value="other">Another function</option>
+                  </select></label>
+                  <label class="field"><span>Your relationship to the organization</span><select name="sponsorPerspective" required>
                     <option value="">Select perspective</option><option value="founder-ceo">Founder / CEO</option>
                     <option value="executive">Executive</option><option value="functional-leader">Functional leader</option>
                     <option value="people-operations">People / operations</option><option value="board-advisor">Board / advisor</option>
                   </select></label>
                 </div>
+                <label class="field"><span>What are you accountable for?</span><textarea name="sponsorResponsibility" maxlength="500" placeholder="What outcomes, teams, decisions, or commitments ultimately sit with you?" required></textarea></label>
+                <div class="context-session-gate">
+                  <div><strong>Required Guidance Session</strong><span>Schedule the 30-minute conversation with your steward before approving the Context Brief. Direct OneCal booking will be added to this step next.</span></div>
+                  <label class="field"><span>Scheduled date and time</span><input type="datetime-local" name="guidanceSessionScheduledFor" required /></label>
+                  <label class="diagnostic-context-confirm"><input type="checkbox" name="guidanceSessionAcknowledged" required /><span>I have arranged the required Guidance Session with my steward.</span></label>
+                </div>
+              </section>
+              <section class="context-step" data-context-step hidden>
+                <p class="card-kicker">Set the diagnostic boundary</p>
+                <h5>What part of the organization should we examine?</h5>
+                <p>Choose the smallest meaningful system that can reveal how the priority is actually being executed.</p>
+                <div class="context-field-pair">
+                  <label class="field"><span>System being examined</span><select name="diagnosticScopeType" required>
+                    <option value="">Select scope</option><option value="enterprise">The enterprise</option>
+                    <option value="business-unit">A business unit</option><option value="function">A function</option>
+                    <option value="leadership-layer">A leadership layer</option><option value="cross-functional-system">A cross-functional system</option>
+                  </select></label>
+                  <label class="field"><span>Name this scope</span><input name="diagnosticScopeName" maxlength="160" placeholder="For example: Enterprise Sales or Customer Renewal" required /></label>
+                  <label class="field"><span>Organization size</span><select name="organizationSizeBand" required>
+                    <option value="">Select size</option><option value="under-25">Under 25</option>
+                    <option value="25-49">25–49</option><option value="50-149">50–149</option>
+                    <option value="150-399">150–399</option><option value="400-plus">400+</option>
+                  </select></label>
+                </div>
+                <label class="field"><span>What is inside this diagnostic?</span><textarea name="diagnosticScopeBoundary" maxlength="800" placeholder="Which teams, work, decisions, locations, or outcomes belong inside the inquiry?" required></textarea></label>
+                <label class="field"><span>Where does this work depend on people outside that boundary?</span><textarea name="crossBoundaryDependencies" maxlength="800" placeholder="Consider the handoffs, approvals, information, customers, or partner teams needed for this system to execute." required></textarea></label>
+                <aside class="context-scope-note"><strong>Depth over convenience</strong><span>A focused diagnostic can examine Sales, Marketing, or another segment—but participant perspectives must still cover the boundaries where its work succeeds or stalls.</span></aside>
+              </section>
+              <section class="context-step" data-context-step hidden>
+                <p class="card-kicker">Start with the present</p>
+                <h5>What is happening now?</h5>
+                <p>Give us enough context to understand the organization and why this matters now.</p>
                 <label class="field"><span>What should we know about your organization right now?</span><textarea name="organizationContext" maxlength="1500" placeholder="What would help someone unfamiliar with the organization understand it today?" required></textarea></label>
                 <label class="field"><span>What is happening that made you look into this now?</span><textarea name="triggeringConcern" maxlength="1500" placeholder="Think about the moment, change, or concern that made this feel important now." required></textarea></label>
               </section>

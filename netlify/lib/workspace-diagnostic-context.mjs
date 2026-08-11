@@ -6,7 +6,11 @@ import {
 import { withNeonWorkspaceTransaction } from "./neon-workspace-database.mjs";
 
 const allowedInputKeys = new Set([
-  "diagnosticId", "organizationSizeBand", "sponsorPerspective", "organizationContext",
+  "diagnosticId", "organizationSizeBand", "sponsorPerspective", "sponsorRoleTitle",
+  "sponsorOrganizationalLevel", "sponsorFunction", "sponsorResponsibility",
+  "diagnosticScopeType", "diagnosticScopeName", "diagnosticScopeBoundary",
+  "crossBoundaryDependencies", "guidanceSessionScheduledFor", "guidanceSessionAcknowledged",
+  "organizationContext",
   "strategicPriority", "triggeringConcern", "decisionsAtRisk", "recentChanges",
   "priorInterventions", "knownSensitivities", "decisionNeeded", "approvalNote"
 ]);
@@ -103,6 +107,16 @@ export async function approveWorkspaceDiagnosticContext(
     const payload = {
       organizationSizeBand: approved.organizationSizeBand,
       sponsorPerspective: approved.sponsorPerspective,
+      sponsorRoleTitle: approved.sponsorRoleTitle,
+      sponsorOrganizationalLevel: approved.sponsorOrganizationalLevel,
+      sponsorFunction: approved.sponsorFunction,
+      sponsorResponsibility: approved.sponsorResponsibility,
+      diagnosticScopeType: approved.diagnosticScopeType,
+      diagnosticScopeName: approved.diagnosticScopeName,
+      diagnosticScopeBoundary: approved.diagnosticScopeBoundary,
+      crossBoundaryDependencies: approved.crossBoundaryDependencies,
+      guidanceSessionScheduledFor: approved.guidanceSessionScheduledFor,
+      guidanceSessionAcknowledged: approved.guidanceSessionAcknowledged,
       organizationContext: approved.organizationContext,
       strategicPriority: approved.strategicPriority,
       triggeringConcern: approved.triggeringConcern,
@@ -134,6 +148,8 @@ export async function approveWorkspaceDiagnosticContext(
        VALUES ($1, $2, 'diagnostic.context-approved', 'diagnostic', $3, $4::jsonb)`,
       [workspaceId, actorUserId, approved.diagnosticId, JSON.stringify({
         discoveryVersion: approved.discoveryVersion,
+        diagnosticScopeType: approved.diagnosticScopeType,
+        guidanceSessionScheduledFor: approved.guidanceSessionScheduledFor,
         nextState: "participant-design"
       })]
     );
@@ -144,5 +160,8 @@ export async function approveWorkspaceDiagnosticContext(
 export const workspaceDiagnosticDiscoveryPolicy = Object.freeze({
   discoveryVersion: diagnosticDiscovery.version,
   organizationSizeBands: diagnosticDiscovery.organizationSizeBands,
-  sponsorPerspectives: diagnosticDiscovery.sponsorPerspectives
+  sponsorPerspectives: diagnosticDiscovery.sponsorPerspectives,
+  sponsorOrganizationalLevels: diagnosticDiscovery.sponsorOrganizationalLevels,
+  sponsorFunctions: diagnosticDiscovery.sponsorFunctions,
+  diagnosticScopeTypes: diagnosticDiscovery.diagnosticScopeTypes
 });
