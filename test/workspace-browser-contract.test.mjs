@@ -65,6 +65,7 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(server, /"\/api\/workspace\/diagnostic-evidence-review"/);
   assert.match(server, /"\/api\/workspace\/diagnostic-evidence-preparation"/);
   assert.match(server, /"\/api\/workspace\/diagnostic-synthesis"/);
+  assert.match(server, /"\/api\/workspace\/diagnostic-dual-outputs"/);
   assert.match(server, /"\/api\/workspace\/diagnostic-leadership-validation"/);
   assert.match(server, /"\/api\/workspace\/diagnostic-intervention"/);
   assert.match(server, /"\/api\/workspace\/diagnostic-intervention-acceptance"/);
@@ -431,6 +432,10 @@ test("advisor console is separate, assignment-scoped, and excludes raw interview
   assert.match(html, /data-internal-steward-tools hidden/);
   assert.doesNotMatch(advisor.match(/async function loadQueue\(\)[\s\S]*?\nasync function loadStewardSessions/)?.[0]||"", /loadIntervention|loadPocScorecard|loadPocDecisions|loadPocChanges|loadComparisonAuthoring/);
   assert.match(html, /Only advisor-approved de-identified evidence enters this draft/);
+  assert.match(html, /Two governed outputs/);
+  assert.match(html, /Executive Capacity Brief remains locked/);
+  assert.match(html, /Revelation Guide is always private/);
+  assert.match(advisor, /diagnostic-dual-outputs/);
   assert.match(html, /Advisor validation/);
   assert.match(html, /It does not release the finding or replace client leadership validation/);
   assert.match(advisor, /Competing explanations/);

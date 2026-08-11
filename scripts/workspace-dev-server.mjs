@@ -25,6 +25,7 @@ import workspaceDiagnosticEvidenceReview from "../netlify/functions/workspace-di
 import workspaceDiagnosticEvidencePreparation from "../netlify/functions/workspace-diagnostic-evidence-preparation.mjs";
 import workspaceDiagnosticAdvisorAssignments from "../netlify/functions/workspace-diagnostic-advisor-assignments.mjs";
 import workspaceDiagnosticSynthesis from "../netlify/functions/workspace-diagnostic-synthesis.mjs";
+import workspaceDiagnosticDualOutputs from "../netlify/functions/workspace-diagnostic-dual-outputs.mjs";
 import workspaceDiagnosticLeadershipValidation from "../netlify/functions/workspace-diagnostic-leadership-validation.mjs";
 import workspaceDiagnosticIntervention from "../netlify/functions/workspace-diagnostic-intervention.mjs";
 import workspaceDiagnosticInterventionAcceptance from "../netlify/functions/workspace-diagnostic-intervention-acceptance.mjs";
@@ -163,6 +164,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/diagnostic-evidence-preparation",
     "/api/workspace/diagnostic-advisor-assignments",
     "/api/workspace/diagnostic-synthesis",
+    "/api/workspace/diagnostic-dual-outputs",
     "/api/workspace/diagnostic-leadership-validation",
     "/api/workspace/diagnostic-intervention",
     "/api/workspace/diagnostic-intervention-acceptance",
@@ -248,6 +250,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceDiagnosticEvidencePreparation
       : url.pathname.endsWith("/diagnostic-advisor-assignments")
         ? workspaceDiagnosticAdvisorAssignments
+      : url.pathname.endsWith("/diagnostic-dual-outputs")
+        ? workspaceDiagnosticDualOutputs
       : url.pathname.endsWith("/diagnostic-synthesis")
         ? workspaceDiagnosticSynthesis
       : url.pathname.endsWith("/diagnostic-leadership-validation")

@@ -116,6 +116,26 @@
 .advisor-synthesis-review label { display: grid; gap: 8px; font-weight: 700; }
 .advisor-synthesis-review textarea { min-height: 110px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; font: inherit; resize: vertical; }
 .advisor-review-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.diagnostic-outputs { margin-top: 30px; padding-top: 28px; border-top: 1px solid var(--line); }
+.diagnostic-outputs-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+.diagnostic-outputs-heading > div { max-width: 760px; }
+.diagnostic-outputs-heading h2 { font-size: clamp(1.9rem,4vw,3.2rem); }
+.diagnostic-outputs-heading p:last-child { color: var(--ink-soft); line-height: 1.65; }
+.diagnostic-output-list { display: grid; gap: 22px; }
+.diagnostic-output { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.diagnostic-output > header { display: flex; justify-content: space-between; gap: 20px; padding: 20px 22px; border-bottom: 1px solid var(--line); background: var(--ivory); }
+.diagnostic-output > header h3 { margin-bottom: 4px; font-family: var(--serif); font-size: 1.55rem; font-weight: 500; }
+.diagnostic-output > header p { margin: 0; color: var(--ink-soft); font-size: .8rem; }
+.diagnostic-output-status { align-self: start; padding: 7px 9px; border-radius: 999px; background: var(--midnight); color: #fff; font-size: .68rem; font-weight: 800; text-transform: capitalize; }
+.diagnostic-output-body { display: grid; gap: 18px; padding: 22px; }
+.diagnostic-output-body section { display: block; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.diagnostic-output-body section:last-child { padding-bottom: 0; border-bottom: 0; }
+.diagnostic-output-body h4 { margin: 0 0 7px; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; }
+.diagnostic-output-body p,.diagnostic-output-body li { color: var(--ink-soft); line-height: 1.65; }
+.diagnostic-output-body ul { margin: 8px 0 0; padding-left: 20px; }
+.diagnostic-output-review { display: grid; gap: 12px; padding: 18px 22px; border-top: 1px solid var(--line); background: rgba(212,91,49,.05); }
+.diagnostic-output-review textarea { width: 100%; min-height: 82px; overflow: hidden; padding: 11px; border: 1px solid var(--line); border-radius: 8px; font: inherit; resize: none; }
+.diagnostic-output-review div { display: flex; flex-wrap: wrap; gap: 10px; }
 .advisor-intervention { margin-top: 26px; padding-top: 26px; border-top: 1px solid var(--line); }
 .advisor-intervention h2 { font-size: clamp(1.8rem, 4vw, 3rem); }
 .advisor-intervention [data-intervention-message] { color: var(--ink-soft); }
@@ -133,4 +153,4 @@
 @media (max-width: 980px) { .advisor-engagement-overview { grid-template-columns: 1fr; } .advisor-stage:not([data-advisor-stage="command"]) { grid-template-columns: 1fr; } .advisor-stage:not([data-advisor-stage="command"]) > *,.advisor-stage-guide { grid-column: 1 !important; } .advisor-stage-guide { position: static; grid-row: 2; margin-bottom: 24px; } }
 @media (max-width: 900px) { .advisor-stage-nav { position: static; grid-template-columns: 1fr 1fr; } .advisor-stage-nav button:first-child { grid-column: 1 / -1; } }
 @media (max-width: 760px) { .advisor-intervention-form,.command-center-grid { grid-template-columns: 1fr; } .advisor-evidence-plan,.advisor-intervention-submit,.advisor-intervention-form .wide { grid-column: auto; } .advisor-evidence-plan div,.frame-complexity article { grid-template-columns: 1fr; } }
-@media (max-width: 680px) { .advisor-main { width: min(100% - 20px,1120px); padding-top: 34px; } .advisor-surface { padding: 14px; } .advisor-engagement-overview dl { grid-template-columns: 1fr; } .advisor-stage-nav { grid-template-columns: 1fr; } .advisor-stage-nav button:first-child { grid-column: auto; } .command-center-heading,.command-participants article,.advisor-diagnostic,.advisor-review { align-items: stretch; flex-direction: column; } }
+@media (max-width: 680px) { .advisor-main { width: min(100% - 20px,1120px); padding-top: 34px; } .advisor-surface { padding: 14px; } .advisor-engagement-overview dl { grid-template-columns: 1fr; } .advisor-stage-nav { grid-template-columns: 1fr; } .advisor-stage-nav button:first-child { grid-column: auto; } .command-center-heading,.command-participants article,.advisor-diagnostic,.advisor-review,.diagnostic-outputs-heading,.diagnostic-output > header { align-items: stretch; flex-direction: column; } }

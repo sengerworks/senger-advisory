@@ -33,8 +33,15 @@
   protocol, protected evidence, synthesis, and revelation preparation; manual complexity
   classification, paid intervention delivery, reassessment, and POC product-governance controls are
   retained outside that role rather than exposed in the engagement workflow.
-- **Phases 6–10: Planned.** Dual synthesis outputs; release and revelation; evidence-informed
-  intervention engine; private steward walkthrough; and five-client POC readiness.
+- **Phase 6 — Governed dual synthesis outputs: Complete.** An advisor-approved synthesis produces
+  two separately persisted, tenant-isolated artifacts: a concise Executive Capacity Brief and a
+  private Steward Revelation Guide. The Brief excludes speaker notes and private evidence trace;
+  the Guide adds the talk track, evidence-strength context, organizational mechanics, uncertainty,
+  sensitive-discussion guidance, likely questions, and intervention tradeoffs. The assigned steward
+  reviews each artifact separately. Both remain locked in this phase, and the Guide is structurally
+  unavailable to the sponsor.
+- **Phases 7–10: Planned.** Deliberate release and revelation; evidence-informed intervention engine;
+  private steward walkthrough; and five-client POC readiness.
 
 ## Release 0.5 — Public launch candidate
 - Public site structure
