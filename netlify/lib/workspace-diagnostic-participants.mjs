@@ -131,6 +131,14 @@ export async function approveWorkspaceDiagnosticParticipantPlan(
     if (diagnostic.entitlement_type === "poc" && input.participantSlots.length > 10) {
       throw new DiagnosticParticipantStateError("The POC includes up to 10 participant perspectives. Activate a full diagnostic to include up to 50.");
     }
+    const designSession = await query(
+      `SELECT id,status FROM app_operations.diagnostic_steward_sessions
+       WHERE diagnostic_id=$1 AND session_type='design' AND scheduled_at=$2::timestamptz`,
+      [input.diagnosticId,input.designSessionScheduledFor]
+    );
+    if (!designSession.rowCount || designSession.rows[0].status === "cancelled") {
+      throw new DiagnosticParticipantStateError("Book and confirm the required Design Session before approving perspective coverage.");
+    }
 
     let plan = createParticipantPlan({
       diagnosticId: input.diagnosticId,

@@ -100,6 +100,14 @@ export async function approveWorkspaceDiagnosticContext(
     if (!new Set(["draft", "discovery"]).has(diagnostic.state)) {
       throw new DiagnosticContextStateError("The context brief is already complete for this diagnostic.");
     }
+    const guidanceSession = await query(
+      `SELECT id,status FROM app_operations.diagnostic_steward_sessions
+       WHERE diagnostic_id=$1 AND session_type='guidance' AND scheduled_at=$2::timestamptz`,
+      [input.diagnosticId,input.guidanceSessionScheduledFor]
+    );
+    if (!guidanceSession.rowCount || guidanceSession.rows[0].status === "cancelled") {
+      throw new DiagnosticContextStateError("Book and confirm the required Guidance Session before approving the Context Brief.");
+    }
 
     const { approvalNote, ...briefInput } = input;
     const draft = createDiagnosticContextBrief(briefInput);

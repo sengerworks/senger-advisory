@@ -60,6 +60,12 @@ const elements = {
   addParticipantSlot: document.querySelector("[data-add-participant-slot]"),
   approveParticipantPlan: document.querySelector("[data-approve-participant-plan]"),
   closeParticipantDesign: document.querySelector("[data-close-participant-design]"),
+  onecalGuidance: document.querySelector("[data-onecal-guidance]"),
+  confirmGuidanceSession: document.querySelector("[data-confirm-guidance-session]"),
+  guidanceSessionStatus: document.querySelector("[data-guidance-session-status]"),
+  onecalDesign: document.querySelector("[data-onecal-design]"),
+  confirmDesignSession: document.querySelector("[data-confirm-design-session]"),
+  designSessionStatus: document.querySelector("[data-design-session-status]"),
   protocolReview: document.querySelector("[data-protocol-review]"),
   protocolReviewForm: document.querySelector("[data-protocol-review-form]"),
   protocolQuestionList: document.querySelector("[data-protocol-question-list]"),
@@ -604,6 +610,7 @@ async function openParticipantDesign(diagnosticId) {
     participantSlotCount = 0;
     addParticipantSlot(); addParticipantSlot(); addParticipantSlot(); addParticipantSlot(); addParticipantSlot();
     showCoverageGaps([]);
+    await loadStewardSessions(diagnosticId);
   }
   elements.participantDesign.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -924,6 +931,27 @@ const diagnosticContextSteps = [
 ];
 let diagnosticContextStep = 0;
 
+async function loadStewardSessions(diagnosticId) {
+  const data=await workspaceRequest(`/api/workspace/diagnostic-steward-sessions?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  for(const type of ["guidance","design"]){
+    const link=type==="guidance"?elements.onecalGuidance:elements.onecalDesign;
+    link.hidden=!data.bookingLinks[type];if(data.bookingLinks[type])link.href=data.bookingLinks[type];
+    const session=data.sessions.find(item=>item.sessionType===type&&item.status!=="cancelled");
+    if(!session)continue;
+    const form=type==="guidance"?elements.diagnosticContextForm:elements.participantDesignForm;
+    const checkbox=form.elements[`${type}SessionAcknowledged`],status=type==="guidance"?elements.guidanceSessionStatus:elements.designSessionStatus;
+    form.elements[`${type}SessionScheduledFor`].value=new Date(new Date(session.scheduledAt).getTime()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
+    checkbox.checked=true;status.textContent=`${type[0].toUpperCase()+type.slice(1)} Session recorded for ${new Date(session.scheduledAt).toLocaleString()}.`;
+  }
+}
+
+async function recordStewardSession(type){
+  const form=type==="guidance"?elements.diagnosticContextForm:elements.participantDesignForm;
+  const field=form.elements[`${type}SessionScheduledFor`],status=type==="guidance"?elements.guidanceSessionStatus:elements.designSessionStatus;
+  if(!field.reportValidity())return;status.textContent="Recording the confirmed OneCal booking…";
+  try{const data=await workspaceRequest("/api/workspace/diagnostic-steward-sessions",{method:"POST",body:{diagnosticId:selectedDiagnosticId,sessionType:type,scheduledAt:new Date(field.value).toISOString()}});form.elements[`${type}SessionAcknowledged`].checked=true;status.textContent=`Booking recorded for ${new Date(data.session.scheduledAt).toLocaleString()}.`;}catch(error){status.textContent=error.message;}
+}
+
 function renderDiagnosticContextReview() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
   const summaries = [
@@ -986,6 +1014,7 @@ async function openDiagnosticContext(diagnosticId) {
     elements.diagnosticContextForm.reset();
     elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
     showDiagnosticContextStep(0);
+    await loadStewardSessions(diagnosticId);
   }
   elements.diagnosticContext.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -1923,6 +1952,8 @@ elements.closeProtocolReview.addEventListener("click", () => {
   elements.protocolReview.hidden = true;
 });
 elements.addParticipantSlot.addEventListener("click", () => addParticipantSlot());
+elements.confirmGuidanceSession.addEventListener("click",()=>recordStewardSession("guidance"));
+elements.confirmDesignSession.addEventListener("click",()=>recordStewardSession("design"));
 elements.contextNext.addEventListener("click", () => {
   if (!validateDiagnosticContextStep()) return;
   showDiagnosticContextStep(diagnosticContextStep + 1);

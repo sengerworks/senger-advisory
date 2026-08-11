@@ -1,0 +1,2 @@
+import test from "node:test";import assert from "node:assert/strict";import{readFile}from"node:fs/promises";
+test("steward sessions are tenant-isolated and audit-ready",async()=>{const sql=await readFile(new URL("../db/migrations/042_governed_steward_sessions.sql",import.meta.url),"utf8");assert.match(sql,/guidance','design','revelation/);assert.match(sql,/UNIQUE \(workspace_id, diagnostic_id, session_type\)/);assert.match(sql,/ENABLE ROW LEVEL SECURITY/);assert.match(sql,/FORCE ROW LEVEL SECURITY/);assert.match(sql,/completed_by_clerk_user_id/);});

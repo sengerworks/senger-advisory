@@ -215,9 +215,11 @@
                 </div>
                 <label class="field"><span>What are you accountable for?</span><textarea name="sponsorResponsibility" maxlength="500" placeholder="What outcomes, teams, decisions, or commitments ultimately sit with you?" required></textarea></label>
                 <div class="context-session-gate">
-                  <div><strong>Required Guidance Session</strong><span>Schedule the 30-minute conversation with your steward before approving the Context Brief. Direct OneCal booking will be added to this step next.</span></div>
+                  <div><strong>Required Guidance Session</strong><span>Book the 30-minute conversation in OneCal, then record the confirmed time below. The Context Brief remains gated until the booking is recorded.</span></div>
+                  <a class="secondary-button" data-onecal-guidance target="_blank" rel="noopener" hidden>Choose a time in OneCal</a>
                   <label class="field"><span>Scheduled date and time</span><input type="datetime-local" name="guidanceSessionScheduledFor" required /></label>
-                  <label class="diagnostic-context-confirm"><input type="checkbox" name="guidanceSessionAcknowledged" required /><span>I have arranged the required Guidance Session with my steward.</span></label>
+                  <button class="secondary-button" type="button" data-confirm-guidance-session>Record confirmed booking</button>
+                  <label class="diagnostic-context-confirm"><input type="checkbox" name="guidanceSessionAcknowledged" required disabled /><span data-guidance-session-status>Book and record the Guidance Session to continue.</span></label>
                 </div>
               </section>
               <section class="context-step" data-context-step hidden>
@@ -394,9 +396,11 @@
                 <div data-coverage-gap-list></div>
               </div>
               <div class="context-session-gate">
-                <div><strong>Required Design Session</strong><span>Schedule the 30-minute conversation with your steward before approving perspective coverage. Direct OneCal booking will replace this confirmation in Phase 4.</span></div>
+                <div><strong>Required Design Session</strong><span>Book the 30-minute working session in OneCal, then record the confirmed time. Perspective approval remains gated until the booking is recorded.</span></div>
+                <a class="secondary-button" data-onecal-design target="_blank" rel="noopener" hidden>Choose a time in OneCal</a>
                 <label class="field"><span>Scheduled date and time</span><input type="datetime-local" name="designSessionScheduledFor" required /></label>
-                <label class="diagnostic-context-confirm"><input type="checkbox" name="designSessionAcknowledged" required /><span>I have arranged the required Design Session with my steward.</span></label>
+                <button class="secondary-button" type="button" data-confirm-design-session>Record confirmed booking</button>
+                <label class="diagnostic-context-confirm"><input type="checkbox" name="designSessionAcknowledged" required disabled /><span data-design-session-status>Book and record the Design Session to continue.</span></label>
               </div>
               <label class="field"><span>Approval note</span><textarea name="approvalNote" maxlength="500"></textarea></label>
               <label class="diagnostic-context-confirm">

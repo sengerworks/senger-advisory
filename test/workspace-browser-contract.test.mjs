@@ -47,6 +47,7 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(server, /"\/api\/workspace\/diagnostic-protocol-v2"/);
   assert.match(server, /workspace-diagnostic-protocol-sponsor-review-v2\.mjs/);
   assert.match(server, /"\/api\/workspace\/diagnostic-protocol-sponsor-review-v2"/);
+  assert.match(server, /"\/api\/workspace\/diagnostic-steward-sessions"/);
   assert.match(server, /import workspaceDiagnosticParticipants/);
   assert.match(server, /"\/api\/workspace\/diagnostic-participants"/);
   assert.match(server, /import workspaceDiagnosticProtocol/);
@@ -100,6 +101,8 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Orientation 1 of 2/);
   assert.match(html, /Help us understand what you lead/);
   assert.match(html, /Required Guidance Session/);
+  assert.match(html, /Choose a time in OneCal/);
+  assert.match(script, /diagnostic-steward-sessions/);
   assert.match(html, /guidanceSessionScheduledFor/);
   assert.match(html, /What part of the organization should we examine/);
   assert.match(html, /Depth over convenience/);

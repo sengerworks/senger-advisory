@@ -14,8 +14,11 @@
   sponsors may approve or request controlled AI reframing but cannot freely edit questions; the
   assigned steward separately finalizes the exact protocol before Platform Operations may activate
   invitations. Sponsor, steward, and participants therefore govern one immutable question set.
-- **Phase 4 — OneCal scheduling gates: Planned.** Replace manual session confirmation with the
-  governed Guidance, Design, and Revelation booking experience.
+- **Phase 4 — OneCal scheduling gates: Complete for POC.** Configured OneCal booking links now lead
+  directly from the sponsor journey into Guidance, Design, and Revelation scheduling. The platform
+  owns a tenant-isolated session record, gates Context and perspective approval on that record, and
+  requires an assigned steward to attest completion. OneCal API/webhook verification remains a
+  post-validation automation upgrade; the POC does not falsely claim provider-verified attendance.
 - **Phases 5–10: Planned.** Steward command center; dual synthesis outputs; release and revelation;
   evidence-informed intervention engine; private steward walkthrough; and five-client POC readiness.
 
