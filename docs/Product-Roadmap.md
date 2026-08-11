@@ -40,7 +40,14 @@
   sensitive-discussion guidance, likely questions, and intervention tradeoffs. The assigned steward
   reviews each artifact separately. Both remain locked in this phase, and the Guide is structurally
   unavailable to the sponsor.
-- **Phases 7–10: Planned.** Deliberate release and revelation; evidence-informed intervention engine;
+- **Phase 7 — Deliberate release and sponsor Brief access: Complete.** Release now independently
+  verifies complete threshold-qualified collection, cleared evidence review, separate approval of
+  both outputs, an active steward assignment, and a scheduled Revelation Session. Only the Executive
+  Capacity Brief becomes sponsor-visible and downloadable. A POC release creates a 30-day access and
+  download window; activation of a paid diagnostic or intervention entitlement converts access to
+  permanent. Expired POC access fails closed, the Revelation Guide remains private, and sponsor
+  notification is explicitly recorded as ready for delivery rather than falsely reported as sent.
+- **Phases 8–10: Planned.** Evidence-informed intervention engine;
   private steward walkthrough; and five-client POC readiness.
 
 ## Release 0.5 — Public launch candidate

@@ -24,7 +24,9 @@ function nextAction(source){
   if(!source.executiveBrief||!source.revelationGuide)return{code:"prepare-dual-outputs",owner:"steward",label:"Prepare the locked Executive Capacity Brief and private Revelation Guide."};
   if(source.executiveBrief.advisor_review_status==="revision-required"||source.revelationGuide.advisor_review_status==="revision-required")return{code:"revise-dual-outputs",owner:"steward",label:"Resolve the requested output revisions before revelation preparation."};
   if(source.executiveBrief.advisor_review_status!=="approved"||source.revelationGuide.advisor_review_status!=="approved")return{code:"review-dual-outputs",owner:"steward",label:"Review and approve both governed synthesis outputs."};
-  if(!source.validation)return{code:"prepare-revelation",owner:"steward",label:"Prepare the sponsor-facing revelation and validation step."};
+  if(!session.has("revelation")||session.get("revelation")==="cancelled")return{code:"schedule-revelation",owner:"sponsor-steward",label:"Schedule the 30-minute Revelation Session before sponsor release."};
+  if(source.executiveBrief.status!=="released")return{code:"release-executive-brief",owner:"steward",label:"Deliberately release the Executive Capacity Brief to the sponsor."};
+  if(!source.validation)return{code:"prepare-revelation",owner:"steward",label:"Conduct the sponsor revelation and capture leadership validation."};
   return{code:"advance",owner:"steward",label:"Advance the next governed POC gate."};
 }
 

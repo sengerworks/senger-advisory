@@ -82,6 +82,8 @@ const elements = {
   invitationReadiness: document.querySelector("[data-invitation-readiness]"),
   leadershipValidation: document.querySelector("[data-leadership-validation]"),
   leadershipReleaseState: document.querySelector("[data-leadership-release-state]"),
+  executiveCapacityBrief: document.querySelector("[data-executive-capacity-brief]"),
+  downloadExecutiveBrief: document.querySelector("[data-download-executive-brief]"),
   leadershipFinding: document.querySelector("[data-leadership-finding]"),
   leadershipValidationForm: document.querySelector("[data-leadership-validation-form]"),
   leadershipValidationMessage: document.querySelector("[data-leadership-validation-message]"),
@@ -791,6 +793,24 @@ function leadershipList(titleText, values) {
   return section;
 }
 
+function renderExecutiveCapacityBrief(brief) {
+  elements.executiveCapacityBrief.replaceChildren();
+  const sections = [
+    ["Capacity for what?", [brief.capacityForWhat?.commitment, brief.capacityForWhat?.successDefinition]],
+    ["Current capacity fit", [brief.currentCapacityFit?.statement, brief.currentCapacityFit?.confidenceBasis]],
+    ["What the evidence suggests", (brief.themes || []).map(theme => `${theme.title}: ${theme.summary}`)],
+    ["Business exposure", brief.businessExposure || []],
+    ["Evidence-informed direction", [brief.evidenceInformedDirection]],
+    ["Uncertainty retained", [brief.uncertainty?.statement]]
+  ];
+  for (const [title, values] of sections) elements.executiveCapacityBrief.append(leadershipList(title, values.filter(Boolean)));
+  const confidentiality = document.createElement("p");
+  confidentiality.className = "leadership-intervention-direction";
+  confidentiality.textContent = brief.confidentialityStatement;
+  elements.executiveCapacityBrief.append(confidentiality);
+  elements.executiveCapacityBrief.hidden = false;
+}
+
 async function openLeadershipValidation(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
   elements.diagnosticContext.hidden = true;
@@ -798,11 +818,25 @@ async function openLeadershipValidation(diagnosticId) {
   elements.protocolReview.hidden = true;
   elements.leadershipValidation.hidden = false;
   elements.leadershipFinding.hidden = true;
+  elements.executiveCapacityBrief.hidden = true;
+  elements.downloadExecutiveBrief.hidden = true;
   elements.leadershipValidationForm.hidden = true;
   elements.leadershipFinding.replaceChildren();
   elements.leadershipValidationMessage.textContent = "Checking collection and confidentiality gates…";
-  const data = await workspaceRequest(`/api/workspace/diagnostic-leadership-validation?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  const briefData = await workspaceRequest(`/api/workspace/diagnostic-executive-brief?diagnosticId=${encodeURIComponent(diagnosticId)}`);
   elements.sponsorPocFeedback.hidden = true;
+  if (briefData.state !== "available") {
+    elements.leadershipReleaseState.textContent = briefData.state === "expired" ? "Your online POC Brief access has ended. A paid engagement restores permanent sponsor access." : "Your steward has not released the Executive Capacity Brief yet.";
+    elements.leadershipReleaseState.dataset.state = "withheld";
+    elements.leadershipValidationMessage.textContent = briefData.state === "expired" ? "The 30-day POC access and download window has closed." : "You will be notified when the Brief is ready for your Revelation Session.";
+    elements.leadershipValidation.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  renderExecutiveCapacityBrief(briefData.brief);
+  elements.downloadExecutiveBrief.hidden = false;
+  elements.downloadExecutiveBrief.dataset.diagnosticId = diagnosticId;
+  const accessLabel = briefData.access.permanent ? "Permanent sponsor access" : `POC access and download through ${new Date(briefData.access.expiresAt).toLocaleDateString()}`;
+  const data = await workspaceRequest(`/api/workspace/diagnostic-leadership-validation?diagnosticId=${encodeURIComponent(diagnosticId)}`);
   if (data.state !== "ready") {
     const reason = data.reason === "advisor-validation"
       ? "The protected synthesis still requires advisor approval."
@@ -815,7 +849,7 @@ async function openLeadershipValidation(diagnosticId) {
     elements.leadershipValidation.scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
-  elements.leadershipReleaseState.textContent = `${data.confidentiality.completed} completed perspectives · Identity protected · Raw responses excluded`;
+  elements.leadershipReleaseState.textContent = `${data.confidentiality.completed} completed perspectives · Identity protected · Raw responses excluded · ${accessLabel}`;
   elements.leadershipReleaseState.dataset.state = "ready";
   const hypothesis = document.createElement("article");
   const heading = document.createElement("strong");
@@ -1889,6 +1923,7 @@ elements.closeLeadershipValidation.addEventListener("click", () => {
   elements.leadershipValidation.hidden = true;
   elements.sponsorPocFeedback.hidden = true;
 });
+elements.downloadExecutiveBrief.addEventListener("click",async()=>{const diagnosticId=elements.downloadExecutiveBrief.dataset.diagnosticId;if(!diagnosticId)return;elements.downloadExecutiveBrief.disabled=true;try{const token=await clerk?.session?.getToken({organizationId:clerk?.organization?.id});const response=await fetch(`/api/workspace/diagnostic-executive-brief?diagnosticId=${encodeURIComponent(diagnosticId)}&download=1`,{credentials:"same-origin",headers:{...(token?{Authorization:`Bearer ${token}`}:{})}});if(!response.ok){const payload=await response.json().catch(()=>({}));throw new Error(payload.error||"The Brief could not be downloaded.");}const blob=await response.blob(),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download="executive-capacity-brief.html";document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);}catch(error){elements.leadershipValidationMessage.textContent=error.message;}finally{elements.downloadExecutiveBrief.disabled=false;}});
 elements.closeInterventionAcceptance.addEventListener("click",()=>{selectedDiagnosticId=null;elements.interventionAcceptance.hidden=true;});
 elements.closeCapacityBrief.addEventListener("click",()=>{selectedDiagnosticId=null;elements.capacityBrief.hidden=true;});
 elements.activateCapacityBrief.addEventListener("click",async()=>{if(!selectedDiagnosticId)return;elements.activateCapacityBrief.disabled=true;elements.capacityBriefMessage.textContent="Verifying the accepted intervention and activating the Brief…";try{const data=await workspaceRequest("/api/workspace/capacity-operating-brief",{method:"POST",body:{diagnosticId:selectedDiagnosticId}});renderCapacityBrief(data.brief);elements.activateCapacityBrief.hidden=true;await loadCapacityActions();await loadCapacityCheckIns();await loadCapacityLearning();await loadCapacityEvidence();await loadCapacityReviews();elements.capacityBriefMessage.textContent=`Brief ${data.brief.briefVersion} active · Next review ${data.brief.nextReview.cadence}`;await loadDiagnostics();}catch(error){elements.capacityBriefMessage.textContent=error.message;elements.activateCapacityBrief.disabled=false;}});

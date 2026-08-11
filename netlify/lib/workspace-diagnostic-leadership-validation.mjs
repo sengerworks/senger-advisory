@@ -69,10 +69,16 @@ export async function getLeadershipValidationView({ workspaceId, diagnosticId },
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const findingResult = await query(
       `SELECT finding.id, finding.record_payload, finding.confidence, finding.status,
-              finding.advisor_review_status, diagnostic.entitlement_type
+              finding.advisor_review_status, diagnostic.entitlement_type,
+              brief.status AS brief_status,brief.access_mode,brief.access_expires_at,
+              EXISTS (SELECT 1 FROM app_shared.commercial_entitlements entitlement
+                WHERE entitlement.diagnostic_id=finding.diagnostic_id AND entitlement.status='active'
+                  AND entitlement.entitlement_kind IN ('diagnostic','intervention')) AS paid_entitlement_active
        FROM app_shared.diagnostic_findings finding
        JOIN app_shared.diagnostics diagnostic
          ON diagnostic.workspace_id = finding.workspace_id AND diagnostic.id = finding.diagnostic_id
+       LEFT JOIN app_shared.diagnostic_executive_briefs brief
+         ON brief.workspace_id=finding.workspace_id AND brief.diagnostic_id=finding.diagnostic_id
        WHERE finding.diagnostic_id = $1 LIMIT 1`,
       [diagnosticId]
     );
@@ -80,6 +86,11 @@ export async function getLeadershipValidationView({ workspaceId, diagnosticId },
     if (!finding || finding.advisor_review_status !== "approved") {
       return Object.freeze({ state: "withheld", reason: "advisor-validation", requiredCompleted: DIAGNOSTIC_CONFIDENTIALITY_FLOOR });
     }
+    const briefAccessActive = finding.brief_status === "released" && (
+      finding.access_mode === "permanent" || finding.paid_entitlement_active ||
+      (finding.access_mode === "poc-window" && finding.access_expires_at && new Date(finding.access_expires_at).getTime() > Date.now())
+    );
+    if (!briefAccessActive) return Object.freeze({ state: "withheld", reason: finding.brief_status === "released" ? "brief-access-expired" : "steward-release", requiredCompleted: DIAGNOSTIC_CONFIDENTIALITY_FLOOR });
     const progress = await query(
       `SELECT
          count(*) FILTER (WHERE slot.clerk_user_id IS NOT NULL AND slot.revoked_at IS NULL)::integer AS assigned,
@@ -136,12 +147,20 @@ export async function getLeadershipValidationView({ workspaceId, diagnosticId },
 export async function recordLeadershipValidation({ workspaceId, userId, input, now = new Date() }, connectionString) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const findingResult = await query(
-      `SELECT id, advisor_review_status FROM app_shared.diagnostic_findings
-       WHERE diagnostic_id = $1 AND status = 'draft' FOR UPDATE`,
+      `SELECT finding.id,finding.advisor_review_status,brief.status AS brief_status,brief.access_mode,brief.access_expires_at,
+              EXISTS (SELECT 1 FROM app_shared.commercial_entitlements entitlement
+                WHERE entitlement.diagnostic_id=finding.diagnostic_id AND entitlement.status='active'
+                  AND entitlement.entitlement_kind IN ('diagnostic','intervention')) AS paid_entitlement_active
+       FROM app_shared.diagnostic_findings finding
+       LEFT JOIN app_shared.diagnostic_executive_briefs brief
+         ON brief.workspace_id=finding.workspace_id AND brief.diagnostic_id=finding.diagnostic_id
+       WHERE finding.diagnostic_id = $1 AND finding.status = 'draft' FOR UPDATE OF finding`,
       [input.diagnosticId]
     );
     const finding = findingResult.rows[0];
     if (!finding || finding.advisor_review_status !== "approved") throw new LeadershipValidationStateError("The finding is not ready for leadership validation.");
+    const briefAccessActive = finding.brief_status === "released" && (finding.access_mode === "permanent" || finding.paid_entitlement_active || (finding.access_mode === "poc-window" && finding.access_expires_at && new Date(finding.access_expires_at).getTime() > now.getTime()));
+    if (!briefAccessActive) throw new LeadershipValidationStateError("The Executive Capacity Brief must be deliberately released and accessible before leadership validation.");
     const progress = await query(
       `SELECT
          count(*) FILTER (WHERE slot.clerk_user_id IS NOT NULL AND slot.revoked_at IS NULL)::integer AS assigned,

@@ -187,7 +187,7 @@ contract; later phases implement and migrate them without weakening existing gat
 | `collecting` | Confidential interviews are open | Required slots resolved and confidentiality floor met |
 | `synthesizing` | Protected evidence is being reviewed | Disclosure, sufficiency, and steward-quality gates pass |
 | `revelation-required` | Dual outputs are ready but sponsor Brief is locked | Revelation Session scheduled |
-| `released` | Steward has deliberately released the Executive Capacity Brief | Sponsor review and response |
+| `released` | Steward has deliberately released the Executive Capacity Brief | Sponsor review within permanent paid access or the 30-day POC access and download window |
 | `poc-complete` | Revelation and POC learning are complete | Paid next step or closed POC |
 
 Scheduling metadata does not itself prove that a meeting occurred. Session completion requires a
@@ -198,7 +198,8 @@ release requirements independently.
 ## Phase 1 completion boundary
 
 Phase 1 locked this model in architecture and operating documentation. Subsequent delivery has now
-implemented OneCal scheduling gates, the privacy-governed steward command center, and separately
-persisted Executive Capacity Brief and private Steward Revelation Guide outputs. Sponsor-release
-controls, the evidence-informed intervention engine, the private steward walkthrough, and five-client
-readiness remain governed by the later roadmap phases.
+implemented OneCal scheduling gates, the privacy-governed steward command center, separately
+persisted Executive Capacity Brief and private Steward Revelation Guide outputs, and deliberate
+sponsor release with a server-enforced 30-day POC window or permanent paid access. The
+evidence-informed intervention engine, private steward walkthrough, and five-client readiness remain
+governed by the later roadmap phases.

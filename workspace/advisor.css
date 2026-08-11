@@ -121,6 +121,8 @@
 .diagnostic-outputs-heading > div { max-width: 760px; }
 .diagnostic-outputs-heading h2 { font-size: clamp(1.9rem,4vw,3.2rem); }
 .diagnostic-outputs-heading p:last-child { color: var(--ink-soft); line-height: 1.65; }
+.diagnostic-output-release { margin-top: 22px; padding: 20px; border: 1px solid var(--line); border-left: 4px solid var(--orange); display: flex; align-items: center; justify-content: space-between; gap: 24px; background: var(--ivory); }
+.diagnostic-output-release p { margin: 6px 0 0; color: var(--ink-soft); }
 .diagnostic-output-list { display: grid; gap: 22px; }
 .diagnostic-output { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
 .diagnostic-output > header { display: flex; justify-content: space-between; gap: 20px; padding: 20px 22px; border-bottom: 1px solid var(--line); background: var(--ivory); }
@@ -153,4 +155,4 @@
 @media (max-width: 980px) { .advisor-engagement-overview { grid-template-columns: 1fr; } .advisor-stage:not([data-advisor-stage="command"]) { grid-template-columns: 1fr; } .advisor-stage:not([data-advisor-stage="command"]) > *,.advisor-stage-guide { grid-column: 1 !important; } .advisor-stage-guide { position: static; grid-row: 2; margin-bottom: 24px; } }
 @media (max-width: 900px) { .advisor-stage-nav { position: static; grid-template-columns: 1fr 1fr; } .advisor-stage-nav button:first-child { grid-column: 1 / -1; } }
 @media (max-width: 760px) { .advisor-intervention-form,.command-center-grid { grid-template-columns: 1fr; } .advisor-evidence-plan,.advisor-intervention-submit,.advisor-intervention-form .wide { grid-column: auto; } .advisor-evidence-plan div,.frame-complexity article { grid-template-columns: 1fr; } }
-@media (max-width: 680px) { .advisor-main { width: min(100% - 20px,1120px); padding-top: 34px; } .advisor-surface { padding: 14px; } .advisor-engagement-overview dl { grid-template-columns: 1fr; } .advisor-stage-nav { grid-template-columns: 1fr; } .advisor-stage-nav button:first-child { grid-column: auto; } .command-center-heading,.command-participants article,.advisor-diagnostic,.advisor-review,.diagnostic-outputs-heading,.diagnostic-output > header { align-items: stretch; flex-direction: column; } }
+@media (max-width: 680px) { .advisor-main { width: min(100% - 20px,1120px); padding-top: 34px; } .advisor-surface { padding: 14px; } .advisor-engagement-overview dl { grid-template-columns: 1fr; } .advisor-stage-nav { grid-template-columns: 1fr; } .advisor-stage-nav button:first-child { grid-column: auto; } .command-center-heading,.command-participants article,.advisor-diagnostic,.advisor-review,.diagnostic-outputs-heading,.diagnostic-output > header,.diagnostic-output-release { align-items: stretch; flex-direction: column; } }

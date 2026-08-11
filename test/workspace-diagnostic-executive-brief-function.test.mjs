@@ -1,0 +1,18 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { WORKSPACE_ROLES } from "../workspace-authorization.js";
+import { createWorkspaceDiagnosticExecutiveBriefHandler } from "../netlify/functions/workspace-diagnostic-executive-brief.mjs";
+import { executiveBriefHtml, ExecutiveBriefReleaseStateError, POC_BRIEF_ACCESS_DAYS } from "../netlify/lib/workspace-diagnostic-executive-brief.mjs";
+
+const diagnosticId="11111111-1111-4111-8111-111111111111";
+const auth=role=>async()=>({ok:true,value:{workspaceId:"22222222-2222-4222-8222-222222222222",userId:"user_test",role}});
+const request=(method="GET",body=null,suffix="")=>new Request(`https://example.test/api/workspace/diagnostic-executive-brief?diagnosticId=${diagnosticId}${suffix}`,{method,headers:body?{"content-type":"application/json"}:undefined,body:body?JSON.stringify(body):undefined});
+const available={state:"available",brief:{title:"Executive Capacity Brief",themes:[],businessExposure:[],uncertainty:{}},access:{mode:"poc-window",expiresAt:"2026-09-10T00:00:00.000Z",permanent:false,downloadAvailable:true}};
+
+test("only the sponsor can view or download a released Brief",async()=>{const sponsor=createWorkspaceDiagnosticExecutiveBriefHandler({authenticate:auth(WORKSPACE_ROLES.owner),get:async()=>available});assert.equal((await sponsor(request())).status,200);const download=await sponsor(request("GET",null,"&download=1"));assert.equal(download.status,200);assert.match(download.headers.get("content-disposition"),/executive-capacity-brief\.html/);assert.doesNotMatch(await download.text(),/Revelation Guide|talkTrack/);const participant=createWorkspaceDiagnosticExecutiveBriefHandler({authenticate:auth(WORKSPACE_ROLES.participant)});assert.equal((await participant(request())).status,403);});
+
+test("assigned steward deliberately releases while participants fail closed",async()=>{let released=false;const handler=createWorkspaceDiagnosticExecutiveBriefHandler({authenticate:auth("advisor"),release:async()=>{released=true;return available;}});assert.equal((await handler(request("POST",{diagnosticId}))).status,200);assert.equal(released,true);const participant=createWorkspaceDiagnosticExecutiveBriefHandler({authenticate:auth(WORKSPACE_ROLES.participant)});assert.equal((await participant(request("POST",{diagnosticId}))).status,403);});
+
+test("release errors and expired downloads remain closed",async()=>{const blocked=createWorkspaceDiagnosticExecutiveBriefHandler({authenticate:auth("advisor"),release:async()=>{throw new ExecutiveBriefReleaseStateError("Schedule the Revelation Session before release.");}});assert.equal((await blocked(request("POST",{diagnosticId}))).status,409);const expired=createWorkspaceDiagnosticExecutiveBriefHandler({authenticate:auth(WORKSPACE_ROLES.owner),get:async()=>({state:"expired"})});assert.equal((await expired(request("GET",null,"&download=1"))).status,410);assert.equal(POC_BRIEF_ACCESS_DAYS,30);});
+
+test("download artifact is de-identified and sponsor-facing",()=>{const html=executiveBriefHtml({title:"Executive Capacity Brief",capacityForWhat:{commitment:"Protect renewals"},currentCapacityFit:{statement:"Coordination friction",confidence:"bounded"},themes:[{title:"Handoffs",summary:"Work stalls across boundaries",confidence:"strong"}],businessExposure:["Renewal risk"],evidenceInformedDirection:"Clarify the gate",uncertainty:{statement:"Alternative explanations remain"},confidentialityStatement:"De-identified"});assert.match(html,/Protect renewals|Handoffs|De-identified/);assert.doesNotMatch(html,/participant response|speaker notes|talkTrack/i);});

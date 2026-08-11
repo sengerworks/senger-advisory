@@ -101,7 +101,10 @@ sourcing, operating cadence, or reassessment.
 Exit gate: leadership can explain the diagnosed constraint, why it is believed, what remains
 uncertain, and why the Intervention Directions are relevant. The platform clearly identifies the
 paid activation boundary, preserves the sponsor's released Brief, and keeps the Revelation Guide
-private.
+private. During the POC, the sponsor may view and download the Brief for 30 days after release. A
+paid diagnostic or intervention entitlement converts sponsor access to permanent; absent conversion,
+online access and platform download end when the window expires, while any copy already downloaded
+by the sponsor remains theirs.
 
 ### 6. Debrief and commercial decision
 
