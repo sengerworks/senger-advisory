@@ -85,9 +85,19 @@ test("workspace browser uses server configuration and minimized session endpoint
 test("advisor console presents a threshold-governed steward command center", async () => {
   const html = await source("workspace/advisor.html");
   const script = await source("workspace/advisor.js");
+  const styles = await source("workspace/advisor.css");
   const service = await source("netlify/lib/workspace-steward-command-center.mjs");
   assert.match(html, /Steward command center/);
   assert.match(html, /Answers and evidence never appear here/);
+  assert.match(html, /data-stage-button="command"/);
+  assert.match(html, /data-stage-button="frame"/);
+  assert.match(html, /data-stage-button="protocol"/);
+  assert.match(html, /data-stage-button="evidence"/);
+  assert.match(html, /data-stage-button="synthesis"/);
+  assert.match(script, /function showStage/);
+  assert.match(script, /function markCurrentStage/);
+  assert.match(styles, /\.steward-command-center[^}]+background:\s*var\(--midnight\)/);
+  assert.doesNotMatch(styles, /var\(--navy\)/);
   assert.match(script, /\/api\/workspace\/steward-command-center/);
   assert.match(script, /accepted invite/);
   assert.match(service, /contentIntelligenceThreshold:5/);

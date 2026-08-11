@@ -24,7 +24,9 @@
   follow-up, confidentiality readiness, evidence-review load, and threshold-safe emerging
   intelligence. Participant identity is limited to operational follow-up; raw answers never enter
   the command center, and content-derived intelligence remains server-withheld below five completed
-  interviews.
+  interviews. The advisor experience separates Command Center, Frame, Protocol, Evidence, and
+  Synthesis into focused stage views, with the current governed stage identified in persistent
+  navigation rather than presenting the entire operating workbench on one page.
 - **Phases 6–10: Planned.** Dual synthesis outputs; release and revelation; evidence-informed
   intervention engine; private steward walkthrough; and five-client POC readiness.
 

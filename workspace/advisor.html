@@ -25,13 +25,24 @@
       <div data-advisor-sign-in></div>
       <section data-advisor-console hidden>
         <div class="advisor-assignment" data-advisor-assignment></div>
+        <nav class="advisor-stage-nav" aria-label="Steward workflow" data-advisor-stage-nav>
+          <button type="button" data-stage-button="command" aria-controls="advisor-stage-command"><span>01</span><strong>Command Center</strong><small>Monitor and advance</small></button>
+          <button type="button" data-stage-button="frame" aria-controls="advisor-stage-frame"><span>02</span><strong>Frame</strong><small>Guide and define</small></button>
+          <button type="button" data-stage-button="protocol" aria-controls="advisor-stage-protocol"><span>03</span><strong>Protocol</strong><small>Review and finalize</small></button>
+          <button type="button" data-stage-button="evidence" aria-controls="advisor-stage-evidence"><span>04</span><strong>Evidence</strong><small>Prepare and govern</small></button>
+          <button type="button" data-stage-button="synthesis" aria-controls="advisor-stage-synthesis"><span>05</span><strong>Synthesis</strong><small>Interpret and direct</small></button>
+        </nav>
+        <div class="advisor-stage" id="advisor-stage-command" data-advisor-stage="command">
         <section class="steward-command-center" data-command-center>
           <div class="command-center-heading"><div><p class="card-kicker">Steward command center</p><h2>Keep the diagnostic moving without compromising confidentiality.</h2></div><button class="text-button" type="button" data-refresh-command-center>Refresh</button></div>
-          <article class="command-center-next"><span>Next governed move</span><strong data-command-next-action>Loading…</strong><small data-command-next-owner></small></article>
+          <article class="command-center-next"><span>Next governed move</span><strong data-command-next-action>Loading…</strong><small data-command-next-owner></small><button class="command-center-open" type="button" data-open-current-stage>Open current stage</button></article>
           <div class="advisor-progress" data-command-progress></div>
           <div class="command-center-grid"><section><h3>Participation follow-up</h3><p>Identity appears only for operational follow-up. Answers and evidence never appear here.</p><div class="command-participants" data-command-participants></div></section><section><h3>Confidentiality and intelligence</h3><div data-command-threshold></div><div class="command-clusters" data-command-clusters></div></section></div>
           <p class="form-message" data-command-message></p>
         </section>
+        </div>
+        <div class="advisor-stage" id="advisor-stage-frame" data-advisor-stage="frame" hidden>
+          <header class="advisor-stage-heading"><p class="card-kicker">Stage 2 · Frame</p><h2>Define the inquiry before collecting evidence.</h2><p>Complete the human guidance gates, then convert approved sponsor context into a bounded Diagnostic Frame.</p></header>
         <section class="advisor-frame" data-steward-sessions>
           <div><p class="card-kicker">Stewarded sessions</p><h2>Confirm the human governance gates.</h2><p>Scheduled sessions appear here without participant content. After each conversation, record completion so the diagnostic retains an auditable human-stewardship trail.</p></div>
           <div class="protocol-v2-questions" data-steward-session-list></div>
@@ -75,6 +86,9 @@
             <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve Diagnostic Frame v2</button><p class="form-message" data-frame-message></p></div>
           </form>
         </section>
+        </div>
+        <div class="advisor-stage" id="advisor-stage-protocol" data-advisor-stage="protocol" hidden>
+          <header class="advisor-stage-heading"><p class="card-kicker">Stage 3 · Protocol</p><h2>Govern the shared inquiry.</h2><p>Review question coverage, preserve neutral evidence objectives, and finalize the exact sponsor-approved protocol.</p></header>
         <section class="advisor-frame" data-protocol-v2-section>
           <div>
             <p class="card-kicker">Evidence Protocol v2</p>
@@ -95,10 +109,18 @@
             <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve Evidence Protocol v2</button><p class="form-message" data-protocol-v2-message></p></div>
           </form>
         </section>
+        </div>
+        <div class="advisor-stage" id="advisor-stage-evidence" data-advisor-stage="evidence" hidden>
+        <header class="advisor-stage-heading"><p class="card-kicker">Stage 4 · Evidence</p><h2>Prepare protected evidence.</h2><p>Move submitted interviews through de-identification and human disclosure review. Participant identity and raw responses never appear in this stage.</p></header>
+        <div class="advisor-stage-actions">
         <button class="primary-button" type="button" data-prepare-evidence>Prepare next submitted interview</button>
         <p class="form-message" data-preparation-message></p>
+        </div>
         <div class="advisor-progress" data-evidence-progress></div>
         <div class="advisor-evidence" data-evidence-list></div>
+        </div>
+        <div class="advisor-stage" id="advisor-stage-synthesis" data-advisor-stage="synthesis" hidden>
+        <header class="advisor-stage-heading"><p class="card-kicker">Stage 5 · Synthesis</p><h2>Interpret evidence and shape the direction.</h2><p>Develop the governed finding, prepare revelation, and translate validated evidence into bounded intervention directions and POC learning.</p></header>
         <section class="advisor-synthesis" data-synthesis-section hidden>
           <div>
             <p class="card-kicker">Protected synthesis</p>
@@ -190,6 +212,7 @@
           </form>
           <div class="advisor-evidence" data-poc-change-list></div>
         </section>
+        </div>
       </section>
     </section>
   </main>
