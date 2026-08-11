@@ -7,6 +7,31 @@
 .advisor-surface h2 { margin: 0; }
 [data-advisor-diagnostics], .advisor-evidence { display: grid; gap: 12px; }
 .advisor-diagnostic, .advisor-assignment, .advisor-evidence article { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.steward-command-center { margin: 24px 0; padding: clamp(22px,4vw,34px); border-radius: 18px; background: var(--navy); color: var(--ivory); }
+.command-center-heading { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+.command-center-heading h2 { max-width: 720px; font-family: var(--serif); font-size: clamp(1.8rem,4vw,3rem); font-weight: 500; letter-spacing: -.035em; }
+.command-center-heading .text-button { color: var(--ivory); border-color: rgba(255,255,255,.35); }
+.command-center-next { display: grid; gap: 6px; margin: 22px 0 14px; padding: 18px; border: 1px solid rgba(255,255,255,.18); border-left: 4px solid var(--bronze); border-radius: 12px; background: rgba(255,255,255,.06); }
+.command-center-next span,.command-center-next small { color: rgba(255,255,255,.7); font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.steward-command-center .advisor-progress span { color: var(--navy); border-color: rgba(255,255,255,.18); }
+.command-center-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 26px; margin-top: 24px; }
+.command-center-grid h3 { margin-bottom: 6px; }
+.command-center-grid section > p,.steward-command-center .form-message { color: rgba(255,255,255,.72); line-height: 1.55; }
+.command-participants { display: grid; gap: 8px; margin-top: 14px; }
+.command-participants article { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 14px; border: 1px solid rgba(255,255,255,.16); border-radius: 10px; background: rgba(255,255,255,.06); }
+.command-participants article div { display: grid; gap: 3px; min-width: 0; }
+.command-participants strong { overflow: hidden; text-overflow: ellipsis; }
+.command-participants small { color: rgba(255,255,255,.62); }
+.command-participants span { flex: 0 0 auto; padding: 6px 8px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: .7rem; font-weight: 700; text-transform: capitalize; }
+.command-participants article[data-attention="true"] { border-color: rgba(212,91,49,.8); }
+.command-participants article[data-attention="true"] span { background: var(--bronze); color: #fff; }
+[data-command-threshold] article { padding: 16px; border: 1px solid rgba(255,255,255,.18); border-radius: 12px; background: rgba(255,255,255,.06); }
+[data-command-threshold] article[data-met="true"] { border-color: rgba(187,211,174,.55); }
+[data-command-threshold] p { margin-bottom: 0; color: rgba(255,255,255,.72); line-height: 1.55; }
+.command-clusters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.command-clusters > span { padding: 7px 9px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: .72rem; text-transform: capitalize; }
+.command-clusters > article { width: 100%; padding: 14px; border: 1px solid rgba(255,255,255,.16); border-radius: 10px; background: rgba(255,255,255,.06); }
+.command-clusters p { color: rgba(255,255,255,.72); }
 .advisor-diagnostic { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 .advisor-progress { display: flex; flex-wrap: wrap; gap: 8px; }
 .advisor-progress span { padding: 8px 11px; border-radius: 999px; background: #fff; border: 1px solid var(--line); font-size: .72rem; font-weight: 700; }
@@ -68,5 +93,5 @@
 .advisor-evidence-plan,.advisor-intervention-submit { grid-column: 1 / -1; }
 .advisor-evidence-plan div { display: grid; grid-template-columns: minmax(150px,.55fr) 1.5fr .7fr; gap: 10px; align-items: center; }
 .advisor-intervention-submit { display: flex; align-items: center; gap: 14px; }
-@media (max-width: 760px) { .advisor-intervention-form { grid-template-columns: 1fr; } .advisor-evidence-plan,.advisor-intervention-submit,.advisor-intervention-form .wide { grid-column: auto; } .advisor-evidence-plan div,.frame-complexity article { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .advisor-intervention-form,.command-center-grid { grid-template-columns: 1fr; } .advisor-evidence-plan,.advisor-intervention-submit,.advisor-intervention-form .wide { grid-column: auto; } .advisor-evidence-plan div,.frame-complexity article { grid-template-columns: 1fr; } }
 @media (max-width: 680px) { .advisor-diagnostic, .advisor-review { align-items: stretch; flex-direction: column; } }

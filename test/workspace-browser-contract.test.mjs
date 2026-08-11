@@ -48,6 +48,7 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(server, /workspace-diagnostic-protocol-sponsor-review-v2\.mjs/);
   assert.match(server, /"\/api\/workspace\/diagnostic-protocol-sponsor-review-v2"/);
   assert.match(server, /"\/api\/workspace\/diagnostic-steward-sessions"/);
+  assert.match(server, /"\/api\/workspace\/steward-command-center"/);
   assert.match(server, /import workspaceDiagnosticParticipants/);
   assert.match(server, /"\/api\/workspace\/diagnostic-participants"/);
   assert.match(server, /import workspaceDiagnosticProtocol/);
@@ -79,6 +80,19 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(script, /\/api\/workspace\/results\?roundId=/);
   assert.doesNotMatch(script, /CLERK_SECRET_KEY|NEON_DATABASE_URL|workspaceId|userId/);
   assert.match(script, /This local workspace server is out of date/);
+});
+
+test("advisor console presents a threshold-governed steward command center", async () => {
+  const html = await source("workspace/advisor.html");
+  const script = await source("workspace/advisor.js");
+  const service = await source("netlify/lib/workspace-steward-command-center.mjs");
+  assert.match(html, /Steward command center/);
+  assert.match(html, /Answers and evidence never appear here/);
+  assert.match(script, /\/api\/workspace\/steward-command-center/);
+  assert.match(script, /accepted invite/);
+  assert.match(service, /contentIntelligenceThreshold:5/);
+  assert.match(service, /rawAnswersPermitted:false/);
+  assert.doesNotMatch(service, /deidentified_text|encrypted_response/);
 });
 
 test("workspace keeps assessment collection separate from paid diagnostic engagement", async () => {

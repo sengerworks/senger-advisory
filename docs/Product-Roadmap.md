@@ -19,8 +19,14 @@
   owns a tenant-isolated session record, gates Context and perspective approval on that record, and
   requires an assigned steward to attest completion. OneCal API/webhook verification remains a
   post-validation automation upgrade; the POC does not falsely claim provider-verified attendance.
-- **Phases 5–10: Planned.** Steward command center; dual synthesis outputs; release and revelation;
-  evidence-informed intervention engine; private steward walkthrough; and five-client POC readiness.
+- **Phase 5 — Steward command center: Complete.** The assigned steward receives a single operating
+  view of the next governed move, session gates, planned and completed participation, invitation
+  follow-up, confidentiality readiness, evidence-review load, and threshold-safe emerging
+  intelligence. Participant identity is limited to operational follow-up; raw answers never enter
+  the command center, and content-derived intelligence remains server-withheld below five completed
+  interviews.
+- **Phases 6–10: Planned.** Dual synthesis outputs; release and revelation; evidence-informed
+  intervention engine; private steward walkthrough; and five-client POC readiness.
 
 ## Release 0.5 — Public launch candidate
 - Public site structure

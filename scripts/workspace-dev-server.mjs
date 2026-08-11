@@ -14,6 +14,7 @@ import workspaceDiagnosticFrameV2 from "../netlify/functions/workspace-diagnosti
 import workspaceDiagnosticProtocolV2 from "../netlify/functions/workspace-diagnostic-protocol-v2.mjs";
 import workspaceDiagnosticProtocolSponsorReviewV2 from "../netlify/functions/workspace-diagnostic-protocol-sponsor-review-v2.mjs";
 import workspaceDiagnosticStewardSessions from "../netlify/functions/workspace-diagnostic-steward-sessions.mjs";
+import workspaceStewardCommandCenter from "../netlify/functions/workspace-steward-command-center.mjs";
 import workspaceDiagnosticParticipants from "../netlify/functions/workspace-diagnostic-participants.mjs";
 import workspaceDiagnosticProtocol from "../netlify/functions/workspace-diagnostic-protocol.mjs";
 import workspaceDiagnosticInvitations from "../netlify/functions/workspace-diagnostic-invitations.mjs";
@@ -151,6 +152,7 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/diagnostic-protocol-v2",
     "/api/workspace/diagnostic-protocol-sponsor-review-v2",
     "/api/workspace/diagnostic-steward-sessions",
+    "/api/workspace/steward-command-center",
     "/api/workspace/diagnostic-participants",
     "/api/workspace/diagnostic-protocol",
     "/api/workspace/diagnostic-invitations",
@@ -226,6 +228,8 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceDiagnosticProtocolSponsorReviewV2
       : url.pathname.endsWith("/diagnostic-steward-sessions")
         ? workspaceDiagnosticStewardSessions
+      : url.pathname.endsWith("/steward-command-center")
+        ? workspaceStewardCommandCenter
       : url.pathname.endsWith("/diagnostic-participants")
         ? workspaceDiagnosticParticipants
       : url.pathname.endsWith("/diagnostic-protocol")

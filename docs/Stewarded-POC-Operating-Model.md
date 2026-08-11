@@ -197,6 +197,7 @@ release requirements independently.
 
 ## Phase 1 completion boundary
 
-Phase 1 locks this model in architecture and operating documentation. It does not claim that OneCal
-scheduling, new states, the steward command center, dual-output generation, or release controls are
-already implemented. Those capabilities are delivered and verified in subsequent roadmap phases.
+Phase 1 locked this model in architecture and operating documentation. Subsequent delivery has now
+implemented OneCal scheduling gates and the privacy-governed steward command center. Dual-output
+generation, sponsor-release controls, the evidence-informed intervention engine, the private steward
+walkthrough, and five-client readiness remain governed by the later roadmap phases.
