@@ -25,6 +25,10 @@
       <div data-advisor-sign-in></div>
       <section data-advisor-console hidden>
         <div class="advisor-assignment" data-advisor-assignment></div>
+        <section class="advisor-engagement-overview" data-advisor-engagement>
+          <div><p class="card-kicker">Active engagement</p><h2 data-engagement-title>Organizational Capacity Diagnostic</h2><p data-engagement-purpose></p></div>
+          <dl><div><dt>Route</dt><dd data-engagement-route>—</dd></div><div><dt>Current stage</dt><dd data-engagement-stage>—</dd></div><div><dt>Assignment</dt><dd data-engagement-expiry>—</dd></div></dl>
+        </section>
         <nav class="advisor-stage-nav" aria-label="Steward workflow" data-advisor-stage-nav>
           <button type="button" data-stage-button="command" aria-controls="advisor-stage-command"><span>01</span><strong>Command Center</strong><small>Monitor and advance</small></button>
           <button type="button" data-stage-button="frame" aria-controls="advisor-stage-frame"><span>02</span><strong>Frame</strong><small>Guide and define</small></button>
@@ -43,6 +47,7 @@
         </div>
         <div class="advisor-stage" id="advisor-stage-frame" data-advisor-stage="frame" hidden>
           <header class="advisor-stage-heading"><p class="card-kicker">Stage 2 · Frame</p><h2>Define the inquiry before collecting evidence.</h2><p>Complete the human guidance gates, then convert approved sponsor context into a bounded Diagnostic Frame.</p></header>
+          <aside class="advisor-stage-guide"><p class="card-kicker">What you are doing</p><h3>Turn the sponsor’s concern into a clear inquiry.</h3><p>Help the sponsor name the execution demand and decision without diagnosing the organization in advance.</p><div><strong>This stage is complete when</strong><p>The guidance meetings are recorded and the bounded inquiry is approved.</p></div></aside>
         <section class="advisor-frame" data-steward-sessions>
           <div><p class="card-kicker">Stewarded sessions</p><h2>Confirm the human governance gates.</h2><p>Scheduled sessions appear here without participant content. After each conversation, record completion so the diagnostic retains an auditable human-stewardship trail.</p></div>
           <div class="protocol-v2-questions" data-steward-session-list></div>
@@ -50,9 +55,9 @@
         </section>
         <section class="advisor-frame" data-frame-section>
           <div>
-            <p class="card-kicker">Diagnostic Frame v2</p>
+            <p class="card-kicker">Diagnostic inquiry</p>
             <h2>Define capacity for what.</h2>
-            <p>Translate approved sponsor context into the execution demand, complexity hypothesis, and evidence boundary this diagnostic will test. This private method record does not alter the live v1 diagnostic or release a finding to the client.</p>
+            <p>Translate approved sponsor context into the execution demand, working hypotheses, and evidence boundary this diagnostic will test. This private inquiry does not predetermine or release a finding.</p>
           </div>
           <div data-frame-result></div>
           <form class="advisor-intervention-form" data-frame-form hidden>
@@ -83,15 +88,16 @@
             <label class="wide"><span>Approval note</span><textarea name="approvalNote" minlength="20" maxlength="800" required></textarea></label>
             <label class="wide consent"><input type="checkbox" name="confirmedExecutionDemand" required /> I confirm the execution demand and leadership decision.</label>
             <label class="wide consent"><input type="checkbox" name="acceptedEvidencePlan" required /> I accept the evidence plan, including five initial cross-functional perspective slots.</label>
-            <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve Diagnostic Frame v2</button><p class="form-message" data-frame-message></p></div>
+            <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve diagnostic inquiry</button><p class="form-message" data-frame-message></p></div>
           </form>
         </section>
         </div>
         <div class="advisor-stage" id="advisor-stage-protocol" data-advisor-stage="protocol" hidden>
           <header class="advisor-stage-heading"><p class="card-kicker">Stage 3 · Protocol</p><h2>Govern the shared inquiry.</h2><p>Review question coverage, preserve neutral evidence objectives, and finalize the exact sponsor-approved protocol.</p></header>
+          <aside class="advisor-stage-guide"><p class="card-kicker">What you are doing</p><h3>Protect one fair inquiry for every participant.</h3><p>Confirm that all 18 questions fit the approved context while remaining neutral, clear, and evidence-sufficient.</p><div><strong>This stage is complete when</strong><p>The sponsor has approved the questions and you have finalized the common protocol.</p></div></aside>
         <section class="advisor-frame" data-protocol-v2-section>
           <div>
-            <p class="card-kicker">Evidence Protocol v2</p>
+            <p class="card-kicker">Participant question set</p>
             <h2>Turn the frame into a shared inquiry.</h2>
             <p>Review the frame-specific core questions every participant will receive. Context may clarify the inquiry, but it cannot change the governed evidence objective or create leading conclusions.</p>
           </div>
@@ -106,12 +112,13 @@
             <div class="protocol-v2-questions" data-protocol-v2-questions></div>
             <label><span>Approval note</span><textarea name="approvalNote" minlength="20" maxlength="800" required>Approved as an evidence-sufficient shared protocol for the framed execution demand.</textarea></label>
             <label class="consent"><input type="checkbox" name="acceptedResearchLimitations" required /> I acknowledge that Adaptive Capacity remains a research observation and does not produce a score.</label>
-            <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve Evidence Protocol v2</button><p class="form-message" data-protocol-v2-message></p></div>
+            <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve participant question set</button><p class="form-message" data-protocol-v2-message></p></div>
           </form>
         </section>
         </div>
         <div class="advisor-stage" id="advisor-stage-evidence" data-advisor-stage="evidence" hidden>
         <header class="advisor-stage-heading"><p class="card-kicker">Stage 4 · Evidence</p><h2>Prepare protected evidence.</h2><p>Move submitted interviews through de-identification and human disclosure review. Participant identity and raw responses never appear in this stage.</p></header>
+        <aside class="advisor-stage-guide"><p class="card-kicker">What you are doing</p><h3>Decide what evidence is safe and useful.</h3><p>Review de-identified evidence for meaning and disclosure risk. Approve only what can responsibly support organizational interpretation.</p><div><strong>Look for</strong><p>Repeated operating patterns, meaningful counterevidence, uncertainty, and details that could reveal an individual.</p></div></aside>
         <div class="advisor-stage-actions">
         <button class="primary-button" type="button" data-prepare-evidence>Prepare next submitted interview</button>
         <p class="form-message" data-preparation-message></p>
@@ -121,6 +128,7 @@
         </div>
         <div class="advisor-stage" id="advisor-stage-synthesis" data-advisor-stage="synthesis" hidden>
         <header class="advisor-stage-heading"><p class="card-kicker">Stage 5 · Synthesis</p><h2>Interpret evidence and shape the direction.</h2><p>Develop the governed finding, prepare revelation, and translate validated evidence into bounded intervention directions and POC learning.</p></header>
+        <aside class="advisor-stage-guide"><p class="card-kicker">What you are doing</p><h3>Turn protected evidence into an executive story.</h3><p>Test the emerging constraint, preserve uncertainty, and prepare the sponsor to understand what matters and what to consider first.</p><div><strong>Do not do yet</strong><p>Do not release findings, promise outcomes, or begin paid intervention delivery from this workspace.</p></div></aside>
         <section class="advisor-synthesis" data-synthesis-section hidden>
           <div>
             <p class="card-kicker">Protected synthesis</p>

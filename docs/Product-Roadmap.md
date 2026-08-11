@@ -26,7 +26,10 @@
   the command center, and content-derived intelligence remains server-withheld below five completed
   interviews. The advisor experience separates Command Center, Frame, Protocol, Evidence, and
   Synthesis into focused stage views, with the current governed stage identified in persistent
-  navigation rather than presenting the entire operating workbench on one page.
+  navigation rather than presenting the entire operating workbench on one page. Each stage uses a
+  report canvas, plain-language guidance rail, single-column action flow, and fully expanded
+  narrative fields so a nontechnical coach can steward the process without operating the method's
+  underlying technical complexity.
 - **Phases 6–10: Planned.** Dual synthesis outputs; release and revelation; evidence-informed
   intervention engine; private steward walkthrough; and five-client POC readiness.
 
