@@ -99,6 +99,7 @@
 .protocol-v2-question > strong { color: var(--bronze-dark); }
 .protocol-v2-question label { display: grid; gap: 8px; }
 .protocol-v2-question small { color: var(--ink-soft); line-height: 1.5; }
+.protocol-v2-question small { display: none; }
 [data-protocol-v2-result] article { padding: 18px; border: 1px solid rgba(212, 91, 49,.45); border-radius: 12px; background: rgba(212, 91, 49,.06); }
 [data-protocol-v2-result] p { color: var(--ink-soft); }
 .advisor-synthesis h2 { font-size: clamp(1.8rem, 4vw, 3rem); }

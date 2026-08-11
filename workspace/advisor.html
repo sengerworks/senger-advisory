@@ -71,23 +71,23 @@
             <label><span>Performance consequences <small>One per line</small></span><textarea name="performanceConsequences" required></textarea></label>
             <label><span>Out of scope <small>One per line</small></span><textarea name="outOfScope"></textarea></label>
             <label class="wide"><span>Known sensitivities</span><textarea name="knownSensitivities" maxlength="1200"></textarea></label>
-            <fieldset class="wide frame-complexity"><legend>Complexity Profile</legend>
+            <fieldset class="wide frame-complexity" data-internal-method-control hidden><legend>Internal complexity hypotheses</legend>
               <p>Classify each dimension as an evidence hypothesis—not a sponsor conclusion.</p>
               <div data-complexity-rows></div>
             </fieldset>
-            <fieldset><legend>Additional evidence</legend>
+            <fieldset data-internal-method-control hidden><legend>Additional evidence</legend>
               <label><input type="checkbox" name="sourceTypes" value="formal-artifact" /> Formal artifacts</label>
               <label><input type="checkbox" name="sourceTypes" value="operating-data" checked /> Operating data</label>
               <label><input type="checkbox" name="sourceTypes" value="prior-intervention" /> Prior interventions</label>
               <label><input type="checkbox" name="sourceTypes" value="leadership-validation" checked /> Leadership validation</label>
             </fieldset>
-            <fieldset><legend>Evidence requests</legend>
+            <fieldset data-internal-method-control hidden><legend>Evidence requests</legend>
               <label><span>Formal artifacts <small>One per line</small></span><textarea name="formalArtifactsRequested"></textarea></label>
               <label><span>Operating data <small>One per line</small></span><textarea name="operatingDataRequested"></textarea></label>
             </fieldset>
-            <label class="wide"><span>Approval note</span><textarea name="approvalNote" minlength="20" maxlength="800" required></textarea></label>
-            <label class="wide consent"><input type="checkbox" name="confirmedExecutionDemand" required /> I confirm the execution demand and leadership decision.</label>
-            <label class="wide consent"><input type="checkbox" name="acceptedEvidencePlan" required /> I accept the evidence plan, including five initial cross-functional perspective slots.</label>
+            <label class="wide" data-internal-method-control hidden><span>Approval note</span><textarea name="approvalNote" minlength="20" maxlength="800" required>Approved as a bounded diagnostic inquiry for confidential multi-perspective evidence collection.</textarea></label>
+            <label class="wide consent"><input type="checkbox" name="confirmedExecutionDemand" required /> I confirm that this inquiry accurately reflects the sponsor’s execution demand and leadership decision.</label>
+            <label class="wide consent"><input type="checkbox" name="acceptedEvidencePlan" required /> I confirm that the inquiry will be tested through multiple confidential perspectives.</label>
             <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve diagnostic inquiry</button><p class="form-message" data-frame-message></p></div>
           </form>
         </section>
@@ -108,10 +108,10 @@
             <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Finalize the 18-question protocol</button><p class="form-message" data-protocol-v2-finalization-message></p></div>
           </form>
           <form class="advisor-protocol-v2" data-protocol-v2-form hidden>
-            <div class="advisor-progress" data-protocol-v2-coverage></div>
+            <div class="advisor-progress" data-protocol-v2-coverage hidden></div>
             <div class="protocol-v2-questions" data-protocol-v2-questions></div>
             <label><span>Approval note</span><textarea name="approvalNote" minlength="20" maxlength="800" required>Approved as an evidence-sufficient shared protocol for the framed execution demand.</textarea></label>
-            <label class="consent"><input type="checkbox" name="acceptedResearchLimitations" required /> I acknowledge that Adaptive Capacity remains a research observation and does not produce a score.</label>
+            <label class="consent"><input type="checkbox" name="acceptedResearchLimitations" required /> I understand that this inquiry does not produce individual or mechanism scores.</label>
             <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Approve participant question set</button><p class="form-message" data-protocol-v2-message></p></div>
           </form>
         </section>
@@ -151,6 +151,7 @@
             </div>
           </form>
         </section>
+        <div data-internal-steward-tools hidden>
         <section class="advisor-synthesis" data-comparison-section hidden>
           <div><p class="card-kicker">Governed reassessment comparison</p><h2>Release only evidence-traceable change.</h2><p>Describe what changed, persisted, emerged, and remains uncertain. This record cannot claim that the intervention caused the observed difference.</p></div>
           <form class="advisor-synthesis-review" data-comparison-form hidden>
@@ -220,6 +221,7 @@
           </form>
           <div class="advisor-evidence" data-poc-change-list></div>
         </section>
+        </div>
         </div>
       </section>
     </section>

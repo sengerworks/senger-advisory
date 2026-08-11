@@ -29,7 +29,10 @@
   navigation rather than presenting the entire operating workbench on one page. Each stage uses a
   report canvas, plain-language guidance rail, single-column action flow, and fully expanded
   narrative fields so a nontechnical coach can steward the process without operating the method's
-  underlying technical complexity.
+  underlying technical complexity. The standard steward runtime contains only command, inquiry,
+  protocol, protected evidence, synthesis, and revelation preparation; manual complexity
+  classification, paid intervention delivery, reassessment, and POC product-governance controls are
+  retained outside that role rather than exposed in the engagement workflow.
 - **Phases 6–10: Planned.** Dual synthesis outputs; release and revelation; evidence-informed
   intervention engine; private steward walkthrough; and five-client POC readiness.
 
