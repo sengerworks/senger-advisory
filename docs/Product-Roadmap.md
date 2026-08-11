@@ -71,6 +71,13 @@
 - Complete independent penetration testing before broad enterprise availability and pursue SOC 2 when operating maturity warrants it
 
 ## Cross-cutting — POC validation and launch evidence
+- Govern the initial market phase as a steward-led POC with required Guidance, Design, and
+  Revelation Sessions; use `docs/Stewarded-POC-Operating-Model.md` as the authoritative journey,
+  permission, scope, dual-output, release, and evidence-language contract
+- Add organization-system scoping across enterprise, business unit, function, leadership layer,
+  and cross-functional execution while preserving one five-mechanism diagnostic method
+- Describe intervention directions as evidence-informed until validated longitudinal outcome data
+  supports empirically predictive claims
 - Separate Senger Advisory Platform Operations from the client sponsor workspace with an
   environment-allowlisted, tenant-bounded POC Control Center; diagnostic creation and entitlement
   establishment are platform controls, while sponsors retain context and client decisions

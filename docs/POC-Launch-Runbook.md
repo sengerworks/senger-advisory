@@ -25,11 +25,27 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
 - Establish the POC record in Platform Operations and assign the advisor for a bounded period.
 - Agree on the leadership decision, target completion date, five-to-ten POC participant range, and
   stop conditions before invitations are sent. The paid full diagnostic may support up to fifty.
+- Establish the three required 30-minute Guidance, Design, and Revelation Session booking paths.
+
+## Required steward sessions
+
+1. **Guidance Session:** schedule and complete the session before the Diagnostic Context Brief is
+   approved.
+2. **Design Session:** schedule and complete the session before the 18-question protocol is approved
+   and invitations are issued.
+3. **Revelation Session:** schedule the session after synthesis approval; keep the Executive Capacity
+   Brief locked until the steward releases it shortly before or during the meeting.
+
+The detailed authority, scope, confidentiality, dual-output, and state contract is maintained in
+`docs/Stewarded-POC-Operating-Model.md`. Until each product gate is implemented, the steward records
+the control in the approved POC operating record and does not represent it as automated enforcement.
 
 ## Golden path
 
-1. **Sponsor context:** the sponsor completes and approves the six-question Context Brief.
-2. **Participant design:** the sponsor and advisor approve perspective coverage and record any
+1. **Guidance:** the sponsor and steward complete the required Guidance Session, define the system
+   being examined, and approve the six-question Context Brief.
+2. **Design:** the sponsor and steward complete the required Design Session, approve perspective
+   coverage, and record any
    accepted gaps without storing participant identity in the plan.
 3. **Frame and protocol:** the advisor approves Diagnostic Frame v2 and Protocol v2; Platform
    Operations explicitly activates v2 before collection begins.
@@ -40,12 +56,14 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
    and approves or excludes every evidence record.
 7. **Synthesis:** the platform drafts the finding; the advisor validates the organizational
    constraint, competing explanations, uncertainty, and intervention direction.
-8. **Sponsor release:** the finding remains withheld until at least five assigned participants have
-   completed, collection is complete, evidence review is resolved, and advisor approval is recorded.
-9. **Leadership decision:** the sponsor accepts the finding or requests revision, then reviews and
-   explicitly accepts the intervention scope and terms.
-10. **Operating Brief:** the accepted intervention becomes the shared Capacity Operating Brief with
-    owners, action path, learning path, evidence plan, check-ins, review cadence, and escalation route.
+8. **Dual outputs:** the platform prepares the locked Executive Capacity Brief and the private
+   Steward Revelation Guide; neither is released merely because synthesis is complete.
+9. **Revelation:** notify the sponsor, schedule the Revelation Session, and keep the Brief withheld
+   until at least five assigned participants have completed, collection is complete, evidence review
+   is resolved, steward approval is recorded, and the steward deliberately releases it.
+10. **Leadership decision:** the sponsor reviews the finding and weighted evidence-informed
+    Intervention Directions, then accepts the finding or requests revision and considers the paid
+    next step. Detailed intervention design and delivery remain outside the POC.
 11. **POC learning:** capture checkpoint feedback separately from diagnostic evidence, complete the
    aggregate scorecard, and record change candidates and the cohort decision. Follow the active
    checkpoint and closeout sequence in `POC-Learning-Protocol.md`.

@@ -13,6 +13,9 @@ or leadership validation. The POC releases the governed finding and prioritized 
 Directions**, then stops. Detailed intervention design, commercial acceptance, delivery,
 30/60/90-day operating support, and reassessment require separate paid activation.
 
+Every initial POC is steward-led and follows the three-session journey, scope rules, dual-output
+contract, and release controls in `docs/Stewarded-POC-Operating-Model.md`.
+
 ## Questions the POC must answer
 
 1. Can a sponsor establish enough context and perspective coverage to launch the diagnostic?
@@ -55,11 +58,15 @@ intervention and accepts the confidentiality and participation model.
 
 ### 2. Discovery and participant design
 
-Complete the six sponsor-context questions, approve perspective coverage, record coverage gaps,
-and approve the common contextualized protocol.
+Complete a required 30-minute Guidance Session before approving the six sponsor-context questions.
+Record the sponsor's role, level, function, decision authority, and whether the organizational system
+being examined is an enterprise, business unit, function, leadership layer, or cross-functional
+system. Then complete a separate required 30-minute Design Session to approve perspective coverage,
+record coverage gaps, and approve the common 18-question contextualized protocol.
 
 Exit gate: the protocol can answer the leadership decision without becoming leading, bespoke to
-one person's theory, or impossible to complete in approximately sixty minutes.
+one person's theory, or impossible to complete in approximately sixty minutes; both sessions are
+scheduled and their completion is steward-attested.
 
 ### 3. Confidential participation
 
@@ -77,19 +84,24 @@ explanations, blind spots, confidence, and traceability. Compare automated synth
 advisor's independent judgment before release.
 
 Exit gate: the advisor approves the synthesis as faithful to the protected evidence, with
-uncertainty preserved, and leadership receives only the governed organizational finding.
+uncertainty preserved, and the locked Executive Capacity Brief and private Steward Revelation Guide
+are ready for separate audiences. Leadership has not yet received the finding.
 
 ### 5. Leadership validation and Intervention Directions
 
-Leadership accepts the finding or requests revision, then reviews the prioritized Intervention
-Directions: the evidence-linked course of action, intended outcome, sequencing logic, uncertainty,
-and the risks of inaction. The output may identify capabilities or design questions the paid
-intervention must address, but it does not include a detailed implementation plan, training
-content, coaching, facilitation, specialist sourcing, operating cadence, or reassessment.
+Notify the sponsor that findings are ready and require a 30-minute Revelation Session. The Brief
+remains locked until the steward deliberately releases it shortly before or during that session.
+Using the private Revelation Guide, the steward explains the finding, uncertainty, organizational
+mechanics, business implications, cost of inaction, and multiple weighted, evidence-informed
+Intervention Directions. Leadership accepts the finding or requests revision. The output may
+identify capabilities or design questions the paid intervention must address, but it does not
+include a detailed implementation plan, training content, coaching, facilitation, specialist
+sourcing, operating cadence, or reassessment.
 
 Exit gate: leadership can explain the diagnosed constraint, why it is believed, what remains
 uncertain, and why the Intervention Directions are relevant. The platform clearly identifies the
-paid activation boundary.
+paid activation boundary, preserves the sponsor's released Brief, and keeps the Revelation Guide
+private.
 
 ### 6. Debrief and commercial decision
 

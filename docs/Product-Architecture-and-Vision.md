@@ -9,7 +9,13 @@ capacity constrains strategy, gathers informed perspectives without exposing ind
 turns the strongest constraint hypothesis into an action cycle, and tests whether capacity
 and operating outcomes improve over time.
 
-The paid diagnostic and intervention support two complementary delivery routes:
+The paid diagnostic and intervention ultimately support two complementary delivery routes. During
+pre-launch validation, every POC uses the steward-led operating model defined in
+`docs/Stewarded-POC-Operating-Model.md`: two required guidance and design sessions, confidential
+collection, governed dual-output synthesis, and a steward-controlled revelation session. Human
+stewardship is the current trust and judgment layer, not an exception or failure state.
+
+The final product supports:
 
 1. **Automated diagnostic and platform-guided intervention** — a scalable, low-touch
    experience that walks the organization through the governed diagnostic process, then
@@ -93,6 +99,11 @@ for human judgment.
 The diagnostic creates a decision hypothesis, not clinical, causal, or managerial certainty.
 Automated guidance must preserve uncertainty, distinguish observed results from inferences,
 and include checkpoints that can change the recommended course.
+
+For the initial POCs, the diagnostic may examine an enterprise, business unit, function, leadership
+layer, or cross-functional execution system. The scope changes contextual language and evidence
+proximity, not the five Capacity Mechanisms or the governed method. A function-specific diagnostic
+must still include the boundary perspectives necessary to explain how that function executes.
 
 ## Intervention architecture
 
@@ -211,10 +222,19 @@ Completion activity is not evidence of capacity improvement. The Brief must avoi
 status grids, unbounded KPI collections, people or team rankings, activity presented as
 outcome, and causal claims unsupported by reassessment.
 
-Automated and advisor-led customers receive the same client-facing Brief. Automation supplies
+Automated and advisor-led customers receive the same client-facing Brief. During the POC, this
+Executive Capacity Brief remains locked until the assigned steward completes quality review and
+deliberately releases it shortly before or during a scheduled Revelation Session. The steward uses
+a separate, sponsor-inaccessible Revelation Guide containing deeper evidence interpretation,
+research context, uncertainties, implications, and discussion guidance. Automation supplies
 prompts, synthesis, recommended next actions, and escalation signals; advisors receive
 additional governed controls for facilitation, contextual interpretation, learning delivery,
 specialist coordination, and intervention review.
+
+Intervention directions are described as **evidence-informed** until validated longitudinal outcome
+data supports a stronger claim. Multiple weighted options must distinguish observation, inference,
+external research, uncertainty, and the evidence that would change the recommendation. Commercial
+fulfillment availability must not determine diagnostic weight.
 
 ## Platform Operations
 

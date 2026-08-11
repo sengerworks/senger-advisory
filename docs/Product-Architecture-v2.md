@@ -190,6 +190,11 @@ AI Readiness, leadership, culture, technology, and coaching should appear as app
 
 ### Authenticated platform
 
+During pre-launch validation, the authenticated diagnostic follows the steward-led contract in
+`docs/Stewarded-POC-Operating-Model.md`. Two required sponsor/steward sessions govern context and
+design before collection; a third governs revelation after synthesis. The platform should automate
+coordination and safeguards while preserving deliberate human judgment at these three gates.
+
 The sponsor experience should be organized around a progressing diagnostic decision:
 
 1. **Current decision** — what leadership is trying to understand or decide.
@@ -202,6 +207,11 @@ The sponsor experience should be organized around a progressing diagnostic decis
 8. **Capacity change** — reassessment and emerging demand.
 
 Platform Operations, advisor review, commercial administration, partner configuration, and POC governance remain separate role-specific workspaces rather than temporary sponsor-dashboard sections.
+
+The diagnostic frame identifies the organizational system being examined: enterprise, business
+unit, function, leadership layer, or cross-functional execution system. Contextual language may
+change, but the five Capacity Mechanisms and common governed method remain stable. A scoped function
+diagnostic must include relevant boundary perspectives rather than merely surveying the function.
 
 ## 5. Revised Capacity Lens and system visual
 
@@ -658,6 +668,17 @@ The default visual hierarchy is:
 - evidence movement since the last review.
 
 No participant-level answers, excerpts, small-cell breakdowns, or individual scores appear.
+
+For the initial POC, synthesis creates a locked **Executive Capacity Brief** and a separate private
+**Steward Revelation Guide**. The Guide contains deeper evidence interpretation, research context,
+uncertainty, implications, sensitive discussion guidance, and speaker notes. The Brief becomes
+sponsor-visible only through a deliberate, audited steward release shortly before or during the
+scheduled Revelation Session; the Guide never becomes sponsor-visible.
+
+Intervention directions remain **evidence-informed**, not empirically predictive, until sufficient
+validated longitudinal outcomes justify stronger language. Weighted options must separate observed
+evidence, inference, external research, uncertainty, and the future evidence that would change the
+recommendation.
 
 ## 17. Evidence and data architecture
 
