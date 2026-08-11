@@ -47,8 +47,17 @@
   download window; activation of a paid diagnostic or intervention entitlement converts access to
   permanent. Expired POC access fails closed, the Revelation Guide remains private, and sponsor
   notification is explicitly recorded as ready for delivery rather than falsely reported as sent.
-- **Phases 8–10: Planned.** Evidence-informed intervention engine;
-  private steward walkthrough; and five-client POC readiness.
+- **Phase 8 — Evidence-informed Intervention Direction engine: Complete.** The approved synthesis now
+  produces three separately governed, vendor-neutral options with one recommended first move. An
+  explicit weighting model prioritizes evidence alignment, organizational fit, feasibility,
+  time-to-signal, and risk control while stating that the result is decision support—not predictive
+  confidence or probability of success. Every option separates observed evidence from inference,
+  preserves uncertainty and competing explanations, cites external research only as mechanism
+  support, and identifies dependencies, risks, and evidence that would change the recommendation.
+  Steward approval is required before the directions enter the locked Executive Capacity Brief and
+  private Revelation Guide. The POC stops before detailed design, fulfillment, delivery, or
+  reassessment.
+- **Phases 9–10: Planned.** Private steward walkthrough and five-client POC readiness.
 
 ## Release 0.5 — Public launch candidate
 - Public site structure

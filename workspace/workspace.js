@@ -800,7 +800,8 @@ function renderExecutiveCapacityBrief(brief) {
     ["Current capacity fit", [brief.currentCapacityFit?.statement, brief.currentCapacityFit?.confidenceBasis]],
     ["What the evidence suggests", (brief.themes || []).map(theme => `${theme.title}: ${theme.summary}`)],
     ["Business exposure", brief.businessExposure || []],
-    ["Evidence-informed direction", [brief.evidenceInformedDirection]],
+    ["Evidence-informed Intervention Directions", (brief.interventionDirections?.options || []).map(option => `${option.recommended ? "Recommended first move" : `Alternative ${option.rank}`}: ${option.title}. ${option.proposedMechanism} Priority ${option.weighting?.weightedPriority}/100—decision support, not probability of success. Observable signal: ${option.timeToObservableSignal}`)],
+    ["Paid activation boundary", [brief.interventionDirections?.commercialBoundary]],
     ["Uncertainty retained", [brief.uncertainty?.statement]]
   ];
   for (const [title, values] of sections) elements.executiveCapacityBrief.append(leadershipList(title, values.filter(Boolean)));

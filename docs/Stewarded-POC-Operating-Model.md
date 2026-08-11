@@ -168,6 +168,11 @@ move. Each direction states the evidence addressed, proposed mechanism, confiden
 fit, effort, time to an observable signal, dependencies, and risks. Research citations support the
 mechanism; they do not prove that a specific intervention will cause a client outcome.
 
+For the POC, the weighting model assigns 40% to evidence alignment, 25% to organizational fit, 15%
+to feasibility, 10% to time-to-signal, and 10% to risk control. The resulting priority is explicitly
+decision support—not a probability of success, predictive confidence, or a substitute for steward
+judgment. Each direction also states what new evidence would weaken or change its priority.
+
 Senger Advisory may recommend capabilities that Senger Leadership or an approved provider can
 fulfill, but diagnostic interpretation must remain vendor-neutral. Commercial availability must not
 inflate diagnostic weight, and any fulfillment relationship must be disclosed.

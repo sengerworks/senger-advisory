@@ -61,8 +61,8 @@ the control in the approved POC operating record and does not represent it as au
 9. **Revelation:** notify the sponsor, schedule the Revelation Session, and keep the Brief withheld
    until at least five assigned participants have completed, collection is complete, evidence review
    is resolved, steward approval is recorded, and the steward deliberately releases it.
-10. **Leadership decision:** the sponsor reviews the finding and weighted evidence-informed
-    Intervention Directions, then accepts the finding or requests revision and considers the paid
+10. **Leadership decision:** the sponsor reviews the finding and three weighted evidence-informed
+    Intervention Directions—one recommended first move and two alternatives—then accepts the finding or requests revision and considers the paid
     next step. Detailed intervention design and delivery remain outside the POC.
 11. **POC learning:** capture checkpoint feedback separately from diagnostic evidence, complete the
    aggregate scorecard, and record change candidates and the cohort decision. Follow the active
