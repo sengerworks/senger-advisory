@@ -26,6 +26,9 @@ import workspaceDiagnosticEvidencePreparation from "../netlify/functions/workspa
 import workspaceDiagnosticAdvisorAssignments from "../netlify/functions/workspace-diagnostic-advisor-assignments.mjs";
 import workspaceDiagnosticSynthesis from "../netlify/functions/workspace-diagnostic-synthesis.mjs";
 import workspaceDiagnosticDualOutputs from "../netlify/functions/workspace-diagnostic-dual-outputs.mjs";
+import workspaceDiagnosticInterventionDirections from "../netlify/functions/workspace-diagnostic-intervention-directions.mjs";
+import workspaceDiagnosticExecutiveBrief from "../netlify/functions/workspace-diagnostic-executive-brief.mjs";
+import workspacePresenterDemoAccess from "../netlify/functions/workspace-presenter-demo-access.mjs";
 import workspaceDiagnosticLeadershipValidation from "../netlify/functions/workspace-diagnostic-leadership-validation.mjs";
 import workspaceDiagnosticIntervention from "../netlify/functions/workspace-diagnostic-intervention.mjs";
 import workspaceDiagnosticInterventionAcceptance from "../netlify/functions/workspace-diagnostic-intervention-acceptance.mjs";
@@ -165,6 +168,9 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
     "/api/workspace/diagnostic-advisor-assignments",
     "/api/workspace/diagnostic-synthesis",
     "/api/workspace/diagnostic-dual-outputs",
+    "/api/workspace/diagnostic-intervention-directions",
+    "/api/workspace/diagnostic-executive-brief",
+    "/api/workspace/presenter-demo-access",
     "/api/workspace/diagnostic-leadership-validation",
     "/api/workspace/diagnostic-intervention",
     "/api/workspace/diagnostic-intervention-acceptance",
@@ -252,6 +258,12 @@ const server = createServer(async (nodeRequest, nodeResponse) => {
         ? workspaceDiagnosticAdvisorAssignments
       : url.pathname.endsWith("/diagnostic-dual-outputs")
         ? workspaceDiagnosticDualOutputs
+      : url.pathname.endsWith("/diagnostic-intervention-directions")
+        ? workspaceDiagnosticInterventionDirections
+      : url.pathname.endsWith("/diagnostic-executive-brief")
+        ? workspaceDiagnosticExecutiveBrief
+      : url.pathname.endsWith("/presenter-demo-access")
+        ? workspacePresenterDemoAccess
       : url.pathname.endsWith("/diagnostic-synthesis")
         ? workspaceDiagnosticSynthesis
       : url.pathname.endsWith("/diagnostic-leadership-validation")

@@ -17,20 +17,27 @@
     <div class="demo-header-actions">
       <span class="demo-lock">Private guided demo</span>
       <button class="text-button" type="button" data-reset>Reset</button>
+      <button class="text-button" type="button" data-presenter-sign-out hidden>Sign out</button>
     </div>
   </header>
 
-  <main id="demo-main" class="demo-main">
+  <section class="presenter-access" data-presenter-access>
+    <div><p class="eyebrow">Private presenter access</p><h1>Preparing the guided walkthrough.</h1><p data-presenter-access-status>Checking Senger Advisory presenter authority…</p></div>
+    <div data-presenter-sign-in></div>
+  </section>
+
+  <main id="demo-main" class="demo-main" data-presenter-experience hidden>
     <section class="demo-introduction">
       <div>
         <p class="eyebrow">Presenter mode · fictional organization</p>
         <h1>See organizational friction become focused action.</h1>
-        <p>An end-to-end guided platform demonstration using a controlled, fictional organization—from the first signal through a protected diagnostic, intervention, and measurable next step.</p>
+        <p>A steward-guided platform walkthrough using a controlled, fictional organization—from the first signal through confidential participation, revelation, and the paid activation decision.</p>
         <small class="demo-data-note">Fictional case · Nothing is saved, submitted, or connected to a live client workspace.</small>
       </div>
       <div class="role-switcher" aria-label="Choose demo perspective">
-        <button type="button" data-role="sponsor" aria-pressed="true"><span>Sponsor journey</span><small>End-to-end platform demo</small></button>
-        <button type="button" data-role="participant" aria-pressed="false"><span>Participant view</span><small>Optional experience preview</small></button>
+        <button type="button" data-role="sponsor" aria-pressed="true"><span>Sponsor journey</span><small>What leadership experiences</small></button>
+        <button type="button" data-role="participant" aria-pressed="false"><span>Participant view</span><small>Confidential contribution</small></button>
+        <button type="button" data-role="steward" aria-pressed="false"><span>Steward view</span><small>Governance behind the journey</small></button>
       </div>
     </section>
 

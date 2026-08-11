@@ -1,0 +1,7 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createWorkspacePresenterDemoAccessHandler } from "../netlify/functions/workspace-presenter-demo-access.mjs";
+import { presenterDemoAccessPolicy } from "../netlify/lib/workspace-presenter-demo-access.mjs";
+const auth=async()=>({ok:true,value:{workspaceId:"11111111-1111-4111-8111-111111111111",userId:"user_presenter"}}),request=(method="GET",origin="https://example.test")=>new Request("https://example.test/api/workspace/presenter-demo-access",{method,headers:{origin}});
+test("authorized operator or assigned steward opens fictional presenter mode",async()=>{const handler=createWorkspacePresenterDemoAccessHandler({authenticate:auth,authorize:async()=>({allowed:true,authority:"assigned-steward"})});const response=await handler(request());assert.equal(response.status,200);const data=await response.json();assert.equal(data.access.authority,"assigned-steward");assert.equal(data.policy.liveClientDataIncluded,false);});
+test("presenter access fails closed for other workspace roles and foreign origins",async()=>{const denied=createWorkspacePresenterDemoAccessHandler({authenticate:auth,authorize:async()=>({allowed:false,authority:null})});assert.equal((await denied(request())).status,403);assert.equal((await denied(request("GET","https://attacker.test"))).status,403);assert.equal((await denied(request("POST"))).status,405);assert.equal(presenterDemoAccessPolicy.clientSponsorAllowed,false);assert.equal(presenterDemoAccessPolicy.participantAllowed,false);});

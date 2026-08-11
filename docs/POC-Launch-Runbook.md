@@ -68,6 +68,14 @@ the control in the approved POC operating record and does not represent it as au
    aggregate scorecard, and record change candidates and the cohort decision. Follow the active
    checkpoint and closeout sequence in `POC-Learning-Protocol.md`.
 
+## Private prospect walkthrough
+
+Use `/workspace/presenter-demo.html` only while signed in as an authorized Senger Advisory platform
+operator or active assigned steward. The walkthrough is personally guided, fictional, and entirely
+separate from client workspaces. It may be used to show the sponsor, participant, and steward
+experiences before a prospect agrees to a POC. Do not describe it as a POC, enter prospect data, or
+imply that the illustrative finding or direction weights predict a prospect's outcome.
+
 ## Stop conditions
 
 - Stop immediately for any identity-response linkage, cross-tenant exposure, threshold bypass, or

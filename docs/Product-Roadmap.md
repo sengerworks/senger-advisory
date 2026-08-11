@@ -57,7 +57,16 @@
   Steward approval is required before the directions enter the locked Executive Capacity Brief and
   private Revelation Guide. The POC stops before detailed design, fulfillment, delivery, or
   reassessment.
-- **Phases 9–10: Planned.** Private steward walkthrough and five-client POC readiness.
+- **Phase 9 — Private steward-guided prospect walkthrough: Complete.** The former presenter demo is
+  rebuilt around the current stewarded POC model and requires authenticated platform-operator or
+  active assigned-steward authority. It uses only controlled fictional data and exposes no live
+  client records. The presenter may switch among sponsor, participant, and steward perspectives;
+  navigate the three required sessions, six-question context, identity-free perspective design,
+  sponsor-governed 18-question protocol, confidential collection, threshold, evidence review,
+  weighted Intervention Directions, dual outputs, deliberate release, and 30-day-versus-permanent
+  Brief access; and reveal or hide private presenter notes. The walkthrough closes at the POC paid
+  activation decision without presenting free implementation or predictive claims.
+- **Phase 10: Planned.** Five-client POC readiness.
 
 ## Release 0.5 — Public launch candidate
 - Public site structure
