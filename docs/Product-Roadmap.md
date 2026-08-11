@@ -9,8 +9,11 @@
   captures the sponsor's role, organizational level, function, accountability, the system being
   examined, its boundary and dependencies, and a required Guidance Session arrangement before the
   six-question Context Brief can be approved.
-- **Phase 3 — Perspective and protocol governance: Next.** Use the approved scope to guide cohort
-  composition, coverage, the common 18-question protocol, controlled reframing, and steward approval.
+- **Phase 3 — Perspective and protocol governance: Complete.** The approved scope guides cohort
+  composition and the common 18-question protocol. A required Design Session precedes approval;
+  sponsors may approve or request controlled AI reframing but cannot freely edit questions; the
+  assigned steward separately finalizes the exact protocol before Platform Operations may activate
+  invitations. Sponsor, steward, and participants therefore govern one immutable question set.
 - **Phase 4 — OneCal scheduling gates: Planned.** Replace manual session confirmation with the
   governed Guidance, Design, and Revelation booking experience.
 - **Phases 5–10: Planned.** Steward command center; dual synthesis outputs; release and revelation;

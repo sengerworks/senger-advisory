@@ -16,7 +16,8 @@ export function validateDiagnosticV2Activation(value) {
 export async function activateDiagnosticV2Collection({ workspaceId, userId, input, now = new Date() }, connectionString) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const source = await query(
-      `SELECT diagnostic.id,frame.id AS frame_id,protocol.id AS protocol_id,activation.id AS activation_id,
+      `SELECT diagnostic.id,frame.id AS frame_id,protocol.id AS protocol_id,
+              protocol.sponsor_approved_at,protocol.steward_finalized_at,activation.id AS activation_id,
               count(DISTINCT interview.id)::integer + count(DISTINCT interview_v2.id)::integer AS interview_count
        FROM app_shared.diagnostics diagnostic
        LEFT JOIN app_private.diagnostic_frames_v2 frame ON frame.workspace_id=diagnostic.workspace_id AND frame.diagnostic_id=diagnostic.id AND frame.status='approved'
@@ -24,12 +25,14 @@ export async function activateDiagnosticV2Collection({ workspaceId, userId, inpu
        LEFT JOIN app_operations.diagnostic_v2_collection_activations activation ON activation.workspace_id=diagnostic.workspace_id AND activation.diagnostic_id=diagnostic.id AND activation.deactivated_at IS NULL
        LEFT JOIN app_private.diagnostic_interviews interview ON interview.workspace_id=diagnostic.workspace_id AND interview.diagnostic_id=diagnostic.id
        LEFT JOIN app_private.diagnostic_interviews_v2 interview_v2 ON interview_v2.workspace_id=diagnostic.workspace_id AND interview_v2.diagnostic_id=diagnostic.id
-       WHERE diagnostic.id=$1 GROUP BY diagnostic.id,frame.id,protocol.id,activation.id LIMIT 1`, [input.diagnosticId]
+       WHERE diagnostic.id=$1 GROUP BY diagnostic.id,frame.id,protocol.id,protocol.sponsor_approved_at,protocol.steward_finalized_at,activation.id LIMIT 1`, [input.diagnosticId]
     );
     const row = source.rows[0];
     if (!row) throw new DiagnosticV2ActivationStateError("That diagnostic is not available in this workspace.");
     if (row.activation_id) throw new DiagnosticV2ActivationStateError("Protocol v2 is already active for this diagnostic.");
     if (!row.frame_id || !row.protocol_id) throw new DiagnosticV2ActivationStateError("Approve the v2 Diagnostic Frame and protocol before activation.");
+    if (!row.sponsor_approved_at) throw new DiagnosticV2ActivationStateError("The sponsor must approve the 18-question protocol before activation.");
+    if (!row.steward_finalized_at) throw new DiagnosticV2ActivationStateError("The assigned steward must finalize the sponsor-reviewed protocol before activation.");
     if (Number(row.interview_count) > 0) throw new DiagnosticV2ActivationStateError("Protocol version cannot change after participant collection has begun.");
     const inserted = await query(
       `INSERT INTO app_operations.diagnostic_v2_collection_activations
@@ -47,4 +50,4 @@ export async function activateDiagnosticV2Collection({ workspaceId, userId, inpu
   }, connectionString);
 }
 
-export const diagnosticV2ActivationPolicy = Object.freeze({ explicitPlatformOperatorActionRequired: true, approvedFrameRequired: true, approvedProtocolRequired: true, collectionMustNotHaveBegun: true, auditable: true });
+export const diagnosticV2ActivationPolicy = Object.freeze({ explicitPlatformOperatorActionRequired: true, approvedFrameRequired: true, approvedProtocolRequired: true, sponsorApprovalRequired: true, stewardFinalizationRequired: true, collectionMustNotHaveBegun: true, auditable: true });

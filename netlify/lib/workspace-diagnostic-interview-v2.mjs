@@ -35,7 +35,8 @@ async function participantSource(query, diagnosticId, userId) {
   const result = await query(
     `SELECT slot.id AS slot_id, protocol.id AS protocol_id, protocol.governed_questions
      FROM app_identity.diagnostic_participant_slots slot
-     JOIN app_shared.diagnostic_protocols_v2 protocol ON protocol.workspace_id=slot.workspace_id AND protocol.diagnostic_id=slot.diagnostic_id
+     JOIN app_shared.diagnostic_protocols_v2 protocol ON protocol.workspace_id=slot.workspace_id AND protocol.diagnostic_id=slot.diagnostic_id AND protocol.steward_finalized_at IS NOT NULL
+     JOIN app_operations.diagnostic_v2_collection_activations activation ON activation.workspace_id=protocol.workspace_id AND activation.diagnostic_id=protocol.diagnostic_id AND activation.protocol_id=protocol.id AND activation.deactivated_at IS NULL
      WHERE slot.diagnostic_id=$1 AND slot.clerk_user_id=$2 AND slot.notice_accepted_at IS NOT NULL AND slot.revoked_at IS NULL`, [diagnosticId,userId]
   );
   if (result.rowCount !== 1) throw new DiagnosticInterviewV2StateError("Accept the diagnostic privacy notice before beginning the v2 interview.");

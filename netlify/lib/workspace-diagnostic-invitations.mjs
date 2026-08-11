@@ -138,18 +138,23 @@ export function createDiagnosticInvitationGateway(
 export async function getDiagnosticInvitationReadiness(workspaceId, diagnosticId, connectionString) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     const result = await query(
-      `SELECT diagnostic.state, protocol.id AS protocol_id, plan.approved_payload AS plan_payload
+      `SELECT diagnostic.state, protocol_v2.id AS protocol_id, protocol_v2.steward_finalized_at,
+              activation.id AS activation_id, plan.approved_payload AS plan_payload
        FROM app_shared.diagnostics diagnostic
-       LEFT JOIN app_shared.diagnostic_protocols protocol
-         ON protocol.workspace_id = diagnostic.workspace_id AND protocol.diagnostic_id = diagnostic.id
        LEFT JOIN app_private.diagnostic_participant_plans plan
          ON plan.workspace_id = diagnostic.workspace_id AND plan.diagnostic_id = diagnostic.id
+       LEFT JOIN app_shared.diagnostic_protocols_v2 protocol_v2
+         ON protocol_v2.workspace_id = diagnostic.workspace_id AND protocol_v2.diagnostic_id = diagnostic.id
+       LEFT JOIN app_operations.diagnostic_v2_collection_activations activation
+         ON activation.workspace_id = diagnostic.workspace_id AND activation.diagnostic_id = diagnostic.id
+        AND activation.protocol_id = protocol_v2.id AND activation.deactivated_at IS NULL
        WHERE diagnostic.id = $1`,
       [diagnosticId]
     );
     const row = result.rows[0];
     if (!row) throw new DiagnosticInvitationStateError("That diagnostic is not available in this workspace.");
     if (!row.protocol_id || !row.plan_payload) throw new DiagnosticInvitationStateError("Approve the common protocol before managing collection.");
+    if (!row.steward_finalized_at || !row.activation_id) throw new DiagnosticInvitationStateError("Sponsor approval, steward finalization, and Protocol v2 activation are required before invitations can be sent.");
     return Object.freeze({
       diagnosticId,
       diagnosticState: row.state,

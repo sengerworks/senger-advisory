@@ -333,6 +333,14 @@
                   <ul><li>the leader accountable for the decision;</li><li>a functional leader translating it into priorities;</li><li>a manager coordinating handoffs;</li><li>an individual contributor doing the work; and</li><li>a cross-functional peer receiving the output.</li></ul>
                 </div>
               </aside>
+              <aside class="scope-perspective-guide" data-scope-perspective-guide hidden>
+                <p class="card-kicker">Your approved diagnostic boundary</p>
+                <h5 data-scope-perspective-title></h5>
+                <p data-scope-perspective-boundary></p>
+                <strong>Perspectives this scope should include</strong>
+                <ul data-scope-perspective-list></ul>
+                <small data-scope-perspective-dependencies></small>
+              </aside>
               <section class="participant-design-stage" aria-labelledby="coverage-intent-title">
                 <div class="participant-stage-heading"><span>1</span><div><strong id="coverage-intent-title">Choose what must be represented</strong><p>Select only the vantage points needed to understand the issue and the decision at hand.</p></div></div>
               <fieldset><legend>Which levels of the organization need a voice?</legend>
@@ -384,6 +392,11 @@
                 <strong>Uncovered objectives</strong>
                 <p>Add a perspective slot, remove the objective, or explicitly accept each limitation with a reason.</p>
                 <div data-coverage-gap-list></div>
+              </div>
+              <div class="context-session-gate">
+                <div><strong>Required Design Session</strong><span>Schedule the 30-minute conversation with your steward before approving perspective coverage. Direct OneCal booking will replace this confirmation in Phase 4.</span></div>
+                <label class="field"><span>Scheduled date and time</span><input type="datetime-local" name="designSessionScheduledFor" required /></label>
+                <label class="diagnostic-context-confirm"><input type="checkbox" name="designSessionAcknowledged" required /><span>I have arranged the required Design Session with my steward.</span></label>
               </div>
               <label class="field"><span>Approval note</span><textarea name="approvalNote" maxlength="500"></textarea></label>
               <label class="diagnostic-context-confirm">

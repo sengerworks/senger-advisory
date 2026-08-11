@@ -4,6 +4,7 @@ import { createWorkspaceDiagnosticParticipantsHandler } from "../netlify/functio
 import {
   DiagnosticParticipantInputError,
   DiagnosticParticipantStateError,
+  diagnosticScopeGuidance,
   validateDiagnosticParticipantPlan,
   workspaceDiagnosticParticipantPolicy
 } from "../netlify/lib/workspace-diagnostic-participants.mjs";
@@ -22,6 +23,8 @@ const input = {
     { slotId: "slot-3", leadershipLevel: "operational", executionProximity: "delivery", functionalLens: "commercial" }
   ],
   acceptedGaps: [],
+  designSessionScheduledFor: "2026-08-13T16:00:00.000Z",
+  designSessionAcknowledged: true,
   approvalNote: "The intended perspectives cover the operating system."
 };
 
@@ -46,10 +49,23 @@ test("approves identity-free participant coverage and rejects unresolved gaps", 
   assert.equal(workspaceDiagnosticParticipantPolicy.fullDiagnosticParticipantMaximum, 50);
   assert.equal(workspaceDiagnosticParticipantPolicy.sponsorCountsAsParticipant, false);
   assert.equal(workspaceDiagnosticParticipantPolicy.participantIdentityStoredInPlan, false);
+  assert.equal(validated.designSessionAcknowledged, true);
   assert.throws(() => validateDiagnosticParticipantPlan({
     ...input,
     participantSlots: [input.participantSlots[0]]
   }), DiagnosticParticipantInputError);
+});
+
+test("turns the approved organizational scope into neutral coverage guidance", () => {
+  const guidance = diagnosticScopeGuidance({
+    diagnosticScopeType: "function",
+    diagnosticScopeName: "Enterprise Sales",
+    diagnosticScopeBoundary: "The sales organization and its commercial decisions.",
+    crossBoundaryDependencies: "Marketing demand generation and delivery commitments."
+  });
+  assert.equal(guidance.scopeName, "Enterprise Sales");
+  assert.equal(guidance.guidance.length, 3);
+  assert.match(guidance.guidance.join(" "), /cross-functional/i);
 });
 
 test("the governed participant-plan contract supports no more than fifty perspectives", () => {
@@ -78,6 +94,7 @@ test("administrators retrieve and approve one participant plan", async () => {
       assert.equal(actualDiagnosticId, diagnosticId);
       return plan;
     },
+    getContext: async () => ({ diagnosticScopeType: "function", diagnosticScopeName: "Sales", diagnosticScopeBoundary: "Sales execution", crossBoundaryDependencies: "Marketing and delivery" }),
     approvePlan: async value => { approved = value; return plan; }
   });
   assert.equal((await handler(request())).status, 200);
@@ -89,7 +106,7 @@ test("administrators retrieve and approve one participant plan", async () => {
 test("participant access, foreign origins, invalid IDs, and state conflicts fail closed", async () => {
   const participant = createWorkspaceDiagnosticParticipantsHandler({ authenticate: authentication(WORKSPACE_ROLES.participant) });
   assert.equal((await participant(request())).status, 403);
-  const owner = createWorkspaceDiagnosticParticipantsHandler({ authenticate: authentication() });
+  const owner = createWorkspaceDiagnosticParticipantsHandler({ authenticate: authentication(), getContext: async () => null });
   assert.equal((await owner(request("GET", undefined, "?diagnosticId=bad"))).status, 400);
   assert.equal((await owner(request("GET", undefined, `?diagnosticId=${diagnosticId}`, "https://attacker.example"))).status, 403);
   const conflict = createWorkspaceDiagnosticParticipantsHandler({

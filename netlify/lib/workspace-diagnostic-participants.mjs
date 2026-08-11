@@ -10,11 +10,36 @@ import { validateDiagnosticContextId } from "./workspace-diagnostic-context.mjs"
 
 const allowedKeys = new Set([
   "diagnosticId", "targetLeadershipLevels", "targetExecutionProximities",
-  "targetFunctionalLenses", "participantSlots", "acceptedGaps", "approvalNote"
+  "targetFunctionalLenses", "participantSlots", "acceptedGaps", "approvalNote",
+  "designSessionScheduledFor", "designSessionAcknowledged"
 ]);
 
 export class DiagnosticParticipantInputError extends Error {}
 export class DiagnosticParticipantStateError extends Error {}
+
+function scheduledSession(value) {
+  const date = new Date(String(value || ""));
+  if (!Number.isFinite(date.getTime())) throw new Error("Record the scheduled Design Session date and time.");
+  return date.toISOString();
+}
+
+export function diagnosticScopeGuidance(context) {
+  if (!context) return null;
+  const guidance = {
+    enterprise: ["Include the enterprise decision owner.", "Include people translating direction into functional priorities.", "Include people coordinating and delivering the work."],
+    "business-unit": ["Include the business-unit decision owner.", "Include operating and delivery perspectives inside the unit.", "Include at least one perspective from a dependency outside the unit."],
+    function: ["Include the accountable functional leader.", "Include managers and individual contributors experiencing the work.", "Include at least one upstream or downstream cross-functional perspective."],
+    "leadership-layer": ["Include people within the leadership layer.", "Include a perspective that sets expectations for that layer.", "Include people who experience the consequences of its decisions."],
+    "cross-functional-system": ["Include the leader accountable for the shared outcome.", "Include perspectives from both sides of critical handoffs.", "Include someone close to delivery who experiences the consequences."]
+  }[context.diagnosticScopeType] || [];
+  return Object.freeze({
+    scopeType: context.diagnosticScopeType,
+    scopeName: context.diagnosticScopeName,
+    scopeBoundary: context.diagnosticScopeBoundary,
+    crossBoundaryDependencies: context.crossBoundaryDependencies,
+    guidance: Object.freeze(guidance)
+  });
+}
 
 export function validateDiagnosticParticipantPlan(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
@@ -25,6 +50,8 @@ export function validateDiagnosticParticipantPlan(value) {
   }
   try {
     const diagnosticId = validateDiagnosticContextId(value.diagnosticId);
+    const designSessionScheduledFor = scheduledSession(value.designSessionScheduledFor);
+    if (value.designSessionAcknowledged !== true) throw new Error("Confirm the required Design Session before approving the perspective plan.");
     let plan = createParticipantPlan({
       diagnosticId,
       targetLeadershipLevels: value.targetLeadershipLevels,
@@ -47,6 +74,8 @@ export function validateDiagnosticParticipantPlan(value) {
       targetFunctionalLenses: Object.freeze([...approved.coverageObjectives.functionalLenses]),
       participantSlots: Object.freeze(approved.participantSlots.map(slot => Object.freeze({ ...slot }))),
       acceptedGaps: Object.freeze(approved.acceptedGaps.map(gap => Object.freeze({ gapId: gap.gapId, reason: gap.reason }))),
+      designSessionScheduledFor,
+      designSessionAcknowledged: true,
       approvalNote: approved.approvalNote
     });
   } catch (error) {
@@ -118,6 +147,8 @@ export async function approveWorkspaceDiagnosticParticipantPlan(
       participantSlots: approved.participantSlots,
       acceptedGaps: approved.acceptedGaps,
       coverage: { covered: coverage.covered, accepted: coverage.accepted },
+      designSessionScheduledFor: input.designSessionScheduledFor,
+      designSessionAcknowledged: input.designSessionAcknowledged,
       approvalNote: approved.approvalNote
     };
     const inserted = await query(
@@ -141,6 +172,7 @@ export async function approveWorkspaceDiagnosticParticipantPlan(
         discoveryVersion: approved.discoveryVersion,
         plannedSlots: approved.participantSlots.length,
         acceptedCoverageGaps: approved.acceptedGaps.length,
+        designSessionScheduledFor: input.designSessionScheduledFor,
         nextState: "protocol-review"
       })]
     );

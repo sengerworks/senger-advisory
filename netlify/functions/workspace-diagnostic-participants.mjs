@@ -1,10 +1,11 @@
 import { authorizeWorkspaceAction } from "../../workspace-authorization.js";
 import { authenticateWorkspaceRequest } from "../lib/clerk-workspace-auth.mjs";
-import { DiagnosticContextInputError, validateDiagnosticContextId } from "../lib/workspace-diagnostic-context.mjs";
+import { DiagnosticContextInputError, getWorkspaceDiagnosticContext, validateDiagnosticContextId } from "../lib/workspace-diagnostic-context.mjs";
 import {
   approveWorkspaceDiagnosticParticipantPlan,
   DiagnosticParticipantInputError,
   DiagnosticParticipantStateError,
+  diagnosticScopeGuidance,
   getWorkspaceDiagnosticParticipantPlan,
   validateDiagnosticParticipantPlan,
   workspaceDiagnosticParticipantPolicy
@@ -22,6 +23,7 @@ async function jsonBody(request) {
 export function createWorkspaceDiagnosticParticipantsHandler({
   authenticate = authenticateWorkspaceRequest,
   getPlan = getWorkspaceDiagnosticParticipantPlan,
+  getContext = getWorkspaceDiagnosticContext,
   approvePlan = approveWorkspaceDiagnosticParticipantPlan
 } = {}) {
   return async request => {
@@ -38,8 +40,13 @@ export function createWorkspaceDiagnosticParticipantsHandler({
       }
       if (request.method === "GET") {
         const diagnosticId = validateDiagnosticContextId(url.searchParams.get("diagnosticId"));
+        const [participantPlan, context] = await Promise.all([
+          getPlan(auth.value.workspaceId, diagnosticId),
+          getContext(auth.value.workspaceId, diagnosticId)
+        ]);
         return json(200, {
-          participantPlan: await getPlan(auth.value.workspaceId, diagnosticId),
+          participantPlan,
+          scope: diagnosticScopeGuidance(context),
           policy: workspaceDiagnosticParticipantPolicy
         });
       }

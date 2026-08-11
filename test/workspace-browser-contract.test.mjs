@@ -45,6 +45,8 @@ test("workspace browser uses server configuration and minimized session endpoint
   assert.match(server, /"\/api\/workspace\/diagnostic-frame-v2"/);
   assert.match(server, /workspace-diagnostic-protocol-v2\.mjs/);
   assert.match(server, /"\/api\/workspace\/diagnostic-protocol-v2"/);
+  assert.match(server, /workspace-diagnostic-protocol-sponsor-review-v2\.mjs/);
+  assert.match(server, /"\/api\/workspace\/diagnostic-protocol-sponsor-review-v2"/);
   assert.match(server, /import workspaceDiagnosticParticipants/);
   assert.match(server, /"\/api\/workspace\/diagnostic-participants"/);
   assert.match(server, /import workspaceDiagnosticProtocol/);
@@ -128,7 +130,7 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(script, /Coverage gaps need a design change or an explicit acceptance reason/);
   assert.match(html, /Review the 18-question protocol/);
   assert.match(html, /Every participant receives this same contextualized core protocol/);
-  assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-protocol"/);
+  assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-protocol-sponsor-review-v2"/);
   assert.match(script, /Validating coverage and approving the common protocol/);
   assert.match(html, /Invite the approved perspectives/);
   assert.match(html, /Who started, who submitted/);

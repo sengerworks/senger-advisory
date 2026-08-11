@@ -70,6 +70,11 @@
             <p>Review the frame-specific core questions every participant will receive. Context may clarify the inquiry, but it cannot change the governed evidence objective or create leading conclusions.</p>
           </div>
           <div data-protocol-v2-result></div>
+          <form class="advisor-protocol-v2" data-protocol-v2-finalization hidden>
+            <div class="advisor-review-copy"><strong>Finalize the sponsor-approved protocol</strong><p>Confirm that the sponsor-reviewed wording preserves the evidence objectives. Finalization locks the exact 18 questions participants will receive.</p></div>
+            <label>Steward finalization note<textarea name="approvalNote" minlength="40" maxlength="1000" required placeholder="Record why the sponsor-approved protocol remains evidence-sufficient and ready for controlled collection."></textarea></label>
+            <div class="advisor-intervention-submit"><button class="primary-button" type="submit">Finalize the 18-question protocol</button><p class="form-message" data-protocol-v2-finalization-message></p></div>
+          </form>
           <form class="advisor-protocol-v2" data-protocol-v2-form hidden>
             <div class="advisor-progress" data-protocol-v2-coverage></div>
             <div class="protocol-v2-questions" data-protocol-v2-questions></div>

@@ -49,6 +49,11 @@ const elements = {
   participantCapacityLocked: document.querySelector("[data-participant-capacity-locked]"),
   participantCapacityNote: document.querySelector("[data-participant-capacity-note]"),
   participantReadiness: document.querySelector("[data-participant-readiness]"),
+  scopePerspectiveGuide: document.querySelector("[data-scope-perspective-guide]"),
+  scopePerspectiveTitle: document.querySelector("[data-scope-perspective-title]"),
+  scopePerspectiveBoundary: document.querySelector("[data-scope-perspective-boundary]"),
+  scopePerspectiveList: document.querySelector("[data-scope-perspective-list]"),
+  scopePerspectiveDependencies: document.querySelector("[data-scope-perspective-dependencies]"),
   pocCapacity: document.querySelector("[data-poc-capacity]"),
   coverageGaps: document.querySelector("[data-coverage-gaps]"),
   coverageGapList: document.querySelector("[data-coverage-gap-list]"),
@@ -581,6 +586,13 @@ async function openParticipantDesign(diagnosticId) {
   const data = await workspaceRequest(`/api/workspace/diagnostic-participants?diagnosticId=${encodeURIComponent(diagnosticId)}`);
   elements.participantDesignMessage.textContent = "";
   const approved = Boolean(data.participantPlan);
+  elements.scopePerspectiveGuide.hidden = !data.scope;
+  if (data.scope) {
+    elements.scopePerspectiveTitle.textContent = `${data.scope.scopeName} · ${data.scope.scopeType.replaceAll("-", " ")}`;
+    elements.scopePerspectiveBoundary.textContent = data.scope.scopeBoundary;
+    elements.scopePerspectiveList.replaceChildren(...data.scope.guidance.map(value => Object.assign(document.createElement("li"), { textContent: value })));
+    elements.scopePerspectiveDependencies.textContent = `Boundary dependencies to represent: ${data.scope.crossBoundaryDependencies}`;
+  }
   elements.participantDesignForm.hidden = approved;
   elements.participantPlanApproved.hidden = !approved;
   if (approved) {
@@ -611,7 +623,9 @@ function renderProtocolQuestions(questions) {
     prompt.textContent = question.questionText;
     prompt.dataset.protocolQuestionText = "";
     const governance = document.createElement("small");
-    governance.textContent = `${question.domainId} · ${question.evidenceObjectiveId} · governed template ${question.templateId}`;
+    governance.textContent = question.evidenceLayerId
+      ? `${question.evidenceLayerId.replaceAll("-", " ")} · ${(question.mechanismIds || []).map(value => value.replaceAll("-", " ")).join(", ") || "cross-cutting"} · governed template ${question.templateId}`
+      : `${question.domainId} · ${question.evidenceObjectiveId} · governed template ${question.templateId}`;
     const actions = document.createElement("div");
     actions.className = "protocol-question-actions";
     const approve = document.createElement("button");
@@ -721,25 +735,34 @@ async function openProtocolReview(diagnosticId) {
   elements.participantDesign.hidden = true;
   elements.protocolReview.hidden = false;
   elements.protocolMessage.textContent = "Compiling the governed protocol…";
-  const data = await workspaceRequest(`/api/workspace/diagnostic-protocol?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  const data = await workspaceRequest(`/api/workspace/diagnostic-protocol-sponsor-review-v2?diagnosticId=${encodeURIComponent(diagnosticId)}`);
   elements.protocolMessage.textContent = "";
-  const protocol = data.protocol || data.draft;
-  const approved = Boolean(data.protocol);
-  elements.protocolReviewForm.hidden = approved;
+  const protocol = data.protocol;
+  const approved = new Set(["awaiting-steward-finalization", "finalized"]).has(data.state);
+  elements.protocolReviewForm.hidden = data.state !== "sponsor-review";
   elements.protocolApproved.hidden = !approved;
-  elements.diagnosticInvitationPanel.hidden = !approved;
+  elements.diagnosticInvitationPanel.hidden = !data.canInvite;
+  if (!protocol) {
+    elements.protocolQuestionList.replaceChildren();
+    elements.protocolCoverage.replaceChildren();
+    elements.protocolMessage.textContent = "Your steward is preparing the 18-question protocol from the approved context and perspective design. Return here when you are notified that it is ready for review.";
+    elements.protocolReview.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   renderProtocolQuestions(protocol.questions);
   elements.protocolCoverage.replaceChildren(
     ...[
       `${data.policy.requiredQuestionCount} common questions`,
-      `${data.policy.requiredDomains.length} capacity domains`,
-      `${data.policy.requiredEvidenceObjectives.length} evidence objectives`,
-      "Same core protocol for everyone"
+      "Sponsor-controlled review",
+      "Steward finalization required",
+      "Same finalized protocol for everyone"
     ].map(label => Object.assign(document.createElement("span"), { textContent: label }))
   );
   if (approved) {
-    elements.protocolApprovedSummary.textContent = `Protocol ${protocol.protocolVersion} approved ${formattedDate(protocol.approvedAt)} with ${protocol.questions.length} governed questions.`;
-    await loadDiagnosticInvitations(diagnosticId);
+    elements.protocolApprovedSummary.textContent = data.state === "finalized"
+      ? `The sponsor-reviewed 18-question protocol was finalized by the steward ${formattedDate(protocol.stewardFinalizedAt)}.`
+      : "Sponsor review is complete. The assigned steward must now finalize the exact question set before collection can be activated.";
+    if (data.canInvite) await loadDiagnosticInvitations(diagnosticId);
   } else {
     elements.protocolReviewForm.reset();
     renderProtocolQuestions(protocol.questions);
@@ -1995,6 +2018,8 @@ elements.participantDesignForm.addEventListener("submit", async event => {
         diagnosticId: selectedDiagnosticId,
         ...draft,
         acceptedGaps,
+        designSessionScheduledFor: new Date(elements.participantDesignForm.elements.designSessionScheduledFor.value).toISOString(),
+        designSessionAcknowledged: elements.participantDesignForm.elements.designSessionAcknowledged.checked,
         approvalNote: elements.participantDesignForm.elements.approvalNote.value
       }
     });
@@ -2015,12 +2040,12 @@ elements.protocolReviewForm.addEventListener("submit", async event => {
     elements.protocolMessage.textContent = "Approve or resolve every question before approving the protocol.";
     return;
   }
-  const questions = reviews.map(review => ({ templateId: review.templateId, questionText: review.revisions.at(-1)?.questionText || review.originalQuestion, contextualizationNote: review.contextualizationNote }));
+  const questions = reviews.map(review => ({ templateId: review.templateId, questionText: review.revisions.at(-1)?.questionText || review.originalQuestion }));
   elements.approveProtocol.disabled = true;
   elements.protocolMessage.textContent = "Validating coverage and approving the common protocol…";
   delete elements.protocolMessage.dataset.tone;
   try {
-    await workspaceRequest("/api/workspace/diagnostic-protocol", {
+    await workspaceRequest("/api/workspace/diagnostic-protocol-sponsor-review-v2", {
       method: "POST",
       body: {
         diagnosticId: selectedDiagnosticId,
@@ -2058,7 +2083,7 @@ elements.protocolQuestionList.addEventListener("click", async event => {
   row.querySelector("[data-protocol-question-state]").textContent = "Creating a governed reframing…";
   try {
     const currentQuestion = review.revisions.at(-1)?.questionText || review.originalQuestion;
-    const data = await workspaceRequest("/api/workspace/diagnostic-protocol", { method: "POST", body: { action: "reframe-question", diagnosticId: selectedDiagnosticId, templateId: review.templateId, currentQuestion, reason } });
+    const data = await workspaceRequest("/api/workspace/diagnostic-protocol-sponsor-review-v2", { method: "POST", body: { action: "reframe-question", diagnosticId: selectedDiagnosticId, templateId: review.templateId, currentQuestion, reason } });
     review.revisions.push({ reason, questionText: data.revision.questionText, token: data.revision.token });
     review.status = "pending";
     row.dataset.reviewState = "revised";

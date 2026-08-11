@@ -44,6 +44,8 @@
     "coverageObjectivesRequired": true,
     "unresolvedGapBlocksApproval": true,
     "acceptedGapRequiresReason": true,
+    "designSessionScheduledForRequired": true,
+    "designSessionAcknowledgementRequired": true,
     "participantIdentityStoredInPlan": false
   }
 }

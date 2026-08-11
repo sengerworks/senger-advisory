@@ -56,6 +56,18 @@ test("assigned advisors retrieve and approve the v2 protocol", async () => {
   assert.equal(received.userId, "user_advisor");
 });
 
+test("assigned steward finalizes only the sponsor-approved protocol", async () => {
+  let received;
+  const handler = createWorkspaceDiagnosticProtocolV2Handler({
+    authenticate: auth(),
+    finalizeProtocol: async value => { received = value; return { state: "finalized" }; }
+  });
+  const response = await handler(request("PATCH", { diagnosticId, approvalNote: "The sponsor-approved wording preserves all evidence objectives and is ready for controlled collection." }));
+  assert.equal(response.status, 200);
+  assert.equal(received.input.diagnosticId, diagnosticId);
+  assert.equal(received.userId, "user_advisor");
+});
+
 test("participants, foreign origins, missing frames, and missing assignments fail closed", async () => {
   const participant = createWorkspaceDiagnosticProtocolV2Handler({ authenticate: auth(WORKSPACE_ROLES.participant) });
   assert.equal((await participant(request())).status, 403);

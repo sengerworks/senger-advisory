@@ -14,7 +14,15 @@ function bounded(value, maximum = 180) {
   return text.length <= maximum ? text : `${text.slice(0, maximum - 1).trim()}…`;
 }
 
-function frameCue(template, frame) {
+function perspectiveCue(plan) {
+  const slots = plan?.participantSlots || [];
+  if (!slots.length) return "";
+  const levels = [...new Set(slots.map(slot => slot.leadershipLevel))].join(", ");
+  const proximities = [...new Set(slots.map(slot => slot.executionProximity))].join(", ");
+  return `The cohort spans ${bounded(levels, 55)} levels and ${bounded(proximities, 55)} proximity to execution. Answer from your own vantage point.\n\n`;
+}
+
+function frameCue(template, frame, plan) {
   const cues = {
     "execution-demand-translation": `Keep this execution commitment in view: ${bounded(frame.executionDemand.commitment)}\n\n`,
     "complexity-change": `Test this framed demand: ${bounded(frame.diagnosticQuestion)}\n\n`,
@@ -24,14 +32,14 @@ function frameCue(template, frame) {
     "non-capacity-alternative": `The leadership decision this must inform is: ${bounded(frame.leadershipDecision)}\n\n`,
     "future-demand": `Use this time horizon: ${bounded(frame.executionDemand.timeHorizon, 100)}\n\n`
   };
-  return cues[template.id] || "";
+  return `${perspectiveCue(plan)}${cues[template.id] || ""}`;
 }
 
-export function compileWorkspaceDiagnosticProtocolV2(frame, options = {}) {
+export function compileWorkspaceDiagnosticProtocolV2(frame, options = {}, participantPlan = null) {
   try {
     const questions = recommendedDiagnosticTemplateIdsV2.map(templateId => {
       const template = templateById.get(templateId);
-      const cue = frameCue(template, frame);
+      const cue = frameCue(template, frame, participantPlan);
       return {
         templateId,
         questionText: `${cue}${template.question}`,
@@ -71,7 +79,9 @@ export function toPublicDiagnosticProtocolV2(row) {
     protocolId: row.id, diagnosticId: row.diagnostic_id, frameId: row.frame_id,
     protocolVersion: row.protocol_version, questionLibraryVersion: row.question_library_version,
     status: "approved", questions: Object.freeze(row.governed_questions), approvalNote: row.approval_note,
-    approvedAt: new Date(row.approved_at).toISOString()
+    approvedAt: new Date(row.approved_at).toISOString(),
+    sponsorApprovedAt: row.sponsor_approved_at ? new Date(row.sponsor_approved_at).toISOString() : null,
+    stewardFinalizedAt: row.steward_finalized_at ? new Date(row.steward_finalized_at).toISOString() : null
   });
 }
 
@@ -83,36 +93,44 @@ function frameFromRow(row) {
   });
 }
 
+function participantPlanFromRow(row) {
+  if (!row.participant_plan_id || !row.participant_plan_payload) throw new DiagnosticProtocolV2StateError("Approve the perspective design before developing the 18-question protocol.");
+  return Object.freeze({ id: row.participant_plan_id, ...row.participant_plan_payload });
+}
+
 async function source(query, diagnosticId) {
   const result = await query(
     `SELECT diagnostic.id AS diagnostic_id, frame.id AS frame_id, frame.frame_version,
-            frame.status AS frame_status, frame.frame_payload, frame.approved_at AS frame_approved_at
+            frame.status AS frame_status, frame.frame_payload, frame.approved_at AS frame_approved_at,
+            participant_plan.id AS participant_plan_id, participant_plan.approved_payload AS participant_plan_payload
      FROM app_shared.diagnostics diagnostic
      LEFT JOIN app_private.diagnostic_frames_v2 frame
        ON frame.workspace_id = diagnostic.workspace_id AND frame.diagnostic_id = diagnostic.id
+     LEFT JOIN app_private.diagnostic_participant_plans participant_plan
+       ON participant_plan.workspace_id = diagnostic.workspace_id AND participant_plan.diagnostic_id = diagnostic.id
      WHERE diagnostic.id = $1 LIMIT 1`, [diagnosticId]
   );
   if (!result.rows[0]) throw new DiagnosticProtocolV2StateError("That diagnostic is not available in this workspace.");
-  return frameFromRow(result.rows[0]);
+  return Object.freeze({ frame: frameFromRow(result.rows[0]), participantPlan: participantPlanFromRow(result.rows[0]) });
 }
 
 export async function getDiagnosticProtocolV2({ workspaceId, userId, diagnosticId, now = new Date() }, connectionString) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     await requireAdvisorAssignment(query, { diagnosticId, userId, now });
-    const frame = await source(query, diagnosticId);
+    const { frame, participantPlan } = await source(query, diagnosticId);
     const existing = await query(
       `SELECT id,diagnostic_id,frame_id,protocol_version,question_library_version,
-              governed_questions,approval_note,approved_at
+              governed_questions,approval_note,approved_at,sponsor_approved_at,steward_finalized_at
        FROM app_shared.diagnostic_protocols_v2 WHERE diagnostic_id = $1 LIMIT 1`, [diagnosticId]
     );
-    return Object.freeze({ protocol: toPublicDiagnosticProtocolV2(existing.rows[0]), draft: existing.rowCount ? null : compileWorkspaceDiagnosticProtocolV2(frame), policy: diagnosticProtocolPolicyV2 });
+    return Object.freeze({ protocol: toPublicDiagnosticProtocolV2(existing.rows[0]), draft: existing.rowCount ? null : compileWorkspaceDiagnosticProtocolV2(frame, {}, participantPlan), policy: diagnosticProtocolPolicyV2 });
   }, connectionString);
 }
 
 export async function approveWorkspaceDiagnosticProtocolV2({ workspaceId, userId, input, now = new Date() }, connectionString) {
   return withNeonWorkspaceTransaction(workspaceId, async ({ query }) => {
     await requireAdvisorAssignment(query, { diagnosticId: input.diagnosticId, userId, now });
-    const frame = await source(query, input.diagnosticId);
+    const { frame } = await source(query, input.diagnosticId);
     const validated = validateDiagnosticProtocolV2Approval(input, frame);
     const exists = await query("SELECT id FROM app_shared.diagnostic_protocols_v2 WHERE diagnostic_id = $1 LIMIT 1", [input.diagnosticId]);
     if (exists.rowCount) throw new DiagnosticProtocolV2StateError("A v2 protocol already exists for this diagnostic.");
@@ -125,7 +143,7 @@ export async function approveWorkspaceDiagnosticProtocolV2({ workspaceId, userId
         (id,workspace_id,diagnostic_id,frame_id,protocol_version,question_library_version,governed_questions,
          approval_note,approved_by_clerk_user_id,approved_at,created_at)
        VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10::timestamptz,$11::timestamptz)
-       RETURNING id,diagnostic_id,frame_id,protocol_version,question_library_version,governed_questions,approval_note,approved_at`,
+       RETURNING id,diagnostic_id,frame_id,protocol_version,question_library_version,governed_questions,approval_note,approved_at,sponsor_approved_at,steward_finalized_at`,
       [approved.protocolId, workspaceId, approved.diagnosticId, approved.frameId, approved.protocolVersion, approved.questionLibraryVersion,
         JSON.stringify(approved.questions), approved.approvalNote, userId, approved.approvedAt, approved.createdAt]
     );
