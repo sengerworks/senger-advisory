@@ -983,6 +983,8 @@ async function loadStewardSessions(diagnosticId) {
 async function recordStewardSession(type){
   const form=type==="guidance"?elements.diagnosticContextForm:elements.participantDesignForm;
   const field=form.elements[`${type}SessionScheduledFor`],status=type==="guidance"?elements.guidanceSessionStatus:elements.designSessionStatus;
+  const bookingLink=type==="guidance"?elements.onecalGuidance:elements.onecalDesign;
+  if(bookingLink.hidden){status.textContent="Live OneCal availability is unavailable. Contact Senger Advisory rather than entering an unverified time.";return;}
   if(!field.reportValidity())return;status.textContent="Recording the confirmed OneCal booking…";
   try{const data=await workspaceRequest("/api/workspace/diagnostic-steward-sessions",{method:"POST",body:{diagnosticId:selectedDiagnosticId,sessionType:type,scheduledAt:new Date(field.value).toISOString()}});form.elements[`${type}SessionAcknowledged`].checked=true;status.textContent=`Booking recorded for ${new Date(data.session.scheduledAt).toLocaleString()}.`;}catch(error){status.textContent=error.message;}
 }

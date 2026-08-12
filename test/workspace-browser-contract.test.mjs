@@ -133,7 +133,8 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Orientation 1 of 2/);
   assert.match(html, /Help us understand what you lead/);
   assert.match(html, /Required Guidance Session/);
-  assert.match(html, /Choose a time in OneCal/);
+  assert.match(html, /View live availability and book in OneCal/);
+  assert.match(html, /Do not choose a time here\. Copy the confirmed booking time from OneCal\./);
   assert.match(script, /diagnostic-steward-sessions/);
   assert.match(html, /guidanceSessionScheduledFor/);
   assert.match(html, /What part of the organization should we examine/);

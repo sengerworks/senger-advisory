@@ -215,10 +215,10 @@
                 </div>
                 <label class="field"><span>What are you accountable for?</span><textarea name="sponsorResponsibility" maxlength="500" placeholder="What outcomes, teams, decisions, or commitments ultimately sit with you?" required></textarea></label>
                 <div class="context-session-gate">
-                  <div><strong>Required Guidance Session</strong><span>Book the 30-minute conversation in OneCal, then record the confirmed time below. The Context Brief remains gated until the booking is recorded.</span></div>
-                  <a class="secondary-button" data-onecal-guidance target="_blank" rel="noopener" hidden>Choose a time in OneCal</a>
-                  <label class="field"><span>Scheduled date and time</span><input type="datetime-local" name="guidanceSessionScheduledFor" required /></label>
-                  <button class="secondary-button" type="button" data-confirm-guidance-session>Record confirmed booking</button>
+                  <div><strong>Required Guidance Session</strong><span>First, open OneCal to see Jonathan’s live availability and book the 30-minute conversation. Then return here and record the exact time shown in your OneCal confirmation. The Context Brief remains gated until that booking is recorded.</span></div>
+                  <a class="primary-button" data-onecal-guidance target="_blank" rel="noopener" hidden>View live availability and book in OneCal</a>
+                  <label class="field"><span>Confirmed OneCal date and time</span><input type="datetime-local" name="guidanceSessionScheduledFor" required /><small>Do not choose a time here. Copy the confirmed booking time from OneCal.</small></label>
+                  <button class="secondary-button" type="button" data-confirm-guidance-session>Record my OneCal booking</button>
                   <label class="diagnostic-context-confirm"><input type="checkbox" name="guidanceSessionAcknowledged" required disabled /><span data-guidance-session-status>Book and record the Guidance Session to continue.</span></label>
                 </div>
               </section>
@@ -396,10 +396,10 @@
                 <div data-coverage-gap-list></div>
               </div>
               <div class="context-session-gate">
-                <div><strong>Required Design Session</strong><span>Book the 30-minute working session in OneCal, then record the confirmed time. Perspective approval remains gated until the booking is recorded.</span></div>
-                <a class="secondary-button" data-onecal-design target="_blank" rel="noopener" hidden>Choose a time in OneCal</a>
-                <label class="field"><span>Scheduled date and time</span><input type="datetime-local" name="designSessionScheduledFor" required /></label>
-                <button class="secondary-button" type="button" data-confirm-design-session>Record confirmed booking</button>
+                <div><strong>Required Design Session</strong><span>Open OneCal to see Jonathan’s live availability and book the 30-minute working session. Then return here and record the exact confirmed time. Perspective approval remains gated until the booking is recorded.</span></div>
+                <a class="primary-button" data-onecal-design target="_blank" rel="noopener" hidden>View live availability and book in OneCal</a>
+                <label class="field"><span>Confirmed OneCal date and time</span><input type="datetime-local" name="designSessionScheduledFor" required /><small>Do not choose a time here. Copy the confirmed booking time from OneCal.</small></label>
+                <button class="secondary-button" type="button" data-confirm-design-session>Record my OneCal booking</button>
                 <label class="diagnostic-context-confirm"><input type="checkbox" name="designSessionAcknowledged" required disabled /><span data-design-session-status>Book and record the Design Session to continue.</span></label>
               </div>
               <label class="field"><span>Approval note</span><textarea name="approvalNote" maxlength="500"></textarea></label>
