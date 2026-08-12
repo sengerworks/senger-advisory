@@ -23,8 +23,9 @@ function boundedContext(value, maximum = 180) {
 }
 
 function contextualQuestion(template, context) {
+  const sizeCue=context.organizationHeadcount&&context.diagnosticScopeHeadcount?`The scope includes approximately ${context.diagnosticScopeHeadcount} of ${context.organizationHeadcount} people (${Math.round(context.diagnosticScopeHeadcount/context.organizationHeadcount*100)}% of the organization). `:"";
   const scopeCue = context.diagnosticScopeName
-    ? `Use ${boundedContext(context.diagnosticScopeName, 120)} as the system being examined; include cross-boundary work where it affects execution.\n\n`
+    ? `Use ${boundedContext(context.diagnosticScopeName, 120)} as the system being examined. ${sizeCue}Include cross-boundary work where it affects execution.\n\n`
     : "";
   const cues = {
     "strategy-translation": `Keep this approved strategic priority in view: ${boundedContext(context.strategicPriority)}\n\n`,

@@ -59,6 +59,7 @@ test("disposable five-participant POC completes the governed diagnostic and stop
   const context = approveDiagnosticContextBrief(createDiagnosticContextBrief({
     diagnosticId,
     organizationSizeBand: "150-399",
+    organizationHeadcount: 240,
     sponsorPerspective: "founder-ceo",
     sponsorRoleTitle: "Chief Executive Officer",
     sponsorOrganizationalLevel: "enterprise",
@@ -66,6 +67,7 @@ test("disposable five-participant POC completes the governed diagnostic and stop
     sponsorResponsibility: "Enterprise strategy, renewals, platform direction, and executive alignment.",
     diagnosticScopeType: "cross-functional-system",
     diagnosticScopeName: "Platform-first commercial execution",
+    diagnosticScopeHeadcount: 85,
     diagnosticScopeBoundary: "Sales, Product, Engineering, and Customer Success work affecting platform commitments and renewals.",
     crossBoundaryDependencies: "Commercial promises, product decision rights, engineering capacity, and customer-support handoffs.",
     guidanceSessionScheduledFor: "2026-08-12T16:00:00.000Z",

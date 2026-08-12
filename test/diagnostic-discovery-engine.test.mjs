@@ -17,6 +17,7 @@ const diagnosticId = "123e4567-e89b-42d3-a456-426614174000";
 const contextValues = {
   diagnosticId,
   organizationSizeBand: "50-149",
+  organizationHeadcount: 120,
   sponsorPerspective: "founder-ceo",
   sponsorRoleTitle: "Founder and CEO",
   sponsorOrganizationalLevel: "enterprise",
@@ -24,6 +25,7 @@ const contextValues = {
   sponsorResponsibility: "Enterprise strategy, operating performance, and leadership decisions.",
   diagnosticScopeType: "enterprise",
   diagnosticScopeName: "The enterprise operating system",
+  diagnosticScopeHeadcount: 120,
   diagnosticScopeBoundary: "All functions responsible for entering and serving the second market.",
   crossBoundaryDependencies: "Commercial commitments, delivery capacity, and founder decision rights.",
   guidanceSessionScheduledFor: "2026-07-29T11:00:00.000Z",
@@ -62,6 +64,7 @@ test("creates and explicitly approves a bounded Diagnostic Context Brief", () =>
 });
 
 test("captures a substantive but bounded sponsor accountability narrative",()=>{const narrative="A".repeat(2000);assert.equal(createDiagnosticContextBrief({...contextValues,sponsorResponsibility:narrative},{id:"00000000-0000-4000-8000-000000000001",now:new Date(0)}).sponsorResponsibility.length,2000);assert.throws(()=>createDiagnosticContextBrief({...contextValues,sponsorResponsibility:`${narrative}A`}),/2000 characters or fewer/);});
+test("preserves enterprise and scoped headcount context",()=>{const focused=createDiagnosticContextBrief({...contextValues,diagnosticScopeType:"function",diagnosticScopeName:"Sales",diagnosticScopeHeadcount:24});assert.equal(focused.organizationHeadcount,120);assert.equal(focused.diagnosticScopeHeadcount,24);assert.throws(()=>createDiagnosticContextBrief({...contextValues,diagnosticScopeType:"function",diagnosticScopeHeadcount:121}),/cannot exceed/);assert.throws(()=>createDiagnosticContextBrief({...contextValues,diagnosticScopeHeadcount:119}),/enterprise diagnostic/);});
 
 test("rejects unsupported context fields and unbounded sponsor content", () => {
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, sponsorEmail: "sponsor@example.com" }, { now }), /unsupported fields/);

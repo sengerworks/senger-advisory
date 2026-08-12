@@ -15,6 +15,7 @@ const diagnosticId = "22222222-2222-4222-8222-222222222222";
 const input = {
   diagnosticId,
   organizationSizeBand: "50-149",
+  organizationHeadcount: 120,
   sponsorPerspective: "founder-ceo",
   sponsorRoleTitle: "Founder and CEO",
   sponsorOrganizationalLevel: "enterprise",
@@ -22,6 +23,7 @@ const input = {
   sponsorResponsibility: "Enterprise strategy, operating performance, and leadership decisions.",
   diagnosticScopeType: "cross-functional-system",
   diagnosticScopeName: "Market-entry execution system",
+  diagnosticScopeHeadcount: 45,
   diagnosticScopeBoundary: "The commercial, operating, and delivery work required to enter the second market.",
   crossBoundaryDependencies: "Founder decisions, sales commitments, delivery staffing, and client escalation.",
   guidanceSessionScheduledFor: "2026-08-12T16:00:00.000Z",

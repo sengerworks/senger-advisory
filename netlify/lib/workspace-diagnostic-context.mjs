@@ -6,9 +6,9 @@ import {
 import { withNeonWorkspaceTransaction } from "./neon-workspace-database.mjs";
 
 const allowedInputKeys = new Set([
-  "diagnosticId", "organizationSizeBand", "sponsorPerspective", "sponsorRoleTitle",
+  "diagnosticId", "organizationSizeBand", "organizationHeadcount", "sponsorPerspective", "sponsorRoleTitle",
   "sponsorOrganizationalLevel", "sponsorFunction", "sponsorResponsibility",
-  "diagnosticScopeType", "diagnosticScopeName", "diagnosticScopeBoundary",
+  "diagnosticScopeType", "diagnosticScopeName", "diagnosticScopeHeadcount", "diagnosticScopeBoundary",
   "crossBoundaryDependencies", "guidanceSessionScheduledFor", "guidanceSessionAcknowledged",
   "organizationContext",
   "strategicPriority", "triggeringConcern", "decisionsAtRisk", "recentChanges",
@@ -114,6 +114,7 @@ export async function approveWorkspaceDiagnosticContext(
     const approved = approveDiagnosticContextBrief(draft, { approvalNote });
     const payload = {
       organizationSizeBand: approved.organizationSizeBand,
+      organizationHeadcount: approved.organizationHeadcount,
       sponsorPerspective: approved.sponsorPerspective,
       sponsorRoleTitle: approved.sponsorRoleTitle,
       sponsorOrganizationalLevel: approved.sponsorOrganizationalLevel,
@@ -121,6 +122,7 @@ export async function approveWorkspaceDiagnosticContext(
       sponsorResponsibility: approved.sponsorResponsibility,
       diagnosticScopeType: approved.diagnosticScopeType,
       diagnosticScopeName: approved.diagnosticScopeName,
+      diagnosticScopeHeadcount: approved.diagnosticScopeHeadcount,
       diagnosticScopeBoundary: approved.diagnosticScopeBoundary,
       crossBoundaryDependencies: approved.crossBoundaryDependencies,
       guidanceSessionScheduledFor: approved.guidanceSessionScheduledFor,

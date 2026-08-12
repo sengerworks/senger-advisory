@@ -234,11 +234,9 @@
                     <option value="leadership-layer">A leadership layer</option><option value="cross-functional-system">A cross-functional system</option>
                   </select></label>
                   <label class="field"><span>Name this scope</span><input name="diagnosticScopeName" maxlength="160" placeholder="For example: Enterprise Sales or Customer Renewal" required /></label>
-                  <label class="field"><span>Organization size</span><select name="organizationSizeBand" required>
-                    <option value="">Select size</option><option value="under-25">Under 25</option>
-                    <option value="25-49">25–49</option><option value="50-149">50–149</option>
-                    <option value="150-399">150–399</option><option value="400-plus">400+</option>
-                  </select></label>
+                  <label class="field"><span>Total organization headcount</span><input name="organizationHeadcount" type="number" min="1" max="1000000" step="1" placeholder="Approximate total employees" required /><small>Always include the full company, even when the diagnostic examines only one part.</small></label>
+                  <label class="field"><span data-scope-size-label>System headcount</span><input name="diagnosticScopeHeadcount" type="number" min="1" max="1000000" step="1" placeholder="Approximate people inside this scope" required /><small data-scope-size-guidance>This lets the diagnostic understand the scope relative to the full organization.</small></label>
+                  <input name="organizationSizeBand" type="hidden" />
                 </div>
                 <label class="field"><span>What is inside this diagnostic?</span><textarea name="diagnosticScopeBoundary" maxlength="800" placeholder="Which teams, work, decisions, locations, or outcomes belong inside the inquiry?" required></textarea></label>
                 <label class="field"><span>Where does this work depend on people outside that boundary?</span><textarea name="crossBoundaryDependencies" maxlength="800" placeholder="Consider the handoffs, approvals, information, customers, or partner teams needed for this system to execute." required></textarea></label>

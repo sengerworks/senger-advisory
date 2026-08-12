@@ -38,6 +38,8 @@ function optionalText(value, name, maximum) {
   return text;
 }
 
+function boundedHeadcount(value,name){const number=Number(value);if(!Number.isInteger(number)||number<1||number>1000000)throw new Error(`${name} must be a whole number from 1 to 1,000,000.`);return number;}
+
 function requiredTimestamp(value, name) {
   const date = new Date(String(value || ""));
   if (!Number.isFinite(date.getTime())) throw new Error(`${name} is required.`);
@@ -78,6 +80,7 @@ export function createDiagnosticContextBrief(values, options = {}) {
   exactKeys(values, new Set([
     "diagnosticId",
     "organizationSizeBand",
+    "organizationHeadcount",
     "sponsorPerspective",
     "sponsorRoleTitle",
     "sponsorOrganizationalLevel",
@@ -85,6 +88,7 @@ export function createDiagnosticContextBrief(values, options = {}) {
     "sponsorResponsibility",
     "diagnosticScopeType",
     "diagnosticScopeName",
+    "diagnosticScopeHeadcount",
     "diagnosticScopeBoundary",
     "crossBoundaryDependencies",
     "guidanceSessionScheduledFor",
@@ -100,19 +104,24 @@ export function createDiagnosticContextBrief(values, options = {}) {
   ]), "The context brief");
 
   const createdAt = nowIso(options.now);
+  const organizationHeadcount=boundedHeadcount(values.organizationHeadcount,"Organization headcount"),diagnosticScopeHeadcount=boundedHeadcount(values.diagnosticScopeHeadcount,"Diagnostic scope headcount"),diagnosticScopeType=enumValue(values.diagnosticScopeType, DIAGNOSTIC_SCOPE_TYPES, "Select a valid diagnostic scope.");
+  if(diagnosticScopeHeadcount>organizationHeadcount)throw new Error("Diagnostic scope headcount cannot exceed the total organization headcount.");
+  if(diagnosticScopeType==="enterprise"&&diagnosticScopeHeadcount!==organizationHeadcount)throw new Error("An enterprise diagnostic must use the total organization headcount as its scope size.");
   return {
     contextBriefId: options.id || crypto.randomUUID(),
     discoveryVersion: DISCOVERY_VERSION,
     diagnosticId: requiredText(values.diagnosticId, "Diagnostic ID", 100),
     status: "draft",
     organizationSizeBand: enumValue(values.organizationSizeBand, ORGANIZATION_SIZE_BANDS, "Select a valid organization size."),
+    organizationHeadcount,
     sponsorPerspective: enumValue(values.sponsorPerspective, SPONSOR_PERSPECTIVES, "Select a valid sponsor perspective."),
     sponsorRoleTitle: requiredText(values.sponsorRoleTitle, "Sponsor role title", 120),
     sponsorOrganizationalLevel: enumValue(values.sponsorOrganizationalLevel, SPONSOR_ORGANIZATIONAL_LEVELS, "Select a valid organizational level."),
     sponsorFunction: enumValue(values.sponsorFunction, SPONSOR_FUNCTIONS, "Select a valid sponsor function."),
     sponsorResponsibility: requiredText(values.sponsorResponsibility, "Sponsor responsibility", 2000),
-    diagnosticScopeType: enumValue(values.diagnosticScopeType, DIAGNOSTIC_SCOPE_TYPES, "Select a valid diagnostic scope."),
+    diagnosticScopeType,
     diagnosticScopeName: requiredText(values.diagnosticScopeName, "Diagnostic scope name", 160),
+    diagnosticScopeHeadcount,
     diagnosticScopeBoundary: requiredText(values.diagnosticScopeBoundary, "Diagnostic scope boundary", 800),
     crossBoundaryDependencies: requiredText(values.crossBoundaryDependencies, "Cross-boundary dependencies", 800),
     guidanceSessionScheduledFor: requiredTimestamp(values.guidanceSessionScheduledFor, "Guidance Session date"),

@@ -970,6 +970,11 @@ let diagnosticContextStep = 0;
 const sponsorResponsibilityField=elements.diagnosticContextForm.elements.sponsorResponsibility,sponsorResponsibilityCount=document.querySelector("[data-sponsor-responsibility-count]");
 function updateSponsorResponsibilityCount(){sponsorResponsibilityCount.textContent=`${sponsorResponsibilityField.value.length.toLocaleString()} / 2,000`;}
 sponsorResponsibilityField.addEventListener("input",updateSponsorResponsibilityCount);
+const scopeSizeLabels={enterprise:"Enterprise headcount","business-unit":"Business-unit headcount",function:"Function headcount","leadership-layer":"Leadership-layer headcount","cross-functional-system":"Cross-functional-system headcount"};
+function organizationSizeBand(headcount){return headcount<25?"under-25":headcount<50?"25-49":headcount<150?"50-149":headcount<400?"150-399":"400-plus";}
+function syncDiagnosticScopeSize(){const form=elements.diagnosticContextForm.elements,type=form.diagnosticScopeType.value,total=Number(form.organizationHeadcount.value)||0,scope=form.diagnosticScopeHeadcount,label=document.querySelector("[data-scope-size-label]"),guidance=document.querySelector("[data-scope-size-guidance]");label.textContent=scopeSizeLabels[type]||"System headcount";form.organizationSizeBand.value=total?organizationSizeBand(total):"";scope.max=total||1000000;if(type==="enterprise"){scope.value=total||"";scope.readOnly=true;guidance.textContent="Enterprise scope automatically matches the total organization headcount.";}else{scope.readOnly=false;if(total&&Number(scope.value)>total)scope.value="";guidance.textContent="This lets the diagnostic understand the scope relative to the full organization.";}}
+elements.diagnosticContextForm.elements.diagnosticScopeType.addEventListener("change",syncDiagnosticScopeSize);
+elements.diagnosticContextForm.elements.organizationHeadcount.addEventListener("input",syncDiagnosticScopeSize);
 
 async function loadStewardSessions(diagnosticId) {
   const data=await workspaceRequest(`/api/workspace/diagnostic-steward-sessions?diagnosticId=${encodeURIComponent(diagnosticId)}`);
@@ -991,7 +996,7 @@ function renderDiagnosticContextReview() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
   const summaries = [
     ["Your vantage point", `${values.sponsorRoleTitle} · ${values.sponsorOrganizationalLevel} · ${values.sponsorFunction}\n${values.sponsorResponsibility}\nGuidance Session: ${new Date(values.guidanceSessionScheduledFor).toLocaleString()}`],
-    ["System being examined", `${values.diagnosticScopeName} · ${values.diagnosticScopeType}\nInside the inquiry: ${values.diagnosticScopeBoundary}\nBoundary dependencies: ${values.crossBoundaryDependencies}`],
+    ["System being examined", `${values.diagnosticScopeName} · ${values.diagnosticScopeType}\n${Number(values.diagnosticScopeHeadcount).toLocaleString()} of ${Number(values.organizationHeadcount).toLocaleString()} people (${Math.round(Number(values.diagnosticScopeHeadcount)/Number(values.organizationHeadcount)*100)}% of the organization)\nInside the inquiry: ${values.diagnosticScopeBoundary}\nBoundary dependencies: ${values.crossBoundaryDependencies}`],
     ["What is happening now?", [values.organizationContext, values.triggeringConcern].filter(Boolean).join("\n\n")],
     ["What matters most?", values.strategicPriority],
     ["What is at risk?", values.decisionsAtRisk],
@@ -1048,6 +1053,7 @@ async function openDiagnosticContext(diagnosticId) {
   } else {
     elements.diagnosticContextForm.reset();
     updateSponsorResponsibilityCount();
+    syncDiagnosticScopeSize();
     elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
     showDiagnosticContextStep(0);
     await loadStewardSessions(diagnosticId);
@@ -2007,6 +2013,7 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
       body: {
         diagnosticId: selectedDiagnosticId,
         organizationSizeBand: values.organizationSizeBand,
+        organizationHeadcount: Number(values.organizationHeadcount),
         sponsorPerspective: values.sponsorPerspective,
         sponsorRoleTitle: values.sponsorRoleTitle,
         sponsorOrganizationalLevel: values.sponsorOrganizationalLevel,
@@ -2014,6 +2021,7 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
         sponsorResponsibility: values.sponsorResponsibility,
         diagnosticScopeType: values.diagnosticScopeType,
         diagnosticScopeName: values.diagnosticScopeName,
+        diagnosticScopeHeadcount: Number(values.diagnosticScopeHeadcount),
         diagnosticScopeBoundary: values.diagnosticScopeBoundary,
         crossBoundaryDependencies: values.crossBoundaryDependencies,
         guidanceSessionScheduledFor: new Date(values.guidanceSessionScheduledFor).toISOString(),
