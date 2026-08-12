@@ -57,16 +57,32 @@
   Steward approval is required before the directions enter the locked Executive Capacity Brief and
   private Revelation Guide. The POC stops before detailed design, fulfillment, delivery, or
   reassessment.
-- **Phase 9 — Private steward-guided prospect walkthrough: Complete.** The former presenter demo is
-  rebuilt around the current stewarded POC model and requires authenticated platform-operator or
-  active assigned-steward authority. It uses only controlled fictional data and exposes no live
-  client records. The presenter may switch among sponsor, participant, and steward perspectives;
-  navigate the three required sessions, six-question context, identity-free perspective design,
-  sponsor-governed 18-question protocol, confidential collection, threshold, evidence review,
-  weighted Intervention Directions, dual outputs, deliberate release, and 30-day-versus-permanent
-  Brief access; and reveal or hide private presenter notes. The walkthrough closes at the POC paid
-  activation decision without presenting free implementation or predictive claims.
-- **Phase 10: Planned.** Five-client POC readiness.
+- **Phase 9 — Private Executive Diagnostic Simulation: Complete.** The authenticated private
+  experience is deliberately distinct from the public journey. It opens on the executive revelation,
+  then lets an authorized platform operator or active assigned steward move nonlinearly through one
+  controlled fictional engagement: Frame, Design, Collect, Synthesize, and Reveal. Six bounded
+  executive-demand framings and three scope choices—organization-wide, one function or business
+  unit, or a cross-functional system—change the conversation without altering the illustrative
+  evidence. At every state, the presenter may switch among sponsor, participant, and steward product
+  surfaces; inspect safe aggregate evidence, counterpoints, uncertainty, confidentiality boundaries,
+  and protocol governance; explore an explicitly illustrative constellation showing what different
+  vantage points can observe without exposing answers or scores; enter a protected Steward reasoning
+  room that compares converging mechanism clusters, competing explanations, strengthening and
+  weakening evidence, disconfirmation tests, and uncertainty before a governing finding; and use a
+  private objective, question, proof, and transition choreography.
+  The simulation exposes no live client records or proprietary protocol, makes no predictive claim,
+  and demonstrates the POC stopping boundary without presenting free implementation.
+- **Phase 10 — Five-client POC readiness: In progress; technical entry gate complete.** The complete
+  application regression suite passes, the targeted POC golden path and disposable five-participant
+  rehearsal pass, and the real Postgres RLS integration test confirms tenant isolation. The
+  authenticated private simulation is ready for prospect and POC orientation. The current gate is
+  one production dress rehearsal through the canonical domain using the actual Clerk, Netlify, Neon,
+  OneCal, sponsor invitation, participant invitation, steward, synthesis, deliberate Brief release,
+  and feedback paths. After that rehearsal passes, enroll the initial clients sequentially—not all at
+  once—using the same per-client launch checklist, stop conditions, checkpoint feedback, scorecard,
+  and change-control record. Phase 10 completes only after the five-client cohort receives an explicit
+  continue, remediate, narrow, hold, stop, or monetize decision; technical test success alone does not
+  establish product validity or willingness to pay.
 
 ## Release 0.5 — Public launch candidate
 - Public site structure

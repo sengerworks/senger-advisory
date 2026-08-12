@@ -4,69 +4,99 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Guided Diagnostic Demo | Senger Advisory</title>
-  <meta name="description" content="A private, presenter-guided demonstration of the Senger Advisory Organizational Capacity Diagnostic." />
+  <title>Executive Diagnostic Simulation | Senger Advisory</title>
+  <meta name="description" content="A private, steward-guided simulation of the Senger Advisory Organizational Capacity Diagnostic." />
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="workspace.css" />
   <link rel="stylesheet" href="presenter-demo.css" />
 </head>
 <body>
-  <a class="skip-link" href="#demo-main">Skip to demo</a>
-  <header class="workspace-header">
+  <a class="skip-link" href="#simulation-main">Skip to simulation</a>
+  <header class="workspace-header simulation-header">
     <a class="workspace-brand" href="../index.html" aria-label="Senger Advisory home"><span>Senger Advisory</span><small>Organizational Capacity</small></a>
-    <div class="demo-header-actions">
-      <span class="demo-lock">Private guided demo</span>
+    <div class="simulation-header-actions">
+      <span class="private-badge">Private simulation</span>
       <button class="text-button" type="button" data-reset>Reset</button>
       <button class="text-button" type="button" data-presenter-sign-out hidden>Sign out</button>
     </div>
   </header>
 
   <section class="presenter-access" data-presenter-access>
-    <div><p class="eyebrow">Private presenter access</p><h1>Preparing the guided walkthrough.</h1><p data-presenter-access-status>Checking Senger Advisory presenter authority…</p></div>
+    <div class="presenter-access-copy"><p class="eyebrow">Private presenter access</p><h1>Preparing the Executive Diagnostic Simulation.</h1><p data-presenter-access-status>Checking Senger Advisory presenter authority…</p></div>
     <div data-presenter-sign-in></div>
   </section>
 
-  <main id="demo-main" class="demo-main" data-presenter-experience hidden>
-    <section class="demo-introduction">
+  <main id="simulation-main" class="simulation-main" data-presenter-experience hidden>
+    <section class="simulation-opening" data-opening>
       <div>
-        <p class="eyebrow">Presenter mode · fictional organization</p>
-        <h1>See organizational friction become focused action.</h1>
-        <p>A steward-guided platform walkthrough using a controlled, fictional organization—from the first signal through confidential participation, revelation, and the paid activation decision.</p>
-        <small class="demo-data-note">Fictional case · Nothing is saved, submitted, or connected to a live client workspace.</small>
+        <p class="eyebrow">Executive Diagnostic Simulation · fictional organization</p>
+        <h1>Start with the decision. Reveal the system behind it.</h1>
+        <p>This is not the public product journey. It is a steward-guided simulation of one diagnostic engagement—from executive pressure to protected evidence and an intervention decision.</p>
       </div>
-      <div class="role-switcher" aria-label="Choose demo perspective">
-        <button type="button" data-role="sponsor" aria-pressed="true"><span>Sponsor journey</span><small>What leadership experiences</small></button>
-        <button type="button" data-role="participant" aria-pressed="false"><span>Participant view</span><small>Confidential contribution</small></button>
-        <button type="button" data-role="steward" aria-pressed="false"><span>Steward view</span><small>Governance behind the journey</small></button>
+      <div class="pressure-panel">
+        <div class="framing-question">
+          <p class="card-kicker">What is closest to the conversation?</p>
+          <div class="pressure-options" data-pressure-options></div>
+        </div>
+        <div class="framing-question scope-question">
+          <p class="card-kicker">Where should we focus the lens?</p>
+          <div class="scope-options" data-scope-options></div>
+        </div>
+        <small>These choices frame the executive conversation—not the fictional evidence or diagnostic result.</small>
       </div>
     </section>
 
-    <section class="demo-shell" aria-live="polite">
-      <aside class="demo-rail">
-        <p class="card-kicker" data-role-label>Client sponsor journey</p>
-        <ol data-step-list></ol>
-        <button class="notes-toggle" type="button" aria-expanded="true" data-notes-toggle>Hide presenter notes</button>
-      </aside>
-
-      <div class="demo-stage">
-        <div class="stage-meta">
-          <span data-step-count>Step 1 of 7</span>
-          <span class="fictional-badge">Fictional data</span>
+    <section class="simulation-console" aria-live="polite">
+      <header class="console-bar">
+        <div class="case-identity">
+          <span>Fictional engagement</span>
+          <strong>Aetheris Dynamics</strong>
+          <small data-pressure-label>Customer retention &amp; experience · Organization-wide</small>
         </div>
-        <div class="stakes-line" aria-label="Demo progression">
-          <span>Demo progression</span><div><i data-stakes-meter></i></div><strong data-stakes-label>Context</strong>
-        </div>
-        <article data-stage-content></article>
-        <aside class="presenter-note" data-presenter-note>
-          <p>Presenter note</p>
-          <div data-note-content></div>
-        </aside>
-        <nav class="demo-controls" aria-label="Demo steps">
-          <button class="secondary-button" type="button" data-previous>Back</button>
-          <button class="primary-button" type="button" data-next>Next</button>
+        <nav class="lens-switcher" aria-label="Choose product perspective">
+          <span>View as</span>
+          <button type="button" data-lens="sponsor" aria-pressed="true">Sponsor</button>
+          <button type="button" data-lens="participant" aria-pressed="false">Participant</button>
+          <button type="button" data-lens="steward" aria-pressed="false">Steward</button>
         </nav>
+        <div class="case-status"><i></i><span data-status>Brief released</span></div>
+      </header>
+
+      <div class="engagement-timeline" data-timeline aria-label="Diagnostic engagement state"></div>
+
+      <div class="console-body">
+        <aside class="decision-sidebar">
+          <p class="card-kicker">Decision in view</p>
+          <h2 data-decision-title>How should leadership protect retention without sacrificing the platform strategy?</h2>
+          <p data-decision-context>Each function can see a real symptom. None can see the full mechanism producing it.</p>
+          <div class="state-summary" data-state-summary></div>
+          <button type="button" class="advance-button" data-advance>Trace how this was earned</button>
+          <button type="button" class="notes-button" data-notes-toggle aria-expanded="true">Hide presenter intelligence</button>
+        </aside>
+
+        <section class="product-surface">
+          <header class="surface-heading">
+            <div><span data-surface-kicker>Executive revelation</span><h2 data-surface-title>The organizational system comes into view.</h2></div>
+            <span class="fictional-badge">Controlled fictional data</span>
+          </header>
+          <div class="surface-content" data-surface-content></div>
+        </section>
+
+        <aside class="evidence-inspector">
+          <header><span>Inspection layer</span><strong data-inspector-title>Why leadership can trust this</strong></header>
+          <div data-inspector-content></div>
+        </aside>
       </div>
+
+      <aside class="presenter-intelligence" data-presenter-note>
+        <div><span>Presenter intelligence · never visible to the prospect in product</span><strong data-note-objective>Objective</strong></div>
+        <section><span>Ask</span><p data-note-question></p></section>
+        <section><span>Prove</span><p data-note-proof></p></section>
+        <section><span>Transition</span><p data-note-transition></p></section>
+      </aside>
     </section>
+
+    <p class="simulation-boundary">Fictional case · Nothing is saved, submitted, or connected to a live client workspace. The simulation demonstrates governed product behavior without exposing the proprietary protocol or any client information.</p>
   </main>
   <script src="presenter-demo.js"></script>
 </body>
