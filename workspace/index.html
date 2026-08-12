@@ -287,8 +287,16 @@
               <section class="context-step context-review" data-context-review hidden>
                 <p class="card-kicker">Review before approval</p>
                 <h5>Does this accurately frame the moment?</h5>
-                <p>Review the context that will guide participant design. It establishes a starting point—not a predetermined finding.</p>
-                <div class="context-review-list" data-context-review-list></div>
+                <p>First, review how the platform is articulating what it heard. This is a working synthesis of your perspective—not a diagnostic finding.</p>
+                <section class="context-ai-synthesis" data-context-ai-synthesis aria-live="polite">
+                  <p class="card-kicker">What we are hearing</p>
+                  <p data-context-ai-status>Preparing your Sponsor Context Synthesis…</p>
+                  <div data-context-ai-content hidden></div>
+                </section>
+                <details class="context-source-review">
+                  <summary>Review or verify your original answers</summary>
+                  <div class="context-review-list" data-context-review-list></div>
+                </details>
                 <label class="field"><span>Anything else we should keep in mind? <small>Optional</small></span><textarea name="approvalNote" maxlength="500" placeholder="Add only what would help us interpret this context responsibly."></textarea></label>
                 <label class="diagnostic-context-confirm">
                   <input type="checkbox" name="approved" required />

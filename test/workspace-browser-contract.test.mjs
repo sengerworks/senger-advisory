@@ -309,6 +309,16 @@ test("every sponsor context response uses a specific question and neutral reflec
   assert.match(contextForm, /<h5>What is most important for the organization to accomplish\?<\/h5>[\s\S]*?<span class="visually-hidden">/);
 });
 
+test("context approval leads with a governed AI mirror and retains source answers", async () => {
+  const html = await source("workspace/index.html"), script = await source("workspace/workspace.js");
+  assert.match(html, /What we are hearing/);
+  assert.match(html, /working synthesis of your perspective—not a diagnostic finding/);
+  assert.match(html, /Review or verify your original answers/);
+  assert.match(script, /diagnostic-context-synthesis/);
+  assert.match(script, /A working implication—not a finding/);
+  assert.match(script, /What the diagnostic still needs to test/);
+});
+
 test("perspective design becomes a focused sponsor stage with selection guidance", async () => {
   const html = await readFile(new URL("../workspace/index.html", import.meta.url), "utf8");
   const styles = await readFile(new URL("../workspace/workspace.css", import.meta.url), "utf8");

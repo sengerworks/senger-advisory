@@ -38,6 +38,9 @@ const elements = {
   contextSteps: [...document.querySelectorAll("[data-context-step]")],
   contextReview: document.querySelector("[data-context-review]"),
   contextReviewList: document.querySelector("[data-context-review-list]"),
+  contextAiSynthesis: document.querySelector("[data-context-ai-synthesis]"),
+  contextAiStatus: document.querySelector("[data-context-ai-status]"),
+  contextAiContent: document.querySelector("[data-context-ai-content]"),
   contextProgressLabel: document.querySelector("[data-context-progress-label]"),
   contextProgressName: document.querySelector("[data-context-progress-name]"),
   contextProgressBar: document.querySelector("[data-context-progress-bar]"),
@@ -1060,6 +1063,36 @@ async function loadStewardSessions(diagnosticId) {
 }
 
 
+function diagnosticContextReviewPayload() {
+  const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
+  return {
+    diagnosticId: selectedDiagnosticId,
+    organizationSizeBand: values.organizationSizeBand,
+    organizationHeadcount: Number(values.organizationHeadcount),
+    sponsorPerspective: values.sponsorPerspective,
+    sponsorRoleTitle: values.sponsorRoleTitle,
+    sponsorOrganizationalLevel: values.sponsorOrganizationalLevel,
+    sponsorFunction: values.sponsorFunction,
+    sponsorResponsibility: values.sponsorResponsibility,
+    diagnosticScopeType: values.diagnosticScopeType,
+    diagnosticScopeName: values.diagnosticScopeName,
+    diagnosticScopeHeadcount: Number(values.diagnosticScopeHeadcount),
+    diagnosticScopeBoundary: values.diagnosticScopeBoundary,
+    crossBoundaryDependencies: values.crossBoundaryDependencies,
+    guidanceSessionScheduledFor: new Date(values.guidanceSessionScheduledFor).toISOString(),
+    guidanceSessionAcknowledged: elements.diagnosticContextForm.elements.guidanceSessionAcknowledged.checked,
+    organizationContext: values.organizationContext,
+    strategicPriority: values.strategicPriority,
+    triggeringConcern: values.triggeringConcern,
+    decisionsAtRisk: values.decisionsAtRisk,
+    recentChanges: diagnosticList(values.recentChanges),
+    priorInterventions: diagnosticList(values.priorInterventions),
+    knownSensitivities: values.knownSensitivities,
+    decisionNeeded: values.decisionNeeded,
+    approvalNote: values.approvalNote || ""
+  };
+}
+
 function renderDiagnosticContextReview() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
   const summaries = [
@@ -1084,12 +1117,43 @@ function renderDiagnosticContextReview() {
   }));
 }
 
+function synthesisSection(title, content) {
+  const section = document.createElement("section"), heading = document.createElement("strong"), body = document.createElement("p");
+  heading.textContent = title; body.textContent = content; section.append(heading, body); return section;
+}
+
+async function loadDiagnosticContextSynthesis() {
+  elements.contextAiStatus.textContent = "Connecting the organizational moment, execution tension, stakes, and decision…";
+  elements.contextAiContent.hidden = true;
+  const data = await workspaceRequest("/api/workspace/diagnostic-context-synthesis", { method: "POST", body: diagnosticContextReviewPayload() });
+  const value = data.synthesis;
+  const questions = document.createElement("ul");
+  for (const question of value.questionsToTest) questions.append(Object.assign(document.createElement("li"), { textContent: question }));
+  const testing = document.createElement("section"), testingTitle = document.createElement("strong");
+  testingTitle.textContent = "What the diagnostic still needs to test"; testing.append(testingTitle, questions);
+  elements.contextAiContent.replaceChildren(
+    synthesisSection("The moment, in one frame", value.executiveFrame),
+    synthesisSection("The tension underneath it", value.centralTension),
+    synthesisSection("Why this matters now", value.businessStakes),
+    synthesisSection("The decision at the center", value.decisionAtCenter),
+    synthesisSection("A working implication—not a finding", value.workingImplication),
+    testing
+  );
+  elements.contextAiStatus.textContent = data.boundary;
+  elements.contextAiContent.hidden = false;
+}
+
 function showDiagnosticContextStep(step = 0) {
   diagnosticContextStep = Math.max(0, Math.min(step, elements.contextSteps.length));
   const reviewing = diagnosticContextStep === elements.contextSteps.length;
   elements.contextSteps.forEach((section, index) => { section.hidden = index !== diagnosticContextStep; });
   elements.contextReview.hidden = !reviewing;
-  if (reviewing) renderDiagnosticContextReview();
+  if (reviewing) {
+    renderDiagnosticContextReview();
+    loadDiagnosticContextSynthesis().catch(error => {
+      elements.contextAiStatus.textContent = `${error.message} You can still verify your answers and approve the bounded context.`;
+    });
+  }
   elements.contextProgressLabel.textContent = reviewing ? "Review and approve" : diagnosticContextSteps[diagnosticContextStep].label;
   elements.contextProgressName.textContent = reviewing ? "Confirm the bounded starting point" : diagnosticContextSteps[diagnosticContextStep].name;
   elements.contextProgressBar.style.width = `${reviewing ? 100 : ((diagnosticContextStep + 1) / elements.contextSteps.length) * 100}%`;

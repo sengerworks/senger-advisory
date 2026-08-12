@@ -418,6 +418,19 @@ h2 {
 .context-review-list article { padding: 14px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
 .context-review-list strong { display: block; margin-bottom: 5px; color: var(--bronze-dark); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; }
 .context-review-list p { margin: 0; color: var(--ink-soft); white-space: pre-line; line-height: 1.55; }
+.context-ai-synthesis { display: grid; gap: 14px; padding: clamp(22px,4vw,36px); border: 1px solid rgba(212,91,49,.32); border-top: 5px solid var(--orange); border-radius: 16px; background: linear-gradient(145deg,#fff 0%,#faf5ef 100%); box-shadow: 0 18px 48px rgba(10,25,48,.07); }
+.context-ai-synthesis > p { margin: 0; color: var(--ink-soft); }
+.context-ai-synthesis [data-context-ai-content] { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.context-ai-synthesis [data-context-ai-content] > section { padding: 16px; border: 1px solid var(--line); border-radius: 11px; background: rgba(255,255,255,.82); }
+.context-ai-synthesis [data-context-ai-content] > section:first-child { grid-column: 1 / -1; background: var(--midnight); color: #fff; }
+.context-ai-synthesis strong { display: block; margin-bottom: 7px; color: var(--bronze-dark); font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; }
+.context-ai-synthesis [data-context-ai-content] > section:first-child strong { color: #e1a278; }
+.context-ai-synthesis p,.context-ai-synthesis ul { margin: 0; line-height: 1.62; }
+.context-ai-synthesis ul { padding-left: 19px; color: var(--ink-soft); }
+.context-source-review { padding: 14px 16px; border: 1px solid var(--line); border-radius: 11px; background: var(--paper); }
+.context-source-review summary { cursor: pointer; font-weight: 800; }
+.context-source-review .context-review-list { margin-top: 14px; }
+@media (max-width: 720px) { .context-ai-synthesis [data-context-ai-content] { grid-template-columns: 1fr; } .context-ai-synthesis [data-context-ai-content] > section:first-child { grid-column: auto; } }
 .diagnostic-context-wide { grid-column: 1 / -1; }
 .diagnostic-context-confirm { display: flex; align-items: start; gap: 10px; color: var(--ink-soft); font-size: .8rem; }
 .diagnostic-context-confirm input { margin-top: 3px; }
