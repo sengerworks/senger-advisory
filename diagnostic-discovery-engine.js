@@ -110,7 +110,7 @@ export function createDiagnosticContextBrief(values, options = {}) {
     sponsorRoleTitle: requiredText(values.sponsorRoleTitle, "Sponsor role title", 120),
     sponsorOrganizationalLevel: enumValue(values.sponsorOrganizationalLevel, SPONSOR_ORGANIZATIONAL_LEVELS, "Select a valid organizational level."),
     sponsorFunction: enumValue(values.sponsorFunction, SPONSOR_FUNCTIONS, "Select a valid sponsor function."),
-    sponsorResponsibility: requiredText(values.sponsorResponsibility, "Sponsor responsibility", 500),
+    sponsorResponsibility: requiredText(values.sponsorResponsibility, "Sponsor responsibility", 2000),
     diagnosticScopeType: enumValue(values.diagnosticScopeType, DIAGNOSTIC_SCOPE_TYPES, "Select a valid diagnostic scope."),
     diagnosticScopeName: requiredText(values.diagnosticScopeName, "Diagnostic scope name", 160),
     diagnosticScopeBoundary: requiredText(values.diagnosticScopeBoundary, "Diagnostic scope boundary", 800),

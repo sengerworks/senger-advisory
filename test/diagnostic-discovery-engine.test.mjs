@@ -61,6 +61,8 @@ test("creates and explicitly approves a bounded Diagnostic Context Brief", () =>
   assert.throws(() => approveDiagnosticContextBrief(approved, {}, { now }), /draft/);
 });
 
+test("captures a substantive but bounded sponsor accountability narrative",()=>{const narrative="A".repeat(2000);assert.equal(createDiagnosticContextBrief({...contextValues,sponsorResponsibility:narrative},{id:"00000000-0000-4000-8000-000000000001",now:new Date(0)}).sponsorResponsibility.length,2000);assert.throws(()=>createDiagnosticContextBrief({...contextValues,sponsorResponsibility:`${narrative}A`}),/2000 characters or fewer/);});
+
 test("rejects unsupported context fields and unbounded sponsor content", () => {
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, sponsorEmail: "sponsor@example.com" }, { now }), /unsupported fields/);
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, triggeringConcern: "" }, { now }), /Triggering concern/);
