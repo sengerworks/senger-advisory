@@ -141,6 +141,8 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.doesNotMatch(html, /data-onecal-guidance-frame[^>]+hidden/);
   assert.match(html, /OneCal checks Jonathan’s connected calendars/);
   assert.doesNotMatch(html, /Record my OneCal booking|Confirmed OneCal date and time/);
+  assert.match(html, /data-guidance-session-status>Awaiting Senger Advisory confirmation after booking/);
+  assert.doesNotMatch(html, /Book and record the Guidance Session to continue/);
   assert.match(script, /diagnostic-steward-sessions/);
   assert.match(html, /guidanceSessionScheduledFor/);
   assert.match(html, /What part of the organization should we examine/);

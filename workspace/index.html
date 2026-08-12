@@ -219,7 +219,8 @@
                   <iframe class="onecal-booking-frame" data-onecal-guidance-frame src="https://app.onecal.io/b/jts/senger-advisory" title="Book the Senger Advisory Guidance Session" loading="eager"></iframe>
                   <a class="text-button" data-onecal-guidance href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Calendar not displaying? Open the booking page in a new window</a>
                   <input type="hidden" name="guidanceSessionScheduledFor" />
-                  <label class="diagnostic-context-confirm"><input type="checkbox" name="guidanceSessionAcknowledged" required disabled /><span data-guidance-session-status>Book and record the Guidance Session to continue.</span></label>
+                  <input type="checkbox" name="guidanceSessionAcknowledged" disabled hidden />
+                  <div class="session-confirmation-status" role="status" aria-live="polite"><span data-guidance-session-status>Awaiting Senger Advisory confirmation after booking.</span></div>
                 </div>
               </section>
               <section class="context-step" data-context-step hidden>
@@ -400,7 +401,8 @@
                 <iframe class="onecal-booking-frame" data-onecal-design-frame src="https://app.onecal.io/b/jts/senger-advisory" title="Book the Senger Advisory Design Session" loading="lazy"></iframe>
                 <a class="text-button" data-onecal-design href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Calendar not displaying? Open the booking page in a new window</a>
                 <input type="hidden" name="designSessionScheduledFor" />
-                <label class="diagnostic-context-confirm"><input type="checkbox" name="designSessionAcknowledged" required disabled /><span data-design-session-status>Book and record the Design Session to continue.</span></label>
+                <input type="checkbox" name="designSessionAcknowledged" disabled hidden />
+                <div class="session-confirmation-status" role="status" aria-live="polite"><span data-design-session-status>Awaiting Senger Advisory confirmation after booking.</span></div>
               </div>
               <label class="field"><span>Approval note</span><textarea name="approvalNote" maxlength="500"></textarea></label>
               <label class="diagnostic-context-confirm">
