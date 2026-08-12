@@ -149,6 +149,9 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Total organization headcount/);
   assert.match(html, /data-scope-size-label>System headcount/);
   assert.match(script, /scopeSizeLabels/);
+  assert.match(html, /Who and what should this diagnostic include\?/);
+  assert.match(html, /Who outside this group affects its ability to succeed\?/);
+  assert.doesNotMatch(html, /What is inside this diagnostic\?|Where does this work depend on people outside that boundary\?/);
   assert.match(html, /Depth over convenience/);
   assert.match(script, /Question 1 of 6/);
   assert.match(script, /diagnosticScopeBoundary/);
