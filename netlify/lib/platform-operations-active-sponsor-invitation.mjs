@@ -14,13 +14,24 @@ export function validateActiveSponsorInvitation(value){
   return Object.freeze({sponsorEmail,scopeConfirmed:true,privacyBriefConfirmed:true,invitationRequestId});
 }
 
-export async function inviteActivePocSponsor({workspaceId,organizationId,operatorUserId,input,redirectOrigin},{clerkClient=createClerkClient({secretKey:process.env.CLERK_SECRET_KEY}),connectionString}={}){
-  const diagnostic=await withNeonWorkspaceTransaction(workspaceId,async({query})=>(await query(`SELECT id,state FROM app_shared.diagnostics WHERE entitlement_type='poc' ORDER BY created_at DESC LIMIT 1`)).rows[0]||null,connectionString);
+const findActivePoc=(workspaceId,connectionString)=>withNeonWorkspaceTransaction(workspaceId,async({query})=>(await query(`SELECT id,state FROM app_shared.diagnostics WHERE entitlement_type='poc' ORDER BY created_at DESC LIMIT 1`)).rows[0]||null,connectionString);
+const recordInvitation=(workspaceId,operatorUserId,diagnosticId,invitationId,invitationRequestId,delivery,connectionString)=>withNeonWorkspaceTransaction(workspaceId,({query})=>query(`INSERT INTO app_operations.audit_events (workspace_id,actor_clerk_user_id,action,target_type,target_id,metadata) VALUES ($1,$2,'workspace.active-poc-sponsor-invited','diagnostic',$3,$4::jsonb)`,[workspaceId,operatorUserId,diagnosticId,JSON.stringify({invitationId,invitationRequestId,delivery})]),connectionString);
+
+export async function inviteActivePocSponsor({workspaceId,organizationId,operatorUserId,input,redirectOrigin},{clerkClient=createClerkClient({secretKey:process.env.CLERK_SECRET_KEY}),getDiagnostic=findActivePoc,recordAudit=recordInvitation,connectionString}={}){
+  const diagnostic=await getDiagnostic(workspaceId,connectionString);
   if(!diagnostic)throw new ActiveSponsorInvitationInputError("Create the active organization's POC engagement before inviting its sponsor.");
   const invitations=await clerkClient.organizations.getOrganizationInvitationList({organizationId,status:["pending","accepted"],limit:100});
   let invitation=(invitations.data||[]).find(value=>value.privateMetadata?.invitationRequestId===input.invitationRequestId);
-  if(!invitation)invitation=(invitations.data||[]).find(value=>value.emailAddress?.toLowerCase()===input.sponsorEmail&&value.privateMetadata?.responsibility==="executive-sponsor");
-  if(!invitation)invitation=await clerkClient.organizations.createOrganizationInvitation({organizationId,inviterUserId:operatorUserId,emailAddress:input.sponsorEmail,role:"org:admin",expiresInDays:30,redirectUrl:`${redirectOrigin}/workspace/`,privateMetadata:{product:"organizational-capacity",responsibility:"executive-sponsor",invitationRequestId:input.invitationRequestId}});
-  await withNeonWorkspaceTransaction(workspaceId,({query})=>query(`INSERT INTO app_operations.audit_events (workspace_id,actor_clerk_user_id,action,target_type,target_id,metadata) VALUES ($1,$2,'workspace.active-poc-sponsor-invited','diagnostic',$3,$4::jsonb)`,[workspaceId,operatorUserId,diagnostic.id,JSON.stringify({invitationId:invitation.id,invitationRequestId:input.invitationRequestId})]),connectionString);
-  return Object.freeze({diagnostic:Object.freeze({id:diagnostic.id,state:diagnostic.state}),sponsorInvitation:Object.freeze({status:invitation.status||"pending",expiresAt:new Date(invitation.expiresAt).toISOString()})});
+  let delivery=invitation?"existing-request":"sent";
+  if(!invitation){
+    const prior=(invitations.data||[]).find(value=>value.emailAddress?.toLowerCase()===input.sponsorEmail&&value.privateMetadata?.responsibility==="executive-sponsor");
+    if(prior?.status==="accepted"){invitation=prior;delivery="already-accepted";}
+    else{
+      if(prior?.status==="pending")await clerkClient.organizations.revokeOrganizationInvitation({organizationId,invitationId:prior.id,requestingUserId:operatorUserId});
+      invitation=await clerkClient.organizations.createOrganizationInvitation({organizationId,inviterUserId:operatorUserId,emailAddress:input.sponsorEmail,role:"org:admin",expiresInDays:30,redirectUrl:`${redirectOrigin}/workspace/`,privateMetadata:{product:"organizational-capacity",responsibility:"executive-sponsor",invitationRequestId:input.invitationRequestId}});
+      delivery=prior?"reissued":"sent";
+    }
+  }
+  await recordAudit(workspaceId,operatorUserId,diagnostic.id,invitation.id,input.invitationRequestId,delivery,connectionString);
+  return Object.freeze({diagnostic:Object.freeze({id:diagnostic.id,state:diagnostic.state}),sponsorInvitation:Object.freeze({status:invitation.status||"pending",delivery,expiresAt:new Date(invitation.expiresAt).toISOString()})});
 }
