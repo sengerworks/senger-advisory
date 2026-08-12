@@ -386,6 +386,12 @@ test("workspace authentication always returns to the workspace route", async () 
   assert.doesNotMatch(script, /afterSignInUrl|afterSignUpUrl/);
 });
 
+test("sponsor journey routing never clears Clerk sign-in state", async () => {
+  const script = await source("workspace/workspace.js");
+  assert.match(script, /currentRole === "org:admin" && !signInMounted/);
+  assert.match(script, /!location\.hash\.startsWith\("#diagnostic\/"\)/);
+});
+
 test("workspace has a route-only Clerk CSP and authentication return fallback", async () => {
   const config = await source("netlify.toml");
   assert.match(config, /for = "\/workspace\/\*"/);

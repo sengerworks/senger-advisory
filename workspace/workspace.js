@@ -1949,7 +1949,9 @@ elements.primaryAction.addEventListener("click", () => {
 elements.goToCurrentStep.addEventListener("click", () => elements.primaryAction.click());
 elements.journeyHome.addEventListener("click", showSponsorHome);
 window.addEventListener("popstate", () => {
-  if (!location.hash.startsWith("#diagnostic/")) showSponsorHome();
+  if (currentRole === "org:admin" && !signInMounted && !location.hash.startsWith("#diagnostic/")) {
+    showSponsorHome();
+  }
 });
 async function beginDiagnosticCheckout(diagnosticId,entitlementKind="diagnostic"){elements.diagnosticMessage.textContent="Preparing secure payment checkout…";elements.diagnosticMessage.dataset.tone="";const data=await workspaceRequest("/api/workspace/commerce-checkout",{method:"POST",body:{diagnosticId,entitlementKind}});if(!data.checkout?.checkoutUrl)throw new Error("Secure checkout did not return a destination.");window.location.assign(data.checkout.checkoutUrl);}
 elements.diagnosticList.addEventListener("click", event => {
