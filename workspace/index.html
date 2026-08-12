@@ -325,6 +325,11 @@
             </div>
             <form class="participant-design-form" data-participant-design-form>
               <input type="hidden" name="diagnosticId" />
+              <div class="context-progress" aria-label="Perspective design progress">
+                <div><strong data-perspective-progress-label>Part 1 of 3</strong><span data-perspective-progress-name>Choose what must be represented</span></div>
+                <div class="context-progress-track" aria-hidden="true"><span data-perspective-progress-bar></span></div>
+              </div>
+              <div data-perspective-step>
               <aside class="perspective-method-guide" aria-labelledby="perspective-method-title">
                 <div>
                   <p class="card-kicker">Before you select</p>
@@ -375,6 +380,8 @@
                 <label><input type="checkbox" name="functionalLenses" value="other" /> Another relevant function</label>
               </fieldset>
               </section>
+              </div>
+              <div data-perspective-step hidden>
               <section class="participant-design-stage" aria-labelledby="perspective-plan-title">
               <div class="participant-slots-heading">
                 <div class="participant-stage-heading"><span>2</span><div><strong id="perspective-plan-title">Build a cohort that can reveal the system</strong><p>Each row represents a distinct vantage point—not a person yet. Choose the organizational position, relationship to the work, and functional view that make that perspective valuable.</p></div></div>
@@ -395,6 +402,8 @@
               <div class="participant-slot-labels" aria-hidden="true"><span>Slot</span><span>Organizational level</span><span>Relationship to the work</span><span>Functional view</span><span></span></div>
               <div class="participant-slots" data-participant-slots></div>
               </section>
+              </div>
+              <div data-perspective-step hidden>
               <section class="participant-design-stage" aria-labelledby="participant-approval-title">
               <div class="participant-stage-heading"><span>3</span><div><strong id="participant-approval-title">Review coverage and approve</strong><p>The platform will identify any viewpoint you selected above but did not include in the planned cohort.</p></div></div>
               <div class="coverage-gaps" data-coverage-gaps hidden>
@@ -420,6 +429,11 @@
                 <p class="form-message" role="status" aria-live="polite" data-participant-design-message></p>
               </div>
               </section>
+              </div>
+              <div class="context-navigation">
+                <button class="text-button" type="button" data-perspective-back hidden>Back</button>
+                <button class="primary-button" type="button" data-perspective-next>Continue</button>
+              </div>
             </form>
           </section>
 

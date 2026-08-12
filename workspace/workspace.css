@@ -353,6 +353,11 @@ h2 {
 .workspace-stage-journey .ready-state { padding: 0; }
 .workspace-stage-journey .diagnostic-panel { margin: 0; padding: 0; border: 0; background: transparent; }
 .workspace-stage-journey [data-diagnostic-context] { max-width: 1040px; margin: 0 auto; }
+.workspace-stage-journey [data-protocol-review],
+.workspace-stage-journey [data-leadership-validation],
+.workspace-stage-journey [data-intervention-acceptance],
+.workspace-stage-journey [data-capacity-brief] { max-width: 1040px; margin: 0 auto; }
+[data-perspective-step] { display: grid; gap: 20px; }
 @media (max-width: 760px) {
   .journey-chrome { grid-template-columns: 1fr; gap: 12px; }
   .journey-save-state { text-align: left; }

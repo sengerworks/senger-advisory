@@ -46,6 +46,12 @@ const elements = {
   closeDiagnosticContext: document.querySelector("[data-close-diagnostic-context]"),
   participantDesign: document.querySelector("[data-participant-design]"),
   participantDesignForm: document.querySelector("[data-participant-design-form]"),
+  perspectiveSteps: [...document.querySelectorAll("[data-perspective-step]")],
+  perspectiveProgressLabel: document.querySelector("[data-perspective-progress-label]"),
+  perspectiveProgressName: document.querySelector("[data-perspective-progress-name]"),
+  perspectiveProgressBar: document.querySelector("[data-perspective-progress-bar]"),
+  perspectiveBack: document.querySelector("[data-perspective-back]"),
+  perspectiveNext: document.querySelector("[data-perspective-next]"),
   participantPlanApproved: document.querySelector("[data-participant-plan-approved]"),
   participantPlanSummary: document.querySelector("[data-participant-plan-summary]"),
   participantDesignMessage: document.querySelector("[data-participant-design-message]"),
@@ -472,13 +478,21 @@ const sponsorJourneyStages = {
   finding: [6, "Review the finding"]
 };
 
+const perspectiveStepNames = ["Choose what must be represented", "Build the perspective cohort", "Review coverage and approve"];
+let perspectiveStep = 0;
+
+function hideSponsorTaskSections() {
+  for (const section of [elements.diagnosticContext, elements.participantDesign, elements.protocolReview, elements.leadershipValidation, elements.interventionAcceptance, elements.capacityBrief]) {
+    if (section) section.hidden = true;
+  }
+  elements.sponsorPocFeedback.hidden = true;
+}
+
 function showSponsorHome() {
   document.body.classList.remove("workspace-stage-journey", "workspace-stage-perspectives");
   elements.journeyChrome.hidden = true;
   elements.diagnosticPanel.hidden = true;
-  for (const section of [elements.diagnosticContext, elements.participantDesign, elements.protocolReview, elements.leadershipValidation, elements.interventionAcceptance, elements.capacityBrief]) {
-    if (section) section.hidden = true;
-  }
+  hideSponsorTaskSections();
   history.replaceState(null, "", location.pathname + location.search);
   document.title = "Organizational Capacity Workspace | Senger Advisory";
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -493,8 +507,21 @@ function showSponsorJourney(stage, diagnosticId) {
   elements.journeyStepName.textContent = name;
   elements.journeyProgress.setAttribute("aria-valuenow", String(position));
   elements.journeyProgressFill.style.width = `${(position / 6) * 100}%`;
-  history.replaceState(null, "", `#diagnostic/${encodeURIComponent(diagnosticId)}/${stage}`);
+  const route = `#diagnostic/${encodeURIComponent(diagnosticId)}/${stage}`;
+  if (location.hash !== route) history.pushState({ sponsorJourney: true }, "", route);
+  else history.replaceState({ sponsorJourney: true }, "", route);
   document.title = `${name} | Organizational Capacity Diagnostic`;
+}
+
+function showPerspectiveStep(step = 0) {
+  perspectiveStep = Math.max(0, Math.min(step, elements.perspectiveSteps.length - 1));
+  elements.perspectiveSteps.forEach((section, index) => { section.hidden = index !== perspectiveStep; });
+  elements.perspectiveProgressLabel.textContent = `Part ${perspectiveStep + 1} of ${elements.perspectiveSteps.length}`;
+  elements.perspectiveProgressName.textContent = perspectiveStepNames[perspectiveStep];
+  elements.perspectiveProgressBar.style.width = `${((perspectiveStep + 1) / elements.perspectiveSteps.length) * 100}%`;
+  elements.perspectiveBack.hidden = perspectiveStep === 0;
+  elements.perspectiveNext.hidden = perspectiveStep === elements.perspectiveSteps.length - 1;
+  elements.participantDesign.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function updateParticipantCapacity() {
@@ -615,16 +642,16 @@ function showCoverageGaps(gaps) {
 function setPerspectiveStage(active) {
   document.body.classList.toggle("workspace-stage-perspectives", active);
   if (active) {
-    history.replaceState(null, "", "#perspective-design");
     document.title = "Perspective Design | Organizational Capacity Workspace";
     return;
   }
-  if (location.hash === "#perspective-design") history.replaceState(null, "", location.pathname + location.search);
   document.title = "Organizational Capacity Workspace | Senger Advisory";
 }
 
 async function openParticipantDesign(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
+  hideSponsorTaskSections();
+  showSponsorJourney("perspectives", diagnosticId);
   setPerspectiveStage(true);
   participantSlotMaximum = diagnosticsById.get(diagnosticId)?.entitlementType === "poc" ? 10 : 50;
   elements.diagnosticContext.hidden = true;
@@ -656,6 +683,7 @@ async function openParticipantDesign(diagnosticId) {
     addParticipantSlot(); addParticipantSlot(); addParticipantSlot(); addParticipantSlot(); addParticipantSlot();
     showCoverageGaps([]);
     await loadStewardSessions(diagnosticId);
+    showPerspectiveStep(0);
   }
   elements.participantDesign.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -783,11 +811,13 @@ async function loadDiagnosticInvitations(diagnosticId) {
 
 async function openProtocolReview(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
-  elements.diagnosticContext.hidden = true;
-  elements.participantDesign.hidden = true;
+  hideSponsorTaskSections();
+  showSponsorJourney("protocol", diagnosticId);
   elements.protocolReview.hidden = false;
   elements.protocolMessage.textContent = "Compiling the governed protocol…";
   const data = await workspaceRequest(`/api/workspace/diagnostic-protocol-sponsor-review-v2?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  const lifecycleState = diagnosticsById.get(diagnosticId)?.state;
+  showSponsorJourney(data.canInvite ? (lifecycleState === "collecting" ? "collection" : "invitations") : "protocol", diagnosticId);
   elements.protocolMessage.textContent = "";
   const protocol = data.protocol;
   const approved = new Set(["awaiting-steward-finalization", "finalized"]).has(data.state);
@@ -857,9 +887,8 @@ function renderExecutiveCapacityBrief(brief) {
 
 async function openLeadershipValidation(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
-  elements.diagnosticContext.hidden = true;
-  elements.participantDesign.hidden = true;
-  elements.protocolReview.hidden = true;
+  hideSponsorTaskSections();
+  showSponsorJourney("finding", diagnosticId);
   elements.leadershipValidation.hidden = false;
   elements.leadershipFinding.hidden = true;
   elements.executiveCapacityBrief.hidden = true;
@@ -938,10 +967,8 @@ async function openLeadershipValidation(diagnosticId) {
 
 async function openInterventionAcceptance(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
-  elements.diagnosticContext.hidden = true;
-  elements.participantDesign.hidden = true;
-  elements.protocolReview.hidden = true;
-  elements.leadershipValidation.hidden = true;
+  hideSponsorTaskSections();
+  showSponsorJourney("finding", diagnosticId);
   elements.interventionAcceptance.hidden = false;
   elements.clientInterventionAcceptance.hidden = true;
   elements.interventionCheckout.hidden = true;
@@ -1081,6 +1108,7 @@ function validateDiagnosticContextStep() {
 
 async function openDiagnosticContext(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
+  hideSponsorTaskSections();
   showSponsorJourney("discovery", diagnosticId);
   elements.diagnosticContext.hidden = false;
   elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
@@ -1920,6 +1948,9 @@ elements.primaryAction.addEventListener("click", () => {
 });
 elements.goToCurrentStep.addEventListener("click", () => elements.primaryAction.click());
 elements.journeyHome.addEventListener("click", showSponsorHome);
+window.addEventListener("popstate", () => {
+  if (!location.hash.startsWith("#diagnostic/")) showSponsorHome();
+});
 async function beginDiagnosticCheckout(diagnosticId,entitlementKind="diagnostic"){elements.diagnosticMessage.textContent="Preparing secure payment checkout…";elements.diagnosticMessage.dataset.tone="";const data=await workspaceRequest("/api/workspace/commerce-checkout",{method:"POST",body:{diagnosticId,entitlementKind}});if(!data.checkout?.checkoutUrl)throw new Error("Secure checkout did not return a destination.");window.location.assign(data.checkout.checkoutUrl);}
 elements.diagnosticList.addEventListener("click", event => {
   const button = event.target.closest("[data-diagnostic-id]");
@@ -1979,12 +2010,11 @@ elements.diagnosticList.addEventListener("click", event => {
 });
 elements.closeLeadershipValidation.addEventListener("click", () => {
   selectedDiagnosticId = null;
-  elements.leadershipValidation.hidden = true;
-  elements.sponsorPocFeedback.hidden = true;
+  showSponsorHome();
 });
 elements.downloadExecutiveBrief.addEventListener("click",async()=>{const diagnosticId=elements.downloadExecutiveBrief.dataset.diagnosticId;if(!diagnosticId)return;elements.downloadExecutiveBrief.disabled=true;try{const token=await clerk?.session?.getToken({organizationId:clerk?.organization?.id});const response=await fetch(`/api/workspace/diagnostic-executive-brief?diagnosticId=${encodeURIComponent(diagnosticId)}&download=1`,{credentials:"same-origin",headers:{...(token?{Authorization:`Bearer ${token}`}:{})}});if(!response.ok){const payload=await response.json().catch(()=>({}));throw new Error(payload.error||"The Brief could not be downloaded.");}const blob=await response.blob(),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download="executive-capacity-brief.html";document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);}catch(error){elements.leadershipValidationMessage.textContent=error.message;}finally{elements.downloadExecutiveBrief.disabled=false;}});
-elements.closeInterventionAcceptance.addEventListener("click",()=>{selectedDiagnosticId=null;elements.interventionAcceptance.hidden=true;});
-elements.closeCapacityBrief.addEventListener("click",()=>{selectedDiagnosticId=null;elements.capacityBrief.hidden=true;});
+elements.closeInterventionAcceptance.addEventListener("click",()=>{selectedDiagnosticId=null;showSponsorHome();});
+elements.closeCapacityBrief.addEventListener("click",()=>{selectedDiagnosticId=null;showSponsorHome();});
 elements.activateCapacityBrief.addEventListener("click",async()=>{if(!selectedDiagnosticId)return;elements.activateCapacityBrief.disabled=true;elements.capacityBriefMessage.textContent="Verifying the accepted intervention and activating the Brief…";try{const data=await workspaceRequest("/api/workspace/capacity-operating-brief",{method:"POST",body:{diagnosticId:selectedDiagnosticId}});renderCapacityBrief(data.brief);elements.activateCapacityBrief.hidden=true;await loadCapacityActions();await loadCapacityCheckIns();await loadCapacityLearning();await loadCapacityEvidence();await loadCapacityReviews();elements.capacityBriefMessage.textContent=`Brief ${data.brief.briefVersion} active · Next review ${data.brief.nextReview.cadence}`;await loadDiagnostics();}catch(error){elements.capacityBriefMessage.textContent=error.message;elements.activateCapacityBrief.disabled=false;}});
 elements.capacityActionForm.addEventListener("submit",async event=>{event.preventDefault();if(!selectedDiagnosticId||!elements.capacityActionForm.reportValidity())return;const values=Object.fromEntries(new FormData(elements.capacityActionForm)),button=elements.capacityActionForm.querySelector("button");button.disabled=true;elements.capacityActionMessage.textContent="Adding the operating commitment…";try{await workspaceRequest("/api/workspace/capacity-brief-action-path",{method:"POST",body:{diagnosticId:selectedDiagnosticId,phaseDays:Number(values.phaseDays),commitment:values.commitment,accountableRole:values.accountableRole,decisionGate:values.decisionGate,evidencePrompt:values.evidencePrompt,dueAt:new Date(values.dueAt).toISOString()}});elements.capacityActionForm.reset();await loadCapacityActions();}catch(error){elements.capacityActionMessage.textContent=error.message;}finally{button.disabled=false;}});
 elements.generateGuidedPlan.addEventListener("click",async()=>{if(!selectedDiagnosticId)return;elements.generateGuidedPlan.disabled=true;elements.guidedPlanMessage.textContent="Generating the reviewable operating draft…";try{const data=await workspaceRequest("/api/workspace/capacity-brief-guided-plan",{method:"POST",body:{diagnosticId:selectedDiagnosticId}});elements.guidedPlanMessage.textContent=`Generated ${data.plan.actionItems} action commitments, ${data.plan.learningItems} learning items, and ${data.plan.checkIns} guided check-ins.`;await loadCapacityActions();await loadCapacityLearning();await loadCapacityCheckIns();}catch(error){elements.guidedPlanMessage.textContent=error.message;elements.generateGuidedPlan.disabled=false;}});
@@ -2037,15 +2067,16 @@ elements.closeDiagnosticContext.addEventListener("click", () => {
 });
 elements.closeParticipantDesign.addEventListener("click", () => {
   selectedDiagnosticId = null;
-  elements.participantDesign.hidden = true;
   setPerspectiveStage(false);
-  elements.diagnosticPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  showSponsorHome();
 });
 elements.closeProtocolReview.addEventListener("click", () => {
   selectedDiagnosticId = null;
-  elements.protocolReview.hidden = true;
+  showSponsorHome();
 });
 elements.addParticipantSlot.addEventListener("click", () => addParticipantSlot());
+elements.perspectiveNext.addEventListener("click", () => showPerspectiveStep(perspectiveStep + 1));
+elements.perspectiveBack.addEventListener("click", () => showPerspectiveStep(perspectiveStep - 1));
 elements.contextNext.addEventListener("click", () => {
   if (!validateDiagnosticContextStep()) return;
   showDiagnosticContextStep(diagnosticContextStep + 1);

@@ -322,7 +322,10 @@ test("perspective design becomes a focused sponsor stage with selection guidance
   assert.match(html, /Back to workspace/);
   assert.match(styles, /workspace-stage-perspectives \.workspace-introduction/);
   assert.match(script, /setPerspectiveStage\(true\)/);
-  assert.match(script, /#perspective-design/);
+  assert.match(html, /data-perspective-progress-label/);
+  assert.equal((html.match(/data-perspective-step/g) || []).length, 3);
+  assert.match(script, /showPerspectiveStep\(perspectiveStep \+ 1\)/);
+  assert.match(script, /showSponsorJourney\("perspectives", diagnosticId\)/);
 });
 
 test("sponsor protocol review forbids direct editing and requires governed question decisions", async () => {
