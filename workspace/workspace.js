@@ -973,7 +973,7 @@ async function loadStewardSessions(diagnosticId) {
   for(const type of ["guidance","design"]){
     const link=type==="guidance"?elements.onecalGuidance:elements.onecalDesign;
     const frame=type==="guidance"?elements.onecalGuidanceFrame:elements.onecalDesignFrame;
-    link.hidden=!data.bookingLinks[type];frame.hidden=!data.bookingLinks[type];if(data.bookingLinks[type]){link.href=data.bookingLinks[type];if(frame.src!==data.bookingLinks[type])frame.src=data.bookingLinks[type];}
+    if(data.bookingLinks[type]){link.href=data.bookingLinks[type];if(frame.src!==data.bookingLinks[type])frame.src=data.bookingLinks[type];}
     const session=data.sessions.find(item=>item.sessionType===type&&item.status!=="cancelled");
     if(!session)continue;
     const form=type==="guidance"?elements.diagnosticContextForm:elements.participantDesignForm;

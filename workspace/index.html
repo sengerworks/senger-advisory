@@ -216,8 +216,8 @@
                 <label class="field"><span>What are you accountable for?</span><textarea name="sponsorResponsibility" maxlength="500" placeholder="What outcomes, teams, decisions, or commitments ultimately sit with you?" required></textarea></label>
                 <div class="context-session-gate">
                   <div><strong>Required Guidance Session</strong><span>Choose an available time below. OneCal checks Jonathan’s connected calendars and completes the booking without leaving this workspace. Senger Advisory will confirm the booking behind the scenes.</span></div>
-                  <iframe class="onecal-booking-frame" data-onecal-guidance-frame title="Book the Senger Advisory Guidance Session" loading="lazy" hidden></iframe>
-                  <a class="text-button" data-onecal-guidance target="_blank" rel="noopener" hidden>Open booking page in a new window</a>
+                  <iframe class="onecal-booking-frame" data-onecal-guidance-frame src="https://app.onecal.io/b/jts/senger-advisory" title="Book the Senger Advisory Guidance Session" loading="eager"></iframe>
+                  <a class="text-button" data-onecal-guidance href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Calendar not displaying? Open the booking page in a new window</a>
                   <input type="hidden" name="guidanceSessionScheduledFor" />
                   <label class="diagnostic-context-confirm"><input type="checkbox" name="guidanceSessionAcknowledged" required disabled /><span data-guidance-session-status>Book and record the Guidance Session to continue.</span></label>
                 </div>
@@ -397,8 +397,8 @@
               </div>
               <div class="context-session-gate">
                 <div><strong>Required Design Session</strong><span>Choose an available time below. OneCal completes the booking inside this workspace; Senger Advisory confirms it behind the scenes.</span></div>
-                <iframe class="onecal-booking-frame" data-onecal-design-frame title="Book the Senger Advisory Design Session" loading="lazy" hidden></iframe>
-                <a class="text-button" data-onecal-design target="_blank" rel="noopener" hidden>Open booking page in a new window</a>
+                <iframe class="onecal-booking-frame" data-onecal-design-frame src="https://app.onecal.io/b/jts/senger-advisory" title="Book the Senger Advisory Design Session" loading="lazy"></iframe>
+                <a class="text-button" data-onecal-design href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Calendar not displaying? Open the booking page in a new window</a>
                 <input type="hidden" name="designSessionScheduledFor" />
                 <label class="diagnostic-context-confirm"><input type="checkbox" name="designSessionAcknowledged" required disabled /><span data-design-session-status>Book and record the Design Session to continue.</span></label>
               </div>
