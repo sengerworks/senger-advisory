@@ -32,7 +32,7 @@
 [[headers]]
   for = "/workspace/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: https://img.clerk.com; script-src 'self' https://clerk.sengeradvisory.com https://accounts.sengeradvisory.com https://*.clerk.accounts.dev https://challenges.cloudflare.com; connect-src 'self' https://clerk.sengeradvisory.com https://accounts.sengeradvisory.com https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; frame-src 'self' https://challenges.cloudflare.com; font-src 'self'"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: https://img.clerk.com; script-src 'self' https://clerk.sengeradvisory.com https://accounts.sengeradvisory.com https://*.clerk.accounts.dev https://challenges.cloudflare.com; connect-src 'self' https://clerk.sengeradvisory.com https://accounts.sengeradvisory.com https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; frame-src 'self' https://challenges.cloudflare.com https://app.onecal.io; font-src 'self'"
     Cache-Control = "no-store"
     Referrer-Policy = "no-referrer"
     X-Robots-Tag = "noindex, nofollow, noarchive"

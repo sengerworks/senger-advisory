@@ -133,8 +133,9 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Orientation 1 of 2/);
   assert.match(html, /Help us understand what you lead/);
   assert.match(html, /Required Guidance Session/);
-  assert.match(html, /View live availability and book in OneCal/);
-  assert.match(html, /Do not choose a time here\. Copy the confirmed booking time from OneCal\./);
+  assert.match(html, /data-onecal-guidance-frame/);
+  assert.match(html, /OneCal checks Jonathan’s connected calendars/);
+  assert.doesNotMatch(html, /Record my OneCal booking|Confirmed OneCal date and time/);
   assert.match(script, /diagnostic-steward-sessions/);
   assert.match(html, /guidanceSessionScheduledFor/);
   assert.match(html, /What part of the organization should we examine/);
@@ -359,6 +360,7 @@ test("workspace has a route-only Clerk CSP and authentication return fallback", 
   assert.match(config, /for = "\/workspace\/\*"/);
   assert.match(config, /https:\/\/\*\.clerk\.accounts\.dev/);
   assert.match(config, /https:\/\/challenges\.cloudflare\.com/);
+  assert.match(config, /frame-src[^\n]+https:\/\/app\.onecal\.io/);
   assert.match(config, /from = "\/workspace\/\*"\s+to = "\/workspace\/index\.html"\s+status = 200/);
   assert.match(config, /https:\/\/clerk\.sengeradvisory\.com/);
   assert.match(config, /https:\/\/accounts\.sengeradvisory\.com/);

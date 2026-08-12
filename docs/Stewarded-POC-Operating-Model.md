@@ -11,12 +11,11 @@ This is the authoritative operating contract for the pre-launch POC journey. Lat
 replace a steward activity only after repeated POCs show that the activity is stable, safe,
 comprehensible, and methodologically faithful.
 
-During POC validation, a prominent link opens OneCal's live availability and booking experience
-before the platform accepts a governed session record. The sponsor copies the confirmed time after
-booking, and the assigned
-steward separately attests completion. Provider webhook or API verification may replace sponsor
-confirmation later; until then, the product describes the record accurately and does not claim that
-attendance was automatically verified by OneCal.
+During POC validation, the platform embeds OneCal's live availability and booking experience. The
+sponsor books without leaving the workspace or re-entering the meeting time. Until the OneCal
+booking webhook is configured, the assigned steward confirms the calendar booking in the private
+steward console and separately attests completion. The platform describes this record accurately
+and does not claim that booking or attendance was automatically verified by OneCal.
 
 ## Three-session journey
 
