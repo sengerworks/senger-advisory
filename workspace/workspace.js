@@ -10,6 +10,7 @@ const elements = {
   refresh: document.querySelector("[data-refresh]"),
   readyState: document.querySelector("[data-ready-state]"),
   sponsorGuide: document.querySelector("[data-sponsor-guide]"),
+  goToCurrentStep: document.querySelector("[data-go-to-current-step]"),
   account: document.querySelector("[data-account]"),
   accountLabel: document.querySelector("[data-account-label]"),
   signOut: document.querySelector("[data-sign-out]"),
@@ -19,6 +20,12 @@ const elements = {
   focusDescription: document.querySelector("[data-focus-description]"),
   primaryAction: document.querySelector("[data-primary-action]"),
   diagnosticPanel: document.querySelector("[data-diagnostic-panel]"),
+  journeyChrome: document.querySelector("[data-journey-chrome]"),
+  journeyHome: document.querySelector("[data-journey-home]"),
+  journeyStepLabel: document.querySelector("[data-journey-step-label]"),
+  journeyStepName: document.querySelector("[data-journey-step-name]"),
+  journeyProgress: document.querySelector("[data-journey-progress]"),
+  journeyProgressFill: document.querySelector("[data-journey-progress-fill]"),
   diagnosticMessage: document.querySelector("[data-diagnostic-message]"),
   diagnosticList: document.querySelector("[data-diagnostic-list]"),
   diagnosticEmpty: document.querySelector("[data-diagnostic-empty]"),
@@ -455,6 +462,40 @@ const participantOptions = {
 
 let diagnosticsById = new Map();
 let participantSlotMaximum = 10;
+
+const sponsorJourneyStages = {
+  discovery: [1, "Frame the moment"],
+  perspectives: [2, "Choose the perspectives"],
+  protocol: [3, "Approve the protocol"],
+  invitations: [4, "Send invitations"],
+  collection: [5, "Follow participation"],
+  finding: [6, "Review the finding"]
+};
+
+function showSponsorHome() {
+  document.body.classList.remove("workspace-stage-journey", "workspace-stage-perspectives");
+  elements.journeyChrome.hidden = true;
+  elements.diagnosticPanel.hidden = true;
+  for (const section of [elements.diagnosticContext, elements.participantDesign, elements.protocolReview, elements.leadershipValidation, elements.interventionAcceptance, elements.capacityBrief]) {
+    if (section) section.hidden = true;
+  }
+  history.replaceState(null, "", location.pathname + location.search);
+  document.title = "Organizational Capacity Workspace | Senger Advisory";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showSponsorJourney(stage, diagnosticId) {
+  const [position, name] = sponsorJourneyStages[stage] || sponsorJourneyStages.discovery;
+  document.body.classList.add("workspace-stage-journey");
+  elements.diagnosticPanel.hidden = false;
+  elements.journeyChrome.hidden = false;
+  elements.journeyStepLabel.textContent = `Step ${position} of 6`;
+  elements.journeyStepName.textContent = name;
+  elements.journeyProgress.setAttribute("aria-valuenow", String(position));
+  elements.journeyProgressFill.style.width = `${(position / 6) * 100}%`;
+  history.replaceState(null, "", `#diagnostic/${encodeURIComponent(diagnosticId)}/${stage}`);
+  document.title = `${name} | Organizational Capacity Diagnostic`;
+}
 
 function updateParticipantCapacity() {
   const count = elements.participantSlots.children.length;
@@ -1040,6 +1081,7 @@ function validateDiagnosticContextStep() {
 
 async function openDiagnosticContext(diagnosticId) {
   selectedDiagnosticId = diagnosticId;
+  showSponsorJourney("discovery", diagnosticId);
   elements.diagnosticContext.hidden = false;
   elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
   elements.diagnosticContextMessage.textContent = "Loading governed discovery…";
@@ -1528,6 +1570,7 @@ async function prepareOwnerCollection() {
     elements.primaryAction.textContent = new Set(["draft", "discovery"]).has(currentOwnerDiagnostic.state)
       ? "Begin diagnostic discovery"
       : "Continue diagnostic";
+    elements.diagnosticPanel.hidden = true;
     return;
   }
   currentOwnerDiagnostic = null;
@@ -1875,11 +1918,19 @@ elements.primaryAction.addEventListener("click", () => {
   elements.collectionPanel.scrollIntoView({ behavior: "smooth", block: "start" });
   elements.collectionForm.elements.label.focus({ preventScroll: true });
 });
+elements.goToCurrentStep.addEventListener("click", () => elements.primaryAction.click());
+elements.journeyHome.addEventListener("click", showSponsorHome);
 async function beginDiagnosticCheckout(diagnosticId,entitlementKind="diagnostic"){elements.diagnosticMessage.textContent="Preparing secure payment checkout…";elements.diagnosticMessage.dataset.tone="";const data=await workspaceRequest("/api/workspace/commerce-checkout",{method:"POST",body:{diagnosticId,entitlementKind}});if(!data.checkout?.checkoutUrl)throw new Error("Secure checkout did not return a destination.");window.location.assign(data.checkout.checkoutUrl);}
 elements.diagnosticList.addEventListener("click", event => {
   const button = event.target.closest("[data-diagnostic-id]");
   if (!button || button.disabled) return;
   const stage = button.dataset.diagnosticStage;
+  const journeyStage = new Set(["draft", "discovery"]).has(stage) ? "discovery"
+    : stage === "participant-design" ? "perspectives"
+    : stage === "protocol-review" ? "protocol"
+    : stage === "collecting" ? "collection"
+    : "finding";
+  showSponsorJourney(journeyStage, button.dataset.diagnosticId);
   const operation = button.textContent === "Complete payment"
     ? beginDiagnosticCheckout(button.dataset.diagnosticId)
     : new Set(["draft", "discovery"]).has(stage)
@@ -1982,7 +2033,7 @@ elements.leadershipValidationForm.addEventListener("submit", async event => {
 });
 elements.closeDiagnosticContext.addEventListener("click", () => {
   selectedDiagnosticId = null;
-  elements.diagnosticContext.hidden = true;
+  showSponsorHome();
 });
 elements.closeParticipantDesign.addEventListener("click", () => {
   selectedDiagnosticId = null;

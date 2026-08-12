@@ -279,6 +279,21 @@ test("sponsor workspace explains the full diagnostic journey before the current 
   assert.match(html, /href="#poc-support"/);
   assert.ok(html.indexOf("data-sponsor-guide") < html.indexOf("id=\"current-focus\""));
   assert.match(script, /sponsorGuide\.hidden = session\.role !== "org:admin"/);
+  assert.match(html, /data-go-to-current-step/);
+  assert.match(html, /data-journey-chrome/);
+  assert.match(html, /Step 1 of 6/);
+  assert.match(script, /showSponsorJourney\("discovery", diagnosticId\)/);
+  assert.match(script, /elements\.goToCurrentStep\.addEventListener/);
+  assert.match(script, /elements\.diagnosticPanel\.hidden = true;\n    return;/);
+});
+
+test("platform workflows use the shared orient-act-confirm experience standard", async () => {
+  const principles = await readFile(new URL("../docs/Platform-Experience-Principles.md", import.meta.url), "utf8");
+  assert.match(principles, /Orient, act, confirm/);
+  assert.match(principles, /one primary objective per screen/);
+  assert.match(principles, /visible progress/);
+  assert.match(principles, /Moving backward preserves prior entries/);
+  assert.match(principles, /server-recoverable/);
 });
 
 test("every sponsor context response uses a specific question and neutral reflective prompt", async () => {
