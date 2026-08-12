@@ -35,10 +35,21 @@
         </header>
         <section class="operations-summary" data-operations-summary></section>
         <section class="operations-create">
-          <div><p class="card-kicker">POC enrollment</p><h2>Create the client workspace and invite its sponsor.</h2><p>This creates one isolated client organization, a no-charge POC diagnostic, and a 30-day executive-sponsor invitation. The sponsor begins with the six-question context brief.</p><ul class="operations-readiness"><li>One accountable sponsor has confirmed participation.</li><li>The sponsor understands the five-to-ten participant POC range.</li><li>The confidentiality model and POC stop at Intervention Directions have been explained.</li><li>A target completion window and final debrief have been agreed outside the diagnostic record.</li></ul></div>
+          <div><p class="card-kicker">Active POC sponsor</p><h2>Invite the sponsor to this client workspace.</h2><p>The active organization is inherited from the organization selector and cannot be changed here. This sends a 30-day executive-sponsor invitation without creating another organization or diagnostic.</p></div>
+          <form data-active-sponsor-form>
+            <label>Active organization<input name="organizationName" data-active-sponsor-organization readonly aria-readonly="true" /></label>
+            <label>Executive sponsor email<input name="sponsorEmail" type="email" maxlength="254" placeholder="sponsor@client.com" required /></label>
+            <label class="operations-confirmation"><input name="scopeConfirmed" type="checkbox" required /><span>The sponsor has confirmed the POC scope, five-to-ten participant range, target window, and final debrief.</span></label>
+            <label class="operations-confirmation"><input name="privacyBriefConfirmed" type="checkbox" required /><span>The sponsor has received the confidentiality brief and understands that the POC ends at Intervention Directions.</span></label>
+            <button class="primary-button" type="submit">Invite sponsor to active POC</button>
+          </form>
+          <p class="form-message" data-active-sponsor-message></p>
+        </section>
+        <section class="operations-create">
+          <div><p class="card-kicker">New POC enrollment</p><h2>Create a separate client workspace and invite its sponsor.</h2><p>Use this only for a new client organization. It creates an isolated tenant, a no-charge POC diagnostic, and a 30-day executive-sponsor invitation.</p><ul class="operations-readiness"><li>One accountable sponsor has confirmed participation.</li><li>The sponsor understands the five-to-ten participant POC range.</li><li>The confidentiality model and POC stop at Intervention Directions have been explained.</li><li>A target completion window and final debrief have been agreed outside the diagnostic record.</li></ul></div>
           <form data-client-provisioning-form>
-            <label>Organization name<input name="organizationName" minlength="2" maxlength="120" placeholder="Acme Company" required /></label>
-            <label>Executive sponsor email<input name="sponsorEmail" type="email" maxlength="254" placeholder="adam@example.com" required /></label>
+            <label>New client organization name<input name="organizationName" minlength="2" maxlength="120" placeholder="Client organization" required /></label>
+            <label>Executive sponsor email<input name="sponsorEmail" type="email" maxlength="254" placeholder="sponsor@client.com" required /></label>
             <label>Diagnostic route<select name="route" required><option value="automated">Automated written diagnostic</option><option value="advisor-led">Advisor-led diagnostic</option></select></label>
             <label class="operations-confirmation"><input name="scopeConfirmed" type="checkbox" required /><span>The sponsor has confirmed the POC scope, five-to-ten participant range, target window, and final debrief.</span></label>
             <label class="operations-confirmation"><input name="privacyBriefConfirmed" type="checkbox" required /><span>The sponsor has received the confidentiality brief and understands that the POC ends at Intervention Directions.</span></label>
