@@ -370,6 +370,7 @@ h2 {
 .context-session-gate { display: grid; gap: 13px; padding: 17px; border: 1px solid rgba(212, 91, 49, .24); border-radius: 11px; background: rgba(212, 91, 49, .045); }
 .context-session-gate > div { display: grid; gap: 4px; color: var(--ink-soft); font-size: .76rem; line-height: 1.5; }
 .context-session-gate > div strong { color: var(--ink); font-size: .8rem; }
+.field-character-count { justify-self: end; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
 .onecal-booking-frame { width: 100%; min-height: 680px; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; background: #fff; }
 @media (max-width: 720px) { .onecal-booking-frame { min-height: 760px; } }
 .scope-perspective-guide { display: grid; gap: 9px; padding: clamp(20px, 3vw, 28px); border: 1px solid rgba(212, 91, 49, .22); border-radius: 13px; background: rgba(212, 91, 49, .045); }

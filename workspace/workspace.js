@@ -967,6 +967,9 @@ const diagnosticContextSteps = [
   { label: "Question 6 of 6", name: "What should we handle carefully?" }
 ];
 let diagnosticContextStep = 0;
+const sponsorResponsibilityField=elements.diagnosticContextForm.elements.sponsorResponsibility,sponsorResponsibilityCount=document.querySelector("[data-sponsor-responsibility-count]");
+function updateSponsorResponsibilityCount(){sponsorResponsibilityCount.textContent=`${sponsorResponsibilityField.value.length.toLocaleString()} / 2,000`;}
+sponsorResponsibilityField.addEventListener("input",updateSponsorResponsibilityCount);
 
 async function loadStewardSessions(diagnosticId) {
   const data=await workspaceRequest(`/api/workspace/diagnostic-steward-sessions?diagnosticId=${encodeURIComponent(diagnosticId)}`);
@@ -1044,6 +1047,7 @@ async function openDiagnosticContext(diagnosticId) {
     elements.diagnosticContextSummary.textContent = `${data.context.diagnosticScopeName} · ${data.context.diagnosticScopeType}. ${data.context.triggeringConcern} Decision to inform: ${data.context.decisionNeeded}`;
   } else {
     elements.diagnosticContextForm.reset();
+    updateSponsorResponsibilityCount();
     elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
     showDiagnosticContextStep(0);
     await loadStewardSessions(diagnosticId);

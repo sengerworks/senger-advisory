@@ -133,6 +133,8 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Orientation 1 of 2/);
   assert.match(html, /Help us understand what you lead/);
   assert.match(html, /name="sponsorResponsibility" maxlength="2000"/);
+  assert.match(html, /data-sponsor-responsibility-count[^>]+aria-live="polite">0 \/ 2,000/);
+  assert.match(script, /updateSponsorResponsibilityCount/);
   assert.match(html, /Required Guidance Session/);
   assert.match(html, /data-onecal-guidance-frame/);
   assert.match(html, /data-onecal-guidance-frame src="https:\/\/app\.onecal\.io\/b\/jts\/senger-advisory"/);
