@@ -23,15 +23,14 @@
       "diagnosticScopeName",
       "diagnosticScopeBoundary",
       "crossBoundaryDependencies",
-      "guidanceSessionScheduledFor",
-      "guidanceSessionAcknowledged",
       "organizationContext",
       "strategicPriority",
       "triggeringConcern",
       "decisionsAtRisk",
       "decisionNeeded"
     ],
-    "approvalRequired": true
+    "approvalRequired": true,
+    "guidanceSessionSchedulingTrackedSeparately": true
   },
   "participantPlan": {
     "leadershipLevels": ["enterprise", "functional", "operational", "frontline"],

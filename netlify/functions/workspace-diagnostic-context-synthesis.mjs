@@ -19,7 +19,7 @@ export function createWorkspaceDiagnosticContextSynthesisHandler({ authenticate 
       const text = await request.text();
       if (text.length > 24576) throw new DiagnosticContextInputError("Request too large.");
       let body; try { body = JSON.parse(text); } catch { throw new DiagnosticContextInputError("Enter valid context details."); }
-      const context = validateDiagnosticContextInput(body);
+      const context = validateDiagnosticContextInput(body, { requireApproval: false });
       const provider = synthesize || createOpenAIDiagnosticContextSynthesizer();
       const { guidanceSessionScheduledFor: _scheduledFor, guidanceSessionAcknowledged: _acknowledged, approvalNote: _approvalNote, ...synthesisContext } = context;
       return json(200, { synthesis: await provider(synthesisContext), boundary: "Sponsor perspective—working articulation, not a diagnostic finding." });

@@ -141,7 +141,8 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.doesNotMatch(html, /data-onecal-guidance-frame[^>]+hidden/);
   assert.match(html, /OneCal checks Jonathan’s connected calendars/);
   assert.doesNotMatch(html, /Record my OneCal booking|Confirmed OneCal date and time/);
-  assert.match(html, /data-guidance-session-status>Awaiting Senger Advisory confirmation after booking/);
+  assert.match(html, /Your OneCal confirmation is sufficient; no additional approval is required/);
+  assert.match(html, /data-guidance-session-status>Book directly in OneCal to reserve your session/);
   assert.doesNotMatch(html, /Book and record the Guidance Session to continue/);
   assert.match(script, /diagnostic-steward-sessions/);
   assert.match(html, /guidanceSessionScheduledFor/);
@@ -320,15 +321,15 @@ test("context approval leads with a governed AI mirror and retains source answer
   assert.match(script, /A working implication—not a finding/);
   assert.match(script, /What the diagnostic will explore/);
   assert.match(script, /You do not need to answer these now/);
-  assert.match(script, /Not yet recorded/);
   assert.match(script, /await loadStewardSessions\(selectedDiagnosticId\)/);
   assert.match(html, /data-context-approval-note-count/);
   assert.match(html, /name="approvalNote" maxlength="2000"/);
-  assert.match(script, /function confirmedGuidanceSessionIso/);
-  assert.match(script, /When you approve it, we’ll check that Senger Advisory has confirmed your Guidance Session/);
-  assert.match(script, /Checking your Guidance Session confirmation/);
-  assert.match(script, /Your answers are still here, but Senger Advisory has not yet confirmed your Guidance Session/);
-  assert.match(script, /elements\.approveDiagnosticContext\.disabled = false/);
+  assert.match(html, /data-approve-diagnostic-context disabled hidden/);
+  assert.match(script, /elements\.approveDiagnosticContext\.disabled = !elements\.diagnosticContextForm\.elements\.approved\.checked/);
+  assert.match(script, /elements\.diagnosticContextForm\.elements\.approved\.addEventListener\("change", updateContextApprovalReadiness\)/);
+  assert.match(script, /diagnosticContextStep === elements\.contextSteps\.length \? 0/);
+  assert.match(script, /Modify my answers/);
+  assert.doesNotMatch(script, /Checking your Guidance Session confirmation|has not yet confirmed your Guidance Session/);
   assert.doesNotMatch(script, /guidanceSessionScheduledFor: new Date\(values\.guidanceSessionScheduledFor\)\.toISOString\(\)/);
 });
 

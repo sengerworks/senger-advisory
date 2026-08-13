@@ -1070,7 +1070,6 @@ async function loadStewardSessions(diagnosticId) {
 
 function diagnosticContextReviewPayload() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
-  const guidanceDate = new Date(values.guidanceSessionScheduledFor);
   return {
     diagnosticId: selectedDiagnosticId,
     organizationSizeBand: values.organizationSizeBand,
@@ -1089,8 +1088,6 @@ function diagnosticContextReviewPayload() {
     diagnosticScopeHeadcount: Number(values.diagnosticScopeHeadcount),
     diagnosticScopeBoundary: values.diagnosticScopeBoundary,
     crossBoundaryDependencies: values.crossBoundaryDependencies,
-    guidanceSessionScheduledFor: Number.isFinite(guidanceDate.getTime()) ? guidanceDate.toISOString() : new Date(0).toISOString(),
-    guidanceSessionAcknowledged: true,
     organizationContext: values.organizationContext,
     strategicPriority: values.strategicPriority,
     triggeringConcern: values.triggeringConcern,
@@ -1105,10 +1102,8 @@ function diagnosticContextReviewPayload() {
 
 function renderDiagnosticContextReview() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
-  const guidanceDate = new Date(values.guidanceSessionScheduledFor);
-  const guidanceLabel = Number.isFinite(guidanceDate.getTime()) ? guidanceDate.toLocaleString() : "Not yet recorded";
   const summaries = [
-    ["Your vantage point", `${values.sponsorRoleTitle} · ${values.sponsorOrganizationalLevel} · ${values.sponsorFunction}\n${values.sponsorResponsibility}\nGuidance Session: ${guidanceLabel}`],
+    ["Your vantage point", `${values.sponsorRoleTitle} · ${values.sponsorOrganizationalLevel} · ${values.sponsorFunction}\n${values.sponsorResponsibility}`],
     ["Business and operating context", `${values.industry} · ${values.businessModel} · ${values.operatingEnvironment}\n${values.organizationOffering}`],
     ["System being examined", `${values.diagnosticScopeName} · ${values.diagnosticScopeType}\n${Number(values.diagnosticScopeHeadcount).toLocaleString()} of ${Number(values.organizationHeadcount).toLocaleString()} people (${Math.round(Number(values.diagnosticScopeHeadcount)/Number(values.organizationHeadcount)*100)}% of the organization)\nInside the inquiry: ${values.diagnosticScopeBoundary}\nBoundary dependencies: ${values.crossBoundaryDependencies}`],
     ["What is happening now?", [values.organizationContext, values.triggeringConcern].filter(Boolean).join("\n\n")],
@@ -1167,12 +1162,7 @@ function confirmedGuidanceSessionIso() {
 
 function updateContextApprovalReadiness() {
   if (diagnosticContextStep !== elements.contextSteps.length) return;
-  const ready = Boolean(confirmedGuidanceSessionIso());
-  elements.approveDiagnosticContext.disabled = false;
-  if (!ready) {
-    elements.diagnosticContextMessage.textContent = "Your Context Brief is ready to review. When you approve it, we’ll check that Senger Advisory has confirmed your Guidance Session.";
-    elements.diagnosticContextMessage.dataset.tone = "";
-  }
+  elements.approveDiagnosticContext.disabled = !elements.diagnosticContextForm.elements.approved.checked;
 }
 
 function showDiagnosticContextStep(step = 0) {
@@ -1190,6 +1180,7 @@ function showDiagnosticContextStep(step = 0) {
   elements.contextProgressName.textContent = reviewing ? "Confirm the bounded starting point" : diagnosticContextSteps[diagnosticContextStep].name;
   elements.contextProgressBar.style.width = `${reviewing ? 100 : ((diagnosticContextStep + 1) / elements.contextSteps.length) * 100}%`;
   elements.contextBack.hidden = diagnosticContextStep === 0;
+  elements.contextBack.textContent = reviewing ? "Modify my answers" : "Back";
   elements.contextNext.hidden = reviewing;
   elements.approveDiagnosticContext.hidden = !reviewing;
   elements.diagnosticContextMessage.textContent = "";
@@ -2184,22 +2175,13 @@ elements.contextNext.addEventListener("click", async () => {
   }
   showDiagnosticContextStep(diagnosticContextStep + 1);
 });
-elements.contextBack.addEventListener("click", () => showDiagnosticContextStep(diagnosticContextStep - 1));
+elements.contextBack.addEventListener("click", () => showDiagnosticContextStep(diagnosticContextStep === elements.contextSteps.length ? 0 : diagnosticContextStep - 1));
+elements.diagnosticContextForm.elements.approved.addEventListener("change", updateContextApprovalReadiness);
 elements.diagnosticContextForm.addEventListener("submit", async event => {
   event.preventDefault();
-  if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.diagnosticContextForm.reportValidity()) return;
+  if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.diagnosticContextForm.elements.approved.checked || !elements.diagnosticContextForm.reportValidity()) return;
   elements.approveDiagnosticContext.disabled = true;
-  elements.diagnosticContextMessage.textContent = "Checking your Guidance Session confirmation…";
-  delete elements.diagnosticContextMessage.dataset.tone;
-  await loadStewardSessions(selectedDiagnosticId).catch(() => {});
   const guidanceSessionScheduledFor = confirmedGuidanceSessionIso();
-  if (!guidanceSessionScheduledFor) {
-    elements.approveDiagnosticContext.disabled = false;
-    elements.diagnosticContextMessage.textContent = "Your answers are still here, but Senger Advisory has not yet confirmed your Guidance Session. If you already booked in OneCal, try again after the confirmation is recorded.";
-    elements.diagnosticContextMessage.dataset.tone = "error";
-    elements.diagnosticContextMessage.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    return;
-  }
   elements.diagnosticContextMessage.textContent = "Approving the bounded context…";
   delete elements.diagnosticContextMessage.dataset.tone;
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
@@ -2224,8 +2206,7 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
         diagnosticScopeHeadcount: Number(values.diagnosticScopeHeadcount),
         diagnosticScopeBoundary: values.diagnosticScopeBoundary,
         crossBoundaryDependencies: values.crossBoundaryDependencies,
-        guidanceSessionScheduledFor,
-        guidanceSessionAcknowledged: elements.diagnosticContextForm.elements.guidanceSessionAcknowledged.checked,
+        ...(guidanceSessionScheduledFor ? { guidanceSessionScheduledFor, guidanceSessionAcknowledged: true } : {}),
         organizationContext: values.organizationContext,
         strategicPriority: values.strategicPriority,
         triggeringConcern: values.triggeringConcern,
@@ -2234,7 +2215,8 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
         priorInterventions: diagnosticList(values.priorInterventions),
         knownSensitivities: values.knownSensitivities,
         decisionNeeded: values.decisionNeeded,
-        approvalNote: values.approvalNote
+        approvalNote: values.approvalNote,
+        approved: elements.diagnosticContextForm.elements.approved.checked
       }
     });
     elements.diagnosticContextMessage.textContent = "Context approved. Participant design is now the next governed step.";
@@ -2245,7 +2227,7 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
     elements.diagnosticContextMessage.textContent = error.message;
     elements.diagnosticContextMessage.dataset.tone = "error";
   } finally {
-    elements.approveDiagnosticContext.disabled = false;
+    updateContextApprovalReadiness();
   }
 });
 elements.participantDesignForm.addEventListener("submit", async event => {

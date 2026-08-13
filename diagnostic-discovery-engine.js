@@ -135,11 +135,10 @@ export function createDiagnosticContextBrief(values, options = {}) {
     diagnosticScopeHeadcount,
     diagnosticScopeBoundary: requiredText(values.diagnosticScopeBoundary, "Diagnostic scope boundary", 800),
     crossBoundaryDependencies: requiredText(values.crossBoundaryDependencies, "Cross-boundary dependencies", 800),
-    guidanceSessionScheduledFor: requiredTimestamp(values.guidanceSessionScheduledFor, "Guidance Session date"),
-    guidanceSessionAcknowledged: requiredConfirmation(
-      values.guidanceSessionAcknowledged,
-      "Confirm the required Guidance Session before approving the context."
-    ),
+    guidanceSessionScheduledFor: values.guidanceSessionScheduledFor
+      ? requiredTimestamp(values.guidanceSessionScheduledFor, "Guidance Session date")
+      : null,
+    guidanceSessionAcknowledged: Boolean(values.guidanceSessionAcknowledged),
     organizationContext: requiredText(values.organizationContext, "Organization context", 1500),
     strategicPriority: requiredText(values.strategicPriority, "Strategic priority", 1000),
     triggeringConcern: requiredText(values.triggeringConcern, "Triggering concern", 1500),

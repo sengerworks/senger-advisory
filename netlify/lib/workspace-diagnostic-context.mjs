@@ -13,7 +13,7 @@ const allowedInputKeys = new Set([
   "crossBoundaryDependencies", "guidanceSessionScheduledFor", "guidanceSessionAcknowledged",
   "organizationContext",
   "strategicPriority", "triggeringConcern", "decisionsAtRisk", "recentChanges",
-  "priorInterventions", "knownSensitivities", "decisionNeeded", "approvalNote"
+  "priorInterventions", "knownSensitivities", "decisionNeeded", "approvalNote", "approved"
 ]);
 
 export class DiagnosticContextInputError extends Error {}
@@ -27,14 +27,15 @@ export function validateDiagnosticContextId(value) {
   return diagnosticId;
 }
 
-export function validateDiagnosticContextInput(value) {
+export function validateDiagnosticContextInput(value, { requireApproval = true } = {}) {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new DiagnosticContextInputError("Enter the diagnostic context brief.");
   }
   const unexpected = Object.keys(value).filter(key => !allowedInputKeys.has(key));
   if (unexpected.length) throw new DiagnosticContextInputError("The context brief contains unsupported fields.");
   try {
-    const { approvalNote = "", ...briefInput } = value;
+    const { approvalNote = "", approved: sponsorApproved, ...briefInput } = value;
+    if (requireApproval && sponsorApproved !== true) throw new Error("Explicitly approve the bounded context before continuing.");
     briefInput.diagnosticId = validateDiagnosticContextId(briefInput.diagnosticId);
     const brief = createDiagnosticContextBrief(briefInput, {
       id: "00000000-0000-4000-8000-000000000001",
@@ -101,16 +102,7 @@ export async function approveWorkspaceDiagnosticContext(
     if (!new Set(["draft", "discovery"]).has(diagnostic.state)) {
       throw new DiagnosticContextStateError("The context brief is already complete for this diagnostic.");
     }
-    const guidanceSession = await query(
-      `SELECT id,status FROM app_operations.diagnostic_steward_sessions
-       WHERE diagnostic_id=$1 AND session_type='guidance' AND scheduled_at=$2::timestamptz`,
-      [input.diagnosticId,input.guidanceSessionScheduledFor]
-    );
-    if (!guidanceSession.rowCount || guidanceSession.rows[0].status === "cancelled") {
-      throw new DiagnosticContextStateError("Book and confirm the required Guidance Session before approving the Context Brief.");
-    }
-
-    const { approvalNote, ...briefInput } = input;
+    const { approvalNote, approved: _sponsorApproved, ...briefInput } = input;
     const draft = createDiagnosticContextBrief(briefInput);
     const approved = approveDiagnosticContextBrief(draft, { approvalNote });
     const payload = {

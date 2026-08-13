@@ -244,12 +244,12 @@
                 </div>
                 <label class="field"><span>What are you accountable for?</span><textarea name="sponsorResponsibility" maxlength="2000" placeholder="What outcomes, teams, decisions, or commitments ultimately sit with you?" aria-describedby="sponsor-responsibility-guidance sponsor-responsibility-count" required></textarea><small id="sponsor-responsibility-guidance">Include the outcomes you own, decisions you control, teams within your authority, and any tension between those responsibilities.</small><small class="field-character-count" id="sponsor-responsibility-count" data-sponsor-responsibility-count aria-live="polite">0 / 2,000</small></label>
                 <div class="context-session-gate">
-                  <div><strong>Required Guidance Session</strong><span>Choose an available time below. OneCal checks Jonathan’s connected calendars and completes the booking without leaving this workspace. Senger Advisory will confirm the booking behind the scenes.</span></div>
+                  <div><strong>Required Guidance Session</strong><span>Choose an available time below. OneCal checks Jonathan’s connected calendars and completes the booking without leaving this workspace. Your OneCal confirmation is sufficient; no additional approval is required.</span></div>
                   <iframe class="onecal-booking-frame" data-onecal-guidance-frame src="https://app.onecal.io/b/jts/senger-advisory" title="Book the Senger Advisory Guidance Session" loading="eager"></iframe>
                   <a class="text-button" data-onecal-guidance href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Calendar not displaying? Open the booking page in a new window</a>
                   <input type="hidden" name="guidanceSessionScheduledFor" />
                   <input type="checkbox" name="guidanceSessionAcknowledged" disabled hidden />
-                  <div class="session-confirmation-status" role="status" aria-live="polite"><span data-guidance-session-status>Awaiting Senger Advisory confirmation after booking.</span></div>
+                  <div class="session-confirmation-status" role="status" aria-live="polite"><span data-guidance-session-status>Book directly in OneCal to reserve your session.</span></div>
                 </div>
               </section>
               <section class="context-step" data-context-step hidden>
@@ -327,7 +327,7 @@
               <div class="context-navigation">
                 <button class="text-button" type="button" data-context-back hidden>Back</button>
                 <button class="primary-button" type="button" data-context-next>Next</button>
-                <button class="primary-button" type="submit" data-approve-diagnostic-context hidden>Approve and continue</button>
+                <button class="primary-button" type="submit" data-approve-diagnostic-context disabled hidden>Approve and continue</button>
               </div>
               <div class="diagnostic-context-actions">
                 <p class="form-message" role="status" aria-live="polite" data-diagnostic-context-message></p>

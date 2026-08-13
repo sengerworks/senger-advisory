@@ -40,7 +40,8 @@ const input = {
   priorInterventions: ["Clarified the executive meeting cadence"],
   knownSensitivities: "The diagnostic must not become a performance evaluation.",
   decisionNeeded: "What operating constraint should leadership address first?",
-  approvalNote: "Approved as a starting context, not a finding."
+  approvalNote: "Approved as a starting context, not a finding.",
+  approved: true
 };
 
 function request(method = "GET", body, query = `?diagnosticId=${diagnosticId}`, origin = "https://example.com") {
@@ -66,6 +67,7 @@ test("validates a bounded explicitly approved diagnostic context", () => {
   assert.throws(() => validateDiagnosticContextId("not-a-diagnostic"), DiagnosticContextInputError);
   assert.throws(() => validateDiagnosticContextInput({ ...input, finding: "The answer" }), DiagnosticContextInputError);
   assert.throws(() => validateDiagnosticContextInput({ ...input, organizationContext: "" }), DiagnosticContextInputError);
+  assert.throws(() => validateDiagnosticContextInput({ ...input, approved: false }), /Explicitly approve/);
 });
 
 test("administrators retrieve and approve context within the authenticated workspace", async () => {

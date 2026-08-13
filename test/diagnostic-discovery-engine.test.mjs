@@ -76,7 +76,9 @@ test("rejects unsupported context fields and unbounded sponsor content", () => {
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, sponsorEmail: "sponsor@example.com" }, { now }), /unsupported fields/);
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, triggeringConcern: "" }, { now }), /Triggering concern/);
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, diagnosticScopeBoundary: "" }, { now }), /scope boundary/i);
-  assert.throws(() => createDiagnosticContextBrief({ ...contextValues, guidanceSessionAcknowledged: false }, { now }), /Guidance Session/);
+  const withoutSessionConfirmation = createDiagnosticContextBrief({ ...contextValues, guidanceSessionScheduledFor: "", guidanceSessionAcknowledged: false }, { now });
+  assert.equal(withoutSessionConfirmation.guidanceSessionScheduledFor, null);
+  assert.equal(withoutSessionConfirmation.guidanceSessionAcknowledged, false);
   assert.throws(() => createDiagnosticContextBrief({ ...contextValues, recentChanges: Array(13).fill("Change") }, { now }), /at most 12/);
 });
 
@@ -112,4 +114,5 @@ test("machine-readable discovery contract matches the implementation and fixes n
   assert.deepEqual(contract.participantPlan.leadershipLevels, diagnosticDiscovery.leadershipLevels);
   assert.equal(contract.participantPlan.fixedParticipantMinimum, null);
   assert.equal(contract.participantPlan.participantIdentityStoredInPlan, false);
+  assert.equal(contract.contextBrief.guidanceSessionSchedulingTrackedSeparately, true);
 });
