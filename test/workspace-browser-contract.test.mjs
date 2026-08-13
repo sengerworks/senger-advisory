@@ -135,17 +135,9 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /name="sponsorResponsibility" maxlength="2000"/);
   assert.match(html, /data-sponsor-responsibility-count[^>]+aria-live="polite">0 \/ 2,000/);
   assert.match(script, /updateSponsorResponsibilityCount/);
-  assert.match(html, /Required Guidance Session/);
-  assert.match(html, /data-onecal-guidance-frame/);
-  assert.match(html, /data-onecal-guidance-frame src="https:\/\/app\.onecal\.io\/b\/jts\/senger-advisory"/);
-  assert.doesNotMatch(html, /data-onecal-guidance-frame[^>]+hidden/);
-  assert.match(html, /OneCal checks Jonathan’s connected calendars/);
-  assert.doesNotMatch(html, /Record my OneCal booking|Confirmed OneCal date and time/);
-  assert.match(html, /Your OneCal confirmation is sufficient; no additional approval is required/);
-  assert.match(html, /data-guidance-session-status>Book directly in OneCal to reserve your session/);
-  assert.doesNotMatch(html, /Book and record the Guidance Session to continue/);
-  assert.match(script, /diagnostic-steward-sessions/);
-  assert.match(html, /guidanceSessionScheduledFor/);
+  assert.match(html, /Would a second set of eyes help/);
+  assert.match(html, /Schedule optional guidance/);
+  assert.doesNotMatch(html, /Required Guidance Session|data-onecal-guidance-frame|guidanceSessionScheduledFor/);
   assert.match(html, /What part of the organization should we examine/);
   assert.match(html, /Total organization headcount/);
   assert.match(html, /data-scope-size-label>System headcount/);
@@ -339,7 +331,6 @@ test("context approval leads with a governed AI mirror and retains source answer
   assert.match(script, /A working implication—not a finding/);
   assert.match(script, /What the diagnostic will explore/);
   assert.match(script, /You do not need to answer these now/);
-  assert.match(script, /await loadStewardSessions\(selectedDiagnosticId\)/);
   assert.match(html, /data-context-approval-note-count/);
   assert.match(html, /name="approvalNote" maxlength="2000"/);
   assert.match(html, /data-approve-diagnostic-context disabled hidden/);
@@ -369,6 +360,8 @@ test("perspective design becomes a focused sponsor stage with selection guidance
   assert.match(html, /Based on your approved scope/);
   assert.match(script, /Why this view matters/);
   assert.match(script, /updateCohortReveal/);
+  assert.match(html, /Schedule optional review/);
+  assert.doesNotMatch(html, /Required Design Session|data-onecal-design-frame|designSessionScheduledFor/);
   assert.match(html, /Back to workspace/);
   assert.match(styles, /workspace-stage-perspectives \.workspace-introduction/);
   assert.match(script, /setPerspectiveStage\(true\)/);

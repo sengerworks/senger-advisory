@@ -23,8 +23,6 @@ const input = {
     { slotId: "slot-3", leadershipLevel: "operational", executionProximity: "delivery", functionalLens: "commercial" }
   ],
   acceptedGaps: [],
-  designSessionScheduledFor: "2026-08-13T16:00:00.000Z",
-  designSessionAcknowledged: true,
   approvalNote: "The intended perspectives cover the operating system."
 };
 
@@ -49,7 +47,7 @@ test("approves identity-free participant coverage and rejects unresolved gaps", 
   assert.equal(workspaceDiagnosticParticipantPolicy.fullDiagnosticParticipantMaximum, 50);
   assert.equal(workspaceDiagnosticParticipantPolicy.sponsorCountsAsParticipant, false);
   assert.equal(workspaceDiagnosticParticipantPolicy.participantIdentityStoredInPlan, false);
-  assert.equal(validated.designSessionAcknowledged, true);
+  assert.equal("designSessionAcknowledged" in validated, false);
   assert.throws(() => validateDiagnosticParticipantPlan({
     ...input,
     participantSlots: [input.participantSlots[0]]

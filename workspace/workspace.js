@@ -85,14 +85,6 @@ const elements = {
   addParticipantSlot: document.querySelector("[data-add-participant-slot]"),
   approveParticipantPlan: document.querySelector("[data-approve-participant-plan]"),
   closeParticipantDesign: document.querySelector("[data-close-participant-design]"),
-  onecalGuidance: document.querySelector("[data-onecal-guidance]"),
-  onecalGuidanceFrame: document.querySelector("[data-onecal-guidance-frame]"),
-  confirmGuidanceSession: document.querySelector("[data-confirm-guidance-session]"),
-  guidanceSessionStatus: document.querySelector("[data-guidance-session-status]"),
-  onecalDesign: document.querySelector("[data-onecal-design]"),
-  onecalDesignFrame: document.querySelector("[data-onecal-design-frame]"),
-  confirmDesignSession: document.querySelector("[data-confirm-design-session]"),
-  designSessionStatus: document.querySelector("[data-design-session-status]"),
   protocolReview: document.querySelector("[data-protocol-review]"),
   protocolReviewForm: document.querySelector("[data-protocol-review-form]"),
   protocolQuestionList: document.querySelector("[data-protocol-question-list]"),
@@ -739,7 +731,6 @@ async function openParticipantDesign(diagnosticId) {
     participantSlotCount = 0;
     addParticipantSlot(); addParticipantSlot(); addParticipantSlot(); addParticipantSlot(); addParticipantSlot();
     showCoverageGaps([]);
-    await loadStewardSessions(diagnosticId);
     showPerspectiveStep(0);
   }
   elements.participantDesign.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1104,23 +1095,6 @@ function syncDiagnosticScopeSize(){const form=elements.diagnosticContextForm.ele
 elements.diagnosticContextForm.elements.diagnosticScopeType.addEventListener("change",syncDiagnosticScopeSize);
 elements.diagnosticContextForm.elements.organizationHeadcount.addEventListener("input",syncDiagnosticScopeSize);
 
-async function loadStewardSessions(diagnosticId) {
-  const data=await workspaceRequest(`/api/workspace/diagnostic-steward-sessions?diagnosticId=${encodeURIComponent(diagnosticId)}`);
-  for(const type of ["guidance","design"]){
-    const link=type==="guidance"?elements.onecalGuidance:elements.onecalDesign;
-    const frame=type==="guidance"?elements.onecalGuidanceFrame:elements.onecalDesignFrame;
-    if(data.bookingLinks[type]){link.href=data.bookingLinks[type];if(frame.src!==data.bookingLinks[type])frame.src=data.bookingLinks[type];}
-    const session=data.sessions.find(item=>item.sessionType===type&&item.status!=="cancelled");
-    if(!session)continue;
-    const form=type==="guidance"?elements.diagnosticContextForm:elements.participantDesignForm;
-    const checkbox=form.elements[`${type}SessionAcknowledged`],status=type==="guidance"?elements.guidanceSessionStatus:elements.designSessionStatus;
-    form.elements[`${type}SessionScheduledFor`].value=new Date(new Date(session.scheduledAt).getTime()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
-    checkbox.checked=true;status.textContent=`${type[0].toUpperCase()+type.slice(1)} Session recorded for ${new Date(session.scheduledAt).toLocaleString()}.`;
-  }
-  updateContextApprovalReadiness();
-}
-
-
 function diagnosticContextReviewPayload() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
   return {
@@ -1206,13 +1180,6 @@ async function loadDiagnosticContextSynthesis() {
   elements.contextAiContent.hidden = false;
 }
 
-function confirmedGuidanceSessionIso() {
-  const field = elements.diagnosticContextForm.elements.guidanceSessionScheduledFor;
-  const acknowledged = elements.diagnosticContextForm.elements.guidanceSessionAcknowledged.checked;
-  const date = new Date(field.value);
-  return acknowledged && Number.isFinite(date.getTime()) ? date.toISOString() : null;
-}
-
 function updateContextApprovalReadiness() {
   if (diagnosticContextStep !== elements.contextSteps.length) return;
   elements.approveDiagnosticContext.disabled = !elements.diagnosticContextForm.elements.approved.checked;
@@ -1283,7 +1250,6 @@ async function openDiagnosticContext(diagnosticId) {
     syncDiagnosticScopeSize();
     elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
     showDiagnosticContextStep(0);
-    await loadStewardSessions(diagnosticId);
   }
   elements.diagnosticContext.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -2236,11 +2202,8 @@ elements.closeProtocolReview.addEventListener("click", () => {
 elements.addParticipantSlot.addEventListener("click", () => addParticipantSlot());
 elements.perspectiveNext.addEventListener("click", () => showPerspectiveStep(perspectiveStep + 1));
 elements.perspectiveBack.addEventListener("click", () => showPerspectiveStep(perspectiveStep - 1));
-elements.contextNext.addEventListener("click", async () => {
+elements.contextNext.addEventListener("click", () => {
   if (!validateDiagnosticContextStep()) return;
-  if (diagnosticContextStep === elements.contextSteps.length - 1 && selectedDiagnosticId) {
-    await loadStewardSessions(selectedDiagnosticId).catch(() => {});
-  }
   showDiagnosticContextStep(diagnosticContextStep + 1);
 });
 elements.contextBack.addEventListener("click", () => showDiagnosticContextStep(diagnosticContextStep === elements.contextSteps.length ? 0 : diagnosticContextStep - 1));
@@ -2255,7 +2218,6 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
   event.preventDefault();
   if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.diagnosticContextForm.elements.approved.checked || !elements.diagnosticContextForm.reportValidity()) return;
   elements.approveDiagnosticContext.disabled = true;
-  const guidanceSessionScheduledFor = confirmedGuidanceSessionIso();
   elements.diagnosticContextMessage.textContent = "Approving the bounded context…";
   delete elements.diagnosticContextMessage.dataset.tone;
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
@@ -2280,7 +2242,6 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
         diagnosticScopeHeadcount: Number(values.diagnosticScopeHeadcount),
         diagnosticScopeBoundary: values.diagnosticScopeBoundary,
         crossBoundaryDependencies: values.crossBoundaryDependencies,
-        ...(guidanceSessionScheduledFor ? { guidanceSessionScheduledFor, guidanceSessionAcknowledged: true } : {}),
         organizationContext: values.organizationContext,
         strategicPriority: values.strategicPriority,
         triggeringConcern: values.triggeringConcern,
@@ -2348,8 +2309,6 @@ elements.participantDesignForm.addEventListener("submit", async event => {
         diagnosticId: selectedDiagnosticId,
         ...draft,
         acceptedGaps,
-        designSessionScheduledFor: new Date(elements.participantDesignForm.elements.designSessionScheduledFor.value).toISOString(),
-        designSessionAcknowledged: elements.participantDesignForm.elements.designSessionAcknowledged.checked,
         approvalNote: elements.participantDesignForm.elements.approvalNote.value
       }
     });
@@ -2744,4 +2703,3 @@ elements.participantPocFeedback.addEventListener("submit",async event=>{event.pr
 window.addEventListener("beforeunload",event=>{if(!interviewDirty)return;event.preventDefault();event.returnValue="";});
 
 initialize();
-setInterval(()=>{if(selectedDiagnosticId&&!document.hidden&&(!elements.diagnosticContext.hidden||!elements.participantDesign.hidden))loadStewardSessions(selectedDiagnosticId).catch(()=>{});},15000);

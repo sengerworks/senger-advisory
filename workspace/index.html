@@ -263,14 +263,7 @@
                   <label class="field context-field-wide"><span>What does the organization primarily deliver?</span><textarea name="organizationOffering" maxlength="500" placeholder="In a sentence, what product, service, or outcome do you provide—and to whom?" required></textarea></label>
                 </div>
                 <label class="field"><span>What are you accountable for?</span><textarea name="sponsorResponsibility" maxlength="2000" placeholder="What outcomes, teams, decisions, or commitments ultimately sit with you?" aria-describedby="sponsor-responsibility-guidance sponsor-responsibility-count" required></textarea><small id="sponsor-responsibility-guidance">Include the outcomes you own, decisions you control, teams within your authority, and any tension between those responsibilities.</small><small class="field-character-count" id="sponsor-responsibility-count" data-sponsor-responsibility-count aria-live="polite">0 / 2,000</small></label>
-                <div class="context-session-gate">
-                  <div><strong>Required Guidance Session</strong><span>Choose an available time below. OneCal checks Jonathan’s connected calendars and completes the booking without leaving this workspace. Your OneCal confirmation is sufficient; no additional approval is required.</span></div>
-                  <iframe class="onecal-booking-frame" data-onecal-guidance-frame src="https://app.onecal.io/b/jts/senger-advisory" title="Book the Senger Advisory Guidance Session" loading="eager"></iframe>
-                  <a class="text-button" data-onecal-guidance href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Calendar not displaying? Open the booking page in a new window</a>
-                  <input type="hidden" name="guidanceSessionScheduledFor" />
-                  <input type="checkbox" name="guidanceSessionAcknowledged" disabled hidden />
-                  <div class="session-confirmation-status" role="status" aria-live="polite"><span data-guidance-session-status>Book directly in OneCal to reserve your session.</span></div>
-                </div>
+                <aside class="optional-guidance-card"><div><strong>Would a second set of eyes help?</strong><span>If you would like help framing the organizational moment or defining the diagnostic boundary, you can schedule an optional conversation. You can also continue on your own.</span></div><a class="text-button" href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Schedule optional guidance</a></aside>
               </section>
               <section class="context-step" data-context-step hidden>
                 <p class="card-kicker">Set the diagnostic boundary</p>
@@ -462,14 +455,7 @@
                 <p>Add a perspective slot, remove the objective, or explicitly accept each limitation with a reason.</p>
                 <div data-coverage-gap-list></div>
               </div>
-              <div class="context-session-gate">
-                <div><strong>Required Design Session</strong><span>Choose an available time below. OneCal completes the booking inside this workspace; Senger Advisory confirms it behind the scenes.</span></div>
-                <iframe class="onecal-booking-frame" data-onecal-design-frame src="https://app.onecal.io/b/jts/senger-advisory" title="Book the Senger Advisory Design Session" loading="lazy"></iframe>
-                <a class="text-button" data-onecal-design href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Calendar not displaying? Open the booking page in a new window</a>
-                <input type="hidden" name="designSessionScheduledFor" />
-                <input type="checkbox" name="designSessionAcknowledged" disabled hidden />
-                <div class="session-confirmation-status" role="status" aria-live="polite"><span data-design-session-status>Awaiting Senger Advisory confirmation after booking.</span></div>
-              </div>
+              <aside class="optional-guidance-card"><div><strong>Would a second set of eyes help?</strong><span>If you are uncertain whether this cohort provides enough contrast, schedule an optional Perspective Design Review. Otherwise, approve the cohort and continue.</span></div><a class="text-button" href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Schedule optional review</a></aside>
               <label class="field"><span>Approval note</span><textarea name="approvalNote" maxlength="500"></textarea></label>
               <label class="diagnostic-context-confirm">
                 <input type="checkbox" name="approved" required />

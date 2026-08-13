@@ -404,6 +404,12 @@ h2 {
 .context-session-gate { display: grid; gap: 13px; padding: 17px; border: 1px solid rgba(212, 91, 49, .24); border-radius: 11px; background: rgba(212, 91, 49, .045); }
 .context-session-gate > div { display: grid; gap: 4px; color: var(--ink-soft); font-size: .76rem; line-height: 1.5; }
 .context-session-gate > div strong { color: var(--ink); font-size: .8rem; }
+.optional-guidance-card { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 15px 17px; border: 1px solid var(--line); border-radius: 11px; background: var(--paper); }
+.optional-guidance-card > div { display: grid; gap: 4px; }
+.optional-guidance-card strong { color: var(--ink); font-size: .8rem; }
+.optional-guidance-card span { color: var(--ink-soft); font-size: .74rem; line-height: 1.5; }
+.optional-guidance-card .text-button { flex: 0 0 auto; }
+@media (max-width: 650px) { .optional-guidance-card { align-items: start; flex-direction: column; } }
 .field-character-count { justify-self: end; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
 .onecal-booking-frame { width: 100%; min-height: 680px; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; background: #fff; }
 @media (max-width: 720px) { .onecal-booking-frame { min-height: 760px; } }
