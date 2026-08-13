@@ -17,6 +17,8 @@ These principles govern every role-based workflow in the Organizational Capacity
 - Approved records are saved server-side and remain available across sessions and devices.
 - Unapproved drafts must become server-recoverable before a workflow is considered production-complete.
 - A role sees only the controls, language, and evidence appropriate to that role.
+- Industry, business model, operating environment, and offering may contextualize language and
+  operating conditions; they must never introduce stereotypes or predetermined findings.
 - Progressive disclosure keeps methodology and support available without competing with the current task.
 - The same interaction grammar applies to sponsor, participant, steward, and platform-operator journeys.
 

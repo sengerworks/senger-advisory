@@ -41,6 +41,10 @@ function publicContext(row) {
   if (!row?.context_payload) return null;
   return Object.freeze({
     organizationContext: row.context_payload.organizationContext,
+    industry: row.context_payload.industry,
+    businessModel: row.context_payload.businessModel,
+    operatingEnvironment: row.context_payload.operatingEnvironment,
+    organizationOffering: row.context_payload.organizationOffering,
     strategicPriority: row.context_payload.strategicPriority,
     triggeringConcern: row.context_payload.triggeringConcern,
     decisionsAtRisk: row.context_payload.decisionsAtRisk,

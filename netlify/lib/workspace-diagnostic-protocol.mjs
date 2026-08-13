@@ -24,6 +24,9 @@ function boundedContext(value, maximum = 180) {
 
 function contextualQuestion(template, context) {
   const sizeCue=context.organizationHeadcount&&context.diagnosticScopeHeadcount?`The scope includes approximately ${context.diagnosticScopeHeadcount} of ${context.organizationHeadcount} people (${Math.round(context.diagnosticScopeHeadcount/context.organizationHeadcount*100)}% of the organization). `:"";
+  const operatingCue=context.industry&&context.organizationOffering
+    ? `Operating context: ${boundedContext(context.industry,60)} · ${boundedContext(context.businessModel,30)} · ${boundedContext(context.operatingEnvironment,50)}. The organization primarily delivers ${boundedContext(context.organizationOffering,180)} Use this only to interpret terminology and operating conditions; do not infer an industry pattern or predetermined constraint.\n\n`
+    : "";
   const scopeCue = context.diagnosticScopeName
     ? `Use ${boundedContext(context.diagnosticScopeName, 120)} as the system being examined. ${sizeCue}Include cross-boundary work where it affects execution.\n\n`
     : "";
@@ -37,7 +40,7 @@ function contextualQuestion(template, context) {
       ? `Consider what has already been tried: ${boundedContext(context.priorInterventions.join("; "))}\n\n`
       : ""
   };
-  return `${scopeCue}${cues[template.id] || ""}${template.question}`;
+  return `${operatingCue}${scopeCue}${cues[template.id] || ""}${template.question}`;
 }
 
 export function compileWorkspaceDiagnosticProtocol({ diagnosticId, contextBriefId, participantPlanId, context }) {

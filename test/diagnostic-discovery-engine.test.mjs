@@ -23,6 +23,10 @@ const contextValues = {
   sponsorOrganizationalLevel: "enterprise",
   sponsorFunction: "enterprise-leadership",
   sponsorResponsibility: "Enterprise strategy, operating performance, and leadership decisions.",
+  industry: "professional-services",
+  businessModel: "b2b",
+  operatingEnvironment: "multi-location",
+  organizationOffering: "Advisory and implementation services for growing businesses.",
   diagnosticScopeType: "enterprise",
   diagnosticScopeName: "The enterprise operating system",
   diagnosticScopeHeadcount: 120,
@@ -57,6 +61,7 @@ test("creates and explicitly approves a bounded Diagnostic Context Brief", () =>
   assert.equal(brief.status, "draft");
   assert.equal(brief.sponsorPerspective, "founder-ceo");
   assert.equal(brief.diagnosticScopeType, "enterprise");
+  assert.equal(brief.organizationOffering, contextValues.organizationOffering);
   const approved = approveDiagnosticContextBrief(brief, { approvalNote: "Sponsor confirmed the context." }, { now });
   assert.equal(approved.status, "approved");
   assert.equal(approved.approvedAt, now.toISOString());

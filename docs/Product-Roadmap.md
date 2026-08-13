@@ -5,7 +5,7 @@
 - **Phase 1 — Operating model: Complete.** Three-session journey, roles, scope, confidentiality,
   dual outputs, release governance, evidence language, and target states are locked in
   `docs/Stewarded-POC-Operating-Model.md`.
-- **Phase 2 — Sponsor orientation and diagnostic scoping: Complete.** Discovery version 1.1.0
+- **Phase 2 — Sponsor orientation and diagnostic scoping: Complete.** Discovery version 1.2.0
   captures the sponsor's role, organizational level, function, accountability, the system being
   examined, its boundary and dependencies, and a required Guidance Session arrangement before the
   six-question Context Brief can be approved.

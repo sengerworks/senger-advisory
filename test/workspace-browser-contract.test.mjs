@@ -307,6 +307,8 @@ test("every sponsor context response uses a specific question and neutral reflec
   assert.doesNotMatch(contextForm, /<h5>What matters most\?<\/h5>/);
   assert.doesNotMatch(contextForm, /<h5>What is at risk\?<\/h5>/);
   assert.match(contextForm, /<h5>What is most important for the organization to accomplish\?<\/h5>[\s\S]*?<span class="visually-hidden">/);
+  for (const name of ["industry", "businessModel", "operatingEnvironment", "organizationOffering"]) assert.match(contextForm, new RegExp(`name="${name}"`));
+  assert.match(contextForm, /what product, service, or outcome do you provide—and to whom/i);
 });
 
 test("context approval leads with a governed AI mirror and retains source answers", async () => {

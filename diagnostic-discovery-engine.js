@@ -1,9 +1,12 @@
-const DISCOVERY_VERSION = "1.1.0";
+const DISCOVERY_VERSION = "1.2.0";
 
 const ORGANIZATION_SIZE_BANDS = new Set(["under-25", "25-49", "50-149", "150-399", "400-plus"]);
 const SPONSOR_PERSPECTIVES = new Set(["founder-ceo", "executive", "functional-leader", "people-operations", "board-advisor"]);
 const SPONSOR_ORGANIZATIONAL_LEVELS = new Set(["enterprise", "functional", "operational", "frontline"]);
 const SPONSOR_FUNCTIONS = new Set(["enterprise-leadership", "sales", "marketing", "operations", "people", "finance", "product-service", "technology", "other"]);
+const INDUSTRIES = new Set(["professional-services", "technology-software", "financial-services", "healthcare-life-sciences", "manufacturing-industrial", "retail-consumer", "construction-real-estate", "transportation-logistics", "education", "nonprofit-association", "government-public", "other"]);
+const BUSINESS_MODELS = new Set(["b2b", "b2c", "b2b2c", "nonprofit-public", "mixed"]);
+const OPERATING_ENVIRONMENTS = new Set(["centralized", "multi-location", "distributed-remote", "field-based", "mixed"]);
 const DIAGNOSTIC_SCOPE_TYPES = new Set(["enterprise", "business-unit", "function", "leadership-layer", "cross-functional-system"]);
 const LEADERSHIP_LEVELS = new Set(["enterprise", "functional", "operational", "frontline"]);
 const EXECUTION_PROXIMITIES = new Set(["strategy", "coordination", "delivery"]);
@@ -86,6 +89,10 @@ export function createDiagnosticContextBrief(values, options = {}) {
     "sponsorOrganizationalLevel",
     "sponsorFunction",
     "sponsorResponsibility",
+    "industry",
+    "businessModel",
+    "operatingEnvironment",
+    "organizationOffering",
     "diagnosticScopeType",
     "diagnosticScopeName",
     "diagnosticScopeHeadcount",
@@ -119,6 +126,10 @@ export function createDiagnosticContextBrief(values, options = {}) {
     sponsorOrganizationalLevel: enumValue(values.sponsorOrganizationalLevel, SPONSOR_ORGANIZATIONAL_LEVELS, "Select a valid organizational level."),
     sponsorFunction: enumValue(values.sponsorFunction, SPONSOR_FUNCTIONS, "Select a valid sponsor function."),
     sponsorResponsibility: requiredText(values.sponsorResponsibility, "Sponsor responsibility", 2000),
+    industry: enumValue(values.industry, INDUSTRIES, "Select a valid industry."),
+    businessModel: enumValue(values.businessModel, BUSINESS_MODELS, "Select a valid business model."),
+    operatingEnvironment: enumValue(values.operatingEnvironment, OPERATING_ENVIRONMENTS, "Select a valid operating environment."),
+    organizationOffering: requiredText(values.organizationOffering, "What the organization delivers", 500),
     diagnosticScopeType,
     diagnosticScopeName: requiredText(values.diagnosticScopeName, "Diagnostic scope name", 160),
     diagnosticScopeHeadcount,
@@ -261,6 +272,9 @@ export const diagnosticDiscovery = Object.freeze({
   sponsorPerspectives: Object.freeze([...SPONSOR_PERSPECTIVES]),
   sponsorOrganizationalLevels: Object.freeze([...SPONSOR_ORGANIZATIONAL_LEVELS]),
   sponsorFunctions: Object.freeze([...SPONSOR_FUNCTIONS]),
+  industries: Object.freeze([...INDUSTRIES]),
+  businessModels: Object.freeze([...BUSINESS_MODELS]),
+  operatingEnvironments: Object.freeze([...OPERATING_ENVIRONMENTS]),
   diagnosticScopeTypes: Object.freeze([...DIAGNOSTIC_SCOPE_TYPES]),
   leadershipLevels: Object.freeze([...LEADERSHIP_LEVELS]),
   executionProximities: Object.freeze([...EXECUTION_PROXIMITIES]),

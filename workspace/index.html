@@ -221,6 +221,27 @@
                     <option value="people-operations">People / operations</option><option value="board-advisor">Board / advisor</option>
                   </select></label>
                 </div>
+                <div class="context-field-pair">
+                  <label class="field"><span>Industry</span><select name="industry" required>
+                    <option value="">Select industry</option><option value="professional-services">Professional services</option>
+                    <option value="technology-software">Technology / software</option><option value="financial-services">Financial services</option>
+                    <option value="healthcare-life-sciences">Healthcare / life sciences</option><option value="manufacturing-industrial">Manufacturing / industrial</option>
+                    <option value="retail-consumer">Retail / consumer</option><option value="construction-real-estate">Construction / real estate</option>
+                    <option value="transportation-logistics">Transportation / logistics</option><option value="education">Education</option>
+                    <option value="nonprofit-association">Nonprofit / association</option><option value="government-public">Government / public sector</option>
+                    <option value="other">Another industry</option>
+                  </select></label>
+                  <label class="field"><span>Business model</span><select name="businessModel" required>
+                    <option value="">Select model</option><option value="b2b">B2B</option><option value="b2c">B2C</option>
+                    <option value="b2b2c">B2B2C</option><option value="nonprofit-public">Nonprofit / public service</option><option value="mixed">Mixed</option>
+                  </select></label>
+                  <label class="field"><span>Operating environment</span><select name="operatingEnvironment" required>
+                    <option value="">Select environment</option><option value="centralized">Primarily centralized</option>
+                    <option value="multi-location">Multi-location</option><option value="distributed-remote">Distributed / remote</option>
+                    <option value="field-based">Field-based</option><option value="mixed">Mixed</option>
+                  </select></label>
+                  <label class="field"><span>What does the organization primarily deliver?</span><textarea name="organizationOffering" maxlength="500" placeholder="In a sentence, what product, service, or outcome do you provide—and to whom?" required></textarea></label>
+                </div>
                 <label class="field"><span>What are you accountable for?</span><textarea name="sponsorResponsibility" maxlength="2000" placeholder="What outcomes, teams, decisions, or commitments ultimately sit with you?" aria-describedby="sponsor-responsibility-guidance sponsor-responsibility-count" required></textarea><small id="sponsor-responsibility-guidance">Include the outcomes you own, decisions you control, teams within your authority, and any tension between those responsibilities.</small><small class="field-character-count" id="sponsor-responsibility-count" data-sponsor-responsibility-count aria-live="polite">0 / 2,000</small></label>
                 <div class="context-session-gate">
                   <div><strong>Required Guidance Session</strong><span>Choose an available time below. OneCal checks Jonathan’s connected calendars and completes the booking without leaving this workspace. Senger Advisory will confirm the booking behind the scenes.</span></div>

@@ -7,6 +7,7 @@ const body = {
   diagnosticId: "22222222-2222-4222-8222-222222222222", organizationSizeBand: "50-149", organizationHeadcount: 120,
   sponsorPerspective: "founder-ceo", sponsorRoleTitle: "CEO", sponsorOrganizationalLevel: "enterprise", sponsorFunction: "enterprise-leadership",
   sponsorResponsibility: "Enterprise strategy, operating performance, and leadership decisions.", diagnosticScopeType: "cross-functional-system",
+  industry: "technology-software", businessModel: "b2b", operatingEnvironment: "distributed-remote", organizationOffering: "Enterprise workflow software for mid-market operators.",
   diagnosticScopeName: "Growth execution", diagnosticScopeHeadcount: 45, diagnosticScopeBoundary: "Commercial and delivery execution.",
   crossBoundaryDependencies: "Sales, delivery, and client escalation.", guidanceSessionScheduledFor: "2026-08-12T16:00:00.000Z", guidanceSessionAcknowledged: true,
   organizationContext: "A growing organization is adding operating complexity.", strategicPriority: "Scale delivery without weakening client trust.",

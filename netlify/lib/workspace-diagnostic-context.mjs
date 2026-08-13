@@ -8,6 +8,7 @@ import { withNeonWorkspaceTransaction } from "./neon-workspace-database.mjs";
 const allowedInputKeys = new Set([
   "diagnosticId", "organizationSizeBand", "organizationHeadcount", "sponsorPerspective", "sponsorRoleTitle",
   "sponsorOrganizationalLevel", "sponsorFunction", "sponsorResponsibility",
+  "industry", "businessModel", "operatingEnvironment", "organizationOffering",
   "diagnosticScopeType", "diagnosticScopeName", "diagnosticScopeHeadcount", "diagnosticScopeBoundary",
   "crossBoundaryDependencies", "guidanceSessionScheduledFor", "guidanceSessionAcknowledged",
   "organizationContext",
@@ -120,6 +121,10 @@ export async function approveWorkspaceDiagnosticContext(
       sponsorOrganizationalLevel: approved.sponsorOrganizationalLevel,
       sponsorFunction: approved.sponsorFunction,
       sponsorResponsibility: approved.sponsorResponsibility,
+      industry: approved.industry,
+      businessModel: approved.businessModel,
+      operatingEnvironment: approved.operatingEnvironment,
+      organizationOffering: approved.organizationOffering,
       diagnosticScopeType: approved.diagnosticScopeType,
       diagnosticScopeName: approved.diagnosticScopeName,
       diagnosticScopeHeadcount: approved.diagnosticScopeHeadcount,
@@ -173,5 +178,8 @@ export const workspaceDiagnosticDiscoveryPolicy = Object.freeze({
   sponsorPerspectives: diagnosticDiscovery.sponsorPerspectives,
   sponsorOrganizationalLevels: diagnosticDiscovery.sponsorOrganizationalLevels,
   sponsorFunctions: diagnosticDiscovery.sponsorFunctions,
+  industries: diagnosticDiscovery.industries,
+  businessModels: diagnosticDiscovery.businessModels,
+  operatingEnvironments: diagnosticDiscovery.operatingEnvironments,
   diagnosticScopeTypes: diagnosticDiscovery.diagnosticScopeTypes
 });

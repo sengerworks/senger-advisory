@@ -21,6 +21,10 @@ const input = {
   sponsorOrganizationalLevel: "enterprise",
   sponsorFunction: "enterprise-leadership",
   sponsorResponsibility: "Enterprise strategy, operating performance, and leadership decisions.",
+  industry: "professional-services",
+  businessModel: "b2b",
+  operatingEnvironment: "multi-location",
+  organizationOffering: "Advisory and implementation services for growing businesses.",
   diagnosticScopeType: "cross-functional-system",
   diagnosticScopeName: "Market-entry execution system",
   diagnosticScopeHeadcount: 45,
@@ -54,7 +58,9 @@ test("validates a bounded explicitly approved diagnostic context", () => {
   const validated = validateDiagnosticContextInput(input);
   assert.equal(validated.diagnosticId, diagnosticId);
   assert.deepEqual(validated.recentChanges, ["Added two functional leaders"]);
-  assert.equal(workspaceDiagnosticDiscoveryPolicy.discoveryVersion, "1.1.0");
+  assert.equal(validated.industry, "professional-services");
+  assert.equal(workspaceDiagnosticDiscoveryPolicy.discoveryVersion, "1.2.0");
+  assert.equal(workspaceDiagnosticDiscoveryPolicy.industries.includes("technology-software"), true);
   assert.equal(workspaceDiagnosticDiscoveryPolicy.diagnosticScopeTypes.includes("function"), true);
   assert.equal(validateDiagnosticContextId(diagnosticId), diagnosticId);
   assert.throws(() => validateDiagnosticContextId("not-a-diagnostic"), DiagnosticContextInputError);
