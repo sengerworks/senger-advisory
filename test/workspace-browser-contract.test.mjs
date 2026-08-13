@@ -323,6 +323,9 @@ test("context approval leads with a governed AI mirror and retains source answer
   assert.match(script, /await loadStewardSessions\(selectedDiagnosticId\)/);
   assert.match(html, /data-context-approval-note-count/);
   assert.match(html, /name="approvalNote" maxlength="2000"/);
+  assert.match(script, /function confirmedGuidanceSessionIso/);
+  assert.match(script, /Approval will unlock after Senger Advisory confirms your booked Guidance Session/);
+  assert.doesNotMatch(script, /guidanceSessionScheduledFor: new Date\(values\.guidanceSessionScheduledFor\)\.toISOString\(\)/);
 });
 
 test("perspective design becomes a focused sponsor stage with selection guidance", async () => {

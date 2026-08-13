@@ -1064,6 +1064,7 @@ async function loadStewardSessions(diagnosticId) {
     form.elements[`${type}SessionScheduledFor`].value=new Date(new Date(session.scheduledAt).getTime()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
     checkbox.checked=true;status.textContent=`${type[0].toUpperCase()+type.slice(1)} Session recorded for ${new Date(session.scheduledAt).toLocaleString()}.`;
   }
+  updateContextApprovalReadiness();
 }
 
 
@@ -1155,6 +1156,23 @@ async function loadDiagnosticContextSynthesis() {
   elements.contextAiContent.hidden = false;
 }
 
+function confirmedGuidanceSessionIso() {
+  const field = elements.diagnosticContextForm.elements.guidanceSessionScheduledFor;
+  const acknowledged = elements.diagnosticContextForm.elements.guidanceSessionAcknowledged.checked;
+  const date = new Date(field.value);
+  return acknowledged && Number.isFinite(date.getTime()) ? date.toISOString() : null;
+}
+
+function updateContextApprovalReadiness() {
+  if (diagnosticContextStep !== elements.contextSteps.length) return;
+  const ready = Boolean(confirmedGuidanceSessionIso());
+  elements.approveDiagnosticContext.disabled = !ready;
+  if (!ready) {
+    elements.diagnosticContextMessage.textContent = "Your Context Brief is ready to review. Approval will unlock after Senger Advisory confirms your booked Guidance Session.";
+    elements.diagnosticContextMessage.dataset.tone = "";
+  }
+}
+
 function showDiagnosticContextStep(step = 0) {
   diagnosticContextStep = Math.max(0, Math.min(step, elements.contextSteps.length));
   const reviewing = diagnosticContextStep === elements.contextSteps.length;
@@ -1174,6 +1192,7 @@ function showDiagnosticContextStep(step = 0) {
   elements.approveDiagnosticContext.hidden = !reviewing;
   elements.diagnosticContextMessage.textContent = "";
   delete elements.diagnosticContextMessage.dataset.tone;
+  updateContextApprovalReadiness();
 }
 
 function validateDiagnosticContextStep() {
@@ -2167,6 +2186,11 @@ elements.contextBack.addEventListener("click", () => showDiagnosticContextStep(d
 elements.diagnosticContextForm.addEventListener("submit", async event => {
   event.preventDefault();
   if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.diagnosticContextForm.reportValidity()) return;
+  const guidanceSessionScheduledFor = confirmedGuidanceSessionIso();
+  if (!guidanceSessionScheduledFor) {
+    updateContextApprovalReadiness();
+    return;
+  }
   elements.approveDiagnosticContext.disabled = true;
   elements.diagnosticContextMessage.textContent = "Approving the bounded context…";
   delete elements.diagnosticContextMessage.dataset.tone;
@@ -2192,7 +2216,7 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
         diagnosticScopeHeadcount: Number(values.diagnosticScopeHeadcount),
         diagnosticScopeBoundary: values.diagnosticScopeBoundary,
         crossBoundaryDependencies: values.crossBoundaryDependencies,
-        guidanceSessionScheduledFor: new Date(values.guidanceSessionScheduledFor).toISOString(),
+        guidanceSessionScheduledFor,
         guidanceSessionAcknowledged: elements.diagnosticContextForm.elements.guidanceSessionAcknowledged.checked,
         organizationContext: values.organizationContext,
         strategicPriority: values.strategicPriority,
@@ -2213,7 +2237,7 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
     elements.diagnosticContextMessage.textContent = error.message;
     elements.diagnosticContextMessage.dataset.tone = "error";
   } finally {
-    elements.approveDiagnosticContext.disabled = false;
+    elements.approveDiagnosticContext.disabled = !confirmedGuidanceSessionIso();
   }
 });
 elements.participantDesignForm.addEventListener("submit", async event => {
