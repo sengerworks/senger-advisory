@@ -451,15 +451,16 @@
               <section class="participant-design-stage" aria-labelledby="participant-approval-title">
               <div class="participant-stage-heading"><span>3</span><div><strong id="participant-approval-title">Review coverage and approve</strong><p>The platform will identify any viewpoint you selected above but did not include in the planned cohort.</p></div></div>
               <div class="coverage-gaps" data-coverage-gaps hidden>
-                <strong>Uncovered objectives</strong>
-                <p>Add a perspective slot, remove the objective, or explicitly accept each limitation with a reason.</p>
+                <strong data-coverage-gap-title>Intended viewpoints are not represented</strong>
+                <p>You identified these viewpoints as important earlier, but no planned participant currently represents them. Resolve each one below.</p>
                 <div data-coverage-gap-list></div>
               </div>
+              <section class="cohort-boundary-summary" data-cohort-boundary-summary hidden><p class="card-kicker">What this cohort will represent</p><strong data-cohort-boundary-title></strong><p data-cohort-boundary-detail></p></section>
               <aside class="optional-guidance-card"><div><strong>Would a second set of eyes help?</strong><span>If you are uncertain whether this cohort provides enough contrast, schedule an optional Perspective Design Review. Otherwise, approve the cohort and continue.</span></div><a class="text-button" href="https://app.onecal.io/b/jts/senger-advisory" target="_blank" rel="noopener">Schedule optional review</a></aside>
               <label class="field"><span>Approval note</span><textarea name="approvalNote" maxlength="500"></textarea></label>
               <label class="diagnostic-context-confirm">
                 <input type="checkbox" name="approved" required />
-                <span>I approve this identity-free perspective plan and its documented limitations.</span>
+                <span>I understand what this cohort can reveal and which viewpoints it does not include.</span>
               </label>
               <div class="diagnostic-context-actions">
                 <button class="primary-button" type="submit" data-approve-participant-plan>Review coverage</button>

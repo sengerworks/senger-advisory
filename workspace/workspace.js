@@ -82,6 +82,10 @@ const elements = {
   pocCapacity: document.querySelector("[data-poc-capacity]"),
   coverageGaps: document.querySelector("[data-coverage-gaps]"),
   coverageGapList: document.querySelector("[data-coverage-gap-list]"),
+  coverageGapTitle: document.querySelector("[data-coverage-gap-title]"),
+  cohortBoundarySummary: document.querySelector("[data-cohort-boundary-summary]"),
+  cohortBoundaryTitle: document.querySelector("[data-cohort-boundary-title]"),
+  cohortBoundaryDetail: document.querySelector("[data-cohort-boundary-detail]"),
   addParticipantSlot: document.querySelector("[data-add-participant-slot]"),
   approveParticipantPlan: document.querySelector("[data-approve-participant-plan]"),
   closeParticipantDesign: document.querySelector("[data-close-participant-design]"),
@@ -664,23 +668,96 @@ function participantCoverageGaps(plan) {
   });
 }
 
+const coverageLanguage = {
+  leadershipLevels: {
+    enterprise: ["Executive / enterprise leadership", "No planned participant currently represents the people setting enterprise direction and consequential tradeoffs."],
+    functional: ["VP / Director / functional leadership", "No planned participant currently represents the leaders translating enterprise direction into functional priorities."],
+    operational: ["Managers / team leads", "No planned participant currently represents the people coordinating day-to-day execution."],
+    frontline: ["Individual contributors / frontline", "No planned participant currently represents people experiencing the work directly."]
+  },
+  executionProximities: {
+    strategy: ["Direction and tradeoffs", "No planned participant currently sets direction or makes consequential tradeoffs for this work."],
+    coordination: ["Translation and coordination", "No planned participant currently translates priorities or coordinates dependencies."],
+    delivery: ["Lived execution", "No planned participant currently performs the work or directly experiences its consequences."]
+  },
+  functionalLenses: {
+    "executive-leadership": ["Executive leadership", "No planned participant currently brings an enterprise leadership perspective."],
+    operations: ["Operations", "No planned participant currently brings an Operations perspective."],
+    people: ["People / HR", "No planned participant currently brings a People or HR perspective."],
+    finance: ["Finance", "No planned participant currently brings a Finance perspective."],
+    commercial: ["Sales / commercial", "No planned participant currently brings a Sales or commercial perspective."],
+    "product-service": ["Product / service delivery", "No planned participant currently brings a Product or service-delivery perspective."],
+    technology: ["Technology", "No planned participant currently brings a Technology perspective."],
+    "frontline-delivery": ["Frontline delivery", "No planned participant currently represents people directly performing or receiving the downstream work."],
+    other: ["Another relevant area", "No planned participant currently represents the additional area selected earlier."]
+  }
+};
+
+function coverageGapParts(gapId) {
+  const [dimension, value] = gapId.split(":");
+  const [label, explanation] = coverageLanguage[dimension]?.[value] || ["Selected viewpoint", "No planned participant currently represents this viewpoint."];
+  return { dimension, value, label, explanation };
+}
+
+function addSlotForGap(gapId) {
+  if (elements.participantSlots.children.length >= participantSlotMaximum) {
+    elements.participantDesignMessage.textContent = "The POC cohort is at its 10-perspective limit. Adjust an existing card or remove another optional perspective first.";
+    elements.participantDesignMessage.dataset.tone = "error";
+    return;
+  }
+  const { dimension, value } = coverageGapParts(gapId);
+  const values = dimension === "leadershipLevels" ? { leadershipLevel: value }
+    : dimension === "executionProximities" ? { executionProximity: value }
+    : { functionalLens: value };
+  addParticipantSlot(values);
+  showPerspectiveStep(1);
+  elements.participantSlots.lastElementChild.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function removeCoverageObjective(gapId) {
+  const { dimension, value } = coverageGapParts(gapId);
+  const inputName = { leadershipLevels: "leadershipLevels", executionProximities: "executionProximities", functionalLenses: "functionalLenses" }[dimension];
+  const input = elements.participantDesignForm.querySelector(`[name="${inputName}"][value="${value}"]`);
+  if (input) input.checked = false;
+  showCoverageGaps(participantCoverageGaps(participantPlanDraft()));
+}
+
+function updateCohortBoundarySummary() {
+  const accepted = [...elements.coverageGapList.querySelectorAll('[data-gap-resolution="accept"]')].map(row => coverageGapParts(row.dataset.gapId).label);
+  elements.cohortBoundarySummary.hidden = false;
+  elements.cohortBoundaryTitle.textContent = accepted.length ? "A deliberate cohort with documented boundaries" : "The intended viewpoints are represented";
+  elements.cohortBoundaryDetail.textContent = accepted.length
+    ? `This cohort will not independently represent ${accepted.join(", ")}. Findings will be interpreted within that boundary.`
+    : "The planned cohort represents every viewpoint you identified as important. The diagnostic will still distinguish evidence from inference and keep uncertainty visible.";
+}
+
 function showCoverageGaps(gaps) {
   elements.coverageGapList.replaceChildren();
+  elements.coverageGapTitle.textContent = `${gaps.length} intended viewpoint${gaps.length === 1 ? " is" : "s are"} not represented`;
   for (const gapId of gaps) {
     const row = document.createElement("div");
     row.className = "coverage-gap";
     row.dataset.gapId = gapId;
-    const label = document.createElement("label");
-    label.textContent = gapId.replace(":", " · ").replace(/([A-Z])/g, " $1");
+    const { label: plainLabel, explanation } = coverageGapParts(gapId);
+    const copy = document.createElement("div"), label = document.createElement("strong"), detail = document.createElement("p");
+    label.textContent = plainLabel; detail.textContent = explanation; copy.append(label, detail);
+    const actions = document.createElement("div"); actions.className = "coverage-gap-actions";
+    for (const [action, text] of [["add", "Add this perspective"], ["remove", "Remove from intended coverage"], ["accept", "Proceed without it"]]) {
+      const button = document.createElement("button"); button.type = "button"; button.dataset.gapAction = action; button.textContent = text; button.className = action === "add" ? "secondary-button" : "text-button"; actions.append(button);
+    }
     const reason = document.createElement("input");
     reason.type = "text";
     reason.maxLength = 500;
-    reason.placeholder = "Reason this limitation is accepted";
-    row.append(label, reason);
+    reason.placeholder = "Why is it appropriate to proceed without this viewpoint?";
+    reason.setAttribute("aria-label", `Why proceed without ${plainLabel}?`);
+    reason.hidden = true;
+    const consequence = document.createElement("p"); consequence.className = "coverage-gap-consequence"; consequence.textContent = `The findings will not independently reflect how ${plainLabel} experiences this system.`; consequence.hidden = true;
+    row.append(copy, actions, consequence, reason);
     elements.coverageGapList.append(row);
   }
   elements.coverageGaps.hidden = gaps.length === 0;
-  elements.approveParticipantPlan.textContent = gaps.length ? "Approve documented plan" : "Approve participant design";
+  elements.approveParticipantPlan.textContent = "Approve perspective cohort";
+  updateCohortBoundarySummary();
 }
 
 function setPerspectiveStage(active) {
@@ -2200,6 +2277,17 @@ elements.closeProtocolReview.addEventListener("click", () => {
   showSponsorHome();
 });
 elements.addParticipantSlot.addEventListener("click", () => addParticipantSlot());
+elements.coverageGapList.addEventListener("click", event => {
+  const button = event.target.closest("[data-gap-action]"), row = event.target.closest("[data-gap-id]");
+  if (!button || !row) return;
+  if (button.dataset.gapAction === "add") { addSlotForGap(row.dataset.gapId); return; }
+  if (button.dataset.gapAction === "remove") { removeCoverageObjective(row.dataset.gapId); return; }
+  row.dataset.gapResolution = "accept";
+  row.querySelector(".coverage-gap-consequence").hidden = false;
+  row.querySelector("input").hidden = false;
+  row.querySelector("input").focus();
+  updateCohortBoundarySummary();
+});
 elements.perspectiveNext.addEventListener("click", () => showPerspectiveStep(perspectiveStep + 1));
 elements.perspectiveBack.addEventListener("click", () => showPerspectiveStep(perspectiveStep - 1));
 elements.contextNext.addEventListener("click", () => {
@@ -2290,12 +2378,17 @@ elements.participantDesignForm.addEventListener("submit", async event => {
     }
     displayedGaps = [...elements.coverageGapList.querySelectorAll("[data-gap-id]")];
   }
+  if (displayedGaps.some(row => row.dataset.gapResolution !== "accept")) {
+    elements.participantDesignMessage.textContent = "Choose how to resolve every viewpoint that is not represented.";
+    elements.participantDesignMessage.dataset.tone = "error";
+    return;
+  }
   const acceptedGaps = displayedGaps.map(row => ({
     gapId: row.dataset.gapId,
     reason: row.querySelector("input").value.trim()
   }));
   if (acceptedGaps.some(gap => !gap.reason)) {
-    elements.participantDesignMessage.textContent = "Explain why every uncovered objective is an accepted limitation.";
+    elements.participantDesignMessage.textContent = "Explain why it is appropriate to proceed without each omitted viewpoint.";
     elements.participantDesignMessage.dataset.tone = "error";
     return;
   }

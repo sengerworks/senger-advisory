@@ -598,9 +598,15 @@ h2 {
 @media (max-width: 780px) { .participant-slot-labels { display: none; } .participant-slot { grid-template-columns: 32px 1fr; } .participant-slot select { grid-column: 2; } .participant-slot button { grid-column: 2; justify-self: end; } .participant-slot-insight { grid-column: 2; } .cohort-starting-points,.cohort-reveal-panel { grid-template-columns: 1fr; } .cohort-reveal-panel [data-cohort-reveal-list] { grid-template-columns: 1fr; } }
 .coverage-gaps { padding: 18px; border: 1px solid #d6ad76; border-radius: 12px; background: #fff8ed; }
 .coverage-gaps > p { margin: 6px 0 14px; color: var(--ink-soft); font-size: .78rem; }
-.coverage-gap { display: grid; grid-template-columns: minmax(180px, .7fr) 1fr; gap: 12px; align-items: center; margin-top: 10px; }
-.coverage-gap label { font-size: .76rem; font-weight: 700; }
+.coverage-gap { display: grid; gap: 12px; margin-top: 12px; padding: 15px; border: 1px solid rgba(214,173,118,.7); border-radius: 10px; background: #fff; }
+.coverage-gap > div:first-child { display: grid; gap: 4px; }
+.coverage-gap > div:first-child strong { color: var(--ink); font-size: .82rem; }
+.coverage-gap > div:first-child p,.coverage-gap-consequence { margin: 0; color: var(--ink-soft); font-size: .74rem; line-height: 1.5; }
+.coverage-gap-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .coverage-gap input { width: 100%; padding: 9px 10px; border: 1px solid #d9d4cc; border-radius: 8px; }
+.cohort-boundary-summary { display: grid; gap: 6px; padding: 17px; border-left: 3px solid var(--bronze); border-radius: 0 10px 10px 0; background: var(--paper); }
+.cohort-boundary-summary > strong { color: var(--ink); font-size: .84rem; }
+.cohort-boundary-summary > p:not(.card-kicker) { margin: 0; color: var(--ink-soft); font-size: .76rem; line-height: 1.55; }
 .protocol-coverage { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 .protocol-coverage span { padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink-soft); font-size: .7rem; font-weight: 700; }
 .protocol-review-form { display: grid; gap: 20px; margin-top: 24px; }

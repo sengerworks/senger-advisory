@@ -180,6 +180,13 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /Based on your approved scope/);
   assert.match(script, /Why this view matters/);
   assert.match(script, /updateCohortReveal/);
+  assert.match(html, /Intended viewpoints are not represented/);
+  assert.match(html, /What this cohort will represent/);
+  assert.match(script, /Add this perspective/);
+  assert.match(script, /Remove from intended coverage/);
+  assert.match(script, /Proceed without it/);
+  assert.match(script, /People \/ HR/);
+  assert.doesNotMatch(script, /gapId\.replace\(":"/);
   assert.match(html, /This perspective matters because they can see or experience something the others cannot/);
   assert.match(html, /Illustration—not a required formula/);
   assert.match(html, /a manager coordinating handoffs/);
