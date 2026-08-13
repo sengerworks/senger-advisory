@@ -1140,17 +1140,19 @@ async function loadDiagnosticContextSynthesis() {
   elements.contextAiContent.hidden = true;
   const data = await workspaceRequest("/api/workspace/diagnostic-context-synthesis", { method: "POST", body: diagnosticContextReviewPayload() });
   const value = data.synthesis;
-  const questions = document.createElement("ul");
-  for (const question of value.questionsToTest) questions.append(Object.assign(document.createElement("li"), { textContent: question }));
-  const testing = document.createElement("section"), testingTitle = document.createElement("strong");
-  testingTitle.textContent = "What the diagnostic still needs to test"; testing.append(testingTitle, questions);
+  const areas = document.createElement("ul");
+  for (const area of value.areasToExplore) areas.append(Object.assign(document.createElement("li"), { textContent: area }));
+  const exploration = document.createElement("section"), explorationTitle = document.createElement("strong"), explorationNote = document.createElement("p");
+  explorationTitle.textContent = "What the diagnostic will explore";
+  explorationNote.textContent = "You do not need to answer these now. The diagnostic will examine them through the perspectives you select.";
+  exploration.append(explorationTitle, explorationNote, areas);
   elements.contextAiContent.replaceChildren(
     synthesisSection("The moment, in one frame", value.executiveFrame),
     synthesisSection("The tension underneath it", value.centralTension),
     synthesisSection("Why this matters now", value.businessStakes),
     synthesisSection("The decision at the center", value.decisionAtCenter),
     synthesisSection("A working implication—not a finding", value.workingImplication),
-    testing
+    exploration
   );
   elements.contextAiStatus.textContent = data.boundary;
   elements.contextAiContent.hidden = false;

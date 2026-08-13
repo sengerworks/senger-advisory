@@ -25,20 +25,22 @@ export function createOpenAIDiagnosticContextSynthesizer({
           "Create a concise executive-quality mirror of one diagnostic sponsor's stated context.",
           "Make the sponsor feel accurately understood by connecting the execution demand, operating tension, business stakes, and decision with precise language.",
           "Do not diagnose the organization, declare a constraint, assign blame, invent facts, or treat the sponsor's account as organizational truth.",
-          "Separate articulation from inference. State only cautious working implications and questions that other perspectives must test.",
+          "Separate articulation from inference. State only cautious working implications and neutral areas that the diagnostic will explore through other perspectives.",
+          "Write each area to explore as a concise declarative statement, not as a question or a request for the sponsor to retrieve metrics, conduct analysis, design a solution, or complete additional homework.",
+          "Describe operating relationships the diagnostic can credibly examine through participant perspectives, such as whether priorities, authority, information, coordination, or resource deployment are experienced consistently across the defined system.",
           "Use plain language suitable for an executive. Avoid consulting jargon, scores, recommendations, and generic encouragement."
         ].join(" "),
         input: JSON.stringify(context),
         text: { format: { type: "json_schema", name: "sponsor_context_synthesis", strict: true, schema: {
           type: "object", additionalProperties: false,
-          required: ["executiveFrame", "centralTension", "businessStakes", "decisionAtCenter", "workingImplication", "questionsToTest"],
+          required: ["executiveFrame", "centralTension", "businessStakes", "decisionAtCenter", "workingImplication", "areasToExplore"],
           properties: {
             executiveFrame: { type: "string", minLength: 80, maxLength: 900 },
             centralTension: { type: "string", minLength: 40, maxLength: 500 },
             businessStakes: { type: "string", minLength: 40, maxLength: 600 },
             decisionAtCenter: { type: "string", minLength: 30, maxLength: 500 },
             workingImplication: { type: "string", minLength: 40, maxLength: 600 },
-            questionsToTest: { type: "array", minItems: 2, maxItems: 4, items: { type: "string", minLength: 20, maxLength: 300 } }
+            areasToExplore: { type: "array", minItems: 2, maxItems: 4, items: { type: "string", minLength: 20, maxLength: 240 } }
           }
         } } }
       })

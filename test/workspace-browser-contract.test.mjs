@@ -318,7 +318,8 @@ test("context approval leads with a governed AI mirror and retains source answer
   assert.match(html, /Review or verify your original answers/);
   assert.match(script, /diagnostic-context-synthesis/);
   assert.match(script, /A working implication—not a finding/);
-  assert.match(script, /What the diagnostic still needs to test/);
+  assert.match(script, /What the diagnostic will explore/);
+  assert.match(script, /You do not need to answer these now/);
   assert.match(script, /Not yet recorded/);
   assert.match(script, /await loadStewardSessions\(selectedDiagnosticId\)/);
   assert.match(html, /data-context-approval-note-count/);

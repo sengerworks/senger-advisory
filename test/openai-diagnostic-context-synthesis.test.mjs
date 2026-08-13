@@ -8,7 +8,7 @@ const synthesis = {
   businessStakes: "If the tradeoff remains unresolved, both customer confidence and the strategic priority may absorb the cost.",
   decisionAtCenter: "Leadership must determine which operating boundary should govern exceptions without slowing legitimate work.",
   workingImplication: "The visible delays may be compensation for unclear decision rights, but other perspectives must test that possibility.",
-  questionsToTest: ["Where do people experience the tradeoff differently?", "Which formal boundaries hold in practice, and which require workarounds?"]
+  areasToExplore: ["How different parts of the organization experience the tradeoff between responsiveness and consistency.", "Whether formal operating boundaries hold in practice or depend on recurring workarounds."]
 };
 
 test("creates a non-stored bounded sponsor context synthesis", async () => {
@@ -20,6 +20,8 @@ test("creates a non-stored bounded sponsor context synthesis", async () => {
   assert.deepEqual(await provider({ strategicPriority: "Scale responsibly" }), synthesis);
   assert.equal(request.store, false);
   assert.match(request.instructions, /Do not diagnose/);
+  assert.match(request.instructions, /not as a question or a request for the sponsor to retrieve metrics/);
+  assert.deepEqual(request.text.format.schema.required, ["executiveFrame", "centralTension", "businessStakes", "decisionAtCenter", "workingImplication", "areasToExplore"]);
   assert.equal(request.text.format.type, "json_schema");
 });
 
