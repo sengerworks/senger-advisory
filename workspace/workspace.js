@@ -102,6 +102,12 @@ const elements = {
   protocolApprovedSummary: document.querySelector("[data-protocol-approved-summary]"),
   protocolMessage: document.querySelector("[data-protocol-message]"),
   approveProtocol: document.querySelector("[data-approve-protocol]"),
+  protocolPending: document.querySelector("[data-protocol-pending]"),
+  protocolPendingMark: document.querySelector("[data-protocol-pending-mark]"),
+  protocolPendingKicker: document.querySelector("[data-protocol-pending-kicker]"),
+  protocolPendingTitle: document.querySelector("[data-protocol-pending-title]"),
+  protocolPendingCopy: document.querySelector("[data-protocol-pending-copy]"),
+  checkProtocolStatus: document.querySelector("[data-check-protocol-status]"),
   closeProtocolReview: document.querySelector("[data-close-protocol-review]"),
   diagnosticInvitationPanel: document.querySelector("[data-diagnostic-invitation-panel]"),
   diagnosticCollectionProgress: document.querySelector("[data-diagnostic-collection-progress]"),
@@ -982,8 +988,29 @@ async function openProtocolReview(diagnosticId) {
   hideSponsorTaskSections();
   showSponsorJourney("protocol", diagnosticId);
   elements.protocolReview.hidden = false;
+  elements.protocolReviewForm.hidden = true;
+  elements.protocolApproved.hidden = true;
+  elements.diagnosticInvitationPanel.hidden = true;
+  elements.protocolPending.hidden = true;
+  elements.protocolQuestionList.replaceChildren();
+  elements.protocolCoverage.replaceChildren();
   elements.protocolMessage.textContent = "Compiling the governed protocol…";
-  const data = await workspaceRequest(`/api/workspace/diagnostic-protocol-sponsor-review-v2?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  delete elements.protocolMessage.dataset.tone;
+  let data;
+  try {
+    data = await workspaceRequest(`/api/workspace/diagnostic-protocol-sponsor-review-v2?diagnosticId=${encodeURIComponent(diagnosticId)}`);
+  } catch (error) {
+    elements.protocolMessage.textContent = "";
+    elements.protocolPending.hidden = false;
+    elements.protocolPending.dataset.state = "unavailable";
+    elements.protocolPendingMark.textContent = "!";
+    elements.protocolPendingKicker.textContent = "Status check interrupted";
+    elements.protocolPendingTitle.textContent = "We couldn’t check the protocol’s status.";
+    elements.protocolPendingCopy.textContent = "Your approved context and perspective cohort remain saved. This is a platform connection issue—not an approval you missed. Try the status check again; if it persists, Senger Advisory can resolve it without asking you to repeat your work.";
+    elements.checkProtocolStatus.textContent = "Try status check again";
+    elements.protocolReview.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   const lifecycleState = diagnosticsById.get(diagnosticId)?.state;
   showSponsorJourney(data.canInvite ? (lifecycleState === "collecting" ? "collection" : "invitations") : "protocol", diagnosticId);
   elements.protocolMessage.textContent = "";
@@ -993,12 +1020,17 @@ async function openProtocolReview(diagnosticId) {
   elements.protocolApproved.hidden = !approved;
   elements.diagnosticInvitationPanel.hidden = !data.canInvite;
   if (!protocol) {
-    elements.protocolQuestionList.replaceChildren();
-    elements.protocolCoverage.replaceChildren();
-    elements.protocolMessage.textContent = "Your steward is preparing the 18-question protocol from the approved context and perspective design. Return here when you are notified that it is ready for review.";
+    elements.protocolPending.hidden = false;
+    delete elements.protocolPending.dataset.state;
+    elements.protocolPendingMark.textContent = "03";
+    elements.protocolPendingKicker.textContent = "Steward handoff";
+    elements.protocolPendingTitle.textContent = "The 18-question protocol is being prepared.";
+    elements.protocolPendingCopy.textContent = "Senger Advisory now translates your approved context and perspective design into one common, contextualized protocol. No sponsor action is required until it is ready. You’ll return here to review every question before invitations can be sent.";
+    elements.checkProtocolStatus.textContent = "Check whether it is ready";
     elements.protocolReview.scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
+  elements.protocolPending.hidden = true;
   renderProtocolQuestions(protocol.questions);
   elements.protocolCoverage.replaceChildren(
     ...[
@@ -2346,6 +2378,11 @@ elements.reviewApprovedContext.addEventListener("click", () => elements.diagnost
 elements.returnToWorkspace.addEventListener("click", showSponsorHome);
 elements.reviewApprovedCohort.addEventListener("click", () => elements.approvedCohortList.scrollIntoView({ behavior: "smooth", block: "center" }));
 elements.returnPerspectiveWorkspace.addEventListener("click", () => { setPerspectiveStage(false); showSponsorHome(); });
+elements.checkProtocolStatus.addEventListener("click", () => {
+  elements.checkProtocolStatus.disabled = true;
+  elements.checkProtocolStatus.textContent = "Checking…";
+  openProtocolReview(selectedDiagnosticId).finally(() => { elements.checkProtocolStatus.disabled = false; });
+});
 elements.reviewQuestionProtocol.addEventListener("click", () => {
   elements.reviewQuestionProtocol.disabled = true;
   elements.reviewQuestionProtocol.textContent = "Preparing the protocol…";

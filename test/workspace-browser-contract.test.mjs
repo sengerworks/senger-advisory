@@ -397,6 +397,11 @@ test("sponsor protocol review forbids direct editing and requires governed quest
   assert.match(script, /reframe-question/);
   assert.match(script, /questionReviews/);
   assert.doesNotMatch(script, /row\.querySelector\("textarea"\)\.value/);
+  assert.match(html, /data-protocol-pending/);
+  assert.match(html, /Check protocol status/);
+  assert.match(script, /This is a platform connection issue—not an approval you missed/);
+  assert.match(script, /The 18-question protocol is being prepared/);
+  assert.match(script, /elements\.protocolReviewForm\.hidden = true/);
 });
 
 test("workspace assessment submits aggregate scores without individual answers or identity", async () => {
