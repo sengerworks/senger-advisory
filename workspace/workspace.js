@@ -65,6 +65,7 @@ const elements = {
   participantPlanSummary: document.querySelector("[data-participant-plan-summary]"),
   participantDesignMessage: document.querySelector("[data-participant-design-message]"),
   participantSlots: document.querySelector("[data-participant-slots]"),
+  cohortRevealList: document.querySelector("[data-cohort-reveal-list]"),
   participantCapacityCount: document.querySelector("[data-participant-capacity-count]"),
   participantCapacityLabel: document.querySelector("[data-participant-capacity-label]"),
   participantCapacityTrack: document.querySelector("[data-participant-capacity-track]"),
@@ -76,6 +77,8 @@ const elements = {
   scopePerspectiveBoundary: document.querySelector("[data-scope-perspective-boundary]"),
   scopePerspectiveList: document.querySelector("[data-scope-perspective-list]"),
   scopePerspectiveDependencies: document.querySelector("[data-scope-perspective-dependencies]"),
+  cohortStartingPoints: document.querySelector("[data-cohort-starting-points]"),
+  cohortStartingPointList: document.querySelector("[data-cohort-starting-point-list]"),
   pocCapacity: document.querySelector("[data-poc-capacity]"),
   coverageGaps: document.querySelector("[data-coverage-gaps]"),
   coverageGapList: document.querySelector("[data-coverage-gap-list]"),
@@ -470,9 +473,15 @@ function renderDiagnostics(diagnostics) {
 }
 
 const participantOptions = {
-  leadershipLevel: [["enterprise", "Executive / enterprise"], ["functional", "Functional leader"], ["operational", "Manager / operational"], ["frontline", "Individual contributor / frontline"]],
-  executionProximity: [["strategy", "Strategy"], ["coordination", "Coordination"], ["delivery", "Delivery"]],
-  functionalLens: [["executive-leadership", "Executive leadership"], ["operations", "Operations"], ["people", "People"], ["finance", "Finance"], ["commercial", "Commercial"], ["product-service", "Product / service"], ["technology", "Technology"], ["frontline-delivery", "Frontline delivery"], ["other", "Other"]]
+  leadershipLevel: [["enterprise", "Executive / enterprise leader"], ["functional", "VP / Director / functional leader"], ["operational", "Manager / team lead"], ["frontline", "Individual contributor / frontline"]],
+  executionProximity: [["strategy", "Sets direction and makes tradeoffs"], ["coordination", "Translates direction and coordinates work"], ["delivery", "Performs the work or receives its consequences"]],
+  functionalLens: [["executive-leadership", "Executive leadership"], ["operations", "Operations"], ["people", "People / HR"], ["finance", "Finance"], ["commercial", "Sales / commercial"], ["product-service", "Product / service delivery"], ["technology", "Technology"], ["frontline-delivery", "Frontline delivery"], ["other", "Another relevant area"]]
+};
+
+const perspectiveExperienceLanguage = {
+  strategy: "sets direction and makes the tradeoffs",
+  coordination: "translates priorities and coordinates dependencies",
+  delivery: "experiences the work and its consequences directly"
 };
 
 let diagnosticsById = new Map();
@@ -561,13 +570,36 @@ function updateParticipantCapacity() {
     button.disabled = count <= 5;
     button.title = count <= 5 ? "Five participants are required." : "Remove this perspective slot";
   });
+  updateCohortReveal();
 }
 
-function participantSelect(name, options) {
+function updateCohortReveal() {
+  if (!elements.cohortRevealList) return;
+  const slots = [...elements.participantSlots.children].map(row => ({
+    level: row.querySelector('[name="leadershipLevel"]').value,
+    proximity: row.querySelector('[name="executionProximity"]').value,
+    function: row.querySelector('[name="functionalLens"]').value
+  }));
+  const proximities = new Set(slots.map(slot => slot.proximity).filter(Boolean));
+  const functions = new Set(slots.map(slot => slot.function).filter(Boolean));
+  const checks = [
+    ["Direction and tradeoffs", proximities.has("strategy"), "Include someone who sets direction or makes consequential tradeoffs."],
+    ["Translation and coordination", proximities.has("coordination"), "Include someone responsible for turning direction into coordinated work."],
+    ["Lived execution", proximities.has("delivery"), "Include someone close enough to the work to experience friction directly."],
+    ["Cross-functional contrast", functions.size >= 2, "Include viewpoints from at least two areas when the work crosses a boundary."]
+  ];
+  elements.cohortRevealList.replaceChildren(...checks.map(([label, covered, guidance]) => {
+    const row = document.createElement("div"), mark = document.createElement("span"), copy = document.createElement("div"), strong = document.createElement("strong"), small = document.createElement("small");
+    row.dataset.state = covered ? "covered" : "consider"; mark.textContent = covered ? "✓" : "＋"; strong.textContent = `${label} · ${covered ? "Covered" : "Consider"}`; small.textContent = covered ? "A planned perspective can reveal this part of the system." : guidance;
+    copy.append(strong, small); row.append(mark, copy); return row;
+  }));
+}
+
+function participantSelect(name, options, prompt) {
   const select = document.createElement("select");
   select.name = name;
   select.required = true;
-  select.append(new Option(`Select ${name.replace(/([A-Z])/g, " $1").toLowerCase()}`, ""));
+  select.append(new Option(prompt, ""));
   for (const [value, label] of options) select.append(new Option(label, value));
   return select;
 }
@@ -579,22 +611,33 @@ function addParticipantSlot(values = {}) {
   row.dataset.slotId = values.slotId || `slot-${participantSlotCount}`;
   const number = document.createElement("span");
   number.textContent = String(elements.participantSlots.children.length + 1).padStart(2, "0");
-  const leadership = participantSelect("leadershipLevel", participantOptions.leadershipLevel);
-  const proximity = participantSelect("executionProximity", participantOptions.executionProximity);
-  const functional = participantSelect("functionalLens", participantOptions.functionalLens);
+  const leadership = participantSelect("leadershipLevel", participantOptions.leadershipLevel, "Choose role or vantage point");
+  const proximity = participantSelect("executionProximity", participantOptions.executionProximity, "Choose connection to the work");
+  const functional = participantSelect("functionalLens", participantOptions.functionalLens, "Choose organizational area");
   const slotNumber = elements.participantSlots.children.length + 1;
-  leadership.setAttribute("aria-label", `Perspective ${slotNumber} organizational level`);
-  proximity.setAttribute("aria-label", `Perspective ${slotNumber} relationship to the work`);
-  functional.setAttribute("aria-label", `Perspective ${slotNumber} functional view`);
+  leadership.setAttribute("aria-label", `Perspective ${slotNumber}: who should this represent?`);
+  proximity.setAttribute("aria-label", `Perspective ${slotNumber}: how do they experience the work?`);
+  functional.setAttribute("aria-label", `Perspective ${slotNumber}: what area do they see?`);
   leadership.value = values.leadershipLevel || "";
   proximity.value = values.executionProximity || "";
   functional.value = values.functionalLens || "";
+  const insight = document.createElement("small");
+  insight.className = "participant-slot-insight";
+  const updateInsight = () => {
+    const role = leadership.selectedOptions[0]?.textContent, area = functional.selectedOptions[0]?.textContent, experience = perspectiveExperienceLanguage[proximity.value];
+    insight.textContent = leadership.value && proximity.value && functional.value
+      ? `Why this view matters: ${role} in ${area} ${experience}.`
+      : "Complete the three choices to see what this perspective contributes.";
+    updateCohortReveal();
+  };
+  for (const select of [leadership, proximity, functional]) select.addEventListener("change", updateInsight);
   const remove = document.createElement("button");
   remove.type = "button";
   remove.textContent = "Remove";
   remove.addEventListener("click", () => { row.remove(); updateParticipantCapacity(); });
-  row.append(number, leadership, proximity, functional, remove);
+  row.append(number, leadership, proximity, functional, remove, insight);
   elements.participantSlots.append(row);
+  updateInsight();
   updateParticipantCapacity();
 }
 
@@ -679,6 +722,11 @@ async function openParticipantDesign(diagnosticId) {
     elements.scopePerspectiveBoundary.textContent = data.scope.scopeBoundary;
     elements.scopePerspectiveList.replaceChildren(...data.scope.guidance.map(value => Object.assign(document.createElement("li"), { textContent: value })));
     elements.scopePerspectiveDependencies.textContent = `Boundary dependencies to represent: ${data.scope.crossBoundaryDependencies}`;
+    elements.cohortStartingPoints.hidden = false;
+    elements.cohortStartingPointList.replaceChildren(...data.scope.guidance.map(value => Object.assign(document.createElement("li"), { textContent: value })));
+  } else {
+    elements.cohortStartingPoints.hidden = true;
+    elements.cohortStartingPointList.replaceChildren();
   }
   elements.participantDesignForm.hidden = approved;
   elements.participantPlanApproved.hidden = !approved;
