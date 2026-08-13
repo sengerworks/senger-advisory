@@ -36,7 +36,7 @@ function nextAction(source){
 export async function getStewardCommandCenter({workspaceId,userId,diagnosticId,now=new Date()},connectionString){return withNeonWorkspaceTransaction(workspaceId,async({query})=>{
   const id=validateDiagnosticContextId(diagnosticId);await requireAdvisorAssignment(query,{diagnosticId:id,userId,now});
   const [diagnostic,context,plan,protocol,activation,sessions,slots,evidence,finding,directions,executiveBrief,revelationGuide,validation]=await Promise.all([
-    query("SELECT id,state,diagnostic_route,entitlement_type,updated_at FROM app_shared.diagnostics WHERE id=$1",[id]),
+    query("SELECT id,state,delivery_route,entitlement_type,updated_at FROM app_shared.diagnostics WHERE id=$1",[id]),
     query("SELECT approved_at FROM app_private.diagnostic_context_briefs WHERE diagnostic_id=$1",[id]),
     query("SELECT approved_payload,approved_at FROM app_private.diagnostic_participant_plans WHERE diagnostic_id=$1",[id]),
     query("SELECT governed_questions,sponsor_approved_at,steward_finalized_at FROM app_shared.diagnostic_protocols_v2 WHERE diagnostic_id=$1",[id]),
