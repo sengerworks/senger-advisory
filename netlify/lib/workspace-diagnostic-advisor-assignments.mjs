@@ -20,6 +20,8 @@ function publicAssignment(row) {
     diagnosticId: row.diagnostic_id,
     diagnosticRoute: row.delivery_route,
     diagnosticState: row.diagnostic_state,
+    organizationLabel: row.organization_label,
+    entitlementType: row.entitlement_type,
     purpose: row.purpose,
     startsAt: new Date(row.starts_at).toISOString(),
     expiresAt: new Date(row.expires_at).toISOString()
@@ -33,11 +35,14 @@ export async function listActiveDiagnosticAdvisorAssignments(
     const result = await query(
       `SELECT assignment.id, assignment.diagnostic_id, assignment.purpose,
               assignment.starts_at, assignment.expires_at,
-              diagnostic.delivery_route, diagnostic.state AS diagnostic_state
+              diagnostic.delivery_route, diagnostic.state AS diagnostic_state,
+              diagnostic.entitlement_type, workspace.display_label AS organization_label
        FROM app_operations.diagnostic_advisor_assignments assignment
        JOIN app_shared.diagnostics diagnostic
          ON diagnostic.workspace_id = assignment.workspace_id
         AND diagnostic.id = assignment.diagnostic_id
+       JOIN app_identity.workspaces workspace
+         ON workspace.id = assignment.workspace_id
        WHERE assignment.advisor_clerk_user_id = $1
          AND assignment.revoked_at IS NULL
          AND assignment.starts_at <= $2::timestamptz
@@ -80,8 +85,11 @@ export async function createDevelopmentAdvisorAssignment(
     const joined = await query(
       `SELECT $1::uuid AS id, $2::uuid AS diagnostic_id, $3::text AS purpose,
               $4::timestamptz AS starts_at, $5::timestamptz AS expires_at,
-              diagnostic.delivery_route, diagnostic.state AS diagnostic_state
-       FROM app_shared.diagnostics diagnostic WHERE diagnostic.id = $2`,
+              diagnostic.delivery_route, diagnostic.state AS diagnostic_state,
+              diagnostic.entitlement_type, workspace.display_label AS organization_label
+       FROM app_shared.diagnostics diagnostic
+       JOIN app_identity.workspaces workspace ON workspace.id = diagnostic.workspace_id
+       WHERE diagnostic.id = $2`,
       [result.rows[0].id, input.diagnosticId, result.rows[0].purpose, result.rows[0].starts_at, result.rows[0].expires_at]
     );
     await query(
