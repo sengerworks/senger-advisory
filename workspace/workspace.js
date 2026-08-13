@@ -1166,9 +1166,9 @@ function confirmedGuidanceSessionIso() {
 function updateContextApprovalReadiness() {
   if (diagnosticContextStep !== elements.contextSteps.length) return;
   const ready = Boolean(confirmedGuidanceSessionIso());
-  elements.approveDiagnosticContext.disabled = !ready;
+  elements.approveDiagnosticContext.disabled = false;
   if (!ready) {
-    elements.diagnosticContextMessage.textContent = "Your Context Brief is ready to review. Approval will unlock after Senger Advisory confirms your booked Guidance Session.";
+    elements.diagnosticContextMessage.textContent = "Your Context Brief is ready to review. When you approve it, we’ll check that Senger Advisory has confirmed your Guidance Session.";
     elements.diagnosticContextMessage.dataset.tone = "";
   }
 }
@@ -2186,12 +2186,18 @@ elements.contextBack.addEventListener("click", () => showDiagnosticContextStep(d
 elements.diagnosticContextForm.addEventListener("submit", async event => {
   event.preventDefault();
   if (currentRole !== "org:admin" || !selectedDiagnosticId || !elements.diagnosticContextForm.reportValidity()) return;
+  elements.approveDiagnosticContext.disabled = true;
+  elements.diagnosticContextMessage.textContent = "Checking your Guidance Session confirmation…";
+  delete elements.diagnosticContextMessage.dataset.tone;
+  await loadStewardSessions(selectedDiagnosticId).catch(() => {});
   const guidanceSessionScheduledFor = confirmedGuidanceSessionIso();
   if (!guidanceSessionScheduledFor) {
-    updateContextApprovalReadiness();
+    elements.approveDiagnosticContext.disabled = false;
+    elements.diagnosticContextMessage.textContent = "Your answers are still here, but Senger Advisory has not yet confirmed your Guidance Session. If you already booked in OneCal, try again after the confirmation is recorded.";
+    elements.diagnosticContextMessage.dataset.tone = "error";
+    elements.diagnosticContextMessage.scrollIntoView({ behavior: "smooth", block: "nearest" });
     return;
   }
-  elements.approveDiagnosticContext.disabled = true;
   elements.diagnosticContextMessage.textContent = "Approving the bounded context…";
   delete elements.diagnosticContextMessage.dataset.tone;
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
@@ -2237,7 +2243,7 @@ elements.diagnosticContextForm.addEventListener("submit", async event => {
     elements.diagnosticContextMessage.textContent = error.message;
     elements.diagnosticContextMessage.dataset.tone = "error";
   } finally {
-    elements.approveDiagnosticContext.disabled = !confirmedGuidanceSessionIso();
+    elements.approveDiagnosticContext.disabled = false;
   }
 });
 elements.participantDesignForm.addEventListener("submit", async event => {

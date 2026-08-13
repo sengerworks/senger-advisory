@@ -324,7 +324,10 @@ test("context approval leads with a governed AI mirror and retains source answer
   assert.match(html, /data-context-approval-note-count/);
   assert.match(html, /name="approvalNote" maxlength="2000"/);
   assert.match(script, /function confirmedGuidanceSessionIso/);
-  assert.match(script, /Approval will unlock after Senger Advisory confirms your booked Guidance Session/);
+  assert.match(script, /When you approve it, we’ll check that Senger Advisory has confirmed your Guidance Session/);
+  assert.match(script, /Checking your Guidance Session confirmation/);
+  assert.match(script, /Your answers are still here, but Senger Advisory has not yet confirmed your Guidance Session/);
+  assert.match(script, /elements\.approveDiagnosticContext\.disabled = false/);
   assert.doesNotMatch(script, /guidanceSessionScheduledFor: new Date\(values\.guidanceSessionScheduledFor\)\.toISOString\(\)/);
 });
 
