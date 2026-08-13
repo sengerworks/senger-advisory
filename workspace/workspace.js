@@ -38,6 +38,7 @@ const elements = {
   contextSteps: [...document.querySelectorAll("[data-context-step]")],
   contextReview: document.querySelector("[data-context-review]"),
   contextReviewList: document.querySelector("[data-context-review-list]"),
+  contextApprovalNoteCount: document.querySelector("[data-context-approval-note-count]"),
   contextAiSynthesis: document.querySelector("[data-context-ai-synthesis]"),
   contextAiStatus: document.querySelector("[data-context-ai-status]"),
   contextAiContent: document.querySelector("[data-context-ai-content]"),
@@ -1041,6 +1042,9 @@ let diagnosticContextStep = 0;
 const sponsorResponsibilityField=elements.diagnosticContextForm.elements.sponsorResponsibility,sponsorResponsibilityCount=document.querySelector("[data-sponsor-responsibility-count]");
 function updateSponsorResponsibilityCount(){sponsorResponsibilityCount.textContent=`${sponsorResponsibilityField.value.length.toLocaleString()} / 2,000`;}
 sponsorResponsibilityField.addEventListener("input",updateSponsorResponsibilityCount);
+const contextApprovalNoteField=elements.diagnosticContextForm.elements.approvalNote;
+function updateContextApprovalNoteCount(){elements.contextApprovalNoteCount.textContent=`${contextApprovalNoteField.value.length.toLocaleString()} / 2,000`;}
+contextApprovalNoteField.addEventListener("input",updateContextApprovalNoteCount);
 const scopeSizeLabels={enterprise:"Enterprise headcount","business-unit":"Business-unit headcount",function:"Function headcount","leadership-layer":"Leadership-layer headcount","cross-functional-system":"Cross-functional-system headcount"};
 function organizationSizeBand(headcount){return headcount<25?"under-25":headcount<50?"25-49":headcount<150?"50-149":headcount<400?"150-399":"400-plus";}
 function syncDiagnosticScopeSize(){const form=elements.diagnosticContextForm.elements,type=form.diagnosticScopeType.value,total=Number(form.organizationHeadcount.value)||0,scope=form.diagnosticScopeHeadcount,label=document.querySelector("[data-scope-size-label]"),guidance=document.querySelector("[data-scope-size-guidance]");label.textContent=scopeSizeLabels[type]||"System headcount";form.organizationSizeBand.value=total?organizationSizeBand(total):"";scope.max=total||1000000;if(type==="enterprise"){scope.value=total||"";scope.readOnly=true;guidance.textContent="Enterprise scope automatically matches the total organization headcount.";}else{scope.readOnly=false;if(total&&Number(scope.value)>total)scope.value="";guidance.textContent="This lets the diagnostic understand the scope relative to the full organization.";}}
@@ -1195,6 +1199,7 @@ async function openDiagnosticContext(diagnosticId) {
   } else {
     elements.diagnosticContextForm.reset();
     updateSponsorResponsibilityCount();
+    updateContextApprovalNoteCount();
     syncDiagnosticScopeSize();
     elements.diagnosticContextForm.elements.diagnosticId.value = diagnosticId;
     showDiagnosticContextStep(0);

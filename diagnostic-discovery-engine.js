@@ -162,7 +162,7 @@ export function approveDiagnosticContextBrief(brief, values = {}, options = {}) 
     status: "approved",
     updatedAt: nowIso(options.now),
     approvedAt: nowIso(options.now),
-    approvalNote: optionalText(values.approvalNote, "Approval note", 500)
+    approvalNote: optionalText(values.approvalNote, "Approval note", 2000)
   };
 }
 

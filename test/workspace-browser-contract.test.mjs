@@ -321,6 +321,8 @@ test("context approval leads with a governed AI mirror and retains source answer
   assert.match(script, /What the diagnostic still needs to test/);
   assert.match(script, /Not yet recorded/);
   assert.match(script, /await loadStewardSessions\(selectedDiagnosticId\)/);
+  assert.match(html, /data-context-approval-note-count/);
+  assert.match(html, /name="approvalNote" maxlength="2000"/);
 });
 
 test("perspective design becomes a focused sponsor stage with selection guidance", async () => {
