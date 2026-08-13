@@ -178,8 +178,8 @@
             <div class="diagnostic-context-heading">
               <div>
                 <p class="card-kicker">Governed discovery</p>
-                <h4 id="diagnostic-context-title">Approve the Diagnostic Context Brief</h4>
-                <p>
+                <h4 id="diagnostic-context-title" data-diagnostic-context-title>Approve the Diagnostic Context Brief</h4>
+                <p data-diagnostic-context-introduction>
                   Establish the organizational moment and the leadership decision this diagnostic
                   must inform. Approved context guides participant design without predetermining findings.
                 </p>
@@ -187,9 +187,29 @@
               <button class="text-button" type="button" data-close-diagnostic-context>Close</button>
             </div>
             <div class="diagnostic-context-approved" data-diagnostic-context-approved hidden>
-              <strong>Context approved</strong>
-              <p data-diagnostic-context-summary></p>
-              <span>The diagnostic is ready for participant design.</span>
+              <div class="context-approved-hero">
+                <span class="context-approved-mark" aria-hidden="true">✓</span>
+                <div>
+                  <p class="card-kicker">Step 1 complete</p>
+                  <h5>Context approved</h5>
+                  <p>The diagnostic now has a clear starting point.</p>
+                </div>
+              </div>
+              <p class="context-approved-boundary">You’ve confirmed the organizational moment, the system being examined, and the decision this diagnostic should help inform. This is the starting frame—not a diagnostic conclusion.</p>
+              <div class="context-approved-summary" data-diagnostic-context-summary></div>
+              <div class="context-approved-journey" aria-label="Diagnostic journey">
+                <div><span>1</span><strong>Frame the moment</strong><small>Complete</small></div>
+                <div data-state="next"><span>2</span><strong>Design perspectives</strong><small>Next</small></div>
+                <div><span>3</span><strong>Approve protocol</strong></div>
+                <div><span>4</span><strong>Invite participants</strong></div>
+                <div><span>5</span><strong>Collect perspectives</strong></div>
+                <div><span>6</span><strong>Review findings</strong></div>
+              </div>
+              <section class="context-approved-next">
+                <div><p class="card-kicker">What happens next</p><strong>Build the perspective cohort</strong><p>Choose the organizational levels, proximity to the work, and functional viewpoints that can reveal how this priority is actually being experienced. You’ll design the perspectives before adding names or email addresses.</p></div>
+                <button class="primary-button" type="button" data-design-participant-perspectives>Design participant perspectives</button>
+              </section>
+              <div class="context-approved-actions"><button class="text-button" type="button" data-review-approved-context>Review approved context</button><button class="text-button" type="button" data-return-to-workspace>Return to workspace</button></div>
             </div>
             <form class="diagnostic-context-form" data-diagnostic-context-form>
               <input type="hidden" name="diagnosticId" />

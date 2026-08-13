@@ -163,6 +163,16 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(html, /not a predetermined diagnosis/);
   assert.match(html, /One per line, up to twelve/);
   assert.match(script, /Participant design is now the next governed step/);
+  assert.match(html, /The diagnostic now has a clear starting point/);
+  assert.match(script, /Diagnostic context approved/);
+  assert.match(script, /The bounded starting point is established/);
+  assert.match(html, /Step 1 complete/);
+  assert.match(html, /Design participant perspectives/);
+  assert.match(html, /Review approved context/);
+  assert.match(html, /Return to workspace/);
+  assert.match(html, /This is the starting frame—not a diagnostic conclusion/);
+  assert.match(script, /showSponsorJourney\("perspectives", diagnosticId\)/);
+  assert.match(script, /openParticipantDesign\(selectedDiagnosticId\)/);
   assert.match(html, /Design for coverage, not convenience/);
   assert.match(html, /requires at least five participants and allows no more than ten/);
   assert.match(html, /Five is\s+enough to proceed/);

@@ -30,9 +30,14 @@ const elements = {
   diagnosticList: document.querySelector("[data-diagnostic-list]"),
   diagnosticEmpty: document.querySelector("[data-diagnostic-empty]"),
   diagnosticContext: document.querySelector("[data-diagnostic-context]"),
+  diagnosticContextTitle: document.querySelector("[data-diagnostic-context-title]"),
+  diagnosticContextIntroduction: document.querySelector("[data-diagnostic-context-introduction]"),
   diagnosticContextForm: document.querySelector("[data-diagnostic-context-form]"),
   diagnosticContextApproved: document.querySelector("[data-diagnostic-context-approved]"),
   diagnosticContextSummary: document.querySelector("[data-diagnostic-context-summary]"),
+  designParticipantPerspectives: document.querySelector("[data-design-participant-perspectives]"),
+  reviewApprovedContext: document.querySelector("[data-review-approved-context]"),
+  returnToWorkspace: document.querySelector("[data-return-to-workspace]"),
   diagnosticContextMessage: document.querySelector("[data-diagnostic-context-message]"),
   approveDiagnosticContext: document.querySelector("[data-approve-diagnostic-context]"),
   contextSteps: [...document.querySelectorAll("[data-context-step]")],
@@ -1207,8 +1212,23 @@ async function openDiagnosticContext(diagnosticId) {
   elements.diagnosticContextForm.hidden = approved;
   elements.diagnosticContextApproved.hidden = !approved;
   if (approved) {
-    elements.diagnosticContextSummary.textContent = `${data.context.diagnosticScopeName} · ${data.context.diagnosticScopeType}. ${data.context.triggeringConcern} Decision to inform: ${data.context.decisionNeeded}`;
+    elements.diagnosticContextTitle.textContent = "Diagnostic context approved";
+    elements.diagnosticContextIntroduction.textContent = "The bounded starting point is established. Continue into perspective design to determine who can reveal how this system is actually operating.";
+    showSponsorJourney("perspectives", diagnosticId);
+    const summaries = [
+      ["System being examined", `${data.context.diagnosticScopeName} · ${data.context.diagnosticScopeType}`],
+      ["Organizational moment", data.context.triggeringConcern],
+      ["Decision to inform", data.context.decisionNeeded]
+    ];
+    elements.diagnosticContextSummary.replaceChildren(...summaries.map(([label, value]) => {
+      const article = document.createElement("article"), strong = document.createElement("strong"), paragraph = document.createElement("p");
+      strong.textContent = label; paragraph.textContent = value; article.append(strong, paragraph); return article;
+    }));
+    elements.closeDiagnosticContext.textContent = "Return to workspace";
   } else {
+    elements.diagnosticContextTitle.textContent = "Approve the Diagnostic Context Brief";
+    elements.diagnosticContextIntroduction.textContent = "Establish the organizational moment and the leadership decision this diagnostic must inform. Approved context guides participant design without predetermining findings.";
+    elements.closeDiagnosticContext.textContent = "Close";
     elements.diagnosticContextForm.reset();
     updateSponsorResponsibilityCount();
     updateContextApprovalNoteCount();
@@ -2176,6 +2196,12 @@ elements.contextNext.addEventListener("click", async () => {
   showDiagnosticContextStep(diagnosticContextStep + 1);
 });
 elements.contextBack.addEventListener("click", () => showDiagnosticContextStep(diagnosticContextStep === elements.contextSteps.length ? 0 : diagnosticContextStep - 1));
+elements.designParticipantPerspectives.addEventListener("click", () => openParticipantDesign(selectedDiagnosticId).catch(error => {
+  elements.diagnosticContextMessage.textContent = error.message;
+  elements.diagnosticContextMessage.dataset.tone = "error";
+}));
+elements.reviewApprovedContext.addEventListener("click", () => elements.diagnosticContextSummary.scrollIntoView({ behavior: "smooth", block: "center" }));
+elements.returnToWorkspace.addEventListener("click", showSponsorHome);
 elements.diagnosticContextForm.elements.approved.addEventListener("change", updateContextApprovalReadiness);
 elements.diagnosticContextForm.addEventListener("submit", async event => {
   event.preventDefault();
