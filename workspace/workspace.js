@@ -63,6 +63,11 @@ const elements = {
   perspectiveNext: document.querySelector("[data-perspective-next]"),
   participantPlanApproved: document.querySelector("[data-participant-plan-approved]"),
   participantPlanSummary: document.querySelector("[data-participant-plan-summary]"),
+  approvedCohortList: document.querySelector("[data-approved-cohort-list]"),
+  approvedCohortCoverage: document.querySelector("[data-approved-cohort-coverage]"),
+  reviewApprovedCohort: document.querySelector("[data-review-approved-cohort]"),
+  reviewQuestionProtocol: document.querySelector("[data-review-18-question-protocol]"),
+  returnPerspectiveWorkspace: document.querySelector("[data-return-perspective-workspace]"),
   participantDesignMessage: document.querySelector("[data-participant-design-message]"),
   participantSlots: document.querySelector("[data-participant-slots]"),
   cohortRevealList: document.querySelector("[data-cohort-reveal-list]"),
@@ -480,6 +485,33 @@ const perspectiveExperienceLanguage = {
   delivery: "experiences the work and its consequences directly"
 };
 
+function participantOptionLabel(group, value) {
+  return participantOptions[group].find(([option]) => option === value)?.[1] || String(value || "Relevant viewpoint");
+}
+
+function renderApprovedCohort(participantPlan) {
+  const slots = participantPlan.participantSlots || [];
+  elements.approvedCohortList.replaceChildren(...slots.map((slot, index) => {
+    const card = document.createElement("article");
+    const number = document.createElement("span");
+    number.textContent = String(index + 1).padStart(2, "0");
+    const copy = document.createElement("div");
+    const role = document.createElement("strong");
+    role.textContent = participantOptionLabel("leadershipLevel", slot.leadershipLevel);
+    const experience = document.createElement("p");
+    experience.textContent = `${participantOptionLabel("executionProximity", slot.executionProximity)} · ${participantOptionLabel("functionalLens", slot.functionalLens)}`;
+    copy.append(role, experience);
+    card.append(number, copy);
+    return card;
+  }));
+
+  const represented = [
+    ...new Set(slots.map(slot => participantOptionLabel("executionProximity", slot.executionProximity))),
+    ...new Set(slots.map(slot => participantOptionLabel("functionalLens", slot.functionalLens)))
+  ];
+  elements.approvedCohortCoverage.replaceChildren(...represented.map(label => Object.assign(document.createElement("span"), { textContent: label })));
+}
+
 let diagnosticsById = new Map();
 let participantSlotMaximum = 10;
 
@@ -808,7 +840,10 @@ async function openParticipantDesign(diagnosticId) {
   elements.participantDesignForm.hidden = approved;
   elements.participantPlanApproved.hidden = !approved;
   if (approved) {
-    elements.participantPlanSummary.textContent = `${data.participantPlan.participantSlots.length} identity-free perspective slots approved; ${data.participantPlan.acceptedGaps.length} coverage limitations accepted.`;
+    const acceptedGapCount = data.participantPlan.acceptedGaps?.length || 0;
+    elements.participantPlanSummary.textContent = `${data.participantPlan.participantSlots.length} identity-free viewpoints approved${acceptedGapCount ? ` · ${acceptedGapCount} acknowledged coverage ${acceptedGapCount === 1 ? "limitation" : "limitations"}` : " · no acknowledged coverage limitations"}.`;
+    renderApprovedCohort(data.participantPlan);
+    showSponsorJourney("protocol", diagnosticId);
   } else {
     elements.participantDesignForm.reset();
     elements.participantDesignForm.elements.diagnosticId.value = diagnosticId;
@@ -2309,6 +2344,21 @@ elements.designParticipantPerspectives.addEventListener("click", () => openParti
 }));
 elements.reviewApprovedContext.addEventListener("click", () => elements.diagnosticContextSummary.scrollIntoView({ behavior: "smooth", block: "center" }));
 elements.returnToWorkspace.addEventListener("click", showSponsorHome);
+elements.reviewApprovedCohort.addEventListener("click", () => elements.approvedCohortList.scrollIntoView({ behavior: "smooth", block: "center" }));
+elements.returnPerspectiveWorkspace.addEventListener("click", () => { setPerspectiveStage(false); showSponsorHome(); });
+elements.reviewQuestionProtocol.addEventListener("click", () => {
+  elements.reviewQuestionProtocol.disabled = true;
+  elements.reviewQuestionProtocol.textContent = "Preparing the protocol…";
+  setPerspectiveStage(false);
+  openProtocolReview(selectedDiagnosticId).catch(error => {
+    elements.participantDesign.hidden = false;
+    elements.participantDesignMessage.textContent = error.message;
+    elements.participantDesignMessage.dataset.tone = "error";
+  }).finally(() => {
+    elements.reviewQuestionProtocol.disabled = false;
+    elements.reviewQuestionProtocol.textContent = "Review the 18-question protocol";
+  });
+});
 elements.diagnosticContextForm.elements.approved.addEventListener("change", updateContextApprovalReadiness);
 elements.diagnosticContextForm.addEventListener("submit", async event => {
   event.preventDefault();

@@ -377,6 +377,15 @@ test("perspective design becomes a focused sponsor stage with selection guidance
   assert.equal((html.match(/data-perspective-step/g) || []).length, 3);
   assert.match(script, /showPerspectiveStep\(perspectiveStep \+ 1\)/);
   assert.match(script, /showSponsorJourney\("perspectives", diagnosticId\)/);
+  assert.match(html, /Step 2 complete/);
+  assert.match(html, /Perspective cohort approved/);
+  assert.match(html, /Who the diagnostic is designed to hear from/);
+  assert.match(html, /What this cohort can reveal/);
+  assert.match(html, /Review the 18-question protocol/);
+  assert.match(html, /Questions cannot be added, deleted, or directly rewritten/);
+  assert.match(script, /renderApprovedCohort/);
+  assert.match(script, /showSponsorJourney\("protocol", diagnosticId\)/);
+  assert.match(script, /openProtocolReview\(selectedDiagnosticId\)/);
 });
 
 test("sponsor protocol review forbids direct editing and requires governed question decisions", async () => {

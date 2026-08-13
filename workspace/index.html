@@ -361,9 +361,36 @@
               <button class="text-button" type="button" data-close-participant-design>Back to workspace</button>
             </div>
             <div class="diagnostic-context-approved" data-participant-plan-approved hidden>
-              <strong>Participant design approved</strong>
-              <p data-participant-plan-summary></p>
-              <span>The diagnostic is ready for its contextualized common-question protocol.</span>
+              <div class="context-approved-hero">
+                <span class="context-approved-mark" aria-hidden="true">✓</span>
+                <div>
+                  <p class="card-kicker">Step 2 complete</p>
+                  <h5>Perspective cohort approved</h5>
+                  <p data-participant-plan-summary></p>
+                </div>
+              </div>
+              <p class="context-approved-boundary">You’ve chosen the viewpoints needed to examine this system from more than one angle. Names and email addresses still come later; this approved design tells the platform which experiences the common protocol must be able to test.</p>
+              <section class="cohort-approved-recap" aria-labelledby="cohort-approved-recap-title">
+                <div class="cohort-approved-heading"><p class="card-kicker">Your approved cohort</p><h6 id="cohort-approved-recap-title">Who the diagnostic is designed to hear from</h6></div>
+                <div class="cohort-approved-list" data-approved-cohort-list></div>
+              </section>
+              <section class="cohort-approved-coverage" aria-labelledby="cohort-approved-coverage-title">
+                <div><p class="card-kicker">What this cohort can reveal</p><h6 id="cohort-approved-coverage-title">The organizational territory represented</h6></div>
+                <div data-approved-cohort-coverage></div>
+              </section>
+              <div class="context-approved-journey" aria-label="Diagnostic journey">
+                <div><span>1</span><strong>Frame the moment</strong><small>Complete</small></div>
+                <div><span>2</span><strong>Design perspectives</strong><small>Complete</small></div>
+                <div data-state="next"><span>3</span><strong>Approve protocol</strong><small>Next</small></div>
+                <div><span>4</span><strong>Invite participants</strong></div>
+                <div><span>5</span><strong>Collect perspectives</strong></div>
+                <div><span>6</span><strong>Review findings</strong></div>
+              </div>
+              <section class="context-approved-next">
+                <div><p class="card-kicker">What happens next</p><strong>Review the 18-question protocol</strong><p>The platform uses the approved context and cohort design to create one shared, contextualized protocol. You can approve each question or request a controlled reframe for clarity, sensitivity, neutrality, or relevance. Questions cannot be added, deleted, or directly rewritten.</p></div>
+                <button class="primary-button" type="button" data-review-18-question-protocol>Review the 18-question protocol</button>
+              </section>
+              <div class="context-approved-actions"><button class="text-button" type="button" data-review-approved-cohort>Review approved cohort</button><button class="text-button" type="button" data-return-perspective-workspace>Return to workspace</button></div>
             </div>
             <form class="participant-design-form" data-participant-design-form>
               <input type="hidden" name="diagnosticId" />

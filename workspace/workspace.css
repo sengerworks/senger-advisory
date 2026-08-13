@@ -466,7 +466,18 @@ h2 {
 .context-approved-next p:not(.card-kicker) { margin: 8px 0 0; color: rgba(255,255,255,.72); font-size: .78rem; line-height: 1.6; }
 .context-approved-next .primary-button { flex: 0 0 auto; }
 .context-approved-actions { display: flex; justify-content: flex-end; gap: 12px; }
+.cohort-approved-recap, .cohort-approved-coverage { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--line); border-radius: 13px; background: rgba(255,255,255,.72); }
+.cohort-approved-heading h6, .cohort-approved-coverage h6 { margin: 2px 0 0; font-family: var(--serif); font-size: 1.15rem; font-weight: 500; }
+.cohort-approved-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+.cohort-approved-list article { display: flex; align-items: flex-start; gap: 12px; min-width: 0; padding: 13px; border: 1px solid rgba(10,25,48,.1); border-radius: 9px; background: #fff; }
+.cohort-approved-list article > span { flex: 0 0 auto; color: var(--orange); font-size: .68rem; font-weight: 800; letter-spacing: .08em; }
+.cohort-approved-list strong { display: block; color: var(--ink); font-size: .78rem; }
+.cohort-approved-list p { margin: 4px 0 0; color: var(--ink-soft); font-size: .7rem; line-height: 1.45; }
+.cohort-approved-coverage { grid-template-columns: minmax(180px,.7fr) minmax(0,1.3fr); align-items: center; }
+.cohort-approved-coverage > div:last-child { display: flex; flex-wrap: wrap; gap: 7px; }
+.cohort-approved-coverage > div:last-child span { padding: 7px 10px; border-radius: 999px; background: var(--cream); color: var(--ink-soft); font-size: .68rem; font-weight: 700; }
 @media (max-width: 900px) { .context-approved-summary { grid-template-columns: 1fr; } .context-approved-journey { grid-template-columns: repeat(2,1fr); } .context-approved-next { align-items: stretch; flex-direction: column; } .context-approved-next .primary-button { align-self: start; } }
+@media (max-width: 700px) { .cohort-approved-list, .cohort-approved-coverage { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .context-approved-journey { grid-template-columns: 1fr; } .context-approved-actions { align-items: stretch; flex-direction: column; } }
 .leadership-release-state { margin-top: 22px; padding: 14px 16px; border-radius: 10px; font-size: .8rem; font-weight: 800; }
 .leadership-release-state[data-state="withheld"] { border: 1px solid #d8c7ac; background: #fff9ef; color: #70562e; }
