@@ -195,7 +195,8 @@ test("workspace keeps assessment collection separate from paid diagnostic engage
   assert.match(script, /Minimum cohort reached/);
   assert.match(html, /You will add names and email addresses only after the protocol is approved/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-participants"/);
-  assert.match(script, /Coverage gaps need a design change or an explicit acceptance reason/);
+  assert.match(script, /Review each viewpoint below and choose whether to add it, remove it from the intended coverage, or proceed without it/);
+  assert.doesNotMatch(script, /Coverage gaps need a design change or an explicit acceptance reason/);
   assert.match(html, /Review the 18-question protocol/);
   assert.match(html, /Every participant receives this same contextualized core protocol/);
   assert.match(script, /workspaceRequest\("\/api\/workspace\/diagnostic-protocol-sponsor-review-v2"/);

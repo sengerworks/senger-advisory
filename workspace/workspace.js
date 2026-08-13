@@ -529,6 +529,14 @@ function showSponsorJourney(stage, diagnosticId) {
 
 function showPerspectiveStep(step = 0) {
   perspectiveStep = Math.max(0, Math.min(step, elements.perspectiveSteps.length - 1));
+  if (perspectiveStep === elements.perspectiveSteps.length - 1) {
+    const gaps = participantCoverageGaps(participantPlanDraft());
+    showCoverageGaps(gaps);
+    elements.participantDesignMessage.textContent = gaps.length
+      ? "Review each viewpoint below and choose whether to add it, remove it from the intended coverage, or proceed without it."
+      : "Every viewpoint you identified as important is represented in the planned cohort.";
+    delete elements.participantDesignMessage.dataset.tone;
+  }
   elements.perspectiveSteps.forEach((section, index) => { section.hidden = index !== perspectiveStep; });
   elements.perspectiveProgressLabel.textContent = `Part ${perspectiveStep + 1} of ${elements.perspectiveSteps.length}`;
   elements.perspectiveProgressName.textContent = perspectiveStepNames[perspectiveStep];
@@ -2372,8 +2380,8 @@ elements.participantDesignForm.addEventListener("submit", async event => {
   if (gaps.join("|") !== displayedGaps.map(row => row.dataset.gapId).join("|")) {
     showCoverageGaps(gaps);
     if (gaps.length) {
-      elements.participantDesignMessage.textContent = "Coverage gaps need a design change or an explicit acceptance reason.";
-      elements.participantDesignMessage.dataset.tone = "error";
+      elements.participantDesignMessage.textContent = "The cohort changed. Review each viewpoint below and choose how you want to resolve it.";
+      delete elements.participantDesignMessage.dataset.tone;
       return;
     }
     displayedGaps = [...elements.coverageGapList.querySelectorAll("[data-gap-id]")];
