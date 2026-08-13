@@ -21,7 +21,8 @@ export function createWorkspaceDiagnosticContextSynthesisHandler({ authenticate 
       let body; try { body = JSON.parse(text); } catch { throw new DiagnosticContextInputError("Enter valid context details."); }
       const context = validateDiagnosticContextInput(body);
       const provider = synthesize || createOpenAIDiagnosticContextSynthesizer();
-      return json(200, { synthesis: await provider(context), boundary: "Sponsor perspective—working articulation, not a diagnostic finding." });
+      const { guidanceSessionScheduledFor: _scheduledFor, guidanceSessionAcknowledged: _acknowledged, approvalNote: _approvalNote, ...synthesisContext } = context;
+      return json(200, { synthesis: await provider(synthesisContext), boundary: "Sponsor perspective—working articulation, not a diagnostic finding." });
     } catch (error) {
       if (error instanceof DiagnosticContextInputError) return json(400, { error: error.message });
       if (error instanceof DiagnosticContextSynthesisProviderError) return json(503, { error: "The context synthesis is temporarily unavailable. Your answers remain intact." });

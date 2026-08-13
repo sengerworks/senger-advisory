@@ -319,6 +319,8 @@ test("context approval leads with a governed AI mirror and retains source answer
   assert.match(script, /diagnostic-context-synthesis/);
   assert.match(script, /A working implication—not a finding/);
   assert.match(script, /What the diagnostic still needs to test/);
+  assert.match(script, /Not yet recorded/);
+  assert.match(script, /await loadStewardSessions\(selectedDiagnosticId\)/);
 });
 
 test("perspective design becomes a focused sponsor stage with selection guidance", async () => {

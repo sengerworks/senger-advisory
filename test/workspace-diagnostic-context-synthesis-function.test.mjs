@@ -19,7 +19,11 @@ const request = (value = body, origin = "https://example.com") => new Request("h
 const authenticate = role => async () => ({ ok: true, value: { role, workspaceId: "11111111-1111-4111-8111-111111111111", userId: "user" } });
 
 test("only the sponsor receives a bounded working synthesis", async () => {
-  const handler = createWorkspaceDiagnosticContextSynthesisHandler({ authenticate: authenticate(WORKSPACE_ROLES.owner), synthesize: async value => ({ executiveFrame: value.strategicPriority }) });
+  const handler = createWorkspaceDiagnosticContextSynthesisHandler({ authenticate: authenticate(WORKSPACE_ROLES.owner), synthesize: async value => {
+    assert.equal("guidanceSessionScheduledFor" in value, false);
+    assert.equal("guidanceSessionAcknowledged" in value, false);
+    return { executiveFrame: value.strategicPriority };
+  } });
   const response = await handler(request());
   assert.equal(response.status, 200);
   const payload = await response.json();

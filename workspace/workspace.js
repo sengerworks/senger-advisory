@@ -1065,6 +1065,7 @@ async function loadStewardSessions(diagnosticId) {
 
 function diagnosticContextReviewPayload() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
+  const guidanceDate = new Date(values.guidanceSessionScheduledFor);
   return {
     diagnosticId: selectedDiagnosticId,
     organizationSizeBand: values.organizationSizeBand,
@@ -1083,8 +1084,8 @@ function diagnosticContextReviewPayload() {
     diagnosticScopeHeadcount: Number(values.diagnosticScopeHeadcount),
     diagnosticScopeBoundary: values.diagnosticScopeBoundary,
     crossBoundaryDependencies: values.crossBoundaryDependencies,
-    guidanceSessionScheduledFor: new Date(values.guidanceSessionScheduledFor).toISOString(),
-    guidanceSessionAcknowledged: elements.diagnosticContextForm.elements.guidanceSessionAcknowledged.checked,
+    guidanceSessionScheduledFor: Number.isFinite(guidanceDate.getTime()) ? guidanceDate.toISOString() : new Date(0).toISOString(),
+    guidanceSessionAcknowledged: true,
     organizationContext: values.organizationContext,
     strategicPriority: values.strategicPriority,
     triggeringConcern: values.triggeringConcern,
@@ -1099,8 +1100,10 @@ function diagnosticContextReviewPayload() {
 
 function renderDiagnosticContextReview() {
   const values = Object.fromEntries(new FormData(elements.diagnosticContextForm));
+  const guidanceDate = new Date(values.guidanceSessionScheduledFor);
+  const guidanceLabel = Number.isFinite(guidanceDate.getTime()) ? guidanceDate.toLocaleString() : "Not yet recorded";
   const summaries = [
-    ["Your vantage point", `${values.sponsorRoleTitle} · ${values.sponsorOrganizationalLevel} · ${values.sponsorFunction}\n${values.sponsorResponsibility}\nGuidance Session: ${new Date(values.guidanceSessionScheduledFor).toLocaleString()}`],
+    ["Your vantage point", `${values.sponsorRoleTitle} · ${values.sponsorOrganizationalLevel} · ${values.sponsorFunction}\n${values.sponsorResponsibility}\nGuidance Session: ${guidanceLabel}`],
     ["Business and operating context", `${values.industry} · ${values.businessModel} · ${values.operatingEnvironment}\n${values.organizationOffering}`],
     ["System being examined", `${values.diagnosticScopeName} · ${values.diagnosticScopeType}\n${Number(values.diagnosticScopeHeadcount).toLocaleString()} of ${Number(values.organizationHeadcount).toLocaleString()} people (${Math.round(Number(values.diagnosticScopeHeadcount)/Number(values.organizationHeadcount)*100)}% of the organization)\nInside the inquiry: ${values.diagnosticScopeBoundary}\nBoundary dependencies: ${values.crossBoundaryDependencies}`],
     ["What is happening now?", [values.organizationContext, values.triggeringConcern].filter(Boolean).join("\n\n")],
@@ -2148,8 +2151,11 @@ elements.closeProtocolReview.addEventListener("click", () => {
 elements.addParticipantSlot.addEventListener("click", () => addParticipantSlot());
 elements.perspectiveNext.addEventListener("click", () => showPerspectiveStep(perspectiveStep + 1));
 elements.perspectiveBack.addEventListener("click", () => showPerspectiveStep(perspectiveStep - 1));
-elements.contextNext.addEventListener("click", () => {
+elements.contextNext.addEventListener("click", async () => {
   if (!validateDiagnosticContextStep()) return;
+  if (diagnosticContextStep === elements.contextSteps.length - 1 && selectedDiagnosticId) {
+    await loadStewardSessions(selectedDiagnosticId).catch(() => {});
+  }
   showDiagnosticContextStep(diagnosticContextStep + 1);
 });
 elements.contextBack.addEventListener("click", () => showDiagnosticContextStep(diagnosticContextStep - 1));
