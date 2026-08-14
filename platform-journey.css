@@ -1,4 +1,4 @@
-.platform-journey-page .demo-main { width:min(1240px,calc(100% - 40px)); padding:clamp(42px,6vw,76px) 0 90px; }
+.platform-journey-page .demo-main { width:min(1240px,calc(100% - 40px)); margin:0 auto; padding:clamp(42px,6vw,76px) 0 90px; }
 .platform-journey-page .primary-button,.platform-journey-page .secondary-button { padding:13px 20px; border:1px solid var(--ink); border-radius:999px; cursor:pointer; font:inherit; font-weight:800; }
 .platform-journey-page .primary-button { background: var(--midnight); color:#fff; }
 .platform-journey-page .secondary-button { background: var(--paper); color:var(--ink); }

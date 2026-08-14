@@ -49,3 +49,8 @@ test("public navigation features the Platform Journey while assessment retains i
   assert.match(assessment, /href="organization-view\.html">View organizational demo/);
   assert.match(sitemap, /https:\/\/sengeradvisory\.com\/platform-journey\.html/);
 });
+
+test("Platform Journey uses the centered public-page content frame", async () => {
+  const styles = await readFile(new URL("../platform-journey.css", import.meta.url), "utf8");
+  assert.match(styles, /\.platform-journey-page \.demo-main\s*\{[^}]*width:\s*min\(1240px,calc\(100% - 40px\)\);[^}]*margin:\s*0 auto;/);
+});
