@@ -54,3 +54,16 @@ test("Platform Journey uses the centered public-page content frame", async () =>
   const styles = await readFile(new URL("../platform-journey.css", import.meta.url), "utf8");
   assert.match(styles, /\.platform-journey-page \.demo-main\s*\{[^}]*width:\s*min\(1240px,calc\(100% - 40px\)\);[^}]*margin:\s*0 auto;/);
 });
+
+test("every Platform Journey artifact has a collision-safe visual layout", async () => {
+  const [styles, script] = await Promise.all([
+    source("platform-journey.css"),
+    source("platform-journey.js")
+  ]);
+  for (const visual of ["challenge-hero", "assessment-preview", "route-picker", "context-result", "cohort-builder", "participant-product", "threshold-demo", "deid-pipeline", "result-reveal", "intervention-path", "brief-demo"]) {
+    assert.match(script, new RegExp(`class=\\"${visual}`));
+    assert.match(styles, new RegExp(`\\.${visual}(?:,|\\s*\\{)`));
+  }
+  assert.match(styles, /\.impact-orbit span[^}]+display:\s*grid/);
+  assert.match(styles, /\[data-step-visual\] h3,\[data-step-visual\] p[^}]+overflow-wrap:\s*anywhere/);
+});
