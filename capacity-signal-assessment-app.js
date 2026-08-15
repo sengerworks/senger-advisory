@@ -63,6 +63,13 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
       </aside>
     </section>
 
+    <section class="context-handoff signal-context-handoff" data-signal-context-handoff hidden>
+      <span>Why this starting point is shown</span>
+      <strong data-signal-context-title></strong>
+      <p>Your earlier selection has preselected a demand driver to reduce setup. It does not change the 18 signals, score your concern, or predetermine the brief. You can change the driver below.</p>
+      <button type="button" data-signal-context-clear>Use a different starting point</button>
+    </section>
+
     <section class="assessment-shell capacity-signal-shell" data-capacity-signal-app>
       <div class="assessment-progress" aria-label="Assessment progress">
         <div class="assessment-progress-copy"><span data-signal-progress-label>Context</span><strong data-signal-progress-name>Capacity for what?</strong></div>
@@ -137,6 +144,22 @@ import { createPrivateResult, privateResultsEnvironment } from "./private-result
   let step = -1;
   let lastResult = null;
   let saved = false;
+
+  const concern = window.capacityExperienceContext?.current();
+  const contextHandoff = main.querySelector("[data-signal-context-handoff]");
+  if (concern && contextHandoff) {
+    contextHandoff.hidden = false;
+    contextHandoff.querySelector("[data-signal-context-title]").textContent = `You began with ${concern.label}.`;
+    form.elements.demandSource.value = concern.demandSource;
+    contextHandoff.querySelector("[data-signal-context-clear]").addEventListener("click", () => {
+      form.elements.demandSource.value = "";
+      const url = new URL(location.href);
+      url.searchParams.delete("concern");
+      history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+      contextHandoff.hidden = true;
+      form.elements.demandSource.focus();
+    });
+  }
 
   const escapeHtml = value => String(value).replace(/[&<>\"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]);
 

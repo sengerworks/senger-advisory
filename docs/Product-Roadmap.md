@@ -19,8 +19,12 @@ experience sequence is recognition, consequence, understanding, action, and veri
   a decision path—Problem, Capacity Lens, How It Works, Capacity Signal, and Conversation—with one
   visually dominant next move. Desktop and mobile layouts preserve the current stage without page
   overflow, and the mobile path automatically brings the active stage into view.
-- **Phase 3 — Context-responsive experiences: Planned.** Carry a visitor-selected concern into the
-  Platform Journey and assessment entry, with transparent explanations of why each path is shown.
+- **Phase 3 — Context-responsive experiences: Complete.** The six controlled executive concerns
+  now travel through the public decision path as explicit URL context. The Platform Journey adapts
+  its entry framing and first chapter to the selected business condition while preserving the same
+  fictional evidence, method, and result. The Capacity Signal preselects a relevant demand driver
+  without changing its 18 signals or predetermining its brief. Both experiences explain why the
+  framing changed, state what did not change, and let the visitor clear or revise the starting point.
 - **Phase 4 — Platform-wide intelligence: Planned.** Extend narrated reasoning, next-best-action
   guidance, uncertainty, verification receipts, and safe revision patterns across role workspaces.
 

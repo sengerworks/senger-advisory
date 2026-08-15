@@ -27,6 +27,16 @@ const chapters=[
 ];
 
 const briefViews={focus:`<p class="card-kicker">Current focus</p><h3>Move custom-scope decisions to the right level.</h3><p>Test whether managers can apply the approved exception matrix without defaulting to executive escalation.</p><div class="brief-signal"><span>Next decision</span><strong>Approve delegated thresholds · Friday</strong></div>`,finding:`<p class="card-kicker">Validated finding</p><h3>Strategy and decision governance are misaligned.</h3><p>Commercial incentives and exception rights continue to redirect capacity toward custom work.</p><div class="brief-signal"><span>Confidence</span><strong>Strong · one counterpoint retained</strong></div>`,intervention:`<p class="card-kicker">Accepted intervention</p><h3>90-day decision-rights operating cycle.</h3><p>Align exception thresholds, run applied manager labs, and review decision latency at days 30, 60, and 90.</p><div class="brief-signal"><span>Accountable role</span><strong>COO · VP Product · VP Sales</strong></div>`,evidence:`<p class="card-kicker">Evidence to watch</p><h3>Decision latency, exception rate, and escalation level</h3><p>Proof requires qualifying exceptions to resolve below the executive team—not merely completion of training.</p><div class="brief-signal"><span>30-day target</span><strong>70% resolved at the delegated level</strong></div>`};
+const concern=window.capacityExperienceContext?.current();
+if(concern){
+  const handoff=document.querySelector("[data-context-handoff]");
+  document.querySelector("[data-context-journey-title]").textContent=concern.journeyTitle;
+  document.querySelector("[data-context-journey-lede]").textContent=concern.journeyLede;
+  handoff.hidden=false;
+  handoff.querySelector("[data-context-handoff-title]").textContent=`You told us ${concern.label} is closest to the conversation.`;
+  chapters[0].steps[0].title=concern.journeyTitle;
+  chapters[0].steps[0].lede=`The fictional case begins through the lens of ${concern.label}. Its evidence and outcome remain controlled so the journey demonstrates the method rather than simulating a diagnosis of your organization.`;
+}
 const promptLabels=["What is happening now?","What matters most?","What is at risk?","What must leadership decide?","What changed or was tried?","What sensitivities shape the work?"];
 const flatSteps=chapters.flatMap((chapter,chapterIndex)=>chapter.steps.map((step,stepIndex)=>({...step,chapterIndex,stepIndex})));let current=0,submissions=1;
 const elements={orientation:document.querySelector("[data-orientation]"),journey:document.querySelector("[data-journey]"),chapters:document.querySelector("[data-chapter-navigation]"),chapterPosition:document.querySelector("[data-chapter-position]"),stepPosition:document.querySelector("[data-step-position]"),progress:document.querySelector("[data-journey-progress]"),kicker:document.querySelector("[data-step-kicker]"),title:document.querySelector("[data-step-title]"),lede:document.querySelector("[data-step-lede]"),instruction:document.querySelector("[data-step-instruction]"),visual:document.querySelector("[data-step-visual]"),sponsor:document.querySelector("[data-sponsor-action]"),platform:document.querySelector("[data-platform-action]"),why:document.querySelector("[data-why-matters]"),previous:document.querySelector("[data-previous-step]"),next:document.querySelector("[data-next-step]")};

@@ -4,6 +4,30 @@ if (year) year.textContent = new Date().getFullYear();
 const navToggle = document.querySelector(".nav-toggle");
 const nav = document.querySelector(".site-nav");
 
+const capacityConcernProfiles = {
+  scaling: { label: "scaling strain", demandSource: "growth-scale", journeyTitle: "See how scaling strain becomes a question the organization can actually examine.", journeyLede: "Follow one executive sponsor from the friction growth makes visible to confidential evidence, a governed finding, and focused action." },
+  retention: { label: "customer retention pressure", demandSource: "customer-retention-experience", journeyTitle: "See how customer retention pressure can reveal what is happening beneath delivery symptoms.", journeyLede: "Follow one executive sponsor from customer and revenue exposure to confidential cross-functional evidence and a defensible organizational finding." },
+  decisions: { label: "decision escalation", demandSource: "operating-model-complexity", journeyTitle: "See why recurring decision escalation may be an operating-system signal.", journeyLede: "Follow one executive sponsor from decisions that keep moving upward to evidence about authority, information, coordination, and execution." },
+  change: { label: "AI and change strain", demandSource: "organizational-change", journeyTitle: "See whether change is outrunning the organization’s ability to absorb it.", journeyLede: "Follow one executive sponsor from adoption friction and change fatigue to protected evidence about what the operating system can carry." },
+  coordination: { label: "cross-functional friction", demandSource: "operating-model-complexity", journeyTitle: "See how cross-functional friction becomes an organizational inquiry—not a blame exercise.", journeyLede: "Follow one executive sponsor from broken handoffs and local explanations to a shared, evidence-governed view of the system." },
+  leadership: { label: "increasing leadership load", demandSource: "operating-model-complexity", journeyTitle: "See what increasing leadership effort may be concealing about the operating system.", journeyLede: "Follow one executive sponsor from escalating leadership load to confidential evidence about where the organization depends on personal compensation." }
+};
+
+function capacityConcernFromUrl() {
+  const key = new URLSearchParams(location.search).get("concern");
+  return capacityConcernProfiles[key] ? { key, ...capacityConcernProfiles[key] } : null;
+}
+
+function contextualHref(href, concernKey = capacityConcernFromUrl()?.key) {
+  if (!concernKey || href.startsWith("#") || /^(?:https?:|mailto:|tel:)/.test(href)) return href;
+  const url = new URL(href, location.href);
+  if (url.origin !== location.origin) return href;
+  url.searchParams.set("concern", concernKey);
+  return `${url.pathname.split("/").pop() || "index.html"}${url.search}${url.hash}`;
+}
+
+window.capacityExperienceContext = { profiles: capacityConcernProfiles, current: capacityConcernFromUrl, contextualHref };
+
 (() => {
   const header = document.querySelector(".site-header");
   const main = document.querySelector("main");
@@ -32,9 +56,9 @@ const nav = document.querySelector(".site-nav");
         <p>${current.why}</p>
       </div>
       <nav class="capacity-path-steps" aria-label="Organizational Capacity path">
-        ${stages.map((stage, index) => `<a href="${stage.href}" ${stage === current ? 'aria-current="step"' : ""}><i>${index + 1}</i><span>${stage.label}</span></a>`).join("")}
+        ${stages.map((stage, index) => `<a href="${contextualHref(stage.href)}" ${stage === current ? 'aria-current="step"' : ""}><i>${index + 1}</i><span>${stage.label}</span></a>`).join("")}
       </nav>
-      <a class="capacity-path-next" href="${current.nextHref}"><span>What happens next</span><strong>${current.next}</strong><i aria-hidden="true">→</i></a>
+      <a class="capacity-path-next" href="${contextualHref(current.nextHref)}"><span>What happens next</span><strong>${current.next}</strong><i aria-hidden="true">→</i></a>
     </div>`;
   header.insertAdjacentElement("afterend", path);
   requestAnimationFrame(() => {
@@ -55,7 +79,7 @@ const nav = document.querySelector(".site-nav");
     ];
     nav.replaceChildren(...navPath.map(([href, label]) => {
       const link = document.createElement("a");
-      link.href = href;
+      link.href = contextualHref(href);
       link.textContent = label;
       if (href === current.href || (current.id === "examine" && href === "platform-journey.html")) link.setAttribute("aria-current", "page");
       if (href === "contact.html") link.className = "nav-primary-action";
@@ -163,11 +187,20 @@ if ("IntersectionObserver" in window) {
     lens: root.querySelector("[data-concern-lens]"),
     next: root.querySelector("[data-concern-next]")
   };
+  const applyConcernContext = key => {
+    const url = new URL(location.href);
+    url.searchParams.set("concern", key);
+    history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+    document.querySelectorAll('a[href*="assessment.html"],a[href*="platform-journey.html"],.capacity-path a,.site-nav a').forEach(link => {
+      link.href = contextualHref(link.getAttribute("href"), key);
+    });
+  };
   root.addEventListener("click", event => {
     const button = event.target.closest("[data-capacity-concern]");
     if (!button) return;
     const concern = concerns[button.dataset.capacityConcern];
     if (!concern) return;
+    applyConcernContext(button.dataset.capacityConcern);
     root.querySelectorAll("[data-capacity-concern]").forEach(option => {
       const active = option === button;
       option.classList.toggle("active", active);
@@ -176,4 +209,6 @@ if ("IntersectionObserver" in window) {
     for (const [key, element] of Object.entries(fields)) element.textContent = concern[key];
     document.querySelector("[data-flow-engine]")?.flowEngine?.setNarrativeStage(concern.stage);
   });
+  const initialConcern = capacityConcernFromUrl();
+  if (initialConcern) root.querySelector(`[data-capacity-concern="${initialConcern.key}"]`)?.click();
 })();
