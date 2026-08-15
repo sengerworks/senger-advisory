@@ -4,6 +4,66 @@ if (year) year.textContent = new Date().getFullYear();
 const navToggle = document.querySelector(".nav-toggle");
 const nav = document.querySelector(".site-nav");
 
+(() => {
+  const header = document.querySelector(".site-header");
+  const main = document.querySelector("main");
+  if (!header || !main || document.querySelector("[data-capacity-path]")) return;
+
+  const stages = [
+    { id: "recognize", label: "Recognize the strain", href: "signs.html", pages: ["index.html", "", "signs.html"], why: "Name the operating conditions that feel familiar before reaching for an explanation.", next: "Learn what may be producing the strain", nextHref: "framework.html" },
+    { id: "understand", label: "Understand the system", href: "framework.html", pages: ["framework.html"], why: "Use the Capacity Lens to see how complexity, operating mechanisms, and compensation interact.", next: "See how the organization comes into focus", nextHref: "platform-journey.html" },
+    { id: "examine", label: "See how it is examined", href: "platform-journey.html", pages: ["platform-journey.html", "diagnostic.html", "capacity-brief-example.html"], why: "See how confidential perspectives become a governed finding without exposing individual responses.", next: "Get a bounded Capacity Signal", nextHref: "assessment.html" },
+    { id: "signal", label: "Get a bounded signal", href: "assessment.html", pages: ["assessment.html", "saved-capacity-signal.html", "saved-results.html"], why: "Test whether capacity may be under pressure without mistaking a lightweight signal for a diagnosis.", next: "Decide whether a deeper conversation is warranted", nextHref: "contact.html" },
+    { id: "decide", label: "Decide the next move", href: "contact.html", pages: ["contact.html", "success.html"], why: "Bring the execution condition into a focused conversation and determine whether the Diagnostic fits.", next: "Start a Capacity Conversation", nextHref: "contact.html" }
+  ];
+  const page = location.pathname.split("/").pop();
+  const current = stages.find(stage => stage.pages.includes(page));
+  if (!current) return;
+  const position = stages.indexOf(current);
+  const path = document.createElement("section");
+  path.className = "capacity-path";
+  path.dataset.capacityPath = current.id;
+  path.setAttribute("aria-label", "Your path through Organizational Capacity");
+  path.innerHTML = `
+    <div class="capacity-path-inner">
+      <div class="capacity-path-context">
+        <span>Where you are · Step ${position + 1} of ${stages.length}</span>
+        <strong>${current.label}</strong>
+        <p>${current.why}</p>
+      </div>
+      <nav class="capacity-path-steps" aria-label="Organizational Capacity path">
+        ${stages.map((stage, index) => `<a href="${stage.href}" ${stage === current ? 'aria-current="step"' : ""}><i>${index + 1}</i><span>${stage.label}</span></a>`).join("")}
+      </nav>
+      <a class="capacity-path-next" href="${current.nextHref}"><span>What happens next</span><strong>${current.next}</strong><i aria-hidden="true">→</i></a>
+    </div>`;
+  header.insertAdjacentElement("afterend", path);
+  requestAnimationFrame(() => {
+    const activeStep = path.querySelector('[aria-current="step"]');
+    const track = activeStep?.parentElement;
+    if (activeStep && track && track.scrollWidth > track.clientWidth) {
+      track.scrollLeft = activeStep.offsetLeft - (track.clientWidth - activeStep.offsetWidth) / 2;
+    }
+  });
+
+  if (nav) {
+    const navPath = [
+      ["signs.html", "The Problem"],
+      ["framework.html", "Capacity Lens"],
+      ["platform-journey.html", "How It Works"],
+      ["assessment.html", "Capacity Signal"],
+      ["contact.html", "Start a Conversation"]
+    ];
+    nav.replaceChildren(...navPath.map(([href, label]) => {
+      const link = document.createElement("a");
+      link.href = href;
+      link.textContent = label;
+      if (href === current.href || (current.id === "examine" && href === "platform-journey.html")) link.setAttribute("aria-current", "page");
+      if (href === "contact.html") link.className = "nav-primary-action";
+      return link;
+    }));
+  }
+})();
+
 if (navToggle && nav) {
   navToggle.addEventListener("click", () => {
     const isOpen = nav.classList.toggle("open");

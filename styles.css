@@ -118,6 +118,100 @@ a {
   color: var(--ink);
 }
 
+/* Experience North Star · Phase 2 orientation and momentum */
+.capacity-path {
+  position: relative;
+  z-index: 20;
+  border-top: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  background: var(--midnight);
+  color: #fff;
+}
+
+.capacity-path-inner {
+  width: min(1440px, calc(100% - 48px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(190px,.72fr) minmax(520px,1.6fr) minmax(210px,.8fr);
+  align-items: stretch;
+}
+
+.capacity-path-context,
+.capacity-path-next {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 17px 22px;
+}
+
+.capacity-path-context { padding-left: 0; border-right: 1px solid rgba(255,255,255,.12); }
+.capacity-path-context > span,
+.capacity-path-next > span { color: #e7a06f; font-size: .62rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.capacity-path-context > strong { margin-top: 4px; font-size: .88rem; }
+.capacity-path-context p { margin: 4px 0 0; color: rgba(255,255,255,.62); font-size: .68rem; line-height: 1.45; }
+
+.capacity-path-steps {
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  align-items: stretch;
+}
+
+.capacity-path-steps a {
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 7px;
+  padding: 15px 8px;
+  color: rgba(255,255,255,.52);
+  text-align: center;
+  text-decoration: none;
+  transition: color .2s ease, background .2s ease;
+}
+
+.capacity-path-steps a::after { content: ""; position: absolute; top: 28px; left: calc(50% + 14px); width: calc(100% - 28px); height: 1px; background: rgba(255,255,255,.16); }
+.capacity-path-steps a:last-child::after { display: none; }
+.capacity-path-steps i { position: relative; z-index: 1; display: grid; width: 25px; height: 25px; place-items: center; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; background: var(--midnight); font-size: .6rem; font-style: normal; font-weight: 900; }
+.capacity-path-steps span { font-size: .62rem; font-weight: 760; line-height: 1.2; }
+.capacity-path-steps a:hover { color: #fff; background: rgba(255,255,255,.04); }
+.capacity-path-steps a[aria-current="step"] { color: #fff; background: rgba(212,91,49,.12); }
+.capacity-path-steps a[aria-current="step"] i { border-color: var(--orange); background: var(--orange); }
+
+.capacity-path-next {
+  position: relative;
+  padding-right: 42px;
+  border-left: 1px solid rgba(255,255,255,.12);
+  color: #fff;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+.capacity-path-next strong { margin-top: 5px; font-size: .72rem; line-height: 1.35; }
+.capacity-path-next > i { position: absolute; right: 16px; color: var(--orange); font-size: 1.3rem; font-style: normal; }
+.capacity-path-next:hover { background: rgba(212,91,49,.13); }
+
+.site-nav .nav-primary-action { padding: 9px 13px; border-radius: 999px; background: var(--orange); color: #fff; }
+.site-nav .nav-primary-action::after { display: none; }
+.site-nav .nav-primary-action:hover { background: var(--orange-dark); color: #fff; }
+
+@media (max-width: 1120px) {
+  .capacity-path-inner { grid-template-columns: minmax(180px,.75fr) minmax(460px,1.55fr); }
+  .capacity-path-next { display: none; }
+  .capacity-path-steps { border-right: 0; }
+}
+
+@media (max-width: 760px) {
+  .capacity-path-inner { width: 100%; grid-template-columns: 1fr; }
+  .capacity-path-context { padding: 13px 20px; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+  .capacity-path-context p { display: none; }
+  .capacity-path-steps { overflow-x: auto; grid-template-columns: repeat(5,minmax(112px,1fr)); scrollbar-width: none; }
+  .capacity-path-steps::-webkit-scrollbar { display: none; }
+  .capacity-path-steps a { min-height: 70px; padding: 11px 8px; }
+  .capacity-path-steps a::after { top: 23px; }
+  .capacity-path-steps i { width: 23px; height: 23px; }
+  .capacity-path-steps span { font-size: .58rem; }
+}
+
 .nav-toggle {
   display: none;
 }

@@ -13,8 +13,12 @@ experience sequence is recognition, consequence, understanding, action, and veri
   signals, clarifies one primary action, and creates consequence-based urgency without unsupported
   claims. Six controlled executive conditions change the pattern, consequence, Capacity Lens focus,
   and bounded next step without presenting a public diagnosis.
-- **Phase 2 — Orientation and momentum: Planned.** Introduce the five-stage site journey, make the
-  purpose and next action explicit on major pages, and simplify navigation and CTA hierarchy.
+- **Phase 2 — Orientation and momentum: Complete.** A persistent five-stage public path now shows
+  visitors where they are, why the current stage matters, and what happens next across the major
+  Organizational Capacity pages. The top-level navigation has been reduced from a page inventory to
+  a decision path—Problem, Capacity Lens, How It Works, Capacity Signal, and Conversation—with one
+  visually dominant next move. Desktop and mobile layouts preserve the current stage without page
+  overflow, and the mobile path automatically brings the active stage into view.
 - **Phase 3 — Context-responsive experiences: Planned.** Carry a visitor-selected concern into the
   Platform Journey and assessment entry, with transparent explanations of why each path is shown.
 - **Phase 4 — Platform-wide intelligence: Planned.** Extend narrated reasoning, next-best-action
