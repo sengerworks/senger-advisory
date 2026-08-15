@@ -40,7 +40,8 @@ window.capacityExperienceContext = { profiles: capacityConcernProfiles, current:
     { id: "signal", label: "Get a bounded signal", href: "assessment.html", pages: ["assessment.html", "saved-capacity-signal.html", "saved-results.html"], why: "Test whether capacity may be under pressure without mistaking a lightweight signal for a diagnosis.", next: "Decide whether a deeper conversation is warranted", nextHref: "contact.html" },
     { id: "decide", label: "Decide the next move", href: "contact.html", pages: ["contact.html", "success.html"], why: "Bring the execution condition into a focused conversation and determine whether the Diagnostic fits.", next: "Start a Capacity Conversation", nextHref: "contact.html" }
   ];
-  const page = location.pathname.split("/").pop();
+  const pathSegment = location.pathname.split("/").filter(Boolean).pop() || "";
+  const page = pathSegment && !pathSegment.includes(".") ? `${pathSegment}.html` : pathSegment;
   const current = stages.find(stage => stage.pages.includes(page));
   if (!current) return;
   const position = stages.indexOf(current);
