@@ -11,31 +11,30 @@ This is the authoritative operating contract for the pre-launch POC journey. Lat
 replace a steward activity only after repeated POCs show that the activity is stable, safe,
 comprehensible, and methodologically faithful.
 
-During POC validation, the platform embeds OneCal's live availability and booking experience. The
-sponsor books without leaving the workspace or re-entering the meeting time. Until the OneCal
-booking webhook is configured, the assigned steward confirms the calendar booking in the private
-steward console and separately attests completion. The platform describes this record accurately
-and does not claim that booking or attendance was automatically verified by OneCal.
+During POC validation, sponsor framing, perspective design, and protocol review are self-guided.
+Optional steward assistance is available whenever it would improve clarity or confidence, but it is
+not a progression gate. The required Revelation Session is scheduled after output approval; until a
+OneCal booking webhook is configured, the assigned steward records the confirmed booking in the
+private console. The platform does not claim that booking or attendance was automatically verified.
 
-## Three-session journey
+## Self-guided journey with one required session
 
-### Session 1 — Guidance
+### Sponsor framing — self-guided, assistance optional
 
-The sponsor schedules a 30-minute Guidance Session before the Diagnostic Context Brief can be
-approved. Together, the sponsor and steward establish:
+The sponsor uses the guided workspace to establish:
 
 - the sponsor's organizational level, role, function, and decision authority;
 - the organizational system being examined;
 - the execution demand, triggering concern, consequences, and decision at stake; and
 - the six sponsor-context responses and any material sensitivities.
 
+The sponsor may request steward assistance, but no meeting or attendance attestation is required.
 The steward may clarify and challenge the framing but may not convert sponsor belief into a finding.
 The approved Context Brief remains a provisional inquiry frame.
 
-### Session 2 — Design
+### Perspective and protocol design — self-guided, assistance optional
 
-The sponsor schedules a 30-minute Design Session before invitations can be issued. Together, the
-sponsor and steward review:
+The sponsor and platform review:
 
 - the intended perspective coverage and participant rationale;
 - concentration, sponsor-selection, and missing-perspective risks;
@@ -44,10 +43,11 @@ sponsor and steward review:
 - controlled sponsor challenges to wording or sensitivity.
 
 The sponsor may request AI-assisted reframing through governed reasons but may not add questions,
-delete required questions, or freely edit the protocol. Steward approval confirms that the protocol
-can examine the leadership decision without leading participants or encoding the sponsor's theory.
+delete required questions, or freely edit the protocol. Optional steward assistance may be requested
+at any point. Steward finalization confirms that the protocol can examine the leadership decision
+without leading participants or encoding the sponsor's theory.
 
-### Session 3 — Revelation
+### Required session — Revelation
 
 After collection, confidentiality review, synthesis, and steward quality review are complete, the
 sponsor schedules a 30-minute Revelation Session. The Executive Capacity Brief remains locked until
@@ -98,7 +98,7 @@ steward material.
 
 ### Steward
 
-The assigned steward guides the three sessions, reviews framing and protocol quality, monitors
+The assigned steward provides optional framing and design assistance, reviews framing and protocol quality, monitors
 operational progress, reviews protected de-identified evidence where explicitly authorized, approves
 synthesis, prepares the Revelation Guide, and controls sponsor release. Access is engagement-scoped,
 time-bounded, revocable, purpose-limited, and audited.
@@ -185,9 +185,9 @@ contract; later phases implement and migrate them without weakening existing gat
 | State | Meaning | Progression gate |
 |---|---|---|
 | `enrolled` | Workspace, sponsor, steward assignment, and POC entitlement exist | Sponsor enters orientation |
-| `guidance-required` | Scope and Context Brief are in draft | Guidance Session scheduled and completed |
+| `context-draft` | Scope and Context Brief are in draft | Sponsor approves the bounded context |
 | `context-approved` | Inquiry frame is approved but is not a finding | Perspective design begins |
-| `design-required` | Coverage and 18-question protocol are in review | Design Session scheduled and steward approval recorded |
+| `perspective-design` | Coverage and the 18-question protocol are in review | Sponsor approval and steward protocol finalization are recorded |
 | `protocol-approved` | Cohort and common protocol are governed | Invitations may be sent |
 | `collecting` | Confidential interviews are open | Required slots resolved and confidentiality floor met |
 | `synthesizing` | Protected evidence is being reviewed | Disclosure, sufficiency, and steward-quality gates pass |
@@ -195,15 +195,14 @@ contract; later phases implement and migrate them without weakening existing gat
 | `released` | Steward has deliberately released the Executive Capacity Brief | Sponsor review within permanent paid access or the 30-day POC access and download window |
 | `poc-complete` | Revelation and POC learning are complete | Paid next step or closed POC |
 
-Scheduling metadata does not itself prove that a meeting occurred. Session completion requires a
-separate steward attestation and audit event. State names are business contracts, not permission
+Scheduling metadata does not itself prove that the Revelation Session occurred. State names are business contracts, not permission
 substitutes; every server endpoint must continue to enforce role, tenant, threshold, evidence, and
 release requirements independently.
 
 ## Phase 1 completion boundary
 
 Phase 1 locked this model in architecture and operating documentation. Subsequent delivery has now
-implemented OneCal scheduling gates, the privacy-governed steward command center, separately
+implemented Revelation scheduling and release gates, the privacy-governed steward command center, separately
 persisted Executive Capacity Brief and private Steward Revelation Guide outputs, and deliberate
 sponsor release with a server-enforced 30-day POC window or permanent paid access. The
 evidence-informed intervention engine, private steward walkthrough, and five-client readiness remain

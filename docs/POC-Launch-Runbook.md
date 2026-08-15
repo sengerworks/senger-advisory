@@ -25,15 +25,16 @@ uses the same governed workflow as a paid diagnostic; only the commercial entitl
 - Establish the POC record in Platform Operations and assign the advisor for a bounded period.
 - Agree on the leadership decision, target completion date, five-to-ten POC participant range, and
   stop conditions before invitations are sent. The paid full diagnostic may support up to fifty.
-- Establish the three required 30-minute Guidance, Design, and Revelation Session booking paths.
+- Confirm optional assistance is available during framing and design, and establish the required
+  30-minute Revelation Session booking path.
 
-## Required steward sessions
+## Human-support contract
 
-1. **Guidance Session:** schedule and complete the session before the Diagnostic Context Brief is
-   approved.
-2. **Design Session:** schedule and complete the session before the 18-question protocol is approved
-   and invitations are issued.
-3. **Revelation Session:** schedule the session after synthesis approval; keep the Executive Capacity
+1. **Framing assistance:** optional. The sponsor may request help without losing saved work or
+   blocking approval of the Context Brief.
+2. **Design assistance:** optional. The sponsor may request help with perspective coverage or
+   question sensitivity without creating a meeting gate.
+3. **Revelation Session:** required. Schedule after synthesis approval; keep the Executive Capacity
    Brief locked until the steward releases it shortly before or during the meeting.
 
 The detailed authority, scope, confidentiality, dual-output, and state contract is maintained in
@@ -42,11 +43,10 @@ the control in the approved POC operating record and does not represent it as au
 
 ## Golden path
 
-1. **Guidance:** the sponsor and steward complete the required Guidance Session, define the system
-   being examined, and approve the six-question Context Brief.
-2. **Design:** the sponsor and steward complete the required Design Session, approve perspective
-   coverage, and record any
-   accepted gaps without storing participant identity in the plan.
+1. **Frame:** the sponsor defines the system being examined and approves the six-question Context
+   Brief, using optional steward assistance only when useful.
+2. **Design:** the sponsor approves perspective coverage and records any accepted gaps without
+   storing participant identity in the plan. Optional steward assistance does not block progression.
 3. **Frame and protocol:** the advisor approves Diagnostic Frame v2 and Protocol v2; Platform
    Operations explicitly activates v2 before collection begins.
 4. **Invitations:** the sponsor assigns approved slots and sends participant invitations.
@@ -88,20 +88,50 @@ imply that the illustrative finding or direction weights predict a prospect's ou
 
 ## Rehearsal before the client session
 
-- Open `http://localhost:8888/workspace/operations.html` and confirm diagnostic creation, advisor
-  assignment, and Protocol v2 activation controls.
-- Open `http://localhost:8888/workspace/` as the sponsor and confirm context, participant design,
-  invitations, threshold messaging, finding validation, and intervention acceptance.
-- Open the participant invitation in a separate account and verify draft recovery, submission
-  confirmation, and the absence of sponsor-visible response content.
-- Open `http://localhost:8888/workspace/advisor.html` and confirm frame, protocol, evidence review,
-  synthesis, intervention, POC scorecard, and change-control access.
-- Complete one disposable five-participant rehearsal before inviting the client cohort. The repeatable
-  rehearsal and its latest result are defined in `test/poc-five-participant-dress-rehearsal.test.mjs`
-  and recorded in `POC-Dress-Rehearsal-Record.md`.
-- Confirm the public site, sponsor workspace, participant experience, Advisor Console, Platform
-  Operations, and guided demo use the same approved color, typography, wordmark, spacing, control,
-  and responsive-design system.
+Run one disposable rehearsal on the canonical production domain—not localhost or a deploy preview—
+before enrolling the first external client. Use separate real Clerk accounts for operator, sponsor,
+steward, and at least five participants.
+
+1. **Operator:** create a disposable POC organization and engagement, confirm the POC entitlement,
+   assign the steward, and send the sponsor invitation.
+2. **Sponsor entry:** accept the invitation and confirm authentication returns to the private
+   workspace rather than Clerk or the public homepage.
+3. **Sponsor setup:** complete orientation, scope, six-question Context Brief, AI synthesis review,
+   perspective design, coverage review, 18-question sponsor review, and invitations without a
+   mandatory opening or design meeting.
+4. **Participant collection:** accept five invitations in separate accounts, confirm privacy terms,
+   complete the common protocol, verify draft recovery, and receive clear submission receipts.
+5. **Threshold behavior:** verify sponsor results remain locked below five completions and that no
+   participant answer, excerpt, identity-linked evidence, or individual score is exposed.
+6. **Steward work:** confirm the assigned engagement is named, the command center identifies the next
+   move, and the steward can finalize the protocol, monitor operational progress, review protected
+   evidence, approve synthesis, and prepare both outputs.
+7. **Release:** verify the Brief stays locked until evidence and output gates pass and a Revelation
+   Session is recorded; deliberately release it and confirm the private Revelation Guide never enters
+   the sponsor view.
+8. **Closeout:** confirm the sponsor can revisit and download the Brief during the 30-day POC window,
+   capture role-specific feedback separately from evidence, and record the POC scorecard and change
+   candidates.
+
+### Dress-rehearsal acceptance record
+
+Record the date, disposable organization, build/commit, tester accounts by role, result for each step,
+observed support interventions, and every defect or confusing moment in `POC-Dress-Rehearsal-Record.md`.
+The rehearsal passes only when:
+
+- all eight steps complete on the canonical domain without database or API repair;
+- no severity-1 or severity-2 issue remains open;
+- the sponsor and participant paths require no technical explanation;
+- optional assistance never behaves as a progression gate;
+- the confidentiality floor and deliberate-release controls behave exactly as stated; and
+- the public site, sponsor workspace, participant experience, Advisor Console, Platform Operations,
+  and private walkthrough use the approved visual system.
+
+After the rehearsal passes, enroll clients sequentially. Do not begin the next client until the prior
+client's launch-blocking findings are resolved or explicitly accepted under the change-control rules.
+The repeatable technical rehearsal is defined in
+`test/poc-five-participant-dress-rehearsal.test.mjs`; the human production rehearsal is the final
+market-readiness gate.
 
 The detailed measurement and decision rules remain in `POC-Operating-Protocol.md` and
 `POC-Scorecard.md`. Active-cohort support follows `POC-Operating-Support-Playbook.md`.

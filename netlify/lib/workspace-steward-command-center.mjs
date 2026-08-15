@@ -6,9 +6,7 @@ function iso(value){return value?new Date(value).toISOString():null;}
 function stageOf(slot){if(slot.interview_status==="submitted")return"submitted";if(slot.interview_status)return"in-progress";if(slot.notice_accepted)return"accepted";return"invited";}
 function nextAction(source){
   const session=new Map(source.sessions.map(item=>[item.session_type,item.status]));
-  if(session.get("guidance")!=="completed")return{code:"complete-guidance",owner:"steward",label:"Complete and attest the Guidance Session."};
   if(!source.context)return{code:"approve-context",owner:"sponsor-steward",label:"Finish and approve the bounded Context Brief."};
-  if(session.get("design")!=="completed")return{code:"complete-design",owner:"steward",label:"Complete and attest the Design Session."};
   if(!source.plan)return{code:"approve-perspectives",owner:"sponsor-steward",label:"Approve the identity-free perspective design."};
   if(!source.protocol)return{code:"prepare-protocol",owner:"steward",label:"Prepare the common 18-question protocol."};
   if(!source.protocol.sponsor_approved_at)return{code:"sponsor-protocol-review",owner:"sponsor",label:"Sponsor review of all 18 questions is required."};

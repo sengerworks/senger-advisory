@@ -35,23 +35,23 @@ experience sequence is recognition, consequence, understanding, action, and veri
 
 ## Stewarded POC material-evolution delivery
 
-- **Phase 1 — Operating model: Complete.** Three-session journey, roles, scope, confidentiality,
+- **Phase 1 — Operating model: Complete.** Self-guided sponsor journey, optional assistance, required Revelation Session, roles, scope, confidentiality,
   dual outputs, release governance, evidence language, and target states are locked in
   `docs/Stewarded-POC-Operating-Model.md`.
 - **Phase 2 — Sponsor orientation and diagnostic scoping: Complete.** Discovery version 1.2.0
   captures the sponsor's role, organizational level, function, accountability, the system being
-  examined, its boundary and dependencies, and a required Guidance Session arrangement before the
-  six-question Context Brief can be approved.
+  examined, its boundary and dependencies. Optional assistance is available, but sponsor approval of
+  the six-question Context Brief is not meeting-gated.
 - **Phase 3 — Perspective and protocol governance: Complete.** The approved scope guides cohort
-  composition and the common 18-question protocol. A required Design Session precedes approval;
+  composition and the common 18-question protocol. The sponsor can complete this work asynchronously;
   sponsors may approve or request controlled AI reframing but cannot freely edit questions; the
   assigned steward separately finalizes the exact protocol before Platform Operations may activate
   invitations. Sponsor, steward, and participants therefore govern one immutable question set.
-- **Phase 4 — OneCal scheduling gates: Complete for POC.** Configured OneCal booking links now lead
-  directly from the sponsor journey into Guidance, Design, and Revelation scheduling. The platform
-  owns a tenant-isolated session record, gates Context and perspective approval on that record, and
-  requires an assigned steward to attest completion. OneCal API/webhook verification remains a
-  post-validation automation upgrade; the POC does not falsely claim provider-verified attendance.
+- **Phase 4 — Revelation scheduling gate: Complete for POC.** The required Revelation Session is
+  recorded in a tenant-isolated session record before deliberate Brief release. Opening and design
+  assistance are optional and coordinated without blocking the sponsor workflow. OneCal API/webhook
+  verification remains a post-validation automation upgrade; the POC does not falsely claim
+  provider-verified attendance.
 - **Phase 5 — Steward command center: Complete.** The assigned steward receives a single operating
   view of the next governed move, session gates, planned and completed participation, invitation
   follow-up, confidentiality readiness, evidence-review load, and threshold-safe emerging
@@ -188,8 +188,8 @@ experience sequence is recognition, consequence, understanding, action, and veri
 - Complete independent penetration testing before broad enterprise availability and pursue SOC 2 when operating maturity warrants it
 
 ## Cross-cutting — POC validation and launch evidence
-- Govern the initial market phase as a steward-led POC with required Guidance, Design, and
-  Revelation Sessions; use `docs/Stewarded-POC-Operating-Model.md` as the authoritative journey,
+- Govern the initial market phase as a steward-governed POC with a self-guided sponsor journey,
+  optional assistance, and a required Revelation Session; use `docs/Stewarded-POC-Operating-Model.md` as the authoritative journey,
   permission, scope, dual-output, release, and evidence-language contract
 - Add organization-system scoping across enterprise, business unit, function, leadership layer,
   and cross-functional execution while preserving one five-mechanism diagnostic method

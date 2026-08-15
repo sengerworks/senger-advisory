@@ -54,11 +54,11 @@
           <header class="advisor-stage-heading"><p class="card-kicker">Step 2 of 5 · Shape the inquiry</p><h2>Turn the sponsor’s concern into something the diagnostic can test.</h2><p>Clarify the execution demand, the decision at stake, and the evidence boundary before participant responses begin. A strong frame keeps the diagnostic relevant without deciding the answer in advance.</p></header>
           <aside class="advisor-stage-guide"><p class="card-kicker">Why this matters</p><h3>A precise question produces a useful answer.</h3><p>Your role is to preserve the sponsor’s business reality while removing assumptions that could lead participants toward a predetermined conclusion.</p><div><strong>You are finished when</strong><p>The organizational moment, decision, and bounded inquiry accurately reflect what the diagnostic needs to learn.</p></div></aside>
         <section class="advisor-frame" data-steward-sessions>
-          <div><p class="card-kicker">Stewarded sessions</p><h2>Confirm the human governance gates.</h2><p>The sponsor books inside the client workspace. Until automatic OneCal webhooks are configured, confirm the calendar time here; the sponsor never has to re-enter it.</p></div>
+          <div><p class="card-kicker">Revelation Session</p><h2>Prepare the required findings conversation.</h2><p>Context and perspective design are self-guided, with optional steward assistance available outside the workflow. Once both outputs are approved, record the Revelation Session here so the Executive Capacity Brief can be deliberately released shortly before or during the conversation.</p></div>
           <form class="advisor-synthesis-review" data-confirm-session-booking>
-            <label>Session<select name="sessionType"><option value="guidance">Guidance Session</option><option value="design">Design Session</option><option value="revelation">Revelation Session</option></select></label>
+            <input type="hidden" name="sessionType" value="revelation" />
             <label>Confirmed OneCal date and time<input type="datetime-local" name="scheduledAt" required /></label>
-            <button class="secondary-button" type="submit">Confirm OneCal booking</button>
+            <button class="secondary-button" type="submit">Record Revelation Session</button>
           </form>
           <div class="protocol-v2-questions" data-steward-session-list></div>
           <p class="form-message" data-steward-session-message></p>

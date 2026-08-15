@@ -13,7 +13,7 @@ or leadership validation. The POC releases the governed finding and prioritized 
 Directions**, then stops. Detailed intervention design, commercial acceptance, delivery,
 30/60/90-day operating support, and reassessment require separate paid activation.
 
-Every initial POC is steward-led and follows the three-session journey, scope rules, dual-output
+Every initial POC is steward-governed and follows the self-guided sponsor journey, scope rules, dual-output
 contract, and release controls in `docs/Stewarded-POC-Operating-Model.md`.
 
 ## Questions the POC must answer
@@ -58,15 +58,16 @@ intervention and accepts the confidentiality and participation model.
 
 ### 2. Discovery and participant design
 
-Complete a required 30-minute Guidance Session before approving the six sponsor-context questions.
-Record the sponsor's role, level, function, decision authority, and whether the organizational system
+Guide the sponsor through six plain-language context prompts, with optional steward assistance
+available without blocking progression. Record the sponsor's role, level, function, decision authority, and whether the organizational system
 being examined is an enterprise, business unit, function, leadership layer, or cross-functional
-system. Then complete a separate required 30-minute Design Session to approve perspective coverage,
-record coverage gaps, and approve the common 18-question contextualized protocol.
+system. The sponsor then approves perspective coverage, records any accepted coverage gaps, and
+reviews the common 18-question contextualized protocol. The assigned steward finalizes the protocol;
+the sponsor cannot directly edit or add questions.
 
 Exit gate: the protocol can answer the leadership decision without becoming leading, bespoke to
-one person's theory, or impossible to complete in approximately sixty minutes; both sessions are
-scheduled and their completion is steward-attested.
+one person's theory, or impossible to complete in approximately sixty minutes. No opening or design
+meeting is required; the Revelation Session remains the required human gate before release.
 
 ### 3. Confidential participation
 
