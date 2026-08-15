@@ -530,6 +530,20 @@ const sponsorJourneyStages = {
   finding: [6, "Review the finding"]
 };
 
+const sponsorGuidance = {
+  discovery: { title: "Frame the organizational moment before inviting interpretation.", why: "The diagnostic needs one bounded execution demand and leadership decision before it can design a fair inquiry.", uncertainty: "The sponsor context is a starting perspective—not a finding, diagnosis, or privileged version of reality.", receipt: "Your authorized sponsor role and versioned diagnostic engagement are confirmed.", next: "Complete or review the Sponsor Context Brief.", primarySelector: "[data-diagnostic-context-form]", reviewSelector: "[data-journey-home]" },
+  perspectives: { title: "Choose viewpoints that can reveal the system—not simply confirm the sponsor view.", why: "Perspective coverage determines what the diagnostic can credibly learn and which blind spots must remain visible.", uncertainty: "Names are not yet attached, and no participant has supplied evidence at this stage.", receipt: "The approved Context Brief remains saved as the bounded inquiry.", next: "Design and approve the identity-free perspective cohort.", primarySelector: "[data-participant-design]", reviewSelector: "[data-review-approved-context]" },
+  protocol: { title: "Approve one fair, contextual protocol for every participant.", why: "A common 18-question protocol makes differences in perspective meaningful while preventing sponsor-led question design.", uncertainty: "Contextual relevance does not guarantee that a question will produce confirming evidence.", receipt: "The context and perspective design are preserved separately from the question protocol.", next: "Review, challenge, or approve the common protocol.", primarySelector: "[data-protocol-review]", reviewSelector: "[data-journey-home]" },
+  invitations: { title: "Invite the approved perspectives without opening a reporting channel into their answers.", why: "Identity is needed for access and follow-up, but it must remain separate from confidential interview content.", uncertainty: "An accepted invitation does not indicate whether a participant has completed or what they may say.", receipt: "The exact protocol and identity-free perspective slots are approved.", next: "Assign identities and send the approved invitations.", primarySelector: "[data-diagnostic-invitation-panel]", reviewSelector: "[data-protocol-review]" },
+  collection: { title: "Protect momentum while the organization’s evidence remains confidential.", why: "The sponsor can address participation gaps without seeing preliminary themes, excerpts, or individual content.", uncertainty: "No organizational finding is available until the threshold is met and protected synthesis is completed.", receipt: "Only aggregate invitation and completion progress is visible in the sponsor workspace.", next: "Monitor completion and reinforce the purpose of participation.", primarySelector: "[data-diagnostic-invitation-panel]", reviewSelector: "[data-journey-home]" },
+  finding: { title: "Review the governed finding without overstating what the evidence proves.", why: "The result must preserve uncertainty, competing explanations, and the distinction between evidence-informed direction and causal proof.", uncertainty: "Intervention Directions remain hypotheses until accepted, delivered, and tested through subsequent evidence.", receipt: "Sponsor visibility follows threshold, disclosure review, steward approval, and deliberate release gates.", next: "Review the released finding and the decision it supports.", primarySelector: "[data-leadership-validation]", reviewSelector: "[data-journey-home]" }
+};
+
+function showClientGuidance(stage) {
+  const detail = sponsorGuidance[stage] || sponsorGuidance.discovery;
+  window.capacityGuidance?.({ role: "sponsor", position: `Step ${sponsorJourneyStages[stage]?.[0] || 1} of 6 · Decision guidance`, ...detail, primaryLabel: "Go to current work", reviewLabel: "Review earlier work" });
+}
+
 const perspectiveStepNames = ["Choose what must be represented", "Build the perspective cohort", "Review coverage and approve"];
 let perspectiveStep = 0;
 
@@ -547,6 +561,7 @@ function showSponsorHome() {
   hideSponsorTaskSections();
   history.replaceState(null, "", location.pathname + location.search);
   document.title = "Organizational Capacity Workspace | Senger Advisory";
+  if (currentRole === "org:admin") window.capacityGuidance?.({ role: "sponsor", position: "Sponsor workspace · Current focus", title: elements.focusTitle.textContent, why: "The platform selected this action from the current governed diagnostic state—not from an inferred conclusion.", uncertainty: "No sponsor view exposes participant answers, individual scores, or preliminary findings.", receipt: `${elements.organizationName.textContent} and your authorized sponsor role are confirmed.`, next: elements.primaryAction.textContent, primaryLabel: "Go to current step", primarySelector: "[data-primary-action]" });
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -563,6 +578,7 @@ function showSponsorJourney(stage, diagnosticId) {
   if (location.hash !== route) history.pushState({ sponsorJourney: true }, "", route);
   else history.replaceState({ sponsorJourney: true }, "", route);
   document.title = `${name} | Organizational Capacity Diagnostic`;
+  showClientGuidance(stage);
 }
 
 function showPerspectiveStep(step = 0) {
@@ -2155,6 +2171,8 @@ async function render() {
   if (session.role === "org:admin") await prepareOwnerCollection();
   if (session.role === "org:member") await prepareParticipant();
   showState("readyState");
+  if (session.role === "org:admin") showSponsorHome();
+  else window.capacityGuidance?.({ role: "participant", position: "Private participant workspace", title: elements.focusTitle.textContent, why: "You were invited to contribute one informed vantage point to a shared organizational inquiry.", uncertainty: "Your response alone cannot establish an organizational finding, and the sponsor cannot see your answers or individual score.", receipt: "Your intended perspective slot, privacy boundary, and workspace access are confirmed.", next: elements.primaryAction.textContent, primaryLabel: "Continue privately", primarySelector: "[data-primary-action]" });
 }
 
 function currentClerkContextKey() {

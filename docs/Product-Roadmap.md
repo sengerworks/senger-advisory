@@ -25,8 +25,13 @@ experience sequence is recognition, consequence, understanding, action, and veri
   fictional evidence, method, and result. The Capacity Signal preselects a relevant demand driver
   without changing its 18 signals or predetermining its brief. Both experiences explain why the
   framing changed, state what did not change, and let the visitor clear or revise the starting point.
-- **Phase 4 — Platform-wide intelligence: Planned.** Extend narrated reasoning, next-best-action
-  guidance, uncertainty, verification receipts, and safe revision patterns across role workspaces.
+- **Phase 4 — Platform-wide intelligence: Complete.** Sponsor, participant, steward, and platform-
+  operator workspaces now share one authorization-aware decision-guidance layer. It explains why
+  the current action is next, names what remains uncertain, provides a verification receipt limited
+  to facts the workspace has actually confirmed, and offers one next-best action plus a safe review
+  or revision path. Guidance adapts to the sponsor's six-stage journey, the steward's five governed
+  stages, participant confidentiality, and server-returned portfolio conditions without exposing
+  participant content or presenting evidence-informed direction as empirically predictive.
 
 ## Stewarded POC material-evolution delivery
 

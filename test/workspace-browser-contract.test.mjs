@@ -16,6 +16,32 @@ test("workspace is private-indexed and presents the threshold privacy contract",
   assert.match(html, /Workspace participation is separate from research consent/);
 });
 
+test("every authenticated role receives narrated guidance, uncertainty, verification, and safe revision", async () => {
+  const [sponsorHtml, advisorHtml, operationsHtml, intelligence, styles, sponsor, advisor, operations, server] = await Promise.all([
+    "workspace/index.html", "workspace/advisor.html", "workspace/operations.html", "workspace/workspace-intelligence.js", "workspace/workspace-intelligence.css", "workspace/workspace.js", "workspace/advisor.js", "workspace/operations.js", "scripts/workspace-dev-server.mjs"
+  ].map(source));
+  for (const html of [sponsorHtml, advisorHtml, operationsHtml]) {
+    assert.match(html, /workspace-intelligence\.css/);
+    assert.match(html, /workspace-intelligence\.js/);
+  }
+  assert.match(intelligence, /Why this is next/);
+  assert.match(intelligence, /What remains uncertain/);
+  assert.match(intelligence, /Verified in this workspace/);
+  assert.match(intelligence, /Next best action/);
+  assert.match(intelligence, /Review or revise safely/);
+  assert.match(intelligence, /window\.capacityGuidance/);
+  assert.match(styles, /\.experience-intelligence-grid/);
+  assert.match(styles, /\.intelligence-receipt/);
+  assert.match(sponsor, /const sponsorGuidance/);
+  assert.match(sponsor, /role: "participant"/);
+  assert.match(advisor, /const stewardGuidance/);
+  assert.match(advisor, /Evidence-informed Intervention Directions are not empirically predictive/);
+  assert.match(operations, /role:"operator"/);
+  assert.match(operations, /Platform Operations never exposes participant answers/);
+  assert.match(server, /\/workspace\/workspace-intelligence\.js/);
+  assert.match(server, /\/workspace\/workspace-intelligence\.css/);
+});
+
 test("local product preview serves the public category homepage", async () => {
   const server = await readFile(new URL("../scripts/workspace-dev-server.mjs", import.meta.url), "utf8");
   assert.match(server, /\["\/", \{ url: new URL\("\.\.\/index\.html"/);
