@@ -37,72 +37,83 @@ if ("IntersectionObserver" in window) {
 }
 
 (() => {
-  const hero = document.querySelector(".hero");
-  const copy = hero?.querySelector(".hero-copy");
-  const canvas = hero?.querySelector("[data-flow-engine]");
-  const primary = hero?.querySelector("[data-hero-title-primary]");
-  const secondary = hero?.querySelector("[data-hero-title-secondary]");
-  const lede = hero?.querySelector("[data-hero-lede]");
-  if (!hero || !copy || !canvas || !primary || !secondary || !lede) return;
-
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const states = {
-    intro: {
-      primary: "Every organization",
-      secondary: "is asked to carry complexity.",
-      lede: "The question is whether the operating system can carry what execution now requires."
+  const root = document.querySelector("#is-this-you");
+  if (!root) return;
+  const concerns = {
+    scaling: {
+      kicker: "Scaling strain",
+      title: "The organization may be compensating for a capacity constraint.",
+      pattern: "Decision rights, coordination, and operating rhythms have not kept pace with the complexity growth created.",
+      cost: "Temporary heroics become the operating model. Execution slows while leadership attention and employee energy absorb the difference.",
+      lens: "Whether priority, authority, information, coordination, and capability deployment can carry the new execution demand.",
+      next: "Begin with a lightweight Capacity Signal before choosing an intervention.",
+      stage: "complexity"
     },
-    complexity: {
-      primary: "Strategy, change, and growth",
-      secondary: "alter what must be carried.",
-      lede: "Volume, variety, interdependence, uncertainty, and rate of change reshape the demand."
+    retention: {
+      kicker: "Customer and revenue exposure",
+      title: "Retention pressure may be the downstream result of an operating-system mismatch.",
+      pattern: "Commercial promises, product capacity, implementation, support, and renewal decisions may be moving through different operating realities.",
+      cost: "Teams fight individual fires while recurring delivery and customer-experience conditions continue to put revenue at risk.",
+      lens: "Where customer commitments lose fidelity as information, authority, resources, and work move across functional boundaries.",
+      next: "Use the Capacity Signal to distinguish a localized service issue from broader execution strain.",
+      stage: "friction"
     },
-    friction: {
-      primary: "Work starts to wait.",
-      secondary: "Execution starts to slow.",
-      lede: "Not necessarily because strategy failed—but because the operating system no longer fits the demand."
+    decisions: {
+      kicker: "Decision escalation",
+      title: "Senior leadership may be carrying decisions the operating system should resolve.",
+      pattern: "Authority, information, or accountability may be too ambiguous for recurring tradeoffs to resolve at the right level.",
+      cost: "Executive attention becomes a throughput constraint, managers wait for permission, and important decisions reopen instead of moving into execution.",
+      lens: "Whether decision rights, information readiness, and cross-functional commitments are aligned with the decisions the strategy now requires.",
+      next: "Begin with a Capacity Signal focused on the consequential decisions that keep slowing or escalating.",
+      stage: "constraint"
     },
-    constraint: {
-      primary: "When the system cannot carry it,",
-      secondary: "people compensate.",
-      lede: "Meetings, escalation, workarounds, and extraordinary effort preserve performance—for a time."
+    change: {
+      kicker: "AI and change readiness",
+      title: "The initiative may be asking the organization to carry more change than its operating system can absorb.",
+      pattern: "Technology, priorities, roles, and working practices may be changing faster than attention, authority, learning, and coordination can adapt.",
+      cost: "Adoption activity increases while operating behavior remains unchanged—creating fatigue, skepticism, and repeated reinvestment.",
+      lens: "Whether the organization has the attention, decision clarity, information, coordination, and capability deployment required to turn change into work.",
+      next: "Use the Capacity Signal before adding another adoption, training, or communication layer.",
+      stage: "complexity"
     },
-    resolution: {
-      primary: "That ability has a name:",
-      secondary: "Organizational Capacity.",
-      lede: "The Capacity Lens shows what the organization must carry, where the system is constrained, and what should change."
+    coordination: {
+      kicker: "Cross-functional friction",
+      title: "The work may be failing between functions—not within them.",
+      pattern: "Each team can perform locally while ownership, information, timing, and tradeoffs degrade at the boundaries between them.",
+      cost: "Waiting, rework, meetings, and escalation compound even as every function reports high activity and reasonable internal performance.",
+      lens: "How shared priorities, boundary-spanning authority, operating information, coordination, and resources interact around the work that must move.",
+      next: "Begin with the Capacity Signal anchored to one consequential cross-functional outcome.",
+      stage: "friction"
+    },
+    leadership: {
+      kicker: "Leadership load",
+      title: "Leadership effort may be concealing how much capacity the system lacks.",
+      pattern: "A small number of trusted leaders may be integrating information, resolving ambiguity, and holding commitments together through personal intervention.",
+      cost: "Performance becomes fragile, succession becomes harder, and leaders lose the attention required for strategy because they are carrying the operating system themselves.",
+      lens: "Which mechanisms depend on individual compensation rather than repeatable organizational clarity and movement.",
+      next: "Use the Capacity Signal to make the hidden leadership load visible before adding more effort or headcount.",
+      stage: "constraint"
     }
   };
-
-  let currentState = "intro";
-  let changeTimer = 0;
-  const setState = (name, immediate = false) => {
-    if (name === currentState && !immediate) return;
-    currentState = name;
-    window.clearTimeout(changeTimer);
-    if (!immediate) copy.classList.add("is-changing");
-    changeTimer = window.setTimeout(() => {
-      const state = states[name];
-      primary.textContent = state.primary;
-      secondary.textContent = state.secondary;
-      lede.textContent = state.lede;
-      copy.classList.remove("is-changing");
-      canvas.flowEngine?.setNarrativeStage(name);
-    }, immediate ? 0 : 260);
+  const fields = {
+    kicker: root.querySelector("[data-concern-kicker]"),
+    title: root.querySelector("[data-concern-title]"),
+    pattern: root.querySelector("[data-concern-pattern]"),
+    cost: root.querySelector("[data-concern-cost]"),
+    lens: root.querySelector("[data-concern-lens]"),
+    next: root.querySelector("[data-concern-next]")
   };
-
-  if (reducedMotion) {
-    setState("resolution", true);
-    hero.classList.add("narrative-ready");
-    return;
-  }
-
-  window.setTimeout(() => hero.classList.add("narrative-ready"), 2800);
-  canvas.flowEngine?.setNarrativeStage("intro");
-  [
-    [3500, "complexity"],
-    [7000, "friction"],
-    [10500, "constraint"],
-    [14000, "resolution"]
-  ].forEach(([delay, state]) => window.setTimeout(() => setState(state), delay));
+  root.addEventListener("click", event => {
+    const button = event.target.closest("[data-capacity-concern]");
+    if (!button) return;
+    const concern = concerns[button.dataset.capacityConcern];
+    if (!concern) return;
+    root.querySelectorAll("[data-capacity-concern]").forEach(option => {
+      const active = option === button;
+      option.classList.toggle("active", active);
+      option.setAttribute("aria-pressed", String(active));
+    });
+    for (const [key, element] of Object.entries(fields)) element.textContent = concern[key];
+    document.querySelector("[data-flow-engine]")?.flowEngine?.setNarrativeStage(concern.stage);
+  });
 })();

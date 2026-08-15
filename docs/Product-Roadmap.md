@@ -1,5 +1,25 @@
 # Product Roadmap v0.1
 
+## Experience North Star
+
+All public-site and platform work follows `docs/Experience-North-Star.md`: users must always know
+where they are, why the current moment matters, what they need to do, and what happens next. The
+experience sequence is recognition, consequence, understanding, action, and verification.
+
+### Public and platform experience transformation
+
+- **Phase 1 — Attention and recognition: Complete.** The homepage now leads with the urgent
+  executive problem, adds a controlled “Is this you?” interaction, surfaces recognizable capacity
+  signals, clarifies one primary action, and creates consequence-based urgency without unsupported
+  claims. Six controlled executive conditions change the pattern, consequence, Capacity Lens focus,
+  and bounded next step without presenting a public diagnosis.
+- **Phase 2 — Orientation and momentum: Planned.** Introduce the five-stage site journey, make the
+  purpose and next action explicit on major pages, and simplify navigation and CTA hierarchy.
+- **Phase 3 — Context-responsive experiences: Planned.** Carry a visitor-selected concern into the
+  Platform Journey and assessment entry, with transparent explanations of why each path is shown.
+- **Phase 4 — Platform-wide intelligence: Planned.** Extend narrated reasoning, next-best-action
+  guidance, uncertainty, verification receipts, and safe revision patterns across role workspaces.
+
 ## Stewarded POC material-evolution delivery
 
 - **Phase 1 — Operating model: Complete.** Three-session journey, roles, scope, confidentiality,
