@@ -194,6 +194,63 @@ a {
 .site-nav .nav-primary-action::after { display: none; }
 .site-nav .nav-primary-action:hover { background: var(--orange-dark); color: #fff; }
 
+.hero-actions .hero-text-link {
+  flex-basis: 100%;
+  width: fit-content;
+  color: var(--ink-soft);
+  font-size: .76rem;
+  font-weight: 760;
+  text-decoration: underline;
+  text-decoration-color: rgba(212,91,49,.48);
+  text-underline-offset: 4px;
+}
+.hero-actions .hero-text-link:hover { color: var(--orange-dark); }
+
+.public-entry-points {
+  padding: clamp(64px,8vw,104px) clamp(20px,5vw,56px);
+  border-top: 1px solid var(--line);
+  background: var(--ivory);
+}
+.public-entry-points-inner {
+  width: min(1280px,100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(280px,.72fr) minmax(0,1.28fr);
+  gap: clamp(34px,6vw,84px);
+  align-items: center;
+}
+.public-entry-points-heading h2 { max-width: 600px; font-size: clamp(2.4rem,4vw,4.35rem); }
+.public-entry-points-heading > p:last-child { max-width: 550px; margin: 22px 0 0; color: var(--ink-soft); line-height: 1.7; }
+.public-entry-point-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.public-entry-point-options > a {
+  display: grid;
+  align-content: start;
+  min-height: 270px;
+  padding: clamp(24px,3.2vw,38px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: var(--shadow-soft);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.public-entry-point-options > a:hover { transform: translateY(-3px); border-color: rgba(212,91,49,.42); box-shadow: 0 24px 60px rgba(17,28,46,.1); }
+.public-entry-point-options span { color: var(--orange-dark); font-size: .65rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.public-entry-point-options strong { margin-top: 18px; font-family: var(--serif); font-size: clamp(1.65rem,2.5vw,2.35rem); font-weight: 500; line-height: 1.05; }
+.public-entry-point-options p { margin: 18px 0 0; color: var(--ink-soft); font-size: .84rem; line-height: 1.65; }
+.public-entry-point-options i { align-self: end; margin-top: 28px; color: var(--orange-dark); font-size: .76rem; font-style: normal; font-weight: 850; }
+
+@media (max-width: 900px) {
+  .public-entry-points-inner { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 620px) {
+  .public-entry-point-options { grid-template-columns: 1fr; }
+  .public-entry-point-options > a { min-height: 230px; }
+  .hero-actions .hero-text-link { text-align: center; }
+}
+
 .context-handoff {
   display: grid;
   gap: 6px;

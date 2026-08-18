@@ -74,8 +74,8 @@ window.capacityExperienceContext = { profiles: capacityConcernProfiles, current:
     const navPath = [
       ["signs.html", "The Problem"],
       ["framework.html", "Capacity Lens"],
-      ["platform-journey.html", "How It Works"],
-      ["assessment.html", "Capacity Signal"],
+      ["platform-journey.html", "Platform Demo"],
+      ["assessment.html", "Free Assessment"],
       ["contact.html", "Start a Conversation"]
     ];
     nav.replaceChildren(...navPath.map(([href, label]) => {
@@ -83,9 +83,40 @@ window.capacityExperienceContext = { profiles: capacityConcernProfiles, current:
       link.href = contextualHref(href);
       link.textContent = label;
       if (href === current.href || (current.id === "examine" && href === "platform-journey.html")) link.setAttribute("aria-current", "page");
-      if (href === "contact.html") link.className = "nav-primary-action";
+      if (href === "assessment.html") link.className = "nav-primary-action";
       return link;
     }));
+  }
+
+  const entryPointPages = ["", "index.html", "signs.html", "framework.html", "platform-journey.html", "diagnostic.html", "assessment.html", "insights.html", "about.html", "contact.html"];
+  if (entryPointPages.includes(page) && !document.querySelector("[data-public-entry-points]")) {
+    const entryPoints = document.createElement("section");
+    entryPoints.className = "public-entry-points";
+    entryPoints.dataset.publicEntryPoints = "";
+    entryPoints.setAttribute("aria-labelledby", "public-entry-points-title");
+    entryPoints.innerHTML = `
+      <div class="public-entry-points-inner">
+        <div class="public-entry-points-heading">
+          <p class="eyebrow">Choose your starting point</p>
+          <h2 id="public-entry-points-title">See a signal—or see the complete experience.</h2>
+          <p>Both are designed to help you see the organization more clearly without assuming a diagnosis.</p>
+        </div>
+        <div class="public-entry-point-options">
+          <a href="${contextualHref("assessment.html")}">
+            <span>About five minutes</span>
+            <strong>Take the Free Assessment</strong>
+            <p>Get a lightweight Capacity Signal grounded in one consequential execution demand.</p>
+            <i aria-hidden="true">Begin assessment →</i>
+          </a>
+          <a href="${contextualHref("platform-journey.html")}">
+            <span>Interactive walkthrough</span>
+            <strong>Explore the Platform Demo</strong>
+            <p>Follow the sponsor journey from organizational concern to protected evidence and focused direction.</p>
+            <i aria-hidden="true">View the demo →</i>
+          </a>
+        </div>
+      </div>`;
+    main.insertAdjacentElement("afterend", entryPoints);
   }
 })();
 
